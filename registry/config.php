@@ -46,14 +46,12 @@ $registry->storeObject('db', 'mysql.database');
 $registry->storeObject('template', 'template');
 $registry->storeObject('authenticate', 'authentication');
 $registry->storeObject('fce', 'usefulfunction');
-$registry->storeObject('pdf', 'pdfdocument');
 
 /**
  *  PEAR modul and set library
  */ 
 
 ini_set('include_path',ini_get('include_path').PATH_SEPARATOR.'../'.PATH_SEPARATOR.$_SERVER["DOCUMENT_ROOT"]);
-require_once 'pear/fpdf/fpdf.php';
  
 /**
  *  Setting System Information

@@ -16,9 +16,6 @@ session_start();
 define( "FRAMEWORK_PATH", dirname( __FILE__ ) ."/" );
 
 
-require_once('pear/fpdf/fpdf.php');
-
-
 // Load registry and config
 require_once('registry/registry.class.php');
 $registry = Registry::singleton();
@@ -43,17 +40,15 @@ $registry->getObject('authenticate')->checkForAuthentication();
 // vyplnění objektu stránky ze šablony
 $registry->getObject('template')->buildFromTemplates('header.tpl.php', 'main.tpl.php', 'footer.tpl.php');
 
-
-/*
 $registry->getObject('template')->addTemplateBit('categories', 'categorymenu.tpl.php');
 
+// Check Active Controllers
 $activeControllers = array();
-$registry->getObject('db')->executeQuery('SELECT controller FROM controllers WHERE active=1');
-while( $activeController = $registry->getObject('db')->getRows() )
-{
-	$activeControllers[] = $activeController['controller'];
-}
-$currentController = $registry->getURLBit( 0 );
+$activeControllers[] = 'page';
+$activeControllers[] = 'document';
+$activeControllers[] = 'category';
+$activeControllers[] = 'contact';
+$currentController = $registry->getURLBit( 0 );  // controller = page,document,category,contact
 
 if( in_array( $currentController, $activeControllers ) )
 {
@@ -68,6 +63,8 @@ else
 	require_once( FRAMEWORK_PATH . 'controllers/page/controller.php');
 	$controller = new Pagecontroller( $registry, true );
 }
+
+/*
 
 
 // showItems Bits 

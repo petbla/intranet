@@ -105,18 +105,15 @@ class mysqldatabase {
     public function cacheQuery( $queryStr )
     {
     	global $caption;
-    	global $deb;
    	
       if( !$result = $this->connections[$this->activeConnection]->query( $queryStr ) )
     	{
-		    $deb->Error($queryStr);
         trigger_error($caption['db_error_cachequery'] . ': '.$this->connections[$this->activeConnection]->error, E_USER_ERROR);
 		    return -1;
   		}
   		else
   		{
 		    if( $this->writeToLog )
-          $deb->Trace($queryStr);
   			$this->queryCache[] = $result;
   			return count($this->queryCache)-1;
   		}
@@ -243,19 +240,15 @@ class mysqldatabase {
     public function executeQuery( $queryStr )
     {
     	global $caption;
-    	global $deb;
       
       $this->connections[$this->activeConnection]->query( "set names utf8" );	
       
       if( !$result = $this->connections[$this->activeConnection]->query( $queryStr ) )
     	{
-        $deb->Error($queryStr);
         trigger_error($caption['db_error_executequery'].': '.$this->connections[$this->activeConnection]->error, E_USER_ERROR);
   		}
   		else
   		{
-		    if( $this->writeToLog )
-          $deb->Trace($queryStr);
   			$this->last = $result;
   		}
     }

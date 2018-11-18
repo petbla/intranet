@@ -223,7 +223,6 @@ class template {
     $this->replaceBits();            // Načte části šablon stránky a vloží je to do obsahu stránky
     $this->replaceTags(false);       // Nahradí značky ve stránce požadovaným obsahem
     $this->replaceTags(true);        // Nahradí značky ve stránce požadovaným obsahem - postParse
-    $this->getActiveControls();
     $this->parseTitle();             // Načte titulek nastavený v objektu stránky a vloží ho do pohledu
   } // end function parseOutput
 
@@ -361,26 +360,6 @@ class template {
     $element = "<a href=\"$urlPath?p=$actualPage\">" . $symbol . "</a>";
     return $element;  
   }
-  
-  private function getActiveControls( )
-  {
-    global $caption;
-    
-    $content = $this->page->getContent();
-
-    $pattern = '/(\{action_sold_)(\d+)}/';
-		$replacement = '<img src="files/image/sold.png" width="70" height="24"  class="nopointer" alt="sold" />';
-		$content = preg_replace($pattern, $replacement, $content);
-
-		$pattern = '/(\{action_stock_)(\d+)}/';
-		$replacement = "<a href=\"basket/add-product/\\2\">  \r\n<img src=\"files/image/koupit.png\" width=\"70\" height=\"24\" \r\nonmouseover=\"this.src='files/image/koupit_hover.png'\"\r\nonmouseout=\"this.src='files/image/koupit.png'\"\r\nonclick=\"this.src='files/image/koupit_press.png'\" title=\"".$caption['Add_to_basket']."\" alt=\"".$caption['Add_to_basket']."\"/>\r\n</a>";
-		$content = preg_replace($pattern, $replacement, $content);
-
-		$pattern = '/(\{action_reserve_)(\d+)}/';
-		$replacement = '<img src="files/image/reserve.png" width="70" height="24" class="nopointer" alt="reserve" />';
-		$content = preg_replace($pattern, $replacement, $content);
-
- 		$this->page->setContent( $content );
-  }    
+ 
 }
 ?>

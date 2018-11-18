@@ -130,18 +130,27 @@ class Registry {
 	 */
 	public function getURLData()
 	{
+		/* 
+		   0 - controller   (document,category,contact)
+		   1 - action       (view,edit,print,send)
+		   2 - id           (<integer>)
+		   ..index.php?page=document/view/10
+		   ..index.php?page=category/view/4
+		   ..index.php?page=contact
+	    */
+		
 		$urldata = (isset($_REQUEST['page'])) ? $_REQUEST['page'] : '' ;
 		
-    $data = explode( '?', $_SERVER["REQUEST_URI"] );
-    $urlparam = (isset($data[1])) ? $data[1] : '' ;
+		$data = explode( '?', $_SERVER["REQUEST_URI"] );
+		$urlparam = (isset($data[1])) ? $data[1] : '' ;
 
-    self::$urlPath = $urldata;
-    self::$urlParam = $urlparam;
+		self::$urlPath = $urldata;
+		self::$urlParam = $urlparam;
      
 		if( $urldata == '' )
 		{
-			self::$urlBits[] = 'products';
-			self::$urlPath = 'products';
+			self::$urlBits[] = 'category';
+			self::$urlPath = 'category';
 		}
 		else
 		{
