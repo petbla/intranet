@@ -11,6 +11,13 @@
 require_once('_private/config.php');
 
 /**
+ *  Set Language
+ */ 
+$registry->storeSetting('lang','cs');
+require_once('lang/'.$registry->getSetting('lang').'.php');
+
+
+/**
  *  Setting Webpage
  */
 $config['skin']             = 'classic';
@@ -65,5 +72,6 @@ $registry->getObject('template')->getPage()->addTag( 'headtitle', $config['headt
 $registry->getObject('template')->getPage()->addTag( 'imagesPath', 'views/'.$config['skin'].'/images/' );
 
 $registry->getObject('template')->dataToTags( $config, 'cfg_' );
+$registry->getObject('template')->dataToTags( $caption, 'lbl_' );
 
 ?>
