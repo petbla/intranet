@@ -1,0 +1,6 @@
+/*
+ * Style for PRINT
+ */
+a:after { 
+  content: " (" attr(href) ") "; 
+} 

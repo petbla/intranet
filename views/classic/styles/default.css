@@ -1,0 +1,352 @@
+/*
+ * Default Styles
+ * ---------------------------------------------------------------------------- 
+ */  
+body{
+  width:90%;
+  margin:15px auto;
+  font-family: Arial, "MS Trebuchet", sans-serif;
+}
+
+p{
+  margin:0 0 20px 0;
+}
+p, li{
+  line-height:20px;
+}
+
+/* Border radius */
+fieldset, legend{
+   border-radius: 10px;
+  /* KONEC: standardní */
+   /* ZAČÁTEK: Mozilla */
+   -moz-border-radius: 10px;
+  /* KONEC: Mozilla */
+   /* ZAČÁTEK: Webkit */
+   -webkit-border-radius: 10px;
+  /* KONEC: Webkit */
+
+  -moz-box-shadow: 3px 3px 5px #ccc;
+  -webkit-box-shadow: 3px 3px 5px #ccc;
+  -o-box-shadow: 3px 3px 5px #ccc;
+  box-shadow: 3px 3px 5px #ccc;
+  color: #808080;
+}
+input{
+   border-radius: 5px;
+  /* KONEC: standardní */
+   /* ZAČÁTEK: Mozilla */
+   -moz-border-radius: 5px;
+  /* KONEC: Mozilla */
+   /* ZAČÁTEK: Webkit */
+   -webkit-border-radius: 5px;
+  /* KONEC: Webkit */
+  color: #808080;
+}
+/* END Default */
+
+/*
+ * Header
+ * ---------------------------------------------------------------------------- 
+ */ 
+header#page_header{
+  width:100%;
+}
+/* Login info bar */
+header#page_header p{
+  position: absolute;
+  top: 10px;
+  right: 5%;
+  font-size: 11px;                     
+}
+header#page_header p>b{
+  font-size: 12px;
+  font-weight: bold;
+  color: #00f;                     
+}
+
+/* BAR menu */
+header#page_header nav ul{
+  background-image: -moz-linear-gradient(
+    top, #fff, #efefef);
+  background-image: -webkit-gradient(
+     linear,left top, left bottom,
+     color-stop(0, #fff),
+     color-stop(1, #efefef)
+  );
+  background-image: linear-gradient(
+    top, #fff, #efefef
+  );
+  border: 1px solid #efefef;
+  
+   border-radius: 10px;
+  /* KONEC: standardní */
+   /* ZAČÁTEK: Mozilla */
+   -moz-border-radius: 10px;
+  /* KONEC: Mozilla */
+   /* ZAČÁTEK: Webkit */
+   -webkit-border-radius: 10px;
+  /* KONEC: Webkit */
+  
+  list-style: none;
+  margin: -38px 0 0 150px; 
+  padding: 5px;
+}
+header#page_header nav img{
+  position:relative;
+}
+#page_header nav ul li, footer#page_footer nav ul li{
+  padding:0;
+  margin: 0 20px 0 0;
+  display:inline;
+}
+#page_header nav a{
+  font-family: Century-gothic, Calibri, Arial, sans-serif; 
+  font-size: 18px;
+  font-weight:normal;
+  text-decoration: none;
+  padding: 5px;
+  color: #808080;
+}
+#page_header nav a:hover{
+  background-color: #efefef;
+  padding: 5px 5px 4px 5px;
+   
+   border-radius: 5px;
+  /* KONEC: standardní */
+   /* ZAČÁTEK: Mozilla */
+   -moz-border-radius: 5px;
+  /* KONEC: Mozilla */
+   /* ZAČÁTEK: Webkit */
+   -webkit-border-radius: 5px;
+  /* KONEC: Webkit */
+
+}
+/* END Header */
+
+/*
+ * Envelope 
+ * ---------------------------------------------------------------------------- 
+ */
+div#envelope{
+  margin: 0;
+  padding: 0;
+  position: relative;
+}
+/* END Envelope */
+
+/*
+ * LEFT panel 
+ * ---------------------------------------------------------------------------- 
+ */
+section#panel_left{
+  margin: 0;
+  padding: 0;
+  width: 150px;
+  float: left;
+}
+
+/* LEFT Navigation */
+section#navigate {
+  margin: 0;
+  padding: 0;
+  width: 150px;
+}
+section#navigate ul{
+  background-image: -moz-linear-gradient(
+    left, #fff, #ffc);
+  background-image: -webkit-gradient(
+     linear,right top, left top,
+     color-stop(0, #fff),
+     color-stop(1, #ffc)
+  );
+  background-image: linear-gradient(
+    left, #fff, #ffc
+  );
+  border: 1px solid #efefef;
+  
+   border-radius: 10px;
+  /* KONEC: standardní */
+   /* ZAČÁTEK: Mozilla */
+   -moz-border-radius: 10px;
+  /* KONEC: Mozilla */
+   /* ZAČÁTEK: Webkit */
+   -webkit-border-radius: 10px;
+  /* KONEC: Webkit */
+
+  -moz-box-shadow: 3px 3px 5px #ccc;
+  -webkit-box-shadow: 3px 3px 5px #ccc;
+  -o-box-shadow: 3px 3px 5px #ccc;
+  box-shadow: 3px 3px 5px #ccc;
+  
+  list-style: none;
+  margin: 10px 0; 
+  padding: 0;
+}
+section#navigate ul li{
+  padding: 2px;
+  margin: 0;
+  display:block;
+  border-bottom: 1px solid #efefef;
+}
+section#navigate ul li.last{
+  border-bottom: 0;
+}
+section#navigate a{
+  text-decoration: none;
+  color: #30c;
+  font-size: 12px;
+  font-weight:normal;
+  padding: 5px;
+}
+section#navigate a:hover{
+  padding: 5px;
+  margin: 0;
+  width: 100%;
+  font-weight: bold;
+}
+
+/* Login */
+section#login{
+  margin: 0;
+  padding: 0;
+  width: 150px;
+  display: none;
+}
+section#login fieldset{
+  margin: 0;
+  margin-top: 10px;
+  border: 1px solid #efefef;
+  background-color: #ffc;
+  font-family: Arial, sans-serif;
+  font-size: 10px;
+}
+section#login legend{ 
+  background-color: #ffc;
+  padding: 1px 10px;
+}
+section#login fieldset>ol{list-style: none;
+  padding: 0; 
+  margin: 0;
+}
+section#login fieldset>ol>li{
+  margin: 0 0 2px 0;
+  padding: 0;
+}
+section#login fieldset input{
+  display:block;
+}
+section#login input{
+  width: 100%;
+  background-color: #fff;
+  border: 1px solid #bbb;
+}
+section#login input[type="submit"]{
+  width: 100%;
+  padding: 0;
+  margin-top: 10px;
+  background-color: #ff9;
+}
+/* END LEFT Panel */  
+
+/*
+ * Main page CONTENT
+ * ---------------------------------------------------------------------------- 
+ */
+section#content{
+  background: transparent;
+  margin-top: 5px;
+  margin-left: 160px; 
+}
+/* END page CONTENT */
+
+/*
+ * Link windows
+ *
+ */
+section#linksession{
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  font-size: 12px;
+}
+section#linksession ul{
+  margin: 0;
+  padding: 0;
+}
+section#linksession ul>li{
+  width: 10%;
+  margin: 0;
+  padding: 1px 10px;
+  text-align: left;
+  list-style: none;
+  float: left;
+}
+section#tablelist{
+  margin: 0;
+  padding: 10px 0;
+  width: 100%;
+  clear:right;
+}
+/* END Link */
+   
+/*
+ * Footer 
+ * ---------------------------------------------------------------------------- 
+ */
+footer#page_footer{
+  clear: both;
+  width: 100%; 
+  display: block; 
+  text-align: center;
+  border-top: 1px solid #efefef;
+  font-size: 14px;  
+  color: #1fefef;
+}
+/* END Footer */
+
+/*
+ * TABLE standard's format  
+ * ---------------------------------------------------------------------------- 
+ */
+table{
+  width: 100%; 
+  border-collapse: collapse;
+  font-size: 10px; 
+} 
+th, td{ 
+  border: none;
+  font-family: arial;
+}
+/* TABLE Header */
+th{
+  background-color: #000; 
+  color: #fff;
+}
+/* TABLE Line's Format */
+tr:nth-of-type(even){
+  background-color: #F3F3F3;
+}
+tr:nth-of-type(odd) {
+  background-color:#ddd;
+}
+/* TABLE Cells From Second On Left*/
+td:nth-child(n+2){
+}
+/* TABLE Last Line */
+tr:last-child{
+}
+/* TABLE Last Column */
+td:last-child{
+}
+/* TABLE Cell Right-Bottom*/
+tr:last-child td:last-child{
+}
+/* TABLE Line Before Last Line */
+tr:nth-last-child(2){
+}
+/* TABLE Last 3-Lines */
+tr:nth-last-child(-n+3) td{
+}
+/* END Table */
+
