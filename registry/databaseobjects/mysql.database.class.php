@@ -72,7 +72,7 @@ class mysqldatabase {
     	{
     		trigger_error($caption['db_error_connect'] . ' '.$this->connections[$connection_id]->error, E_USER_ERROR);
       }else{
-        $this->connections[$connection_id]->query( "set names cp1250" );
+        $this->connections[$connection_id]->query( "set names utf-8" );
       } 
     	
     	return $connection_id;

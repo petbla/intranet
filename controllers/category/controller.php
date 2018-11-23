@@ -24,7 +24,7 @@ class Categorycontroller{
 		if( $directCall == true )
 		{
 			$urlBits = $this->registry->getURLBits();     
-      $this->filterCategory( $urlBits );
+      #$this->filterCategory( $urlBits );
 
 			if( !isset( $urlBits[1] ) )
 			{		
@@ -508,7 +508,7 @@ class Categorycontroller{
                           v.ID as versionID,cat.ID as category_id, cat.path as category_path, catv.name as category_name, 
                           img.image as category_image,v.metakeywords, v.metadescription, v.metarobots
                     FROM content c, content_types t, content_versions v, content_types_Category p, content as cat, 
-                         content_versions as catv, content_types_Category_in_categories pic, category_images img
+                         content_versions as catv, content_types_Category_in_ pic, category_images img
                     WHERE c.active=1 AND c.secure=0 AND t.ID=c.type AND t.name like 'Produkty' AND c.current_versionID=v.ID 
                           AND p.content_versionID=v.ID AND pic.contentID=c.ID AND cat.ID=pic.category_id 
                           AND catv.ID=cat.current_versionID AND img.ID=p.main_imageID

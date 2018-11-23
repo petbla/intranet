@@ -40,6 +40,7 @@ $registry->getObject('authenticate')->checkForAuthentication();
 // vyplnění objektu stránky ze šablony
 $registry->getObject('template')->buildFromTemplates('header.tpl.php', 'main.tpl.php', 'footer.tpl.php');
 
+
 $registry->getObject('template')->addTemplateBit('categories', 'categorymenu.tpl.php');
 
 // Check Active Controllers
@@ -82,6 +83,17 @@ for ($i=12;$i<=84;$i=$i+12){
 $dateText = $caption['TodayIs'].' ' . $registry->getObject('fce')->Date2FullText();
 $registry->getObject('template')->getPage()->addTag( 'dateText', $dateText );
 
+// Category Menu
+$sql = "SELECT name FROM kategorie";
+$cache = $registry->getObject('db')->cacheQuery( $sql );
+$cacheCategory = $registry->getObject('db')->cacheQuery( $sql );
+
+$registry->getObject('template')->getPage()->addTag( 'categoryList', array( 'SQL', $cache ) );
+
+while ($category = $registry->getObject('db')->resultsFromCache( $cacheCategory ) )
+{
+  $registry->getObject('template')->getPage()->addTag( 'name', $category['name'] );
+}
 
 // vše analyzuj a zobraz výsledek
 $registry->getObject('template')->parseOutput();

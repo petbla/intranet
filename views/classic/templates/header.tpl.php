@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"  lang="cs-CZ">
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
     <link rel="stylesheet" href="views/classic/styles/default.css" type="text/css"> 
     <link rel="stylesheet" href="views/classic/styles/print.css" type="text/css" media="print">
     <title>PETBLA web</title>
@@ -27,7 +27,7 @@
 
   <body>
     <header id="page_header">
-      <a href="www.petbla.cz"><img src="images/logoPB.png" border="0" alt="www.petbla.cz" title="www.petbla.cz"></a>
+      <a href="www.petbla.cz"><img src="images/logo.png" border="0" alt="www.petbla.cz" title="www.petbla.cz"></a>
       <nav>
         <ul>
           <li><a href="#agendy">Agendy</a></li>
@@ -64,15 +64,7 @@
         
         <section id="navigate" nav role="navigation">
           <nav>
-            <ul>
-              <li><a href="">Spotřeba energie</a></li>
-              <li><a href="">Bilance Bijoux-Maja</a></li>
-              <li><a href="">Turictické známky</a></li>
-              <li><a href="">Tutorial C#</a></li>
-              <li><a href="">Tutorial Java</a></li>
-              <li><a href="">Tutorial XHTML,HTML5</a></li>
-              <li class="last"><a href="">Tutorial CSS</a></li>
-            </ul>
+          {categories}
           </nav>
         </section>
         
@@ -83,6 +75,7 @@
           <header>
           </header>
           <p>
+          {dateText}
           <ul>
             <li><a href=''>APošta</a></li>
             <li><a href=''>BAdmin MAILU</a></li>
