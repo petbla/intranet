@@ -73,13 +73,9 @@ class Categorycontroller{
 		global $config, $caption;
 
 		
-    $filtrCategory = '';
-    $sql = "SELECT kat.name
-              FROM katalog AS kat";
-    if ( $categoryId > 0) 
-    {
-       $sql .= " WHERE kat.categoryId={$categoryId} AND kat.close=0";
-    }
+    $sql = "SELECT name
+							FROM katalog AS k
+	            WHERE close = 0 AND k.categoryId={$categoryId}";
 
     // Stránkování
     $cacheFull = $this->registry->getObject('db')->cacheQuery( $sql );
@@ -93,14 +89,21 @@ class Categorycontroller{
     $navigate = $this->registry->getObject('template')->NavigateElement( $pageNo, $pageCount ); 
     $this->registry->getObject('template')->getPage()->addTag( 'navigate_menu', $navigate );
     $sql .= " LIMIT $fromItem," . $config['maxVisibleItem']; 
-    $cachecategory = $this->registry->getObject('db')->cacheQuery( $sql );
     $cache = $this->registry->getObject('db')->cacheQuery( $sql );
-
-		$this->registry->getObject('template')->getPage()->addTag( 'Category', array( 'SQL', $cache ) );
-		$this->registry->getObject('template')->getPage()->addTag( 'category_title', $category_title );
-
-    	
-		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'list-Category.tpl.php', 'footer.tpl.php');
+		
+		$this->registry->getObject('template')->getPage()->addTag( 'CategoryItems', array( 'SQL', $cache ) );
+		$this->registry->getObject('template')->getPage()->addTag( 'pageLink', 'Zápisy z rady a představenstva' );
+		
+    $cacheCategory = $this->registry->getObject('db')->cacheQuery( $sql );
+		if( $this->registry->getObject('db')->numRowsFromCache( cacheCategory ) != 0 )
+		{
+			while ($category = $this->$registry->getObject('db')->resultsFromCache( $cacheCategory ) )
+			{
+				$this->$registry->getObject('template')->getPage()->addTag( 'name', $category['name'] );
+			}
+		}
+		    	
+		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'list-category.tpl.php', 'footer.tpl.php');
 	}	
 	
 	

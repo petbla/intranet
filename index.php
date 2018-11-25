@@ -93,7 +93,7 @@ while ($category = $registry->getObject('db')->resultsFromCache( $cacheCategory 
 {
   $registry->getObject('template')->getPage()->addTag( 'name', $category['name'] );
   $registry->getObject('template')->getPage()->addTag( 'path', $category['path'] );
-  $registry->getObject('template')->getPage()->addTag( 'categoryId', $category['id'] );
+  $registry->getObject('template')->getPage()->addTag( 'id', $category['id'] );
 }
 
 // vše analyzuj a zobraz výsledek
