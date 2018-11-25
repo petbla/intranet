@@ -30,11 +30,8 @@
       <a href="www.petbla.cz"><img src="images/logo.png" border="0" alt="www.petbla.cz" title="www.petbla.cz"></a>
       <nav>
         <ul>
-          <li><a href="#agendy">Agendy</a></li>
-          <li><a href="#tour">Turistika</a></li>
-          <li><a href="#application">Aplikace</a></li>
-          <li><a href="#forms">Formuláře</a></li>
-          <li><a href="#ebooks">eBooks</a></li>
+          <li><a href="#agendy">Agenda</a></li>
+          <li><a href="https://teamup.com/ksx5ivfw8yrnn6gbqy">Kalendář</a></li>
         </ul>
       </nav>
     </header>
@@ -75,7 +72,6 @@
           <header>
           </header>
           <p>
-          {dateText}
           <ul>
             <li><a href=''>APošta</a></li>
             <li><a href=''>BAdmin MAILU</a></li>
@@ -240,7 +236,8 @@
     </div>    
     
     <footer id="page_footer" role="contentinfo">
-      <p>&copy; petbla 2012</p>
+      <p>&copy; petbla 2018</p>
+      {dateText}
     </footer>
       
   </body>

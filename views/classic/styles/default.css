@@ -89,7 +89,7 @@ header#page_header nav ul{
   /* KONEC: Webkit */
   
   list-style: none;
-  margin: -38px 0 0 150px; 
+  margin: -38px 0 0 300px; 
   padding: 5px;
 }
 header#page_header nav img{
@@ -142,7 +142,7 @@ div#envelope{
 section#panel_left{
   margin: 0;
   padding: 0;
-  width: 150px;
+  width: 300px;
   float: left;
 }
 
@@ -150,7 +150,7 @@ section#panel_left{
 section#navigate {
   margin: 0;
   padding: 0;
-  width: 150px;
+  width: 1300x;
 }
 section#navigate ul{
   background-image: -moz-linear-gradient(
@@ -210,7 +210,7 @@ section#navigate a:hover{
 section#login{
   margin: 0;
   padding: 0;
-  width: 150px;
+  width: 300px;
   display: none;
 }
 section#login fieldset{
@@ -256,7 +256,7 @@ section#login input[type="submit"]{
 section#content{
   background: transparent;
   margin-top: 5px;
-  margin-left: 160px; 
+  margin-left: 310px; 
 }
 /* END page CONTENT */
 

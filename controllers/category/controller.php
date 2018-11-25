@@ -32,10 +32,18 @@ class Categorycontroller{
 			}
 			else
 			{
-				switch( $urlBits[1] )
+				if( !isset( $urlBits[2] ) )
+				{		
+					$ID = 0;
+				}
+				else
+				{
+					$ID = $urlBits[2];
+				}
+					switch( $urlBits[1] )
 				{
 					case 'view':
-						$this->listDocuments();
+						$this->listDocuments($ID);
 						break;
 					case 'search':
 						$this->searchCategory();
@@ -63,10 +71,11 @@ class Categorycontroller{
 	private function listDocuments( $categoryId )
 	{
 		global $config, $caption;
+
 		
     $filtrCategory = '';
     $sql = "SELECT kat.name
-              FROM katalog.kat";
+              FROM katalog AS kat";
     if ( $categoryId > 0) 
     {
        $sql .= " WHERE kat.categoryId={$categoryId} AND kat.close=0";
@@ -92,7 +101,6 @@ class Categorycontroller{
 
     	
 		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'list-Category.tpl.php', 'footer.tpl.php');
-		$this->generateFilterOptions();
 	}	
 	
 	

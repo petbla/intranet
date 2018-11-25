@@ -45,11 +45,10 @@ $registry->getObject('template')->addTemplateBit('categories', 'categorymenu.tpl
 
 // Check Active Controllers
 $activeControllers = array();
-$activeControllers[] = 'page';
 $activeControllers[] = 'document';
 $activeControllers[] = 'category';
 $activeControllers[] = 'contact';
-$currentController = $registry->getURLBit( 0 );  // controller = page,document,category,contact
+$currentController = $registry->getURLBit( 0 );  // controller = document,category,contact
 
 if( in_array( $currentController, $activeControllers ) )
 {
@@ -61,8 +60,8 @@ if( in_array( $currentController, $activeControllers ) )
 }
 else
 {
-	require_once( FRAMEWORK_PATH . 'controllers/page/controller.php');
-	$controller = new Pagecontroller( $registry, true );
+	require_once( FRAMEWORK_PATH . 'controllers/category/controller.php');
+	$controller = new Categorycontroller( $registry, true );
 }
 
 /*
@@ -84,7 +83,7 @@ $dateText = $caption['TodayIs'].' ' . $registry->getObject('fce')->Date2FullText
 $registry->getObject('template')->getPage()->addTag( 'dateText', $dateText );
 
 // Category Menu
-$sql = "SELECT name FROM kategorie";
+$sql = "SELECT id,name,level,parent,path FROM kategorie WHERE `level` = 0";
 $cache = $registry->getObject('db')->cacheQuery( $sql );
 $cacheCategory = $registry->getObject('db')->cacheQuery( $sql );
 
@@ -93,6 +92,8 @@ $registry->getObject('template')->getPage()->addTag( 'categoryList', array( 'SQL
 while ($category = $registry->getObject('db')->resultsFromCache( $cacheCategory ) )
 {
   $registry->getObject('template')->getPage()->addTag( 'name', $category['name'] );
+  $registry->getObject('template')->getPage()->addTag( 'path', $category['path'] );
+  $registry->getObject('template')->getPage()->addTag( 'categoryId', $category['id'] );
 }
 
 // vše analyzuj a zobraz výsledek

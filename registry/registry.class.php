@@ -135,6 +135,7 @@ class Registry {
 		   1 - action       (view,edit,print,send)
 		   2 - id           (<integer>)
 		   ..index.php?page=document/view/10
+		   index.php?page=document/view/10
 		   ..index.php?page=category/view/4
 		   ..index.php?page=contact
 	    */
