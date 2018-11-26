@@ -46,9 +46,10 @@ $registry->getObject('template')->addTemplateBit('categories', 'categorymenu.tpl
 // Check Active Controllers
 $activeControllers = array();
 $activeControllers[] = 'document';
-$activeControllers[] = 'category';
+$activeControllers[] = 'news';
+$activeControllers[] = 'archive';
 $activeControllers[] = 'contact';
-$currentController = $registry->getURLBit( 0 );  // controller = document,category,contact
+$currentController = $registry->getURLBit( 0 );  // controller
 
 if( in_array( $currentController, $activeControllers ) )
 {
@@ -60,8 +61,8 @@ if( in_array( $currentController, $activeControllers ) )
 }
 else
 {
-	require_once( FRAMEWORK_PATH . 'controllers/category/controller.php');
-	$controller = new Categorycontroller( $registry, true );
+	require_once( FRAMEWORK_PATH . 'controllers/document/controller.php');
+	$controller = new Documentcontroller( $registry, true );
 }
 
 /*
@@ -83,18 +84,7 @@ $dateText = $caption['TodayIs'].' ' . $registry->getObject('fce')->Date2FullText
 $registry->getObject('template')->getPage()->addTag( 'dateText', $dateText );
 
 // Category Menu
-$sql = "SELECT id,name,level,parent,path FROM kategorie WHERE `level` = 0";
-$cache = $registry->getObject('db')->cacheQuery( $sql );
-$cacheCategory = $registry->getObject('db')->cacheQuery( $sql );
-
-$registry->getObject('template')->getPage()->addTag( 'categoryList', array( 'SQL', $cache ) );
-
-while ($category = $registry->getObject('db')->resultsFromCache( $cacheCategory ) )
-{
-  $registry->getObject('template')->getPage()->addTag( 'name', $category['name'] );
-  $registry->getObject('template')->getPage()->addTag( 'path', $category['path'] );
-  $registry->getObject('template')->getPage()->addTag( 'id', $category['id'] );
-}
+$registry->getObject('document')->createCategoryMenu();
 
 // vše analyzuj a zobraz výsledek
 $registry->getObject('template')->parseOutput();
