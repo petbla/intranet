@@ -47,6 +47,7 @@ $registry->storeObject('db', 'mysql.database');
 $registry->storeObject('template', 'template');
 $registry->storeObject('authenticate', 'authentication');
 $registry->storeObject('fce', 'usefulfunction');
+$registry->storeObject('document', 'document');
 
 /**
  *  PEAR modul and set library

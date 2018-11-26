@@ -3,9 +3,9 @@
  * 
  * @author  Petr Blažek
  * @version 1.0
- * @date    18.11.2018
+ * @date    26.11.2018
  */
-class Categorycontroller{
+class Newscontroller{
 	
 	private $registry;
 	private $model;
@@ -24,134 +24,93 @@ class Categorycontroller{
 		if( $directCall == true )
 		{
 			$urlBits = $this->registry->getURLBits();     
-      #$this->filterCategory( $urlBits );
 
 			if( !isset( $urlBits[1] ) )
 			{		
-        $this->categoryNotFound();
+        $this->listDocuments('');
 			}
 			else
 			{
 				if( !isset( $urlBits[2] ) )
 				{		
-					$ID = 0;
+					$ID = '';
 				}
 				else
 				{
 					$ID = $urlBits[2];
 				}
 					switch( $urlBits[1] )
-				{
-					case 'view':
+				{				
+					case 'list':
 						$this->listDocuments($ID);
-						break;
-					case 'search':
-						$this->searchCategory();
-						break;
-					case 'setfilter':
-						$this->setFilterCategory();
 						break;
 					default:				
 						$this->listDocuments('');
 						break;		
 				}
 			}
-  		$this->registry->getObject('template')->getPage()->addTag( 'actionSearch', 'Document/search');
 		}
 	}
 	
-	/**
-	 * @return void
-	 */
-	private function categoryNotFound()
-	{
-		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'invalid-category.tpl.php', 'footer.tpl.php');
-	}
 	
-	private function listDocuments( $categoryId )
+	private function listDocuments( $ID )
 	{
 		global $config, $caption;
 
-		
-    $sql = "SELECT name
-							FROM katalog AS k
-	            WHERE close = 0 AND k.categoryId={$categoryId}";
+    $sql = "SELECT title,type
+							FROM DmsEntry AS d
+							WHERE NewEntry = 1 
+							ORDER BY Level,Parent,Type,LineNo";
 
-    // Stránkování
-    $cacheFull = $this->registry->getObject('db')->cacheQuery( $sql );
-    $records = $this->registry->getObject('db')->numRowsFromCache( $cacheFull );
-    $pageCount = (int) ($records / $config['maxVisibleItem']);
-    $pageCount = ($records > $pageCount * $config['maxVisibleItem']) ? $pageCount + 1 : $pageCount;  
-    $pageNo = ( isset($_GET['p'])) ? $_GET['p'] : 1;
-    $pageNo = ($pageNo > $pageCount) ? $pageCount : $pageNo;
-    $pageNo = ($pageNo < 1) ? 1 : $pageNo;
-    $fromItem = (($pageNo - 1) * $config['maxVisibleItem']);    
-    $navigate = $this->registry->getObject('template')->NavigateElement( $pageNo, $pageCount ); 
-    $this->registry->getObject('template')->getPage()->addTag( 'navigate_menu', $navigate );
-    $sql .= " LIMIT $fromItem," . $config['maxVisibleItem']; 
-    $cache = $this->registry->getObject('db')->cacheQuery( $sql );
-		
-		$this->registry->getObject('template')->getPage()->addTag( 'CategoryItems', array( 'SQL', $cache ) );
-		$this->registry->getObject('template')->getPage()->addTag( 'pageLink', 'Zápisy z rady a představenstva' );
-		
-    $cacheCategory = $this->registry->getObject('db')->cacheQuery( $sql );
-		if( $this->registry->getObject('db')->numRowsFromCache( cacheCategory ) != 0 )
-		{
-			while ($category = $this->$registry->getObject('db')->resultsFromCache( $cacheCategory ) )
-			{
-				$this->$registry->getObject('template')->getPage()->addTag( 'name', $category['name'] );
-			}
-		}
-		    	
-		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'list-category.tpl.php', 'footer.tpl.php');
+		$this->registry->getObject('document')->listDocuments($sql,'Nově přidané dokumenty');
 	}	
 	
 	
-  private function searchCategory()
+  private function searchdocument()
 	{
 		global $caption, $config;
 		
     // kontrola jestli uživatel odeslal vyhledávací formulář 
-		$searchcategory = null;
+		$searchdocument = null;
     if( isset( $_POST['search_text'] ) && $_POST['search_text'] != '' )
 		{
-		  $searchcategory = $_POST['search_text']; 
+		  $searchdocument = $_POST['search_text']; 
       $expire=time()+60*60*1;
-      setCookie( 'category_search_text', $searchcategory, $expire );
+      setCookie( 'document_search_text', $searchdocument, $expire );
     }else{
-      if (isset($_COOKIE["category_search_text"]))
-        $searchcategory = $_COOKIE["category_search_text"];
+      if (isset($_COOKIE["document_search_text"]))
+        $searchdocument = $_COOKIE["document_search_text"];
     }
     	
-    if ( isset( $searchcategory ))
+    if ( isset( $searchdocument ))
     {  
       // vyčistění hledané fráze 
-			$searchPhrase = $this->registry->getObject('db')->sanitizeData( $searchcategory );
-			$this->registry->getObject('template')->getPage()->addTag( 'filter_reference', $caption['filter'].': '.$searchcategory );
+			$searchPhrase = $this->registry->getObject('db')->sanitizeData( $searchdocument );
+			$this->registry->getObject('template')->getPage()->addTag( 'filter_reference', $caption['filter'].': '.$searchdocument );
       
 			// vyhledání, uložení výsledků do mezipaměti, tak aby byly připravené pro šablonu výsledků vyhledávání
 			
-			$sql = "SELECT prod.contentID,prod.category_path,prod.category_name,prod.description,
-              prod.category_price,prod.code,prod.stock,prod.reserve,prod.category_id,
-              prod.category_path,prod.category_name,prod.category_image,IF(basketQty is NULL,0,basketQty) as basketQty,
-              IF(basketQty >= stock,'reserve',prod.category_status) as category_status,
-              IF(category_name LIKE '%{$searchPhrase}%', 0, 1) as priorityb, 
+			$sql = "SELECT prod.contentID,prod.document_path,prod.document_name,prod.description,
+              prod.document_price,prod.code,prod.stock,prod.reserve,prod.document_id,
+              prod.document_path,prod.document_name,prod.document_image,IF(basketQty is NULL,0,basketQty) as basketQty,
+              IF(basketQty >= stock,'reserve',prod.document_status) as document_status,
+              IF(document_name LIKE '%{$searchPhrase}%', 0, 1) as priorityb, 
               IF(description LIKE '%{$searchPhrase}%', 0, 1) as priorityc, 
               IF(code LIKE '%{$searchPhrase}%', 0, 1) as priority, 
               prod.metakeywords,prod.metadescription,prod.metarobots
-        FROM (SELECT c.ID as contentID,c. path as category_path, v.name as category_name, v.heading as description,
-                      p.price as category_price, p.code, p.stock, p.reserve, p.status  as category_status,
-                      cat.ID as category_id, cat.path as category_path, catv.name as category_name, 
-                      img.image as category_image,v.metakeywords, v.metadescription, v.metarobots
-                FROM content c, content_types t, content_versions v, content_types_Category p, content as cat, 
-                     content_versions as catv, content_types_Category_in_categories pic, category_images img
+        FROM (SELECT c.ID as contentID,c. path as document_path, v.name as document_name, v.heading as description,
+                      p.price as document_price, p.code, p.stock, p.reserve, p.status  as document_status,
+                      cat.ID as document_id, cat.path as document_path, catv.name as document_name, 
+                      img.image as document_image,v.metakeywords, v.metadescription, v.metarobots
+                FROM content c, content_types t, content_versions v, content_types_document p, content as cat, 
+                     content_versions as catv, content_types_document_in_categories pic, document_images img
                 WHERE c.active=1 AND c.secure=0 AND t.ID=c.type AND t.name like 'Produkty' AND c.current_versionID=v.ID 
-                      AND p.content_versionID=v.ID AND pic.contentID=c.ID AND cat.ID=pic.category_id 
+                      AND p.content_versionID=v.ID AND pic.contentID=c.ID AND cat.ID=pic.document_id 
                       AND catv.ID=cat.current_versionID AND img.ID=p.main_imageID AND p.status = 'stock'
                 ORDER BY c.ID DESC) prod
         LEFT JOIN (SELECT contentID,sum(quantity) basketQty FROM basket_contents GROUP BY contentID) bas
           ON (bas.contentID = prod.contentID)
-        WHERE ( category_name LIKE '%{$searchPhrase}%' OR description LIKE '%{$searchPhrase}%' 
+        WHERE ( document_name LIKE '%{$searchPhrase}%' OR description LIKE '%{$searchPhrase}%' 
           OR code LIKE '%{$searchPhrase}%')
         ORDER BY priority, priorityb, priorityc ";
       
@@ -160,51 +119,51 @@ class Categorycontroller{
       $cache = $this->registry->getObject('db')->cacheQuery( $sql );
 			if( $this->registry->getObject('db')->numRowsFromCache( $cache ) == 0 )
 			{
-				$this->listcategory( '' );			
+				$this->listdocument( '' );			
 			}
 			else
 			{
-				$this->listcategory( '' );			
+				$this->listdocument( '' );			
 			}
 		}
 		else
 		{
 			// uživatel neodeslal vyhledávací formulář, zobrazí se tedy pouze stránka s vyhledávacím polem 			
-      $this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'Category-searchform.tpl.php', 'footer.tpl.php');
+      $this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'document-searchform.tpl.php', 'footer.tpl.php');
 		}
 	}
 	
-	private function relatedCategory( $contentID )
+	private function relateddocument( $contentID )
 	{
-    $sql = "SELECT c.ID as contentID, v.name as category_name, c.path as category_path, img.image as category_image 
-              FROM content c, content_versions v, category_sets ps, category_images as img,
-                   content_types_Category p                                 
+    $sql = "SELECT c.ID as contentID, v.name as document_name, c.path as document_path, img.image as document_image 
+              FROM content c, content_versions v, document_sets ps, document_images as img,
+                   content_types_document p                                 
               WHERE v.ID=c.current_versionID AND c.ID=ps.contentID AND c.ID<>{$contentID} 
-                AND ps.setID=(SELECT setID FROM `category_sets` WHERE contentID={$contentID})
+                AND ps.setID=(SELECT setID FROM `document_sets` WHERE contentID={$contentID})
                 AND p.content_versionID=v.ID AND img.ID=p.main_imageID ";
-		$relatedCategoryCache = $this->registry->getObject('db')->cacheQuery( $sql );
-    $rows = $this->registry->getObject('db')->numRowsFromCache( $relatedCategoryCache );
+		$relateddocumentCache = $this->registry->getObject('db')->cacheQuery( $sql );
+    $rows = $this->registry->getObject('db')->numRowsFromCache( $relateddocumentCache );
     if ($rows > 0){ 
-  		$this->registry->getObject('template')->addTemplateBit( 'relatedCategory_bit', 'category-related-img.tpl.php' );
-		  $this->registry->getObject('template')->getPage()->addTag('relatedCategory', array( 'SQL', $relatedCategoryCache ) );
+  		$this->registry->getObject('template')->addTemplateBit( 'relateddocument_bit', 'document-related-img.tpl.php' );
+		  $this->registry->getObject('template')->getPage()->addTag('relateddocument', array( 'SQL', $relateddocumentCache ) );
 		}else
-		  $this->registry->getObject('template')->getPage()->addTag('relatedCategory_bit', '' );
+		  $this->registry->getObject('template')->getPage()->addTag('relateddocument_bit', '' );
 	}
 
-	private function detailedCategory( $contentID )
+	private function detaileddocument( $contentID )
 	{
-		$sql = "SELECT c.path as category_path,img.image as category_image, img.description as description 
-              FROM category_images img, content c
+		$sql = "SELECT c.path as document_path,img.image as document_image, img.description as description 
+              FROM document_images img, content c
               WHERE img.contentID = $contentID AND c.ID=img.contentID
               ORDER BY img.position";
 
-    $detailedCategoryCache = $this->registry->getObject('db')->cacheQuery( $sql );
-    $rows = $this->registry->getObject('db')->numRowsFromCache( $detailedCategoryCache );
+    $detaileddocumentCache = $this->registry->getObject('db')->cacheQuery( $sql );
+    $rows = $this->registry->getObject('db')->numRowsFromCache( $detaileddocumentCache );
     if ($rows > 1){ 
-  		$this->registry->getObject('template')->addTemplateBit( 'detailedCategory_bit', 'category-detail-img.tpl.php' );
-      $this->registry->getObject('template')->getPage()->addTag('detailedCategory', array( 'SQL', $detailedCategoryCache ) );
+  		$this->registry->getObject('template')->addTemplateBit( 'detaileddocument_bit', 'document-detail-img.tpl.php' );
+      $this->registry->getObject('template')->getPage()->addTag('detaileddocument', array( 'SQL', $detaileddocumentCache ) );
     }else
-      $this->registry->getObject('template')->getPage()->addTag('detailedCategory_bit', '' );
+      $this->registry->getObject('template')->getPage()->addTag('detaileddocument_bit', '' );
 	}
 	
 	private function generateFilterOptions()
@@ -212,7 +171,7 @@ class Categorycontroller{
 		global $deb;
     
     // 1. Dotaz na typy atributů 
-		$sql = "SELECT ID, reference, name FROM category_filter_attribute_types";
+		$sql = "SELECT ID, reference, name FROM document_filter_attribute_types";
 		$this->registry->getObject('db')->executeQuery( $sql );
 		if( $this->registry->getObject('db')->numRows() != 0 )
 		{
@@ -233,7 +192,7 @@ class Categorycontroller{
 			
 			// 4. Dotaz na všechny typy atributů, seřazené podle jejich vlastního řazení 
 			$sql = "SELECT v.name as attrName, t.reference as attrType, v.ID as attrID 
-                FROM category_filter_attribute_values v, category_filter_attribute_types t 
+                FROM document_filter_attribute_values v, document_filter_attribute_types t 
                 WHERE t.ID=v.attributeType 
                 ORDER BY v.order ASC";
 			$this->registry->getObject('db')->executeQuery( $sql );
@@ -244,7 +203,7 @@ class Categorycontroller{
 				{
 					$data = array();
 					$data['attribute_value'] = $attributeValueData['attrName'];
-					$data['attribute_URL_extra'] = 'Category/filter/' . $attributeValueData['attrType'] . '/' . $attributeValueData['attrID'];
+					$data['attribute_URL_extra'] = 'document/filter/' . $attributeValueData['attrType'] . '/' . $attributeValueData['attrID'];
 					$attributeValues[ $attributeValueData['attrType'] ][] = $data;
 				}
 			}
@@ -258,7 +217,7 @@ class Categorycontroller{
 
 			
 		// Rozšířený filtr
-		$sql = "SELECT ID, name, description FROM category_attributes";
+		$sql = "SELECT ID, name, description FROM document_attributes";
 		$this->registry->getObject('db')->executeQuery( $sql );
 		if( $this->registry->getObject('db')->numRows() != 0 ){
       $this->registry->getObject('template')->addTemplateBit('extendedfilter', 'extendedfilter.tpl.php');  		  
@@ -276,7 +235,7 @@ class Categorycontroller{
 			$this->registry->getObject('template')->getPage()->addTag( 'extfilter_attribute', array( 'DATA', $attributesCache ) );
 			
 			// Dotaz na všechny typy atributů, seřazené podle jejich vlastního řazení 
-			$sql = "SELECT * FROM category_attribute_values ORDER BY 'order',name ASC";
+			$sql = "SELECT * FROM document_attribute_values ORDER BY 'order',name ASC";
 			$this->registry->getObject('db')->executeQuery( $sql );
 			
       if( $this->registry->getObject('db')->numRows() != 0 )
@@ -303,9 +262,9 @@ class Categorycontroller{
           $attrID = $data['extattribute_parentId'];
           $attrValueID = $data['extattribute_id'];
     			
-          $sql = "SELECT  a.category_ID as attr_category_ID,a.attribute_value_id, p.status,p.code
-                  FROM category_attribute_value_association AS a 
-                  LEFT JOIN (SELECT ID,code,status FROM content_types_Category) p ON (p.ID = a.category_ID)
+          $sql = "SELECT  a.document_ID as attr_document_ID,a.attribute_value_id, p.status,p.code
+                  FROM document_attribute_value_association AS a 
+                  LEFT JOIN (SELECT ID,code,status FROM content_types_document) p ON (p.ID = a.document_ID)
                   WHERE a.attribute_id = $attrID AND a.attribute_value_id = $attrValueID AND p.status = 'stock'";
           
           $this->registry->getObject('db')->executeQuery( $sql );
@@ -335,20 +294,20 @@ class Categorycontroller{
 	 * @param array $bits bity obsažené v adrese URL
 	 * @return void
 	 */
-	private function filterCategory( $bits )
+	private function filterdocument( $bits )
 	{
 		// určení typů atributů 
-		$sql = "SELECT ID, reference, name, categoryContainedAttribute 
-              FROM  category_filter_attribute_types ";
+		$sql = "SELECT ID, reference, name, documentContainedAttribute 
+              FROM  document_filter_attribute_types ";
 		$this->registry->getObject('db')->executeQuery( $sql );
 		while( $type = $this->registry->getObject('db')->getRows() )
 		{
 			$this->filterTypes[ $type['reference'] ] = array( 'ID' => $type['ID'], 'reference'=>$type['reference'], 
-          'name' => $type['name'], 'categoryContainedAttribute'=>$type['categoryContainedAttribute'] );
+          'name' => $type['name'], 'documentContainedAttribute'=>$type['documentContainedAttribute'] );
 		}
 		
 		// určení hodnot atributů
-		$sql = "SELECT ID, name, lowerValue, upperValue FROM category_filter_attribute_values";
+		$sql = "SELECT ID, name, lowerValue, upperValue FROM document_filter_attribute_values";
 		$this->registry->getObject('db')->executeQuery( $sql );
 		while( $value = $this->registry->getObject('db')->getRows() )
 		{
@@ -370,19 +329,19 @@ class Categorycontroller{
 		$somethingToFilter = false;
 		
     // základní dotaz na databázi
-		$sql = "SELECT prod.contentID,prod.category_path,prod.category_name,prod.description,
-            prod.category_price,prod.code,prod.stock,prod.reserve,prod.category_id,
-            prod.category_path,prod.category_name,prod.category_image,IF(basketQty is NULL,0,basketQty) as basketQty,
-            IF(basketQty >= stock,'reserve',prod.category_status) as category_status,
+		$sql = "SELECT prod.contentID,prod.document_path,prod.document_name,prod.description,
+            prod.document_price,prod.code,prod.stock,prod.reserve,prod.document_id,
+            prod.document_path,prod.document_name,prod.document_image,IF(basketQty is NULL,0,basketQty) as basketQty,
+            IF(basketQty >= stock,'reserve',prod.document_status) as document_status,
             prod.metakeywords,prod.metadescription,prod.metarobots
-      FROM (SELECT c.ID as contentID,c. path as category_path, v.name as category_name, v.heading as description,
-                    p.price as category_price, p.code, p.stock, p.reserve, p.status  as category_status,
-                    cat.ID as category_id, cat.path as category_path, catv.name as category_name, 
-                    img.image as category_image,v.metakeywords, v.metadescription, v.metarobots
-              FROM content c, content_types t, content_versions v, content_types_Category p, content as cat, 
-                   content_versions as catv, content_types_Category_in_categories pic, category_images img
+      FROM (SELECT c.ID as contentID,c. path as document_path, v.name as document_name, v.heading as description,
+                    p.price as document_price, p.code, p.stock, p.reserve, p.status  as document_status,
+                    cat.ID as document_id, cat.path as document_path, catv.name as document_name, 
+                    img.image as document_image,v.metakeywords, v.metadescription, v.metarobots
+              FROM content c, content_types t, content_versions v, content_types_document p, content as cat, 
+                   content_versions as catv, content_types_document_in_categories pic, document_images img
               WHERE c.active=1 AND c.secure=0 AND t.ID=c.type AND t.name like 'Produkty' AND c.current_versionID=v.ID 
-                    AND p.content_versionID=v.ID AND pic.contentID=c.ID AND cat.ID=pic.category_id 
+                    AND p.content_versionID=v.ID AND pic.contentID=c.ID AND cat.ID=pic.document_id 
                     AND catv.ID=cat.current_versionID AND img.ID=p.main_imageID
               ORDER BY c.ID DESC) prod
       LEFT JOIN (SELECT contentID,sum(quantity) basketQty FROM basket_contents GROUP BY contentID) bas
@@ -395,10 +354,10 @@ class Categorycontroller{
 			// bude se filtrovat 
 			$somethingToFilter = true;
 			// sestavení dotazu
-			$filtr = " WHERE ( SELECT COUNT( * ) FROM category_filter_attribute_associations pfaa WHERE ( ";
+			$filtr = " WHERE ( SELECT COUNT( * ) FROM document_filter_attribute_associations pfaa WHERE ( ";
 			$assocs = implode( " AND ", $this->filterAssociations );
 			$filtr .= $assocs;
-			$filtr .= " )AND pfaa.category = prod.contentID )={$this->filterCount}";
+			$filtr .= " )AND pfaa.document = prod.contentID )={$this->filterCount}";
 		}
 		if( !empty( $this->filterDirect ) )
 		{
@@ -434,7 +393,7 @@ class Categorycontroller{
 	{
 		global $caption, $deb;
 		
-    if( $this->filterTypes[ $filterType ]['categoryContainedAttribute'] == 1 )
+    if( $this->filterTypes[ $filterType ]['documentContainedAttribute'] == 1 )
 		{
 			$lower = $this->filterValues[ $filterValue ]['lowerValue'];
 			$upper = $this->filterValues[ $filterValue ]['upperValue'];
@@ -452,7 +411,7 @@ class Categorycontroller{
 		}
 	}
 
-  private function setFilterCategory()
+  private function setFilterdocument()
 	{
 		global $caption, $config, $deb;
 		
@@ -470,18 +429,18 @@ class Categorycontroller{
 
     if( !isset( $searchPhrase ) )
 		{
-      if (isset($_COOKIE["category_searchPhrase"]))
-        $searchPhrase = $_COOKIE["category_searchPhrase"];
+      if (isset($_COOKIE["document_searchPhrase"]))
+        $searchPhrase = $_COOKIE["document_searchPhrase"];
     }else{
       $expire=time()+60*60*1;
-      setCookie( 'category_searchPhrase', $searchPhrase, $expire );
+      setCookie( 'document_searchPhrase', $searchPhrase, $expire );
     }
     
     if ( isset( $searchPhrase ))
     {  
       $searchPhraseText = '';
       $sql = "SELECT v.ID, v.attribute_id, v.name as value, a.description as name 
-                FROM  category_attribute_values v, category_attributes a  
+                FROM  document_attribute_values v, document_attributes a  
                 WHERE a.ID=v.attribute_id AND v.ID IN ($searchPhrase) 
                 ORDER BY v.attribute_id";
       $this->registry->getObject('db')->executeQuery( $sql );
@@ -503,30 +462,30 @@ class Categorycontroller{
       $this->registry->getObject('template')->getPage()->addTag( 'filter_reference', 'Filtr: '.$searchPhraseText );
 		
 			$sql = "
-        SELECT DISTINCT a.category_ID as attr_category_ID,a.attribute_value_id,
-                b.contentID,b.category_path,b.category_name,b.description,b.versionID,b.category_ID,b.category_price,
-                b.code,b.stock,b.reserve,b.category_id,b.category_path,b.category_name,b.category_image,b.basketQty,
-                b.category_status,b.metakeywords,b.metadescription,b.metarobots         
-          FROM category_attribute_value_association a 
+        SELECT DISTINCT a.document_ID as attr_document_ID,a.attribute_value_id,
+                b.contentID,b.document_path,b.document_name,b.description,b.versionID,b.document_ID,b.document_price,
+                b.code,b.stock,b.reserve,b.document_id,b.document_path,b.document_name,b.document_image,b.basketQty,
+                b.document_status,b.metakeywords,b.metadescription,b.metarobots         
+          FROM document_attribute_value_association a 
   			  LEFT JOIN (
-            SELECT prod.contentID,prod.category_path,prod.category_name,prod.description,prod.versionID,
-                  prod.category_ID,prod.category_price,prod.code,prod.stock,prod.reserve,prod.category_id,
-                  prod.category_path,prod.category_name,prod.category_image,IF(basketQty is NULL,0,basketQty) as basketQty,
-                  IF(basketQty >= stock,'reserve',prod.category_status) as category_status,
+            SELECT prod.contentID,prod.document_path,prod.document_name,prod.description,prod.versionID,
+                  prod.document_ID,prod.document_price,prod.code,prod.stock,prod.reserve,prod.document_id,
+                  prod.document_path,prod.document_name,prod.document_image,IF(basketQty is NULL,0,basketQty) as basketQty,
+                  IF(basketQty >= stock,'reserve',prod.document_status) as document_status,
                   prod.metakeywords,prod.metadescription,prod.metarobots
-            FROM (SELECT c.ID as contentID,c. path as category_path, v.name as category_name, v.heading as description,
-                          p.ID as category_ID,p.price as category_price, p.code, p.stock, p.reserve, p.status  as category_status,
-                          v.ID as versionID,cat.ID as category_id, cat.path as category_path, catv.name as category_name, 
-                          img.image as category_image,v.metakeywords, v.metadescription, v.metarobots
-                    FROM content c, content_types t, content_versions v, content_types_Category p, content as cat, 
-                         content_versions as catv, content_types_Category_in_ pic, category_images img
+            FROM (SELECT c.ID as contentID,c. path as document_path, v.name as document_name, v.heading as description,
+                          p.ID as document_ID,p.price as document_price, p.code, p.stock, p.reserve, p.status  as document_status,
+                          v.ID as versionID,cat.ID as document_id, cat.path as document_path, catv.name as document_name, 
+                          img.image as document_image,v.metakeywords, v.metadescription, v.metarobots
+                    FROM content c, content_types t, content_versions v, content_types_document p, content as cat, 
+                         content_versions as catv, content_types_document_in_ pic, document_images img
                     WHERE c.active=1 AND c.secure=0 AND t.ID=c.type AND t.name like 'Produkty' AND c.current_versionID=v.ID 
-                          AND p.content_versionID=v.ID AND pic.contentID=c.ID AND cat.ID=pic.category_id 
+                          AND p.content_versionID=v.ID AND pic.contentID=c.ID AND cat.ID=pic.document_id 
                           AND catv.ID=cat.current_versionID AND img.ID=p.main_imageID
                     ORDER BY c.ID DESC) prod
             LEFT JOIN (SELECT contentID,sum(quantity) basketQty FROM basket_contents GROUP BY contentID) bas
               ON (bas.contentID = prod.contentID)) b
-            ON (a.category_ID=b.category_ID)
+            ON (a.document_ID=b.document_ID)
           WHERE a.attribute_value_id IN ($searchPhrase) AND stock > 0";
       
       $this->filterSQL = $sql;
@@ -541,13 +500,13 @@ class Categorycontroller{
       }
 			else
 			{
-				$this->listcategory( '' );			
+				$this->listdocument( '' );			
 			}
 		}
 		else
 		{
 			// uživatel neodeslal vyhledávací formulář, zobrazí se tedy pouze stránka s vyhledávacím polem 			
-      $this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'Category-searchform.tpl.php', 'footer.tpl.php');
+      $this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'document-searchform.tpl.php', 'footer.tpl.php');
 		}
 	}
 }

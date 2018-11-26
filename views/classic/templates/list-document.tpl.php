@@ -3,11 +3,11 @@
 </div>
 
 <h3>{pageLink}</h3>
-<div id="CategoryItems">
+<div id="DocumentItems">
   <ul>
-	  <!-- START CategoryItems -->
-    <li class="item"><a href="">{name}</a></li>
-  	<!-- END CategoryItems -->
+	  <!-- START DocumentItems -->
+    <li class="item">{icon}<a href="">{title}</a></li>
+  	<!-- END DocumentItems -->
   </ul>
 </div>
 

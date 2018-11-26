@@ -131,15 +131,18 @@ class Registry {
 	public function getURLData()
 	{
 		/* 
-		   0 - controller   (document,category,contact)
-		   1 - action       (view,edit,print,send)
-		   2 - id           (<integer>)
-		   ..index.php?page=document/view/10
-		   index.php?page=document/view/10
-		   ..index.php?page=category/view/4
+		   0 - controller   (document,archiv,news,contact)
+		   1 - action       (list,view,edit,print,send)
+		   2 - id           (<GUID>)
+		   ..index.php?page=document/view/<GUID>
+		   ..index.php?page=document/list
+		   ..index.php?page=document/list/<GUID>
+		   ..index.php?page=document/edit/4
 		   ..index.php?page=contact
 	    */
 		
+		$guid = self::getObject('fce')->GUID();
+
 		$urldata = (isset($_REQUEST['page'])) ? $_REQUEST['page'] : '' ;
 		
 		$data = explode( '?', $_SERVER["REQUEST_URI"] );
@@ -150,8 +153,8 @@ class Registry {
      
 		if( $urldata == '' )
 		{
-			self::$urlBits[] = 'category';
-			self::$urlPath = 'category';
+			self::$urlBits[] = 'document';
+			self::$urlPath = 'document';
 		}
 		else
 		{

@@ -30,7 +30,10 @@
       <a href="www.petbla.cz"><img src="images/logo.png" border="0" alt="www.petbla.cz" title="www.petbla.cz"></a>
       <nav>
         <ul>
-          <li><a href="#agendy">Agenda</a></li>
+          <li><a href="index.php?page=document/list">Dokumenty</a></li>
+          <li><a href="index.php?page=news/list">Novinky</a></li>
+          <li><a href="index.php?page=archive/list">Archvív</a></li>
+          <li><a href="index.php?page=contact/list">Kontakty</a></li>
           <li><a href="https://teamup.com/ksx5ivfw8yrnn6gbqy">Kalendář</a></li>
         </ul>
       </nav>
