@@ -60,6 +60,7 @@ $caption['TodayIs'] =        'Dnes je';
 $caption['logout'] =         'Odhlásit se';
 $caption['LogoutNow'] =      'Odhlášení';
 $caption['LogoutNowMsg'] =   'Odhlášení bylo provedeno úspěšně.';
+$caption['DmsLabel'] =       'Sptáva dokumentů';
 
 /**
  * Column's Titel

@@ -52,22 +52,27 @@ input{
 header#page_header{
   width:100%;
   background-color: #eeeeee ;
+  height: 180px;
 }
 /* Login info bar */
 header#page_header p{
   position: absolute;
-  top: 20px;
+  top: 40px;
   right: 7%;
   font-size: 14px;   
+  color: #337AB7;
 }
-header#page_header p>b{
-  font-size: 12px;
-  font-weight: bold;
-  color: #00f;                     
+header#page_header h1{
+  padding-top: 40px;
+  color: #337AB7;
+}
+header#page_header h2{
+  color: #337AB7;
 }
 
 /* BAR menu */
 header#page_header nav{
+  margin-top: 45px;
   background-color: #dadada;
 }
 
@@ -79,6 +84,7 @@ header#page_header nav ul{
 header#page_header img{
   padding: 10px;
   margin: 15px;
+  float: left;
 }
 
 #page_header nav ul li, footer#page_footer nav ul li{

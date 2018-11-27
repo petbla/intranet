@@ -29,6 +29,8 @@
     <header id="page_header">
       <p>{dateText}</p>
       <img src="views/classic/images/logo.png" border="0" alt="" title="Obec Mistřice">
+      <h1>{cfg_compName}</h1>
+      <h2>{lbl_DmsLabel}</h2>
       <nav>
         <ul>
           <li><a href="index.php?page=document/list">Dokumenty</a></li>
