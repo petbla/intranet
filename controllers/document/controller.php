@@ -75,18 +75,22 @@ class Documentcontroller{
 
 		// Find level
 		$level = 0;
+		$entryNo = 0;
 		if ($ID != '')
 		{
-			$sql = "SELECT level FROM DmsEntry WHERE ID = '{$ID}'";
+			$sql = "SELECT EntryNo,level FROM DmsEntry WHERE ID = '{$ID}'";
 			$this->registry->getObject('db')->executeQuery( $sql );			
 			if( $this->registry->getObject('db')->numRows() != 0 )
 			{
 				$dmsEntry = $this->registry->getObject('db')->getRows();
 				$level = $dmsEntry['level'];
+				$entryNo = $dmsEntry['EntryNo'];
 			}
 		}
+		$this->registry->setLevel($level);
+		$this->registry->setEntryNo($entryNo);
 
-    $sql = "SELECT title, type
+    	$sql = "SELECT title, type
 							FROM DmsEntry AS d
 							WHERE d.Archived = 0 AND 
 										d.level={$level}";

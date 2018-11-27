@@ -66,18 +66,14 @@ class document {
 
     public function createCategoryMenu()
     {
-        $sql = "SELECT id,title as catTitle,name,path FROM dmsentry WHERE `level` = 0";
+        $entryNo = $this->registry->getEntryNo();
+
+        $sql = "SELECT id as idCat,title as titleCat ,name,path as pathCat,
+                       IF(EntryNo = $entryNo,'active','') as activeCat FROM dmsentry WHERE `level` = 0";
         $cache = $this->registry->getObject('db')->cacheQuery( $sql );
         $cacheCategory = $this->registry->getObject('db')->cacheQuery( $sql );
         
         $this->registry->getObject('template')->getPage()->addTag( 'categoryList', array( 'SQL', $cache ) );
-        
-        while ($category = $this->registry->getObject('db')->resultsFromCache( $cacheCategory ) )
-        {
-            $this->registry->getObject('template')->getPage()->addTag( 'catTitle', $category['catTitle'] );
-            $this->registry->getObject('template')->getPage()->addTag( 'path', $category['path'] );
-            $this->registry->getObject('template')->getPage()->addTag( 'id', $category['id'] );
-        }
     }
 }
 ?>

@@ -1,9 +1,9 @@
 <h1>Kontakty</h1>
 <table>
     <tr>
-        <th>Jméno</th>
-        <th>Funkce</th>        
-        <th>Telefon</th>
+        <th>{lbl_FirstLast_name}</th>
+        <th>{lbl_Function}</th>        
+        <th>{lbl_Phone}</th>
     </tr>
     <!-- START DocumentItems -->
     <tr>        

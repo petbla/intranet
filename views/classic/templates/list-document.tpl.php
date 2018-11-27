@@ -1,8 +1,7 @@
 <div id="pagecounter">
 {navigate_menu}
 </div>
-
-<h3>{pageLink}</h3>
+{pageLink}
 <div id="DocumentItems">
   <ul>
 	  <!-- START DocumentItems -->

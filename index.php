@@ -65,19 +65,6 @@ else
 	$controller = new Documentcontroller( $registry, true );
 }
 
-/*
-
-
-// showItems Bits 
-for ($i=12;$i<=84;$i=$i+12){ 
-  if( $i == $config['maxVisibleItem'])
-    $class='pageAct';
-  else
-    $class='pageNo';
-  $aItem[] = array( 'showItem_items' => $i, 'showItem_class' => $class); 
-}
-
-*/
 
 // Today
 $dateText = $caption['TodayIs'].' ' . $registry->getObject('fce')->Date2FullText();

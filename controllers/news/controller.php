@@ -54,12 +54,14 @@ class Newscontroller{
 	{
 		global $config, $caption;
 
-    $sql = "SELECT title,type
+    	$sql = "SELECT title,type
 							FROM DmsEntry AS d
 							WHERE NewEntry = 1 
 							ORDER BY Level,Parent,Type,LineNo";
+		$this->registry->setLevel(0);
+		$this->registry->setEntryNo(0);
 
-		$this->registry->getObject('document')->listDocuments($sql,'Nově přidané dokumenty');
+		$this->registry->getObject('document')->listDocuments($sql,'<h3>Nové dokumenty</h3>');
 	}	
 }
 ?>

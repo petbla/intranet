@@ -27,7 +27,8 @@
 
   <body>
     <header id="page_header">
-      <a href="www.petbla.cz"><img src="views/classic/images/logo.png" border="0" alt="www.petbla.cz" title="www.petbla.cz"></a>
+      <p>{dateText}</p>
+      <img src="views/classic/images/logo.png" border="0" alt="" title="Obec Mistřice">
       <nav>
         <ul>
           <li><a href="index.php?page=document/list">Dokumenty</a></li>

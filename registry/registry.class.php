@@ -28,6 +28,8 @@ class Registry {
 	 */
 	private static $instance;
 	
+	private static $level;
+	private static $entryNo;
 	private static $urlPath;
 	private static $urlParam;
 	private static $urlBits = array();
@@ -215,6 +217,26 @@ class Registry {
 		return self::$urlParam;
 	}
 	
+	public function getLevel()
+	{
+		return self::$level;
+	}
+
+	public function setLevel($level)
+	{
+		self::$level = $level;
+	}
+	public function getEntryNo()
+	{
+		return self::$entryNo;
+	}
+
+	public function setEntryNo($entryNo)
+	{
+		self::$entryNo = $entryNo;
+	}
+
+
 	private function array_trim( $array ) 
 	{
 	    while ( ! empty( $array ) && strlen( reset( $array ) ) === 0) 

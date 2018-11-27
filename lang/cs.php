@@ -68,6 +68,7 @@ $caption['Category'] =       'Kategorie';
 $caption['First_name'] =     'Jméno';
 $caption['Last_name'] =      'Příjmení';
 $caption['FirstLast_name'] = 'Jméno a příjmení';
+$caption['Function'] =       'Funkce';
 $caption['Company'] =        'Firma';
 $caption['Street'] =         'Ulice';
 $caption['Zip_code'] =       'PSČ';
