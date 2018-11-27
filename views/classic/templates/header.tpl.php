@@ -27,7 +27,7 @@
 
   <body>
     <header id="page_header">
-      <a href="www.petbla.cz"><img src="images/logo.png" border="0" alt="www.petbla.cz" title="www.petbla.cz"></a>
+      <a href="www.petbla.cz"><img src="views/classic/images/logo.png" border="0" alt="www.petbla.cz" title="www.petbla.cz"></a>
       <nav>
         <ul>
           <li><a href="index.php?page=document/list">Dokumenty</a></li>

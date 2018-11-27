@@ -47,11 +47,11 @@ class document {
             switch ($document['type']) {
                 case 20:
                     # Folder
-                    $icon = "<img src='images/icon/folder.png' />";
+                    $icon = "<img src='views/classic/images/icon/folder.png' />";
                     break;
                 case 30:
                     # File
-                    $icon = "<img src='images/icon/file.png' />";
+                    $icon = "<img src='views/classic/images/icon/file.png' />";
                     break;
                 default:
                     $icon = '';

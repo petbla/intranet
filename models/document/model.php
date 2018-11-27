@@ -8,36 +8,48 @@
  */
 
 class Document{
-	
 	private $registry;
-	private $name;
-	private $categoryId;
-	private $active;
-	
+	private $Level;
+	private $Parent;
+	private $Type;
+	private $LineNo;
+	private $Title;
+	private $Name;
+	private $Path;
+	private $FileExtension;
+	private $CreateDate;
+	private $Archived;
+	private $NewEntry;
+	private $activedocument;
+		
 	public function __construct( Registry $registry, $id )
 	{
-    
-    $this->registry = $registry;
-		if( $documentPath != '' )
+		$this->registry = $registry;
+		$this->activedocument = false;
+		if( $id != '' )
 		{
-			$documentPath = $this->registry->getObject('db')->sanitizeData( $id );
-		
-			$sql = "SELECT id,name,close,categoryId
-                FROM katalog
-                WHERE  id=$id AND close=0";
+			$id = $this->registry->getObject('db')->sanitizeData( $id );
+			$sql = "SELECT *
+                		FROM DmsEntry
+                		WHERE  id='$id'";
 
-      $this->registry->getObject('db')->executeQuery( $sql );
+      		$this->registry->getObject('db')->executeQuery( $sql );
 			if( $this->registry->getObject('db')->numRows() == 1 )
 			{
-				
+				$data = $this->registry->getObject('db')->getRows();
+				$this->name = $data['Level'];
+				$this->name = $data['Parent'];
+				$this->name = $data['Type'];
+				$this->name = $data['LineNo'];
+				$this->name = $data['Title'];
+				$this->name = $data['Name'];
+				$this->name = $data['Path'];
+				$this->name = $data['FileExtension'];
+				$this->name = $data['CreateDate'];
+				$this->name = $data['Archived'];
+				$this->name = $data['NewEntry'];
 				$this->activedocument = true;
-			  $data = $this->registry->getObject('db')->getRows();
-				
-				$this->name = $data['name'];
-				$this->categoryId = $data['categoryId']; 
-				$this->active = 1;
-				
-		  }
+			}
 		}
 		else
 		{
