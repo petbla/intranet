@@ -48,6 +48,7 @@ $registry->storeObject('template', 'template');
 $registry->storeObject('authenticate', 'authentication');
 $registry->storeObject('fce', 'usefulfunction');
 $registry->storeObject('document', 'document');
+$registry->storeObject('file','file');
 
 /**
  *  PEAR modul and set library

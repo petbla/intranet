@@ -60,7 +60,7 @@ class document {
             $this->registry->getObject('template')->getPage()->addTag( 'title', $document['title'] );
             $this->registry->getObject('template')->getPage()->addTag( 'icon', $icon );
         }
-                    
+        
         $this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'list-document.tpl.php', 'footer.tpl.php');
     }	
 
