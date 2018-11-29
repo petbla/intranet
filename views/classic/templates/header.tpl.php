@@ -38,6 +38,7 @@
           <li><a href="index.php?page=archive/list">Archvív</a></li>
           <li><a href="index.php?page=contact/list">Kontakty</a></li>
           <li><a href="https://teamup.com/ksx5ivfw8yrnn6gbqy">Kalendář</a></li>
+          <li><a href="index.php?page=admin/update">Administrace</a></li>
         </ul>
       </nav>
     </header>

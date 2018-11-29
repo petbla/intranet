@@ -1,6 +1,6 @@
 <?php
 
-class Contactontroller {
+class Contactcontroller {
 
 	private $registry;
 	private $urlBits;
@@ -10,11 +10,11 @@ class Contactontroller {
 		$this->registry = $registry;
 		if( $directCall == true )
 		{
-      $urlBits = $this->registry->getURLBits();     
+      		$urlBits = $this->registry->getURLBits();     
 
 			if( !isset( $urlBits[1] ) )
 			{		
-        $this->listContacts();
+		        $this->listContacts();
 			}
 			else
 			{
@@ -54,7 +54,7 @@ class Contactontroller {
 	{
 		global $caption;
   			
-    $this->urlBits = $this->registry->getURLBits();
+    	$this->urlBits = $this->registry->getURLBits();
 
 		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'list-contact.tpl.php', 'footer.tpl.php');
 	}

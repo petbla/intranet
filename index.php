@@ -49,6 +49,7 @@ $activeControllers[] = 'document';
 $activeControllers[] = 'news';
 $activeControllers[] = 'archive';
 $activeControllers[] = 'contact';
+$activeControllers[] = 'admin';
 $currentController = $registry->getURLBit( 0 );  // controller
 
 if( in_array( $currentController, $activeControllers ) )

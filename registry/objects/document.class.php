@@ -67,6 +67,10 @@ class document {
     public function createCategoryMenu()
     {
         $entryNo = $this->registry->getEntryNo();
+        if (!isset($entryNo))
+        {
+            $entryNo = 0;
+        }
 
         $sql = "SELECT id as idCat,title as titleCat ,name,path as pathCat,
                        IF(EntryNo = $entryNo,'active','') as activeCat FROM dmsentry WHERE `level` = 0";
