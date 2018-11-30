@@ -25,7 +25,7 @@ class Documentcontroller{
 
 			if( !isset( $urlBits[1] ) )
 			{		
-        $this->listDocuments('');
+        		$this->listDocuments('');
 			}
 			else
 			{

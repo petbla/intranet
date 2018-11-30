@@ -27,9 +27,10 @@ class file {
     $fileExtension = $item['fileExtension'];
 
     // Check IF exists
-    $sql = "SELECT * FROM DmsEntry WHERE name='$name' AND path='$path'";
-    $this->registry->getObject('db')->executeQuery( $sql );			
-    if( $this->registry->getObject('db')->numRows() != 0 )
+		$this->registry->getObject('db')->initQuery('DmsEntry','');
+    $this->registry->getObject('db')->setFilter('name',$name);
+    $this->registry->getObject('db')->setFilter('path',$path);
+    if (!($this->registry->getObject('db')->isEmpty()))
     {
       return;
     }
@@ -64,26 +65,35 @@ class file {
 
   }
 
-  public function addPath( $path ){
+  public function addPath( $path )
+  {
     $level = substr_count($path,DIRECTORY_SEPARATOR);
     $p = explode(DIRECTORY_SEPARATOR,$path);
     $parent = 0;
     $path = '';
-    for ($i=0; $i < $level; $i++) { 
+    for ($i=0; $i < $level; $i++) 
+    { 
       $name = $p[$i];
       $title = $name;
-      $sql = "SELECT * FROM DmsEntry WHERE level=$i AND name='$name'";
-      $this->registry->getObject('db')->executeQuery( $sql );			
-      if( $this->registry->getObject('db')->numRows() == 0 ){
+      
+      $this->registry->getObject('db')->initQuery('DmsEntry');
+      $this->registry->getObject('db')->setCondition( "level=$i AND name='$name'" );
+      if( $this->registry->getObject('db')->findFirst() == false )
+      {
+        // Find last line No. of 
         $lineNo = 0;
-        $sql = "SELECT Level,LineNo FROM DmsEntry WHERE level=$i ORDER BY LineNo DESC";
-        $this->registry->getObject('db')->executeQuery( $sql );			
-        if( $this->registry->getObject('db')->numRows() != 0 ){
-          $entry = $this->registry->getObject('db')->getRows();
+        $this->registry->getObject('db')->initQuery('DmsEntry','Level,LineNo');
+        $this->registry->getObject('db')->setCondition( "level=$i" );
+        $this->registry->getObject('db')->setOrderBy('LineNo');
+        if( $this->registry->getObject('db')->findLast())
+        {
+          $entry = $this->registry->getObject('db')->getResult();
           $lineNo = $entry['LineNo'];
         }
         $lineNo += 100;
         
+        // Insert NEW
+
         $data = array();
         $data['ID'] = $this->registry->getObject('fce')->GUID();
         $data['Level'] = $i;
@@ -96,10 +106,10 @@ class file {
         $data['FileExtension'] = '';
 
         $this->registry->getObject('db')->insertRecords( 'DmsEntry', $data );
-        $sql = "SELECT * FROM DmsEntry WHERE level=$i AND name='$name'";
-        $this->registry->getObject('db')->executeQuery( $sql );			
+        $this->registry->getObject('db')->findFirst();
+
       }
-      $parentEntry = $this->registry->getObject('db')->getRows();
+      $parentEntry = $this->registry->getObject('db')->getResult();
       $parent = $parentEntry['EntryNo'];
       $path .= $name.$path.DIRECTORY_SEPARATOR;
     }

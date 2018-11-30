@@ -30,9 +30,22 @@ class Admincontroller {
   			
 	    $this->urlBits = $this->registry->getURLBits();
 
+		// TEST
+//		$this->registry->getObject('db')->initQuery('DmsEntry');
+//		$this->registry->getObject('db')->setFilter('LineNo',100);
+//		$this->registry->getObject('db')->setRange('Level',1,2);
+//		$this->registry->getObject('db')->setOrderBy('EntryNo');
+//		if ($this->registry->getObject('db')->findFirst())
+//		$ss = $this->registry->getObject('db')->isEmpty();
+//		if ($this->registry->getObject('db')->findSet())
+//		{
+//			$result = $this->registry->getObject('db')->getResult();
+//		}
+		
+		
 		//$files = $this->registry->getObject('file')->getFiles($config['fileserver']);
 		//$idx = 100;
-		$this->registry->getObject('file')->addPath('Stavby\\Garáž-hasiči\\Hasičská garáž-individuální dotace ZK\\');
+		$this->registry->getObject('file')->addPath('Projekty\\Dětská hřiště RZM\\Foto\\Náves\\');
 
 		$this->registry->getObject('template')->getPage()->addTag( 'root', $config['fileserver']);
 		$this->registry->getObject('template')->getPage()->addTag( 'name', ($files[$idx]['name']));

@@ -49,7 +49,16 @@ class mysqldatabase {
 	private $last;
 	private $lastID;
 	
-	
+	/** 
+	 * Zásobník prováděnách dotazů
+	 */ 
+  private $queryTableName;
+  private $queryFieldList;
+  private $queryCondition;
+  private $queryOrderBy;
+  private $querySql;
+  private $queryResult;
+  
    /** 
     * Konstruktor databázového objektu 
     */ 
@@ -231,7 +240,208 @@ class mysqldatabase {
       $this->lastID = $this->connections[ $this->activeConnection]->insert_id;		
   		return true;
     }
+
+      /**
+     * Nastavení polí pro SELECT
+     * @param String tableName
+     * @param String fieldList
+     * @return void 
+     */
+    public function initQuery( $tableName, $fieldList = '*' )
+    {
+      $this->querySql = '';
+      $this->queryResult = null;
+      $this->queryTableName = '';
+      $this->queryFieldList = '';
+      $this->queryCondition = '';
+      $this->queryOrderBy = '';
+
+
+      if( $fieldList == '')
+      {
+        $this->queryFieldList = '*';
+      }
+      if( $tableName == '' )
+      {
+        return;
+      }
+      $this->queryTableName = $tableName;
+      $this->queryFieldList = $fieldList;
+    }
+
+      /**
+     * Nastavení podmínky výběru
+     * @param String condition
+     * @return void 
+     */
+    public function setCondition( $condition )
+    {
+      if ($this->queryCondition != '')
+      {
+        $this->queryCondition .= " AND ";
+      }
+      $this->queryCondition .= $condition;
+    }
+
+     /**
+     * Nastavení filtru pole 
+     * @param String key
+     * @param String value
+     * @return void 
+     */
+    public function setFilter( $key, $value )
+    {
+      if( ($key == '')|($value == ''))
+      {
+        return;
+      }
+      if ($this->queryCondition != '')
+      {
+        $this->queryCondition .= " AND ";
+      }
+      switch (true) {
+        case is_int($value):
+          $this->queryCondition .= "$key = $value";
+          break;
+        case is_double($value):
+          $this->queryCondition .= "$key = $value";
+          break;
+        default:
+          $this->queryCondition .= "$key = '$value'";
+          break;
+      }     
+    }    
+
+     /**
+     * Nastavení filtru rozsahu pole 
+     * @param String key
+     * @param String valueFrom
+     * @param String valueTo
+     * @return void 
+     */
+    public function setRange( $key, $valueFrom, $valueTo )
+    {
+      if( ($key == '')|($valueFrom == '')|($valueTo == ''))
+      {
+        return;
+      }
+      if ($this->queryCondition != '')
+      {
+        $this->queryCondition .= " AND ";
+      }
+      switch (true) {
+        case (is_int($valueFrom) AND is_int($valueTo)):
+          $this->queryCondition .= "$key BETWEEN $valueFrom AND $valueTo";
+          break;
+        case (is_double($valueFrom) AND is_double($valueTo)):
+          $this->queryCondition .= "$key BETWEEN $valueFrom AND $valueTo";
+          break;
+        default:
+          $this->queryCondition .= "$key BETWEEN '$valueFrom' AND '$valueTo'";
+          break;
+      }     
+    }    
+
     
+     /**
+     * Nastavení řazení pro výběr
+     * @param String orderBy
+     * @return void 
+     */
+    public function setOrderBy( $orderBy )
+    {
+      if( $orderBy != '')
+      {
+        $this->queryOrderBy = $orderBy;
+      }
+    }
+
+     /**
+     * Nalezení sady záznamů
+     * @param void
+     * @return boolean
+     */
+    public function findSet( )
+    {
+      $this->buildQuery();      
+      if($this->querySql == '')
+      {
+        return false;
+      }
+      $queryStr = $this->querySql;
+      $cache = $this->cacheQuery( $queryStr );
+      $this->queryResult = null;
+      while( $result = $this->resultsFromCache( $cache ) )
+			{
+				$this->queryResult[] = $result;
+      }
+      return is_array( $this->queryResult );
+    }
+
+     /**
+     * Nalezení prvního záznamu
+     * @param void
+     * @return boolean
+     */
+    public function findFirst( )
+    {
+      $this->buildQuery();      
+      if($this->querySql == '')
+      {
+        return false;
+      }
+      $queryStr = $this->querySql;
+      $this->executeQuery( $queryStr );
+      if( $this->numRows() != 0 )
+      {
+        $this->queryResult = $this->getRows();
+        return true;
+      }
+      return false;
+    }
+
+     /**
+     * Nalezení posledního záznamu
+     * @param void
+     * @return boolean
+     */
+    public function findLast()
+    {
+      if($this->queryOrderBy == '')
+      {
+        return false;
+      }
+      $this->queryOrderBy .= ' DESC';
+      return $this->findFirst();
+    }
+
+     /**
+     * Zjištění existence záznamu
+     * @param void
+     * @return boolean
+     */
+    public function isEmpty()
+    {
+      $this->buildQuery();      
+      if($this->querySql == '')
+      {
+        return true;
+      }
+      $queryStr = $this->querySql;
+      $this->executeQuery( $queryStr );
+      return ( $this->numRows() == 0 );
+    }
+
+    /**
+     * Vrácení výsledku dotazu
+     * @param void
+     * @return array()
+     */
+    public function getResult()
+    {
+      return $this->queryResult;
+    }
+
     /**
      * Provede dotaz 
      * @param String dotaz
@@ -290,6 +500,39 @@ class mysqldatabase {
     {
     	return $this->connections[$this->activeConnection]->real_escape_string( $data );
     }
+
+    /**
+     * Poskládá dotaz
+     * @return void 
+     */
+    private function buildQuery()
+    {
+      $table = $this->queryTableName;
+      $fields = $this->queryFieldList;
+      $condition = $this->queryCondition;
+      $orderBy = $this->queryOrderBy;
+
+      if ($table == "")
+      {
+        $this->querySql =  "";
+        return;
+      }
+      if($fields == "")
+      {
+        $fields = '*';
+      }
+
+      $this->querySql = "SELECT {$fields} FROM {$table}";
+      if ($condition != "")
+      {
+        $this->querySql .= " WHERE {$condition}";  
+      } 
+      if ($orderBy != "")
+      {
+        $this->querySql .= " ORDER BY {$orderBy}";  
+      } 
+      return;
+    }   
     
     /**
      * Destruktur
