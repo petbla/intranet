@@ -116,43 +116,65 @@ class file {
   }
 
 
-  public function getFiles($root = '.'){ 
+  public function getFiles(){ 
       
+    global $config; 
+    
     //  $files = $this->registry->getObject('file')->getFiles($config['fileserver']);
 
     // Type: 20-directory, 30-file
 
     $item  = array('level'=>0,'type'=>0,'name'=>'','title'=>'','path'=>'','fileExtension'=>''); 
     $files = array();
+    
+    $root = $config['fileserver'];
+
     $last_letter  = $root[strlen($root)-1]; 
     $root  = ($last_letter == '\\' || $last_letter == '/') ? $root : $root.DIRECTORY_SEPARATOR; 
     
-    $directories[]  = $root; 
+    $directories[]  = iconv("windows-1250","utf-8",$root);
     
+    $paret = 0;
+    $level = 0;
+
     while (sizeof($directories)) { 
-      $dir  = array_pop($directories); 
+      $dir = array_pop($directories); 
+      $dir = iconv("windows-1250","utf-8",$dir);
       if ($handle = opendir($dir)) { 
-        while (false !== ($file = readdir($handle))) { 
-          if ($file == '.' || $file == '..') { 
+        while (false !== ($file = readdir($handle))) 
+        { 
+          $file = iconv("windows-1250","utf-8",$file);
+          if ($file == '.' || $file == '..') 
+          { 
             continue; 
           };
-          $file = iconv("windows-1250","utf-8",$file);
-          $item['name'] = $file;
-          $file = $dir.$file; 
-          if (is_dir($file)) { 
+          $item = array();
+          $item['path'] = str_replace($root,'',$dir);
+          $item['name'] = $item['path'].$file;
+          $item['title'] = $file;
+          $file = $dir.$file;
+          if (is_file($file)) 
+          { 
+            $item['type'] = 30;
+            $item['fileExtension'] = pathinfo($file,PATHINFO_EXTENSION);
+            $ext = $item['fileExtension'];
+            if ($ext != '')
+            {
+              $item['title'] = substr($item['title'],0,strlen($item['title']) - strlen($ext) - 1);            
+            }
+            $tt = $item['title'];
+            if($tt[strlen($tt)-1] == '.')
+            {
+              $item['title'] = substr($tt,0,strlen($tt) );            
+            }
+          } 
+          else
+          { 
             $item['type'] = 20;
-            $item['title'] = $item['name'];
             $directory_path = $file.DIRECTORY_SEPARATOR; 
             array_push($directories, $directory_path); 
-          } elseif (is_file($file)) { 
-            $item['type'] = 30;
-            $item['fileExtension'] = pathinfo($item['name'],PATHINFO_EXTENSION);
-            $f = explode('.',$item['name']);
-            $item['title'] = $f[0];
           } 
-          $item['path'] = str_replace($root,'',$file);
-          $item['path'] = str_replace($item['name'],'',$item['path']);
-          $item['level'] = substr_count($item['path'],DIRECTORY_SEPARATOR);
+          $item['level'] = substr_count($item['path'],DIRECTORY_SEPARATOR);          
           $files[]  = $item; 
         } 
         closedir($handle); 

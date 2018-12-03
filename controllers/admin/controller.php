@@ -42,10 +42,9 @@ class Admincontroller {
 //			$result = $this->registry->getObject('db')->getResult();
 //		}
 		
-		
-		//$files = $this->registry->getObject('file')->getFiles($config['fileserver']);
-		//$idx = 100;
-		$this->registry->getObject('file')->addPath('Projekty\\Dětská hřiště RZM\\Foto\\Náves\\');
+		$files = $this->registry->getObject('file')->getFiles($config['fileserver']);
+		$idx = 100;
+//		$this->registry->getObject('file')->addPath('Projekty\\Dětská hřiště RZM\\Foto\\Náves\\');
 
 		$this->registry->getObject('template')->getPage()->addTag( 'root', $config['fileserver']);
 		$this->registry->getObject('template')->getPage()->addTag( 'name', ($files[$idx]['name']));
