@@ -65,95 +65,121 @@ class file {
 
   }
 
-  public function addPath( $path )
+  public function findPath( $path )
   {
-    $level = substr_count($path,DIRECTORY_SEPARATOR);
-    $p = explode(DIRECTORY_SEPARATOR,$path);
-    $parent = 0;
-    $path = '';
-    for ($i=0; $i < $level; $i++) 
-    { 
-      $name = $p[$i];
-      $title = $name;
-      
-      $this->registry->getObject('db')->initQuery('DmsEntry');
-      $this->registry->getObject('db')->setCondition( "level=$i AND name='$name'" );
-      if( $this->registry->getObject('db')->findFirst() == false )
-      {
-        // Find last line No. of 
-        $lineNo = 0;
-        $this->registry->getObject('db')->initQuery('DmsEntry','Level,LineNo');
-        $this->registry->getObject('db')->setCondition( "level=$i" );
-        $this->registry->getObject('db')->setOrderBy('LineNo');
-        if( $this->registry->getObject('db')->findLast())
-        {
-          $entry = $this->registry->getObject('db')->getResult();
-          $lineNo = $entry['LineNo'];
-        }
-        $lineNo += 100;
-        
-        // Insert NEW
-
-        $data = array();
-        $data['ID'] = $this->registry->getObject('fce')->GUID();
-        $data['Level'] = $i;
-        $data['Parent'] = $parent;
-        $data['Type'] = 20;
-        $data['LineNo'] = $lineNo;
-        $data['Title'] = $this->registry->getObject('db')->sanitizeData($title); 
-        $data['Name'] = $this->registry->getObject('db')->sanitizeData($name);
-        $data['Path'] = $this->registry->getObject('db')->sanitizeData($path);
-        $data['FileExtension'] = '';
-
-        $this->registry->getObject('db')->insertRecords( 'DmsEntry', $data );
-        $this->registry->getObject('db')->findFirst();
-
-      }
-      $parentEntry = $this->registry->getObject('db')->getResult();
-      $parent = $parentEntry['EntryNo'];
-      $path .= $name.$path.DIRECTORY_SEPARATOR;
+    if ($path == '')
+    {
+      return 0;
     }
+    $last_letter = $path[strlen($path)-1];
+    $name = $path;
+
+    $type = ($last_letter == DIRECTORY_SEPARATOR) ? 20 : 30;
+    $this->registry->getObject('db')->initQuery('DmsEntry','EntryNo,Name');
+    $sanitize_name = $this->registry->getObject('db')->sanitizeData($path);
+    $this->registry->getObject('db')->setCondition( "Name='$sanitize_name'" );
+    $this->registry->getObject('db')->setCondition( "Type=$type" );
+    if( $this->registry->getObject('db')->findFirst())
+    {
+       $parentEntry = $this->registry->getObject('db')->getResult();
+       return $parentEntry['EntryNo'];
+    }
+
+    $level = substr_count($path,DIRECTORY_SEPARATOR);
+    if ($level > 2)
+    {
+      $level = $level;
+    }
+
+    $tree = explode(DIRECTORY_SEPARATOR, $path);
+    if($type == 20)
+    {
+      array_pop($tree);
+    }
+    if(count($tree) >= 1)
+    {
+      $title = $tree[count($tree) - 1];
+      array_pop($tree);        
+    }
+    else
+    {
+      $title = $tree[0];
+    }
+    $path = implode(DIRECTORY_SEPARATOR, $tree);
+    if ($path != '')
+    {
+      $path .= DIRECTORY_SEPARATOR;
+    }
+    
+    // Insert NEW folder
+
+    $data = array();
+    $data['ID'] = $this->registry->getObject('fce')->GUID();
+    $data['Level'] = $level;
+    $data['Parent'] = $this->findPath($path);
+    $data['Type'] = $type;
+//    $data['LineNo'] = $lineNo;
+    $data['Title'] = $this->registry->getObject('db')->sanitizeData($title); 
+    $data['Name'] = $this->registry->getObject('db')->sanitizeData($name);
+    $data['Path'] = $this->registry->getObject('db')->sanitizeData($path);
+    $data['FileExtension'] = '';
+
+    $this->registry->getObject('db')->insertRecords( 'DmsEntry', $data );
+    $this->registry->getObject('db')->findFirst();
+
+    $parentEntry = $this->registry->getObject('db')->getResult();
+    return $parentEntry['EntryNo'];
   }
 
 
-  public function getFiles(){ 
+  public function getFiles($root = '.'){ 
       
-    global $config; 
-    
     //  $files = $this->registry->getObject('file')->getFiles($config['fileserver']);
 
     // Type: 20-directory, 30-file
 
-    $item  = array('level'=>0,'type'=>0,'name'=>'','title'=>'','path'=>'','fileExtension'=>''); 
+    $item  = array('level'=>0,'parent'=>0,'type'=>0,'name'=>'','title'=>'','path'=>'','fileExtension'=>'','modifyDateTime'=>''); 
     $files = array();
-    
-    $root = $config['fileserver'];
-
     $last_letter  = $root[strlen($root)-1]; 
-    $root  = ($last_letter == '\\' || $last_letter == '/') ? $root : $root.DIRECTORY_SEPARATOR; 
-    
-    $directories[]  = iconv("windows-1250","utf-8",$root);
-    
+    $root = ($last_letter == '\\' || $last_letter == '/') ? $root : $root.DIRECTORY_SEPARATOR; 
+    $directories[]  = $root; 
     $paret = 0;
     $level = 0;
 
     while (sizeof($directories)) { 
-      $dir = array_pop($directories); 
-      $dir = iconv("windows-1250","utf-8",$dir);
+      $dir  = array_pop($directories); 
       if ($handle = opendir($dir)) { 
         while (false !== ($file = readdir($handle))) 
         { 
-          $file = iconv("windows-1250","utf-8",$file);
           if ($file == '.' || $file == '..') 
           { 
             continue; 
           };
+          $file = iconv("windows-1250","utf-8",$file);
+
+          // Tady je problém, protože v $file není u položky Directory lomítko
+          // což znamená, že z $file neumím poznam, jestli to je soubor nebo složka
+          // pokud je v $file nějaká diakritika => is_dir ani is_file v tomto případě nezafunguje
+
+
           $item = array();
           $item['path'] = str_replace($root,'',$dir);
           $item['name'] = $item['path'].$file;
+          $item['entryNo'] = $this->findPath($item['name']);
+          
+//          $item['parent'] = $this->findPath($item['path']);
           $item['title'] = $file;
-          $file = $dir.$file;
-          if (is_file($file)) 
+          
+          $item['modifyDateTime'] = date(" d.m.Y H:i:s.", fileatime('c:\temp\pokus.txt')); // datum a čas změny
+                  
+
+          if (is_dir($file)) 
+          { 
+            $item['type'] = 20;
+            $directory_path = $file.DIRECTORY_SEPARATOR; 
+            array_push($directories, $directory_path); 
+          } 
+          elseif (is_file($file)) 
           { 
             $item['type'] = 30;
             $item['fileExtension'] = pathinfo($file,PATHINFO_EXTENSION);
@@ -169,13 +195,12 @@ class file {
             }
           } 
           else
-          { 
-            $item['type'] = 20;
-            $directory_path = $file.DIRECTORY_SEPARATOR; 
-            array_push($directories, $directory_path); 
-          } 
+          {
+            $item['type'] = 99;
+          }
           $item['level'] = substr_count($item['path'],DIRECTORY_SEPARATOR);          
           $files[]  = $item; 
+          
         } 
         closedir($handle); 
       } 
