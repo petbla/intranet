@@ -27,7 +27,7 @@ $registry->getURLData();
 if( isset($_COOKIE["maxVisibleItem"]) ){
   $config['maxVisibleItem'] = $_COOKIE["maxVisibleItem"];
 }else
-  $config['maxVisibleItem'] = 12;  
+  $config['maxVisibleItem'] = 30;  
 
 
 // Connect to database
