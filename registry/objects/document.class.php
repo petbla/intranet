@@ -73,7 +73,7 @@ class document {
         }
 
         $sql = "SELECT id as idCat,title as titleCat ,name,path as pathCat,
-                       IF(EntryNo = $entryNo,'active','') as activeCat FROM dmsentry WHERE `level` = 0";
+                       IF(EntryNo = $entryNo,'active','') as activeCat FROM dmsentry WHERE `level` = 0 AND `Type` = 20";
         $cache = $this->registry->getObject('db')->cacheQuery( $sql );
         $cacheCategory = $this->registry->getObject('db')->cacheQuery( $sql );
         

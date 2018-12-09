@@ -42,10 +42,13 @@ class Admincontroller {
 //			$result = $this->registry->getObject('db')->getResult();
 //		}
 		
-		
+		$file = '_K vyřízení';
+		$file = iconv("utf-8","windows-1250",$file);
+		$handle = opendir($config['fileserver'].$file);
+
 
 		$files = $this->registry->getObject('file')->getFiles($config['fileserver']);
-		$idx = 100;
+		$idx = 10;
 		
 //		$this->registry->getObject('file')->addPath('Projekty\\Dětská hřiště RZM\\Foto\\Náves\\');
 
