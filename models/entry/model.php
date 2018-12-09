@@ -1,31 +1,33 @@
 <?php
 /**
- * Class Document
+ * Class DMS Entry
  * 
  * @author  Petr Blažek
  * @version 1.0
  * @date    18.11.2018
  */
 
-class Document{
+class Entry{
 	private $registry;
+	private $EntryNo;
+	private $ID;
 	private $Level;
 	private $Parent;
 	private $Type;
 	private $LineNo;
 	private $Title;
 	private $Name;
-	private $Path;
 	private $FileExtension;
+	private $ModifyDateTime;
 	private $CreateDate;
 	private $Archived;
 	private $NewEntry;
-	private $activedocument;
+	private $activeEntry;
 		
 	public function __construct( Registry $registry, $id )
 	{
 		$this->registry = $registry;
-		$this->activedocument = false;
+		$this->activeEntry = false;
 		if( $id != '' )
 		{
 			$id = $this->registry->getObject('db')->sanitizeData( $id );
@@ -37,18 +39,20 @@ class Document{
 			if( $this->registry->getObject('db')->numRows() == 1 )
 			{
 				$data = $this->registry->getObject('db')->getRows();
-				$this->name = $data['Level'];
-				$this->name = $data['Parent'];
-				$this->name = $data['Type'];
-				$this->name = $data['LineNo'];
-				$this->name = $data['Title'];
-				$this->name = $data['Name'];
-				$this->name = $data['Path'];
-				$this->name = $data['FileExtension'];
-				$this->name = $data['CreateDate'];
-				$this->name = $data['Archived'];
-				$this->name = $data['NewEntry'];
-				$this->activedocument = true;
+				$this->EntryNo = $data['EntryNo'];
+				$this->ID = $data['ID'];
+				$this->Level = $data['Level'];
+				$this->Parent = $data['Parent'];
+				$this->Type = $data['Type'];
+				$this->LineNo = $data['LineNo'];
+				$this->Title = $data['Title'];
+				$this->Name = $data['Name'];
+				$this->FileExtension = $data['FileExtension'];
+				$this->ModifyDateTime = $data['ModifyDateTime'];
+				$this->CreateDate = $data['CreateDate'];
+				$this->Archived = $data['Archived'];
+				$this->NewEntry = $data['NewEntry'];
+				$this->activeEntry = true;
 			}
 		}
 		else
@@ -59,7 +63,7 @@ class Document{
 
 	public function isValid()
 	{
-		return $this->activedocument;
+		return $this->activeEntry;
 	}
 	
 	public function getData()

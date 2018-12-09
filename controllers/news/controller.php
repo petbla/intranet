@@ -6,11 +6,8 @@
  * @date    26.11.2018
  */
 class Newscontroller{
-	
 	private $registry;
 	private $model;
-	
-
 	/**
 	 * @param Registry $registry 
 	 * @param bool $directCall – jedná se o přímé volání konstruktoru frameworkem (true) anebo jiným řadičem (false) 
@@ -18,14 +15,12 @@ class Newscontroller{
 	public function __construct( Registry $registry, $directCall )
 	{
 		$this->registry = $registry;
-		
 		if( $directCall == true )
 		{
 			$urlBits = $this->registry->getURLBits();     
-
 			if( !isset( $urlBits[1] ) )
 			{		
-        $this->listDocuments('');
+		        $this->listDocuments('');
 			}
 			else
 			{
@@ -37,7 +32,7 @@ class Newscontroller{
 				{
 					$ID = $urlBits[2];
 				}
-					switch( $urlBits[1] )
+				switch( $urlBits[1] )
 				{				
 					case 'list':
 						$this->listDocuments($ID);
@@ -53,15 +48,13 @@ class Newscontroller{
 	private function listDocuments( $ID )
 	{
 		global $config, $caption;
-
-    	$sql = "SELECT title,type
-							FROM DmsEntry AS d
-							WHERE NewEntry = 1 
-							ORDER BY Level,Parent,Type,LineNo";
+    	$sql = "SELECT ID,title,type,ModifyDateTime ".
+			   "FROM DmsEntry AS d ".
+			   "WHERE NewEntry = 1 AND Type = 30 ".
+			   "ORDER BY Level,Parent,Type,LineNo" ;
 		$this->registry->setLevel(0);
 		$this->registry->setEntryNo(0);
-
-		$this->registry->getObject('document')->listDocuments($sql,'<h3>Nové dokumenty</h3>');
+		$this->registry->getObject('document')->listDocuments($sql,'<h3>Nové dokumenty</h3>',false,false,true,false, '');
 	}	
 }
 ?>

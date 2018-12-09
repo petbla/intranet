@@ -14,14 +14,12 @@ class document {
 	
     public function __construct( $registry ) 
     {
-            $this->registry = $registry;
-        
+        $this->registry = $registry;
     }
     
-	public function listDocuments( $sql, $pageLink)
+	public function listDocuments( $sql, $pageLink , $isHeader, $isFolder, $isFiles, $isFooter, $breads)
 	{
 		global $config, $caption;
-
 
         // Stránkování
         $cacheFull = $this->registry->getObject('db')->cacheQuery( $sql );
@@ -36,31 +34,28 @@ class document {
         $this->registry->getObject('template')->getPage()->addTag( 'navigate_menu', $navigate );
         $sql .= " LIMIT $fromItem," . $config['maxVisibleItem']; 
         $cache = $this->registry->getObject('db')->cacheQuery( $sql );
-		
-		$this->registry->getObject('template')->getPage()->addTag( 'DocumentItems', array( 'SQL', $cache ) );
-		$this->registry->getObject('template')->getPage()->addTag( 'pageLink', $pageLink );
-	
-        $this->registry->getObject('db')->executeQuery( $sql );			
-        if( $this->registry->getObject('db')->numRows() != 0 )
-        {
-            $document = $this->registry->getObject('db')->getRows();
-            switch ($document['type']) {
-                case 20:
-                    # Folder
-                    $icon = "<img src='views/classic/images/icon/folder.png' />";
-                    break;
-                case 30:
-                    # File
-                    $icon = "<img src='views/classic/images/icon/file.png' />";
-                    break;
-                default:
-                    $icon = '';
-                    break;
-            }
-            $this->registry->getObject('template')->getPage()->addTag( 'title', $document['title'] );
-            $this->registry->getObject('template')->getPage()->addTag( 'icon', $icon );
-        }
         
+        $this->registry->getObject('template')->getPage()->addTag( 'DocumentItems', array( 'SQL', $cache ) );
+        $this->addIcons();
+		$this->registry->getObject('template')->getPage()->addTag( 'pageLink', $pageLink );
+        $this->registry->getObject('template')->getPage()->addTag( 'breads', $breads );
+        
+        if ($isFolder)
+        {
+            $this->registry->getObject('template')->addTemplateBit('folderitems', 'list-entry-folders.tpl.php');
+        }
+        else
+        {
+            $this->registry->getObject('template')->getPage()->addTag( 'folderitems', '' );
+        }
+        if ($isFiles)
+        {
+            $this->registry->getObject('template')->addTemplateBit('documentitems', 'list-entry-documents.tpl.php');
+        }
+        else
+        {
+            $this->registry->getObject('template')->getPage()->addTag( 'documentitems', '' );
+        }
         $this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'list-document.tpl.php', 'footer.tpl.php');
     }	
 
@@ -71,13 +66,39 @@ class document {
         {
             $entryNo = 0;
         }
-
         $sql = "SELECT id as idCat,title as titleCat ,name,path as pathCat,
-                       IF(EntryNo = $entryNo,'active','') as activeCat FROM dmsentry WHERE `level` = 0 AND `Type` = 20";
+                       IF(EntryNo = $entryNo,'active','') as activeCat 
+                       FROM dmsentry 
+                       WHERE `level` = 0 AND `Type` = 20
+                       ORDER BY Title";
         $cache = $this->registry->getObject('db')->cacheQuery( $sql );
         $cacheCategory = $this->registry->getObject('db')->cacheQuery( $sql );
-        
         $this->registry->getObject('template')->getPage()->addTag( 'categoryList', array( 'SQL', $cache ) );
     }
+
+    public function addIcons()
+    {
+        global $config;
+        $sql = "SELECT DISTINCT FileExtension FROM dmsentry WHERE FileExtension <> ''";
+        $this->registry->getObject('db')->executeQuery( $sql );
+        while( $data = $this->registry->getObject('db')->getRows() )
+        {
+            $ext = strtolower($data['FileExtension']);
+            $img = substr($ext,0,3);
+            $filename = "views/classic/images/icon/$img.png";
+            $fullFilename = $_SERVER['DOCUMENT_ROOT'].'/intranet/'.$filename;
+            if (!(file_exists($fullFilename)))
+            {
+                $filename = 'views/classic/images/icon/file.png';
+            }
+            $icon = "<img src='$filename' />";
+            $this->registry->getObject('template')->getPage()->addTag( "icon$ext", $icon );
+        }
+        
+        $icon20 = "<img src='views/classic/images/icon/folder.png' />";
+        $icon30 = "<img src='views/classic/images/icon/file.png' />";
+        $this->registry->getObject('template')->getPage()->addTag( 'icon20', $icon20 );
+        $this->registry->getObject('template')->getPage()->addTag( 'icon30', $icon30 );
+    }    
 }
 ?>

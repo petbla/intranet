@@ -360,6 +360,5 @@ class template {
     $element = "<a href=\"$urlPath?p=$actualPage\">" . $symbol . "</a>";
     return $element;  
   }
- 
 }
 ?>

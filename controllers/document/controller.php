@@ -69,38 +69,67 @@ class Documentcontroller{
 		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'invalid-document.tpl.php', 'footer.tpl.php');
 	}
 	
-	private function listDocuments( $ID )
+	public function getBreads ($ID)
 	{
 		global $config, $caption;
 
-		// Find level
-		$level = 0;
-		$entryNo = 0;
-		if ($ID != '')
+		$title = $caption['home_page'];
+		$href = "index.php?page=document/list";
+		$breads = "<a href='$href'>$title</a>";
+		
+		require_once( FRAMEWORK_PATH . 'models/entry/model.php');
+		$this->model = new Entry( $this->registry, $ID );
+		if( $this->model->isValid() )
 		{
-			$sql = "SELECT EntryNo,level FROM DmsEntry WHERE ID = '{$ID}'";
-			$this->registry->getObject('db')->executeQuery( $sql );			
-			if( $this->registry->getObject('db')->numRows() != 0 )
-			{
-				$dmsEntry = $this->registry->getObject('db')->getRows();
-				$level = $dmsEntry['level'];
-				$entryNo = $dmsEntry['EntryNo'];
+			$entry = $this->model->getData();
+			$names = explode(DIRECTORY_SEPARATOR,$entry['Name']);
+			$name = '';
+			foreach ($names as $idx => $title) {
+				$name .= ($name != '') ? DIRECTORY_SEPARATOR:'';
+				$name .= $title;
+				$breads .= ($breads != '') ? ' > ':'';
+				$ID = $this->registry->GetObject('file')->getIdByName($name);
+				$breads .= "<a href='$href/$ID'>$title</a> ";
 			}
 		}
-		$this->registry->setLevel($level);
-		$this->registry->setEntryNo($entryNo);
+		return $breads;
+	}
 
-    	$sql = "SELECT title, type
-							FROM DmsEntry AS d
-							WHERE d.Archived = 0 AND 
-										d.level={$level}";
-		if ($level == 0)
+
+		private function listDocuments( $ID )
+	{
+		global $config, $caption;
+
+		require_once( FRAMEWORK_PATH . 'models/entry/model.php');
+		$this->model = new Entry( $this->registry, $ID );
+		if( $this->model->isValid() )
 		{
-			$sql .= " AND d.Type <> 20"; 	// Not Directory od root
+			$entry = $this->model->getData();
+			$level = $entry['Level'];
+			$entryNo = $entry['EntryNo'];
+			$name = $entry['Name'];
+			$this->registry->setLevel($level);
+			$this->registry->setEntryNo($entryNo);		
+			$sqlFolders = "SELECT ID,title,type,ModifyDateTime FROM DmsEntry AS d ".
+			              "WHERE d.Archived = 0 AND d.parent={$entryNo} AND Type = 20 ".
+			              "ORDER BY Type,Title";
+			$sqlFiles = "SELECT title,type,ModifyDateTime,LOWER(FileExtension) as FileExtension FROM DmsEntry AS d ".
+			            "WHERE d.Archived = 0 AND d.parent={$entryNo} AND Type = 30 ".
+			            "ORDER BY Type,Title";
 		}
-		$sql .= " ORDER BY Level,Parent,Type,LineNo";
-		
-		$this->registry->getObject('document')->listDocuments($sql,'');
+		else
+		{
+			$sqlFolders = "SELECT ID,title,type,ModifyDateTime FROM DmsEntry AS d ".
+				          "WHERE d.Archived = 0 AND d.parent=0 AND Type = 20 ".
+				          "ORDER BY Type,Title ";
+			$sqlFiles = "SELECT title,type,ModifyDateTime,LOWER(FileExtension) as FileExtension FROM DmsEntry AS d ".
+				        "WHERE d.Archived = 0 AND d.parent=0 AND Type = 30 ".
+						"ORDER BY Type,Title ";
+		}
+		$breads = $this->getBreads($ID);
+		$cache = $this->registry->getObject('db')->cacheQuery( $sqlFolders );
+		$this->registry->getObject('template')->getPage()->addTag( 'FolderItems', array( 'SQL', $cache ) );
+		$this->registry->getObject('document')->listDocuments($sqlFiles,'',true,true,true,true,$breads);
 	}	
 }
 ?>

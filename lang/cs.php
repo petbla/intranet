@@ -96,6 +96,7 @@ $caption['Status'] =         'Stav';
 /**
  * Action's Title
  */
+$caption['home_page']      = 'Úvodní strana';
 $caption['btn_firstpage']  = 'první strana';
 $caption['btn_prevpage']   = 'předchozí strana';
 $caption['btn_nextpage']   = 'další strana';

@@ -102,9 +102,7 @@ header#page_header img{
   color: #808080;
 }
 #page_header nav a:hover{
-  background-color: #fff;
   color: #000;
-  
 }
 /* END Header */
 
@@ -157,8 +155,6 @@ section#navigate ul li.active a{
 section#navigate ul li:hover.active{
   background-color: #337AB7;
 }
-
-
 
 section#navigate a{
   text-decoration: none;
@@ -233,6 +229,33 @@ section#content ul>li{
   list-style: none;
 }
 
+div#breads{
+  margin: 10px 0;
+}
+div#breads a{
+  font-family: Century-gothic, Calibri, Arial, sans-serif; 
+  font-size: 15px;
+  font-weight:normal;
+  text-decoration: none;
+  padding: 0 10px;
+  color: #808080; 
+}
+div#breads a:hover{
+  color: #000;
+}
+div#DocumentItems td a, div#DocumentItems td{
+  font-family: Century-gothic, Calibri, Arial, sans-serif; 
+  font-size: 18px;
+  font-weight:normal;
+  text-decoration: none;
+  padding: 4px 0;
+  color: #6C7ABD; 
+}
+div#DocumentItems a:hover{
+  color: rgb(9, 13, 221); 
+  text-decoration: underline;
+}
+
 /* END page CONTENT */
 
 /*
@@ -301,6 +324,8 @@ th, td{
 th{
   background-color: #000; 
   color: #fff;
+  font-size: 15px; 
+  text-align: left;
 }
 /* TABLE Line's Format */
 tr:nth-of-type(even){

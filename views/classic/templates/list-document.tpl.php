@@ -1,15 +1,12 @@
+<div id="breads">
+{breads}
+</div>
 <div id="pagecounter">
 {navigate_menu}
 </div>
 {pageLink}
-<div id="DocumentItems">
-  <ul>
-	  <!-- START DocumentItems -->
-    <li class="item">{icon}<a href="">{title}</a></li>
-  	<!-- END DocumentItems -->
-  </ul>
-</div>
-
+{folderitems}
+{documentitems}
 <div id="pagecounter" class="bottom">
 {navigate_menu}
 </div>

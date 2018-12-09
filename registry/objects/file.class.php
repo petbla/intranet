@@ -14,62 +14,53 @@ class file {
     $this->registry = $registry;
   }
 
-  public function addItem( $item = array('level'=>0,'type'=>0,'name'=>'','title'=>'','path'=>'','fileExtension'=>'')){
 
-    if ($item['name']==''|$item['path'] ==''){
-      return;
-    }
-    $level = $item['level'];
-    $type = $item['type'];
-    $name = $this->registry->getObject('db')->sanitizeData($item['name']);
-    $title = $this->registry->getObject('db')->sanitizeData($item['title']);
-    $path = $this->registry->getObject('db')->sanitizeData($item['path']);
-    $fileExtension = $item['fileExtension'];
-
-    // Check IF exists
-		$this->registry->getObject('db')->initQuery('DmsEntry','');
-    $this->registry->getObject('db')->setFilter('name',$name);
-    $this->registry->getObject('db')->setFilter('path',$path);
-    if (!($this->registry->getObject('db')->isEmpty()))
-    {
-      return;
-    }
-
-    // Check and create Parents
-    $this->addPath( $item['path'] , $level);
-
-    // Find Parent
-    if ($level != 0 )
-    {
-      $p = explode(DIRECTORY_SEPARATOR,$item['path']);
-    
-      $plevel = $level - 1;
-      $pname = $p[$plevel];
-      $sql = "SELECT * FROM DmsEntry WHERE level=$plevel AND name='$pname'";
-
-      //TODO - najít Parent
-    }
-    else
-    {
-      $parent = 0;
-    }
-
-    // Insert NEW
-    $id = $this->registry->getObject('fce')->GUID();
-    $lineNo = 0;
-
-    $sql = "INSERT INTO DmsEntry (ID,Level,Parent,Type,LineNo,Title,Name,Path,FileExtension) 
-              VALUES ('$id',$level,$parent,$type,$lineNo,'$title','$name','$path','$fileExtension')";
-    
-    //TODO - zalozit položku
-
-  }
+  /**
+   * Funkce pro aktualizaci databáze, tj. založení složek a jijich podsložek a souborů 
+   * 
+	 * @param string $root
+	 * @return void
+	 */
+  public function updateFiles($root = '.'){ 
+    $last_letter  = $root[strlen($root)-1]; 
+    $root = ($last_letter == '\\' || $last_letter == '/') ? $root : $root.DIRECTORY_SEPARATOR; 
+    $directories[]  = $root; 
+    $paret = 0;
+    $level = 0;
+    while (sizeof($directories)) { 
+      $dir  = array_pop($directories); 
+      if ($handle = opendir($dir)) { 
+        while (false !== ($file = readdir($handle))) 
+        { 
+          if ($file == '.' || $file == '..') 
+          { 
+            continue; 
+          };
+          $fullName = $dir.$file;
+          $entryNo = $this->findItem($fullName);
+          $type = $this->getFileType($fullName);
+          if ($type == 20) 
+          { 
+            $directory_path = $fullName.DIRECTORY_SEPARATOR; 
+            array_push($directories, $directory_path); 
+          } 
+        } 
+        closedir($handle); 
+      } 
+    } 
+  } 
 
 
+	/**
+   * Funkce pro vyhledání položky (soubor/složka) v databázi a pokud neexistuje, tak dojde k založení včetně všech 
+   * nadřazených složek
+   * 
+	 * @param string $fullName
+	 * @return bool $EntryNo  
+	 */
   public function findItem( $fullName )
   {
     global $config;
-
     $root = $config['fileserver'];
     $name = str_replace($root,'',$fullName);
     $type = $this->getFileType($fullName);
@@ -77,7 +68,6 @@ class file {
     {
       return 0;
     }
-       
     $this->registry->getObject('db')->initQuery('DmsEntry','EntryNo,Name');
     $sanitize_name = iconv("windows-1250","utf-8",$name);
     $sanitize_name = $this->registry->getObject('db')->sanitizeData($sanitize_name);
@@ -87,16 +77,13 @@ class file {
        $parentEntry = $this->registry->getObject('db')->getResult();
        return $parentEntry['EntryNo'];
     }
-
     $level = substr_count($name,DIRECTORY_SEPARATOR);
-    
     $pathArr = explode(DIRECTORY_SEPARATOR, $name);
     if ($name[strlen($name)-1] == DIRECTORY_SEPARATOR)
     {
       $name = substr($name,0,strlen($name) - 1);
       array_pop($pathArr);
     }
-
     if(count($pathArr) > 1)
     {
       $title = $pathArr[count($pathArr) - 1];
@@ -110,77 +97,39 @@ class file {
     }
     $title = iconv("windows-1250","utf-8",$title);
     $name = iconv("windows-1250","utf-8",$name);
-    
+    if ($type == 30)
+    {
+      $fileExtension = pathinfo($title,PATHINFO_EXTENSION);
+      if ($fileExtension != '')
+      {
+        $title = substr($title,0,strlen($title) - strlen($fileExtension) - 1);            
+      }
+      if($title[strlen($title)-1] == '.')
+      {
+        $title = substr($title,0,strlen($title) );            
+      }
+    }
+    else
+    {
+      $fileExtension = '';
+    }
     // Insert NEW folder
-
     $data = array();
     $data['ID'] = $this->registry->getObject('fce')->GUID();
     $data['Level'] = $level;
     $data['Parent'] = $this->findItem($root.$path);
     $data['Type'] = $type;
-//    $data['LineNo'] = $lineNo;
+    $data['LineNo'] = $this->getNextLineNo($data['Parent']);
     $data['Title'] = $this->registry->getObject('db')->sanitizeData($title); 
     $data['Name'] = $this->registry->getObject('db')->sanitizeData($name);
-//    $data['Path'] = $this->registry->getObject('db')->sanitizeData($path);
-    $data['FileExtension'] = '';
-//    $data['ModifyDateTime'] = date(" d.m.Y H:i:s.", fileatime($fullName)); // datum a čas změny
-
+    $data['FileExtension'] = $fileExtension;
+    $data['ModifyDateTime'] = date("Y-m-d H:i:s", filemtime($fullName)); // datum a čas změny
     $this->registry->getObject('db')->insertRecords( 'DmsEntry', $data );
     $this->registry->getObject('db')->findFirst();
-
     $parentEntry = $this->registry->getObject('db')->getResult();
     return $parentEntry['EntryNo'];
   }
 
-
-  public function getFiles($root = '.'){ 
-
-    $last_letter  = $root[strlen($root)-1]; 
-    $root = ($last_letter == '\\' || $last_letter == '/') ? $root : $root.DIRECTORY_SEPARATOR; 
-    $directories[]  = $root; 
-    $paret = 0;
-    $level = 0;
-
-    while (sizeof($directories)) { 
-      $dir  = array_pop($directories); 
-
-      if ($handle = opendir($dir)) { 
-        while (false !== ($file = readdir($handle))) 
-        { 
-          if ($file == '.' || $file == '..') 
-          { 
-            continue; 
-          };
-          $fullName = $dir.$file;
-          $entryNo = $this->findItem($fullName);
-          $type = $this->getFileType($fullName);
-
-          if ($type == 20) 
-          { 
-            $directory_path = $fullName.DIRECTORY_SEPARATOR; 
-            array_push($directories, $directory_path); 
-          } 
-/*          
-          elseif ($type == 30) 
-          { 
-            $item['fileExtension'] = pathinfo($file,PATHINFO_EXTENSION);
-            $ext = $item['fileExtension'];
-            if ($ext != '')
-            {
-              $item['title'] = substr($item['title'],0,strlen($item['title']) - strlen($ext) - 1);            
-            }
-            $tt = $item['title'];
-            if($tt[strlen($tt)-1] == '.')
-            {
-              $item['title'] = substr($tt,0,strlen($tt) );            
-            }
-          } 
-*/         
-        } 
-        closedir($handle); 
-      } 
-    } 
-  } 
   
   private function getFileType ($file)
   {
@@ -196,5 +145,40 @@ class file {
     {
       return (substr_count($file,'.') > 0 ? 30 : 20);  
     }
+  }
+
+  private function getNextLineNo ($Parent)
+  {
+    $this->registry->getObject('db')->initQuery('DmsEntry','EntryNo,LineNo');
+    $this->registry->getObject('db')->setCondition("Parent=$Parent");
+    $this->registry->getObject('db')->setOrderBy('Parent,LineNo');
+    if( $this->registry->getObject('db')->findLast())
+    {
+      $Entry = $this->registry->getObject('db')->getResult();
+      $lineNo = $Entry['LineNo'];
+    }
+    else
+    {
+      $lineNo = 0;
+    }
+    $lineNo += 100;
+    return $lineNo;
+  }
+
+  public function getIdByName( $name )
+  {
+    $name = $this->registry->getObject('db')->sanitizeData($name);
+    $this->registry->getObject('db')->initQuery('DmsEntry','ID');
+    $this->registry->getObject('db')->setCondition("Name='$name'");
+    if( $this->registry->getObject('db')->findFirst())
+    {
+      $Entry = $this->registry->getObject('db')->getResult();
+      return $Entry['ID'];
+    }
+    else
+    {
+      return ('');
+    }
+    
   }
 }
