@@ -357,7 +357,7 @@ class template {
         
         break;
     }
-    $element = "<a href=\"$urlPath?p=$actualPage\">" . $symbol . "</a>";
+    $element = "<a href=\"$urlPath&p=$actualPage\">" . $symbol . "</a>";
     return $element;  
   }
 }

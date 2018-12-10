@@ -278,6 +278,42 @@ div#FolderItems a:hover{
 /* END page CONTENT */
 
 /*
+ * Page Counter
+ *
+ */
+ div#pagecounter{
+  margin: 5px 0;
+  padding: 0;
+  text-align: right;
+  font-size: 15px;
+  height: 22px;
+}
+div#pagecounter.bottom{
+  margin: 10px 0;
+  clear: both;
+}
+div#pagecounter img{
+  border-width: 0px;
+}
+div#pagecounter a{
+  padding: 5px 10px;
+  text-decoration: none;
+  color: black;
+  border: 1px solid #000;	
+}
+div#pagecounter a:hover{
+  color: blue;
+  text-decoration: underline;
+}
+div#pagecounter a span{
+  
+}
+div#pagecounter a span strong{
+  font-weight: bold;
+}
+/* END Page Counter */
+
+/*
  * Link windows
  *
  */
