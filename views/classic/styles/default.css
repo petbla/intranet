@@ -284,7 +284,7 @@ div#FolderItems a:hover{
  div#pagecounter{
   margin: 5px 0;
   padding: 0;
-  text-align: right;
+  text-align: center;
   font-size: 15px;
   height: 22px;
 }
@@ -304,9 +304,6 @@ div#pagecounter a{
 div#pagecounter a:hover{
   color: blue;
   text-decoration: underline;
-}
-div#pagecounter a span{
-  
 }
 div#pagecounter a span strong{
   font-weight: bold;

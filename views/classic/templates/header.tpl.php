@@ -1,14 +1,10 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"  lang="cs-CZ">
+<html lang="cs-CZ">
   <head>
     <meta charset="utf-8" />
-    <link rel="stylesheet" href="views/classic/styles/default.css" type="text/css"> 
-    <link rel="stylesheet" href="views/classic/styles/print.css" type="text/css" media="print">
     <title>PETBLA web</title>
-    <script type="text/javascript" charset="utf-8" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-    <script type="text/javascript" charset="utf-8" src="js/html5.js"></script>
-    <script type="text/javascript" charset="utf-8" src="js/jquery.corner.js"></script>
-    
+    <link rel="stylesheet" type="text/css" href="views/classic/styles/default.css"> 
+    <link rel="stylesheet" type="text/css" href="views/classic/styles/print.css" media="print">
     <!--[if (gte IE 5.5)&(lte IE 8)]>
       <script type="text/javascript" 
               src="js/DOMAssistantCompressed-2.8.js"></script>
@@ -35,7 +31,7 @@
         <ul>
           <li><a href="index.php?page=document/list">Dokumenty</a></li>
           <li><a href="index.php?page=news/list">Novinky</a></li>
-          <li><a href="index.php?page=archive/list">Archvív</a></li>
+          <li><a href="index.php?page=archive/list">Archív</a></li>
           <li><a href="index.php?page=contact/list">Kontakty</a></li>
           <li><a href="https://teamup.com/ksx5ivfw8yrnn6gbqy">Kalendář</a></li>
           <li><a href="index.php?page=admin/update">Administrace</a></li>

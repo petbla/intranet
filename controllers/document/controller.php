@@ -111,19 +111,19 @@ class Documentcontroller{
 			$this->registry->setLevel($level);
 			$this->registry->setEntryNo($entryNo);		
 			$sqlFolders = "SELECT ID,title,type,ModifyDateTime FROM DmsEntry AS d ".
-			              "WHERE d.Archived = 0 AND d.parent={$entryNo} AND Type = 20 ".
+			              "WHERE d.Archived = 0 AND d.parent={$entryNo} AND Type = 20 AND Archived = false ".
 			              "ORDER BY Type,Title";
 			$sqlFiles = "SELECT title,type,ModifyDateTime,LOWER(FileExtension) as FileExtension FROM DmsEntry AS d ".
-			            "WHERE d.Archived = 0 AND d.parent={$entryNo} AND Type = 30 ".
+			            "WHERE d.Archived = 0 AND d.parent={$entryNo} AND Type = 30 AND Archived = false ".
 			            "ORDER BY Type,Title";
 		}
 		else
 		{
 			$sqlFolders = "SELECT ID,title,type,ModifyDateTime FROM DmsEntry AS d ".
-				          "WHERE d.Archived = 0 AND d.parent=0 AND Type = 20 ".
+				          "WHERE d.Archived = 0 AND d.parent=0 AND Type = 20 AND Archived = false ".
 				          "ORDER BY Type,Title ";
 			$sqlFiles = "SELECT title,type,ModifyDateTime,LOWER(FileExtension) as FileExtension FROM DmsEntry AS d ".
-				        "WHERE d.Archived = 0 AND d.parent=0 AND Type = 30 ".
+				        "WHERE d.Archived = 0 AND d.parent=0 AND Type = 30 AND Archived = false ".
 						"ORDER BY Type,Title ";
 		}
 		$breads = $this->getBreads($ID);

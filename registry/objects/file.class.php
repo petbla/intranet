@@ -24,6 +24,41 @@ class file {
   public function updateFiles($root = '.'){ 
     $last_letter  = $root[strlen($root)-1]; 
     $root = ($last_letter == '\\' || $last_letter == '/') ? $root : $root.DIRECTORY_SEPARATOR; 
+
+    /*
+     * Find deleted OR renamed documents
+     */
+    $slozka = 0;
+    $soubor = 0;
+    $neni = 0;
+    $this->registry->getObject('db')->initQuery('DmsEntry','EntryNo,ID,Name,Type');
+    $this->registry->getObject('db')->setCondition('Archived = false');
+    if( $this->registry->getObject('db')->findSet())
+    {
+      $data = $this->registry->getObject('db')->getResult();
+      foreach ($data as $key => $entry) {
+        $ID = $entry['ID'];
+        switch ($entry['Type']) {
+          case 20:
+            # Folder
+            $slozka += 1;
+            break;
+          case 30:
+            # File
+            $fullname =  iconv("utf-8","windows-1250",$root.$entry['Name']);
+            $soubor += 1;
+            if (!is_file($fullname))
+            {
+              $neni += 1;
+              $changes['Archived'] = true;
+              $condition = "ID = '$ID'";
+              $this->registry->getObject('db')->updateRecords('DmsEntry',$changes,$condition);
+            }
+            break;
+        }        
+      }
+    }
+
     $directories[]  = $root; 
     $paret = 0;
     $level = 0;
@@ -48,6 +83,8 @@ class file {
         closedir($handle); 
       } 
     } 
+
+    
   } 
 
 
