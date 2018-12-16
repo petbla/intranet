@@ -274,6 +274,21 @@ div#FolderItems a:hover{
   color: rgb(9, 13, 221); 
   text-decoration: underline;
 }
+div#document table{
+  width: 40%;
+}
+div#document td{
+  font-size: 14px;
+  padding: 4px;
+  border: 1px solid #337AB7
+}
+div#document tr:nth-of-type(even){
+  background-color: #F3F3F3;
+}
+div#document tr:nth-of-type(odd) {
+  background-color: #F3F3F3;
+}
+
 
 /* END page CONTENT */
 
@@ -386,23 +401,3 @@ tr:nth-of-type(even){
 tr:nth-of-type(odd) {
   background-color:#ddd;
 }
-/* TABLE Cells From Second On Left*/
-td:nth-child(n+2){
-}
-/* TABLE Last Line */
-tr:last-child{
-}
-/* TABLE Last Column */
-td:last-child{
-}
-/* TABLE Cell Right-Bottom*/
-tr:last-child td:last-child{
-}
-/* TABLE Line Before Last Line */
-tr:nth-last-child(2){
-}
-/* TABLE Last 3-Lines */
-tr:nth-last-child(-n+3) td{
-}
-/* END Table */
-

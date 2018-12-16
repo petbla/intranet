@@ -38,14 +38,20 @@ class file {
       $data = $this->registry->getObject('db')->getResult();
       foreach ($data as $key => $entry) {
         $ID = $entry['ID'];
+        $fullname =  iconv("utf-8","windows-1250",$root.$entry['Name']);
         switch ($entry['Type']) {
           case 20:
             # Folder
             $slozka += 1;
+            if (!is_dir($fullname))
+            {
+              $changes['Archived'] = true;
+              $condition = "ID = '$ID'";
+              $this->registry->getObject('db')->updateRecords('DmsEntry',$changes,$condition);
+            }
             break;
           case 30:
             # File
-            $fullname =  iconv("utf-8","windows-1250",$root.$entry['Name']);
             $soubor += 1;
             if (!is_file($fullname))
             {

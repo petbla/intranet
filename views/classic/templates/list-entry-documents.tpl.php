@@ -8,7 +8,7 @@
 	  <!-- START DocumentItems -->
     <tr>
       <td>{icon{FileExtension}}</td>
-      <td><a href="">{title}.{FileExtension}</a></td>
+      <td><a href="index.php?page=document/view/{ID}">{title}.{FileExtension}</a></td>
       <td>{ModifyDateTime}</td>
   	</tr>
     <!-- END DocumentItems -->

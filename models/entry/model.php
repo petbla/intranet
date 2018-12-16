@@ -23,9 +23,11 @@ class Entry{
 	private $Archived;
 	private $NewEntry;
 	private $activeEntry;
+	private $link;
 		
 	public function __construct( Registry $registry, $id )
 	{
+		global $config;
 		$this->registry = $registry;
 		$this->activeEntry = false;
 		if( $id != '' )
@@ -53,6 +55,7 @@ class Entry{
 				$this->Archived = $data['Archived'];
 				$this->NewEntry = $data['NewEntry'];
 				$this->activeEntry = true;
+				$this->link = $data['Name'];  //iconv("windows-1250","utf-8",
 			}
 		}
 		else
@@ -77,6 +80,14 @@ class Entry{
 			}
 		}
 		return $data;
+	}
+	public function getLink()
+	{
+		if ($this->isValid())
+		{
+			return $this->link;
+		}
+		return null;
 	}
 }
 ?>

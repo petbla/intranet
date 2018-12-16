@@ -56,8 +56,20 @@ class document {
         {
             $this->registry->getObject('template')->getPage()->addTag( 'documentitems', '' );
         }
-        $this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'list-document.tpl.php', 'footer.tpl.php');
+        $this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'list-entry.tpl.php', 'footer.tpl.php');
     }	
+
+	public function viewDocument( $document, $breads, $filePath)
+	{
+		global $config, $caption;
+
+       
+        $this->addIcons();
+        $this->registry->getObject('template')->getPage()->addTag( 'breads', $breads );
+        $this->registry->getObject('template')->getPage()->addTag( 'filePath', $filePath );
+        $this->registry->getObject('template')->dataToTags( $document, '' );
+        $this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'view-entry-document.tpl.php', 'footer.tpl.php');
+    }
 
     public function createCategoryMenu()
     {
