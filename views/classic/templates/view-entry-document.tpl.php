@@ -16,8 +16,5 @@
             <td>ModifyDateTime</td>
         </tr>
     </table>
-    <object data="test.pdf" type="application/pdf" width="300" height="200">
-        alt : <a href="{filePath}">test.pdf</a>
-    </object>
-    <a href="{filePath}">test.pdf</a>
+    <a href="FileServer/{Name}">Náhled</a>
 </div>
