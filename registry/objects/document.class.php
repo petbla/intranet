@@ -17,7 +17,7 @@ class document {
         $this->registry = $registry;
     }
     
-	public function listDocuments( $sql, $pageLink , $isHeader, $isFolder, $isFiles, $isFooter, $breads)
+	public function listDocuments( $sql, $pageLink , $isHeader, $isFolder, $isFiles, $isFooter, $breads, $template = 'list-entry.tpl.php')
 	{
 		global $config, $caption;
 
@@ -34,10 +34,13 @@ class document {
         $this->registry->getObject('template')->getPage()->addTag( 'navigate_menu', $navigate );
         $sql .= " LIMIT $fromItem," . $config['maxVisibleItem']; 
         $cache = $this->registry->getObject('db')->cacheQuery( $sql );
-        
-        $this->registry->getObject('template')->getPage()->addTag( 'DocumentItems', array( 'SQL', $cache ) );
+        if ($this->registry->getObject('db')->isEmpty( $cache )){
+            $isFiles = false;
+        }else{
+            $this->registry->getObject('template')->getPage()->addTag( 'DocumentItems', array( 'SQL', $cache ) );
+        }
+        $this->registry->getObject('template')->getPage()->addTag( 'pageLink', $pageLink );
         $this->addIcons();
-		$this->registry->getObject('template')->getPage()->addTag( 'pageLink', $pageLink );
         $this->registry->getObject('template')->getPage()->addTag( 'breads', $breads );
         
         if ($isFolder)
@@ -56,7 +59,7 @@ class document {
         {
             $this->registry->getObject('template')->getPage()->addTag( 'documentitems', '' );
         }
-        $this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'list-entry.tpl.php', 'footer.tpl.php');
+        $this->registry->getObject('template')->buildFromTemplates('header.tpl.php', $template, 'footer.tpl.php');
     }	
 
 	public function viewDocument( $document, $breads, $filePath)
@@ -64,7 +67,6 @@ class document {
 		global $config, $caption;
 
        
-        $this->addIcons();
         $this->registry->getObject('template')->getPage()->addTag( 'breads', $breads );
         $this->registry->getObject('template')->getPage()->addTag( 'filePath', $filePath );
         $this->registry->getObject('template')->dataToTags( $document, '' );

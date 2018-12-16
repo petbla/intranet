@@ -48,7 +48,7 @@ class Newscontroller{
 	private function listDocuments( $ID )
 	{
 		global $config, $caption;
-    	$sql = "SELECT ID,Name as title,type,ModifyDateTime,LOWER(FileExtension) as FileExtension ".
+    	$sql = "SELECT ID,Name as title,Name,type,ModifyDateTime,LOWER(FileExtension) as FileExtension ".
 			   "FROM DmsEntry AS d ".
 			   "WHERE NewEntry = 1 AND Type = 30 AND Archived = false ".
 			   "ORDER BY Level,Parent,Type,LineNo" ;

@@ -108,7 +108,7 @@ class Documentcontroller{
 			$sqlFolders = "SELECT ID,title,type,ModifyDateTime FROM DmsEntry AS d ".
 			              "WHERE d.Archived = 0 AND d.parent={$entryNo} AND Type = 20 AND Archived = false ".
 			              "ORDER BY Type,Title";
-			$sqlFiles = "SELECT ID,title,type,ModifyDateTime,LOWER(FileExtension) as FileExtension FROM DmsEntry AS d ".
+			$sqlFiles = "SELECT ID,title,Name,type,ModifyDateTime,LOWER(FileExtension) as FileExtension FROM DmsEntry AS d ".
 			            "WHERE d.Archived = 0 AND d.parent={$entryNo} AND Type = 30 AND Archived = false ".
 			            "ORDER BY Type,Title";
 		}
@@ -117,14 +117,20 @@ class Documentcontroller{
 			$sqlFolders = "SELECT ID,title,type,ModifyDateTime FROM DmsEntry AS d ".
 				          "WHERE d.Archived = 0 AND d.parent=0 AND Type = 20 AND Archived = false ".
 				          "ORDER BY Type,Title ";
-			$sqlFiles = "SELECT ID,title,type,ModifyDateTime,LOWER(FileExtension) as FileExtension FROM DmsEntry AS d ".
+			$sqlFiles = "SELECT ID,title,Name,type,ModifyDateTime,LOWER(FileExtension) as FileExtension FROM DmsEntry AS d ".
 				        "WHERE d.Archived = 0 AND d.parent=0 AND Type = 30 AND Archived = false ".
 						"ORDER BY Type,Title ";
 		}
 		$breads = $this->getBreads($ID);
 		$cache = $this->registry->getObject('db')->cacheQuery( $sqlFolders );
-		$this->registry->getObject('template')->getPage()->addTag( 'FolderItems', array( 'SQL', $cache ) );
-		$this->registry->getObject('document')->listDocuments($sqlFiles,'',true,true,true,true,$breads);
+		$isHeader = true;
+		$isFolder = ($this->registry->getObject('db')->isEmpty($cache) == false);
+		$isFiles = true;
+		$isFooter = true;
+		if ($isFolder){
+			$this->registry->getObject('template')->getPage()->addTag( 'FolderItems', array( 'SQL', $cache ) );
+		}
+		$this->registry->getObject('document')->listDocuments($sqlFiles,'',$isHeader, $isFolder, $isFiles, $isFooter,$breads);
 	}	
 
 	private function viewDocument( $ID )
@@ -142,7 +148,7 @@ class Documentcontroller{
 			$filePath = iconv("utf-8","windows-1250",$filePath);
 			$filePath = "file:///C:/Users/petbla/Desktop/FileServer/_Zkratky.txt";
 			$filePath = "file:///C:/Users/petbla/Desktop/FileServer/Korespondence/Doležal%20-%20doklad%20o%20platbě%20pronájmu%20plochy%20pro%20kolotoče.pdf";
-			$filePath = 'index.php';
+			$filePath = "\\\\petblanb\\c$\Users\\petbla\\Desktop\\FileServer\\_ZkratkyXXXXX.txt";
 
 			$this->registry->getObject('document')->viewDocument($document,$breads,$filePath);
 		}

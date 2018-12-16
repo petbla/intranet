@@ -58,7 +58,8 @@ class mysqldatabase {
   private $queryOrderBy;
   private $querySql;
   private $queryResult;
-  
+  private $isCacheQuery;
+    
    /** 
     * Konstruktor databázového objektu 
     */ 
@@ -123,7 +124,8 @@ class mysqldatabase {
   		else
   		{
 		    if( $this->writeToLog )
-  			$this->queryCache[] = $result;
+        $this->queryCache[] = $result;
+        $this->isCacheQuery = true;
   			return count($this->queryCache)-1;
   		}
     }
@@ -156,6 +158,7 @@ class mysqldatabase {
     public function cacheData( $data )
     {
       $this->dataCache[] = $data;
+      $this->isCacheQuery = true;
     	return count( $this->dataCache )-1;
     }
     
@@ -255,6 +258,7 @@ class mysqldatabase {
       $this->queryFieldList = '';
       $this->queryCondition = '';
       $this->queryOrderBy = '';
+      $this->isCacheQuery = false;
 
 
       if( $fieldList == '')
@@ -363,6 +367,9 @@ class mysqldatabase {
      */
     public function findSet( )
     {
+      if ($this->isCacheQuery === true){
+        return false;
+      };
       $this->buildQuery();      
       if($this->querySql == '')
       {
@@ -385,6 +392,9 @@ class mysqldatabase {
      */
     public function findFirst( )
     {
+      if ($this->isCacheQuery === true){
+        return false;
+      };
       $this->buildQuery();      
       if($this->querySql == '')
       {
@@ -407,6 +417,9 @@ class mysqldatabase {
      */
     public function findLast()
     {
+      if ($this->isCacheQuery === true){
+        return false;
+      };
       if($this->queryOrderBy == '')
       {
         return false;
@@ -420,8 +433,15 @@ class mysqldatabase {
      * @param void
      * @return boolean
      */
-    public function isEmpty()
+    public function isEmpty( $cache_id = null)
     {
+      if ($this->isCacheQuery === true){
+        if ($this->queryCache[$cache_id]->num_rows > 0)
+        {
+          return false;
+        }
+        return true;
+      };
       $this->buildQuery();      
       if($this->querySql == '')
       {

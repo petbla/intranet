@@ -29,7 +29,7 @@ $config['metakeywords']		  = '';
 $config['headtitle']        = 'Intranet';
 $config['Copyright']        = 'Copyright &bull; Petbla';
 $config['CopyrightYear']    = 'petbla 2018';
-$config['fileserver']       = '//petblanb/Users/petbla/Desktop/FileServer/';
+$config['fileserver']       = '\\\\petblanb\\FileServer\\';
 
 /**
  *  Setting Personal Information

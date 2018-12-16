@@ -1,3 +1,10 @@
+<div id="breads">
+{breads}
+</div>
+<div id="pagecounter">
+{navigate_menu}
+</div>
+{pageLink}
 <div id="DocumentItems">
   <table>
     <tr>
@@ -8,9 +15,12 @@
 	  <!-- START DocumentItems -->
     <tr>
       <td>{icon{FileExtension}}</td>
-      <td><a href="FileServer/{Name}">{title}</a></td>
+      <td>{title}</td>
       <td>{ModifyDateTime}</td>
   	</tr>
     <!-- END DocumentItems -->
   </table>
+</div>
+<div id="pagecounter" class="bottom">
+{navigate_menu}
 </div>

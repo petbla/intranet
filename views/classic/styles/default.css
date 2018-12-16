@@ -288,7 +288,9 @@ div#document tr:nth-of-type(even){
 div#document tr:nth-of-type(odd) {
   background-color: #F3F3F3;
 }
-
+div#content span{
+  color: #000;
+}
 
 /* END page CONTENT */
 
