@@ -4,5 +4,6 @@
       <br /> 
       <p>&copy; petbla 2018</p>
     </footer>
+    <script src="js/default.js"></script>
   </body>
 </html>

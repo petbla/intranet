@@ -59,7 +59,14 @@ class document {
         {
             $this->registry->getObject('template')->getPage()->addTag( 'documentitems', '' );
         }
-        $this->registry->getObject('template')->buildFromTemplates('header.tpl.php', $template, 'footer.tpl.php');
+        if ($isFiles || $isFolder)
+        {
+            $this->registry->getObject('template')->buildFromTemplates('header.tpl.php', $template, 'footer.tpl.php');
+        }
+        else
+        {
+            $this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'invalid-document.tpl.php', 'footer.tpl.php');
+        }
     }	
 
 	public function viewDocument( $document, $breads, $filePath)

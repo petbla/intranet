@@ -4,21 +4,6 @@
     <meta charset="utf-8" />
     <title>PETBLA web</title>
     <link rel="stylesheet" type="text/css" href="views/classic/styles/default.css"> 
-    <link rel="stylesheet" type="text/css" href="views/classic/styles/print.css" media="print">
-    <!--[if (gte IE 5.5)&(lte IE 8)]>
-      <script type="text/javascript" 
-              src="js/DOMAssistantCompressed-2.8.js"></script>
-      <script type="text/javascript" 
-              src="js/ie-css3.js"></script>
-    <![endif]-->
-    <!--[if lte IE 7]>
-      <script type="text/javascript" src="print.js"></script>
-    <![endif]-->
-    <!--[if IE]>
-      <style>
-        fieldset legend{margin-top: -10px }
-      </style>
-    <![endif]-->
   </head>
 
   <body>

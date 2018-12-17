@@ -136,23 +136,37 @@ class Registry {
 		   0 - controller   (document,archiv,news,contact)
 		   1 - action       (list,view,edit,print,send)
 		   2 - id           (<GUID>)
-		   ..index.php?page=document/view/<GUID>
 		   ..index.php?page=document/list
 		   ..index.php?page=document/list/<GUID>
-		   ..index.php?page=document/edit/4
-		   ..index.php?page=contact
+		   ..index.php?page=document/view/<GUID>
+		   ..index.php?searchDocument=text&x=99&y=99
 	    */
 		
 		$guid = self::getObject('fce')->GUID();
 
 		$urldata = (isset($_REQUEST['page'])) ? $_REQUEST['page'] : '' ;
+		if (!$urldata)
+		{
+			if (isset($_REQUEST['searchDocument']))
+			{
+				$urldata = $_REQUEST['searchDocument'];
+				$urldata = "document/search/$urldata"; 
+			} 
+			else
+			{
+				$urldata = '';
+			}
+		}		
+		// $urldata = document/[list,view,search]/[GUID,text]
+		self::$urlPath = $urldata;
 		
 		$data = explode( '?', $_SERVER["REQUEST_URI"] );
 		$urlparam = (isset($data[1])) ? $data[1] : '' ;
-
-		self::$urlPath = $urldata;
+		// $urlparam = 
+		// page           : page=document/[list,view]/[GUID]
+		// searchDocument : text&x
 		self::$urlParam = $urlparam;
-     
+
 		if( $urldata == '' )
 		{
 			self::$urlBits[] = 'document';
@@ -160,15 +174,16 @@ class Registry {
 		}
 		else
 		{
+			// $urldata = document/[list,view]/[GUID]
 			$data = explode( '/', $urldata );
 			while ( !empty( $data ) && strlen( reset( $data ) ) === 0 ) 
 			{
-		    	array_shift( $data );
-		    }
-		    while ( !empty( $data ) && strlen( end( $data ) ) === 0) 
-		    {
-		        array_pop($data);
-		    }
+				array_shift( $data );
+			}
+			while ( !empty( $data ) && strlen( end( $data ) ) === 0) 
+			{
+				array_pop($data);
+			}
 			self::$urlBits = $this->array_trim( $data );
 		}
 	} // end function getURLDate

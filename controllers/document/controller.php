@@ -29,26 +29,25 @@ class Documentcontroller{
 			}
 			else
 			{
-				if( !isset( $urlBits[2] ) )
-				{		
-					$ID = '';
-				}
-				else
-				{
-					$ID = $urlBits[2];
-				}
-				// TODO: edit, search
-				switch( $urlBits[1] )
-				{				
+				$ID = '';
+				$searchText = '';
+				switch ($urlBits[1]) {
 					case 'list':
+						$ID = isset($urlBits[2]) ? $urlBits[2] : '';
 						$this->listDocuments($ID);
 						break;
 					case 'view':
+						$ID = isset($urlBits[2]) ? $urlBits[2] : '';
 						$this->viewDocument($ID);
 						break;
-					default:				
-						$this->listDocuments('');
-						break;		
+					case 'search':
+						$searchText = isset($urlBits[2]) ? $urlBits[2] : '';
+						if ($searchText){
+							$this->searchDocument($searchText);
+						}
+						break;
+					default:
+						break;
 				}
 			}
 			$this->registry->getObject('template')->getPage()->addTag( 'actionSearch', 'Document/search');
@@ -105,20 +104,20 @@ class Documentcontroller{
 			$name = $entry['Name'];
 			$this->registry->setLevel($level);
 			$this->registry->setEntryNo($entryNo);		
-			$sqlFolders = "SELECT ID,title,type,ModifyDateTime FROM DmsEntry AS d ".
-			              "WHERE d.Archived = 0 AND d.parent={$entryNo} AND Type = 20 AND Archived = false ".
+			$sqlFolders = "SELECT ID,title,type,ModifyDateTime FROM DmsEntry ".
+			              "WHERE Archived = 0 AND parent={$entryNo} AND Type = 20 ".
 			              "ORDER BY Type,Title";
-			$sqlFiles = "SELECT ID,title,Name,type,ModifyDateTime,LOWER(FileExtension) as FileExtension FROM DmsEntry AS d ".
-			            "WHERE d.Archived = 0 AND d.parent={$entryNo} AND Type = 30 AND Archived = false ".
+			$sqlFiles = "SELECT ID,title,Name,type,ModifyDateTime,LOWER(FileExtension) as FileExtension FROM DmsEntry ".
+			            "WHERE Archived = 0 AND parent={$entryNo} AND Type = 30 ".
 			            "ORDER BY Type,Title";
 		}
 		else
 		{
-			$sqlFolders = "SELECT ID,title,type,ModifyDateTime FROM DmsEntry AS d ".
-				          "WHERE d.Archived = 0 AND d.parent=0 AND Type = 20 AND Archived = false ".
+			$sqlFolders = "SELECT ID,title,type,ModifyDateTime FROM DmsEntry ".
+				          "WHERE Archived = 0 AND parent=0 AND Type = 20 ".
 				          "ORDER BY Type,Title ";
-			$sqlFiles = "SELECT ID,title,Name,type,ModifyDateTime,LOWER(FileExtension) as FileExtension FROM DmsEntry AS d ".
-				        "WHERE d.Archived = 0 AND d.parent=0 AND Type = 30 AND Archived = false ".
+			$sqlFiles = "SELECT ID,title,Name,type,ModifyDateTime,LOWER(FileExtension) as FileExtension FROM DmsEntry  ".
+				        "WHERE Archived = 0 AND parent=0 AND Type = 30 ".
 						"ORDER BY Type,Title ";
 		}
 		$breads = $this->getBreads($ID);
@@ -131,6 +130,21 @@ class Documentcontroller{
 			$this->registry->getObject('template')->getPage()->addTag( 'FolderItems', array( 'SQL', $cache ) );
 		}
 		$this->registry->getObject('document')->listDocuments($sqlFiles,'',$isHeader, $isFolder, $isFiles, $isFooter,$breads);
+	}	
+
+	private function searchDocument( $searchText )
+	{
+		global $config, $caption;
+
+		$searchText = htmlspecialchars($searchText);
+		$sqlFiles = "SELECT ID,title,Name,type,ModifyDateTime,LOWER(FileExtension) as FileExtension FROM DmsEntry ".
+					"WHERE Archived = 0 AND Type = 30 AND MATCH(Title) AGAINST ('*$searchText*' IN BOOLEAN MODE) ".
+					"ORDER BY Name";
+		$isHeader = true;
+		$isFolder = false;
+		$isFiles = true;
+		$isFooter = true;
+		$this->registry->getObject('document')->listDocuments($sqlFiles,'',$isHeader, $isFolder, $isFiles, $isFooter,'','list-entry-resultsearch.tpl.php');
 	}	
 
 	private function viewDocument( $ID )

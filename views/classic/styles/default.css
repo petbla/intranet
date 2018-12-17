@@ -238,7 +238,7 @@ div#breads a{
   font-weight:normal;
   text-decoration: none;
   padding: 0 10px;
-  color: #808080; 
+  color: #337AB7; 
 }
 div#breads a:hover{
   color: #000;
@@ -249,7 +249,7 @@ div#DocumentItems td a, div#DocumentItems td{
   font-weight:normal;
   text-decoration: none;
   padding: 4px 0;
-  color: #6C7ABD; 
+  color: brown; 
 }
 div#DocumentItems a:hover{
   color: rgb(9, 13, 221); 
@@ -326,6 +326,30 @@ div#pagecounter a span strong{
   font-weight: bold;
 }
 /* END Page Counter */
+
+/* Search menu */
+div#searchForm{
+  text-align: left;
+  height: 40px;
+  margin: 10px 10px 20px 10px;
+  padding: 0;
+}
+div#searchForm label{
+  font-size: 18px;
+  padding: 0 10px 0 0;
+}
+input#search{
+  font-size: 18px;
+  padding: 10px 5px;
+  margin: 0;
+  width: 70%;
+} 
+input#submit{
+  padding: 0;
+  vertical-align: middle;
+}
+
+/* END Search menu */
 
 /*
  * Link windows
