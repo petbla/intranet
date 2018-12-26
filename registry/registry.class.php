@@ -142,6 +142,8 @@ class Registry {
 		   ..index.php?searchDocument=text&x=99&y=99
 	    */
 		
+
+		$user =  getenv("username");
 		$guid = self::getObject('fce')->GUID();
 
 		$urldata = (isset($_REQUEST['page'])) ? $_REQUEST['page'] : '' ;

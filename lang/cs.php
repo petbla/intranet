@@ -21,7 +21,6 @@ $caption['auth_username']               = 'Uživatelské jméno';
 $caption['auth_userpsw']                = 'Heslo';
 $caption['auth_userpsw_repeat']         = 'Potvrzení hesla';
 $caption['auth_error_repeatPsw']        = 'Chyba při potvrzení hesla';
-$caption['auth_error_conftext']         = 'Chyba při opisu textu z obrázku.';
 $caption['auth_new_registration']       = 'Nová registrace';
 $caption['auth_error_registration']     = 'Chyba při registraci';
 $caption['auth_error_registrationMsg']  = 'Uživatel s tímto jménem již existuje, zadejte prosím jiné.';
@@ -30,13 +29,11 @@ $caption['auth_error_noValidLogin']     = 'Uživatel s tímto jménem neexistuje
 $caption['auth_errorlogin_credent']     = 'Údaje o příhlášení nebylo možno ověřit.';
 $caption['auth_passwordChangedMsg']     = 'Vaše heslo bylo změněno, Vaše nové přihlašovací údaje jsou:';
 $caption['user']                        = 'uživatel';
+$caption['new_user_failed']             = 'Chybně zadané údaje, uživatel nebyl založen';
+$caption['new_user_created']            = 'Uživatel byl založen.';
 $caption['waitIsRedirecting']           = 'Vyčkejte prosím, probíhá přesměrování';
 $caption['RedirectHandle']              = 'Klepněte na tento odkaz, pokud nedojde k přesměrování';
 $caption['notAvailableMsg']             = 'Je nám líto, ale tento produkt je vyprodaný a není možné ho přidat do vašeho košíku.';
-$caption['ProductNotFound']             = 'Produkt nenalezen';
-$caption['ProductNotFoundMsg']          = 'Je nám líto, ale takový produkt neexistuje.';
-$caption['ProductDeleteFromBasket']     = 'Produkt odstraněn';
-$caption['ProductDeleteFromBasketMsg']  = 'Produkt byl odstraněn z košíku';
 
 /**
  * Form's Title
@@ -114,4 +111,8 @@ $caption['edit'] =           'Editace';
 $caption['Search'] =         'Hledej';
 $caption['print'] =          'Tisk';
 
+/**
+ * Messages
+ */
+$caption['msg_updateFinished'] = 'Aktualizace databáze dokončena';
 ?>

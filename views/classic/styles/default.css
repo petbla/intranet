@@ -104,6 +104,10 @@ header#page_header img{
 #page_header nav a:hover{
   color: #000;
 }
+span#UserName{
+  color: #000;
+  font-size: 11px;
+}
 /* END Header */
 
 /*
@@ -426,4 +430,53 @@ tr:nth-of-type(even){
 }
 tr:nth-of-type(odd) {
   background-color:#ddd;
+}
+
+div#admin table{
+  width: 70%; 
+  margin: 20px;
+  border: 1px solid #337AB7;
+  font-size: 20px; 
+  text-align: center;
+} 
+div#admin td{
+  width: 50%; 
+  background-color: #ff9;
+  padding: 20px 0;
+  border: 1px solid #337AB7;
+}
+div#admin a{
+  text-decoration: none;
+}
+
+div#users table{
+  width: 80%; 
+  margin: 16px;
+  border: 1px solid #337AB7;
+  font-size: 14px; 
+  text-align: left;
+}
+div#users th{
+  background-color: #337AB7;
+}
+div#users td{
+  padding: 4px 0;
+}
+div#users .form-style-user{
+	margin:30px;
+	max-width: 400px;
+	padding: 20px 12px 10px 20px;
+	font: 13px "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+}
+div#users .form-style-user li {
+	padding: 0;
+	display: block;
+	list-style: none;
+	margin: 10px 0 0 0;
+}
+div#users .form-style-user label{
+	margin:0 0 3px 0;
+	padding:0px;
+	display:block;
+	font-weight: bold;
 }

@@ -5,12 +5,28 @@ var fileTitle, fileExtension;
 var linkTitle;
 var pagecounter;
 var search;
+var formAdUser;
+var password, password_confirm;
+var loginForm;
 
 documentLink = document.querySelector('#cosumentLink');
 fileTitle = document.querySelector('#FileTitle');
 fileExtension = document.querySelector('#FileExtension');
 pagecounter = document.querySelector('#pagecounter');
 search = document.querySelector('#search');
+password = document.querySelector('#usr_psw1');
+password_confirm = document.querySelector('#usr_psw2');
+loginForm = document.querySelector('#loginForm');
+
+function validatePassword () {
+    if (password.value != password_confirm.value) {
+        password_confirm.setCustomValidity('Heslo se neshoduje.');
+    }    
+    else
+    {
+        password_confirm.setCustomValidity('');
+    }
+}
 
 if (pagecounter != null){
     if (pagecounter.innerText == ""){
@@ -44,24 +60,11 @@ if ((fileExtension) && ('innerText' in fileExtension)) {
     }   
 }
 
-search.onclick = function (e) {
-    console.log('click')
-    e.target.value = '';
+if (password) {
+    password.onchange = validatePassword;
 }
-search.onmouseout = function (e) {
-    if (e.target.value == ''){
-        e.target.value = 'Zadejte text...';
-    }
+if (password_confirm) {
+    password_confirm.onkeyup = validatePassword;
 }
 
-/*
-var i;
-for (i in search){
-    if (i.indexOf('on') == 0) {
-        console.log(i,search[i]);
-    }
-}
-*/
 
-
-console.log(search);

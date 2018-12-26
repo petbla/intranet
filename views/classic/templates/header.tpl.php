@@ -8,7 +8,10 @@
 
   <body>
     <header id="page_header">
-      <p>{dateText}</p>
+      <p>
+        {dateText}<br/>
+        <span id="UserName">{UserName}</span>
+      </p>
       <img src="views/classic/images/logo.png" border="0" alt="" title="Obec Mistřice">
       <h1>{cfg_compName}</h1>
       <h2>{lbl_DmsLabel}</h2>
@@ -19,7 +22,7 @@
           <li><a href="index.php?page=archive/list">Archív</a></li>
           <li><a href="index.php?page=contact/list">Kontakty</a></li>
           <li><a href="https://teamup.com/ksx5ivfw8yrnn6gbqy">Kalendář</a></li>
-          <li><a href="index.php?page=admin/update">Administrace</a></li>
+          <li><a href="index.php?page=admin">Administrace</a></li>
         </ul>
       </nav>
     </header>
@@ -50,6 +53,7 @@
         <section id="navigate" nav role="navigation">
           <nav>
           {categories}
+          {loginform}
           </nav>
         </section>
         

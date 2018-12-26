@@ -43,6 +43,29 @@ $registry->getObject('template')->buildFromTemplates('header.tpl.php', 'main.tpl
 
 $registry->getObject('template')->addTemplateBit('categories', 'categorymenu.tpl.php');
 
+
+// Přihlášení 
+if (($registry->getObject('authenticate')->isLoggedIn()) || ($registry->getObject('authenticate')->isAdmin())) 
+{  
+  if ( $registry->getObject('authenticate')->isLoggedIn() ) 
+  {
+	if ($registry->getURLBit( 0 ) == 'logout'){
+		$registry->getObject('authenticate')->logout();
+		$registry->getObject('template')->addTemplateBit('loginform',  'login.tpl.php');
+	}else{
+		$registry->getObject('template')->addTemplateBit('loginform', 'logout.tpl.php');
+	}
+  }
+  else
+  {
+	$registry->getObject('template')->getPage()->addTag('loginform','');
+  }
+}else{
+  $registry->getObject('template')->addTemplateBit('loginform','login.tpl.php');
+}
+$registry->getObject('template')->getPage()->addTag('UserName',$registry->getObject('authenticate')->getUserName());
+
+
 // Check Active Controllers
 $activeControllers = array();
 $activeControllers[] = 'document';
