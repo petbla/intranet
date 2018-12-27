@@ -11,14 +11,6 @@ class Admincontroller {
 
 		$this->registry = $registry;
 
-		if ( !$this->registry->getObject('authenticate')->isAdmin())
-		{
-			$message = $caption['msg_unauthorized'];
-			$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page.tpl.php', 'footer.tpl.php');
-			$this->registry->getObject('template')->getPage()->addTag('message',$message);
-			return;
-		}
-
 		// Chek existing permission Sets
 		$this->registry->getObject('db')->initQuery('permissionset');
 		if ($this->registry->getObject('db')->isEmpty())
@@ -34,24 +26,49 @@ class Admincontroller {
 				switch( $urlBits[1] )
 				{				
 					case 'update':
-						$this->updateDmsStore();
-						return;
+						if ( $this->registry->getObject('authenticate')->isAdmin())
+						{
+							$this->updateDmsStore();
+							return;
+						}
 					case 'users':
-						$this->listUsers();
-						return;
+						if ( $this->registry->getObject('authenticate')->isAdmin())
+						{
+							$this->listUsers();
+							return;
+						}
 					case 'newuser':
-						$this->newUser();
-						return;
+						if ( $this->registry->getObject('authenticate')->isAdmin())
+						{
+							$this->newUser();
+							return;
+						}
 					case 'adduser':
-						$this->addUser();
-						return;
+						if ( $this->registry->getObject('authenticate')->isAdmin())
+						{
+							$this->addUser();
+							return;
+						}
 					case 'addfolder':
-						$this->addfolder();
-						return;
+						if ( $this->registry->getObject('authenticate')->getPermissionSet() > 0 )
+						{
+							$this->addfolder();
+							return;
+						}
+				}
+			}
+			else
+			{
+				if ( $this->registry->getObject('authenticate')->isAdmin())
+				{
+					$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'admin.tpl.php', 'footer.tpl.php');
+					return;
 				}
 			}
 		}
-		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'admin.tpl.php', 'footer.tpl.php');
+		$message = $caption['msg_unauthorized'];
+		$this->registry->getObject('template')->getPage()->addTag('message',$message);
+		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page.tpl.php', 'footer.tpl.php');
 	}
 
 	

@@ -69,27 +69,33 @@ class document {
         {
             $this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'invalid-document.tpl.php', 'footer.tpl.php');
         }
-        if ($perSet == 9)
+        if ($perSet > 0)
         {
             $this->registry->getObject('template')->addTemplateBit('actionpanel', 'actionpanel.tpl.php');
+            $this->registry->getObject('template')->addTemplateBit('addFiles', 'add-files.tpl.php');
         }
         else
         {
             $this->registry->getObject('template')->getPage()->addTag( 'actionpanel', '' );
+            $this->registry->getObject('template')->getPage()->addTag( 'addFiles', '' );
         }
+
         
         // Parent folder
         if (isset($entryNo) != null)
         {
             $parentPath = $config['fileserver'];
+            $parentID = '';
             $this->registry->getObject('db')->initQuery('dmsentry');
             $this->registry->getObject('db')->setFilter('EntryNo',$entryNo);
             if (($entryNo > 0) && $this->registry->getObject('db')->findFirst())
             {
                 $data = $this->registry->getObject('db')->getResult();
                 $parentPath .=  $data['Name'];
+                $parentID = $data['ID'];
             }
             $this->registry->getObject('template')->getPage()->addTag('parentfoldername', $parentPath );
+            $this->registry->getObject('template')->getPage()->addTag('parentID', $parentID );            
         }
         else
         {

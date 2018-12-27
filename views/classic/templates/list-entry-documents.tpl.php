@@ -5,9 +5,10 @@
       <th>{lbl_Name}</th>
       <th>{lbl_ModifyDate}</th>
     </tr>
-	  <!-- START DocumentItems -->
+    {addFiles}
+    <!-- START DocumentItems -->
     <tr>
-      <td>{icon{FileExtension}}</td>
+      <td><a href="FileServer/{Name}">{icon{FileExtension}}</a></td>
       <td><a href="index.php?page=document/view/{ID}">{title}</a></td>
       <td>{ModifyDateTime}</td>
   	</tr>

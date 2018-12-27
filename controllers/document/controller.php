@@ -46,6 +46,9 @@ class Documentcontroller{
 							$this->searchDocument($searchText);
 						}
 						break;
+					case 'addFiles':
+						$this->addFiles();
+						break;
 					default:
 						break;
 				}
@@ -107,7 +110,7 @@ class Documentcontroller{
 			$name = $entry['Name'];
 			$this->registry->setLevel($level);
 			$this->registry->setEntryNo($entryNo);		
-			$sqlFolders = "SELECT ID,title,type,ModifyDateTime FROM DmsEntry ".
+			$sqlFolders = "SELECT ID,title,Name,type,ModifyDateTime FROM DmsEntry ".
 						  "WHERE Archived = 0 AND parent={$entryNo} AND Type = 20 ".
 						  "AND PermissionSet <= $perSet ".
 			              "ORDER BY Type,Title";
@@ -118,7 +121,7 @@ class Documentcontroller{
 		}
 		else
 		{
-			$sqlFolders = "SELECT ID,title,type,Parent,ModifyDateTime FROM DmsEntry ".
+			$sqlFolders = "SELECT ID,title,Name,type,Parent,ModifyDateTime FROM DmsEntry ".
 						  "WHERE Archived = 0 AND parent=0 AND Type = 20 ".
 						  "AND PermissionSet <= $perSet ".
 				          "ORDER BY Type,Title ";
@@ -169,13 +172,15 @@ class Documentcontroller{
 			$document = $this->model->getData();
 			$breads = $this->getBreads($ID);			
 			$filePath = $this->model->getLink();
-			$filePath = '//petblanb/Users/petbla/Desktop/FileServer/Korespondence/Doležal - doklad o platbě pronájmu plochy pro kolotoče.pdf';		
 			$filePath = iconv("utf-8","windows-1250",$filePath);
-			$filePath = "file:///C:/Users/petbla/Desktop/FileServer/_Zkratky.txt";
-			$filePath = "file:///C:/Users/petbla/Desktop/FileServer/Korespondence/Doležal%20-%20doklad%20o%20platbě%20pronájmu%20plochy%20pro%20kolotoče.pdf";
-			$filePath = "\\\\petblanb\\c$\Users\\petbla\\Desktop\\FileServer\\_ZkratkyXXXXX.txt";
-
-			$this->registry->getObject('document')->viewDocument($document,$breads,$filePath);
+			if ($document['Type'] == 20)
+			{
+				$this->listDocuments($ID);
+			}
+			else
+			{
+				$this->registry->getObject('document')->viewDocument($document,$breads,$filePath);
+			}
 		}
 		else
 		{
@@ -184,5 +189,45 @@ class Documentcontroller{
 		}
 	}	
 
+	private function addFiles( )
+	{
+		//$files = ($_POST('files') !== null) ? $_POST('files') : null;
+		//328B694F-229F-4D80-8730-F171513611DD
+
+		if(isset($_FILES["fileToUpload"]) && isset($_POST['path']) && isset($_POST["submit_x"]) && isset($_POST['ID']) ) {
+			$ID = $_POST['ID'];
+			$path = $_POST['path'];
+			$path .= ($path[strlen($path)-1] != DIRECTORY_SEPARATOR) ? DIRECTORY_SEPARATOR : '';
+			$files = $_FILES['fileToUpload'];
+			if(!empty($files))
+			{
+				$files = $this->reArrayFiles($files);
+				foreach($files as $file)
+				{
+					$target_file = $path . basename($file["name"]);
+					$target_file = iconv("utf-8","windows-1250",$target_file);
+					move_uploaded_file($file['tmp_name'],$target_file);
+					$EntryNo = $this->registry->getObject('file')->findItem($target_file);
+				}
+			}	
+		}
+		$this->listDocuments($ID);
+	}
+
+	private function reArrayFiles($file)
+	{
+		$file_ary = array();
+		$file_count = count($file['name']);
+		$file_key = array_keys($file);
+		
+		for($i=0;$i<$file_count;$i++)
+		{
+			foreach($file_key as $val)
+			{
+				$file_ary[$i][$val] = $file[$val][$i];
+			}
+		}
+		return $file_ary;
+	}
 }
 ?>
