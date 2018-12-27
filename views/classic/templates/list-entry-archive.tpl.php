@@ -9,8 +9,8 @@
   <table>
     <tr>
       <th>&nbsp;</th>
-      <th>Název</th>
-      <th>Datum změny</th>
+      <th>{lbl_Name}</th>
+      <th>{lbl_ModifyDate}</th>
     </tr>
 	  <!-- START DocumentItems -->
     <tr>

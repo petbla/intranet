@@ -2,7 +2,7 @@
 <html lang="cs-CZ">
   <head>
     <meta charset="utf-8" />
-    <title>PETBLA web</title>
+    <title>{cfg_sitename}</title>
     <link rel="stylesheet" type="text/css" href="views/classic/styles/default.css"> 
   </head>
 
@@ -12,17 +12,17 @@
         {dateText}<br/>
         <span id="UserName">{UserName}</span>
       </p>
-      <img src="views/classic/images/logo.png" border="0" alt="" title="Obec Mistřice">
+      <img src="views/classic/images/logo.png" border="0" alt="" title="{cfg_compName}">
       <h1>{cfg_compName}</h1>
       <h2>{lbl_DmsLabel}</h2>
       <nav>
         <ul>
-          <li><a href="index.php?page=document/list">Dokumenty</a></li>
-          <li><a href="index.php?page=news/list">Novinky</a></li>
-          <li><a href="index.php?page=archive/list">Archív</a></li>
-          <li><a href="index.php?page=contact/list">Kontakty</a></li>
-          <li><a href="https://teamup.com/ksx5ivfw8yrnn6gbqy">Kalendář</a></li>
-          <li><a href="index.php?page=admin">Administrace</a></li>
+          <li><a href="index.php?page=document/list">{lbl_Documents}</a></li>
+          <li><a href="index.php?page=news/list">{lbl_News}</a></li>
+          <li><a href="index.php?page=archive/list">{lbl_Archive}</a></li>
+          {contactBarMenuItem}
+          {calendarBarMenuItem}
+          {adminBarMenuItem}
         </ul>
       </nav>
     </header>
@@ -32,19 +32,17 @@
         <section id="login">
           <form action="/prihlaseni" method="post">
             <fieldset>
-              <legend>Přihlášení</legend>
+              <legend>{lbl_SingUp}</legend>
               <ol>
                 <li>
-                  <label for="username">Login</label>
-                  <input id="username" type="text" name="username"
-                   autocomplete="on">
+                  <label>Login</label>
+                  <input id="username" type="text" name="username" autocomplete="on">
                 </li>
                 <li>
-                  <label for="heslo">Heslo</label>
-                  <input id="psw" type="password"
-                   name="psw" value="" autocomplete="off"/>
+                  <label>{lbl_Password}</label>
+                  <input id="psw" type="password" name="psw" value="" autocomplete="off"/>
                 </li>
-                <li><input type="submit" value="Přihlásit"></li>
+                <li><input type="submit" value="{lbl_SingUp}"></li>
               </ol>
             </fieldset>
           </form>

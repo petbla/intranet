@@ -1,21 +1,21 @@
 <div id="users">
     <table>
         <tr>
-            <th>Jnémo</th>
-            <th>Sada práv</th>
-            <th>AKCE</th>
+            <th>{lbl_First_name}</th>
+            <th>{lbl_PermissionSet}</th>
+            <th>{lbl_ACTIONS}</th>
         </tr>
         <!-- START UserList -->
         <tr>
             <td>{Name}</td>
             <td>{Role}</td>
             <td>
-                <a href="index.php?page=admin/modifyuser"><img src="views/classic/images/icon/modify.png" alt="Změna" title="Změna"></a>
+                <a href="index.php?page=admin/modifyuser"><img src="views/classic/images/icon/modify.png" alt="{lbl_edit}" title="{lbl_edit}"></a>
                 &nbsp;
-                <a href="index.php?page=admin/deleteuser"><img src="views/classic/images/icon/delete.png" alt="Odstranit" title="Odstranit"></a>
+                <a href="index.php?page=admin/deleteuser"><img src="views/classic/images/icon/delete.png" alt="{lbl_Delete}" title="{lbl_Delete}"></a>
             </td>
         </tr>
         <!-- END UserList -->
     </table>
-    <a href="index.php?page=admin/newuser" class="action"><img src="views/classic/images/nav/adduser.png" alt="Nový">&nbsp;Nový uživatel</a>
+    <a href="index.php?page=admin/newuser" class="action"><img src="views/classic/images/nav/adduser.png" alt="{lbl_New}">&nbsp;{lbl_NewUser}</a>
 </div>

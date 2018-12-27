@@ -13,8 +13,8 @@ class authentication {
 	private $loggedIn = false;
 	private $admin = false;
 	
-  private $name;
-  private $permissionSet;
+  private $name = '';
+  private $permissionSet = 0;
 	private $justProcessed = false;
 	private $loginFailureReason = '';
 	
@@ -145,6 +145,11 @@ class authentication {
   public function getUsername()
   {
   	return $this->name;
+  }
+  
+  public function getPermissionSet()
+  {
+  	return $this->permissionSet;
   }
   
   public  function isMemberOfGroup( $group )

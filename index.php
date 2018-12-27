@@ -97,6 +97,17 @@ $registry->getObject('template')->getPage()->addTag( 'dateText', $dateText );
 // Category Menu
 $registry->getObject('document')->createCategoryMenu();
 
+// Barmenu 
+$perSet = $registry->getObject('authenticate')->getPermissionSet();
+$isAdmin = $registry->getObject('authenticate')->isAdmin();
+$contactBarMenuItem = $perSet > 0 ? "<li><a href='index.php?page=contact/list'>Kontakty</a></li>" : '';
+$calendarBarMenuItem = $perSet > 0 ? "<li><a href='https://teamup.com/ksx5ivfw8yrnn6gbqy'>Kalendář</a></li>" : '';
+$adminBarMenuItem = $isAdmin ? "<li><a href='index.php?page=admin'>Administrace</a></li>" : '';
+$registry->getObject('template')->getPage()->addTag( 'contactBarMenuItem', $contactBarMenuItem );
+$registry->getObject('template')->getPage()->addTag( 'calendarBarMenuItem', $calendarBarMenuItem );
+$registry->getObject('template')->getPage()->addTag( 'adminBarMenuItem', $adminBarMenuItem );
+
+
 // vše analyzuj a zobraz výsledek
 $registry->getObject('template')->parseOutput();
 

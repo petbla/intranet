@@ -1,8 +1,8 @@
 <div id="searchForm">
     <form action="index.php?page=document/search">
-        <label for="search">Vyhledat</label>
-        <input type="text" name="searchDocument" id="search" placeholder="Zadejte text...">
-        <input type="image" src="views/classic/images/icon/search.png" value="Hledat" id="submit">
+        <label for="search">{lbl_Search}</label>
+        <input type="text" name="searchDocument" id="search" placeholder="{lbl_PlaceText}">
+        <input type="image" src="views/classic/images/icon/search.png" value="{lbl_Searching}" id="submit">
     </form>
 </div>
 <div id="pagecounter">
@@ -13,8 +13,8 @@
   <table>
     <tr>
       <th>&nbsp;</th>
-      <th>Název</th>
-      <th>Datum změny</th>
+      <th>{lbl_Name}</th>
+      <th>{lbl_ModifyDate}</th>
     </tr>
 	  <!-- START DocumentItems -->
     <tr>

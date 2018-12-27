@@ -36,36 +36,29 @@ $caption['RedirectHandle']              = 'Klepněte na tento odkaz, pokud nedoj
 $caption['notAvailableMsg']             = 'Je nám líto, ale tento produkt je vyprodaný a není možné ho přidat do vašeho košíku.';
 
 /**
- * Form's Title
+ * Titles
  **/
-$caption['loginLabel'] =     'Přihlášení';
-$caption['LoginNow'] =       'Přihlášen';
-$caption['login'] =          'Přihlásit';
-$caption['newLogin'] =       'Registrace';
-$caption['forgetLogin'] =    'Zapomenuté heslo';
-$caption['sendForgetPsw'] =  'Odeslání nového hesla';
-$caption['sendpsw'] =        'Odeslat heslo';
-$caption['passwordSent'] =   'Na vaši emailovou adresu bylo odesláno nové heslo.';
-$caption['SingUp'] =         'Přihlásit';
-$caption['SingOff'] =        'Odhlásit';
-$caption['copyText'] =       'Opište text';
-$caption['searchLabel'] =    'Najít';
-$caption['search'] =         'Vyhledat';
-$caption['PageNotFound']        = 'Stránka nenalezena';
-$caption['error404']            = 'Stránku, o který máte zájem, se nám bohužel nepodařilo najít. Vraťte se prosím zpět na úvodní stránku a zkuste to znovu.';
 $caption['TodayIs'] =        'Dnes je';
-$caption['logout'] =         'Odhlásit se';
-$caption['LogoutNow'] =      'Odhlášení';
-$caption['LogoutNowMsg'] =   'Odhlášení bylo provedeno úspěšně.';
 $caption['DmsLabel'] =       'Sptáva dokumentů';
+$caption['CreateNewUser'] =  'Založení nového uživatele';
+$caption['CreateUser'] =     'Založit uživatele';
+$caption['home_page']      = 'Úvodní strana';
 
 /**
  * Column's Titel
  */
+$caption['SingUp'] =         'Přihlášení';
+$caption['SingOff'] =        'Odhlásit';
+$caption['Password'] =       'Heslo';
+$caption['searchLabel'] =    'Najít';
+$caption['search'] =         'Vyhledat';
 $caption['Category'] =       'Kategorie';
 $caption['First_name'] =     'Jméno';
 $caption['Last_name'] =      'Příjmení';
 $caption['FirstLast_name'] = 'Jméno a příjmení';
+$caption['First_last_name'] ='Celé jméno';
+$caption['User_name'] =      'Jméno uživatele';
+$caption['NewUser'] =        'Nový uživatel';
 $caption['Function'] =       'Funkce';
 $caption['Company'] =        'Firma';
 $caption['Street'] =         'Ulice';
@@ -75,25 +68,32 @@ $caption['Phone'] =          'Telefon';
 $caption['Address'] =        'Adresa';
 $caption['ShippAddress']  =  'Adresa doručení';
 $caption['Email'] =          'E-mail';
+$caption['PermissionSet'] =  'Sada práv';
 $caption['Comment'] =        'Poznámka';
-$caption['Courier'] =        'Doručení';
-$caption['Login'] =          'Login';
-$caption['Password'] =       'Heslo';
+$caption['ConfirmPsw'] =     'Potvrdit heslo';
 $caption['File'] =           'Soubor';
 $caption['Files'] =          'Soubory';
 $caption['Add_file'] =       'Přidat soubor';
-$caption['First_last_name'] ='Celé jméno';
 $caption['Date'] =           'Datum';
-$caption['DocumentDate'] =   'Datum dokladu';
-$caption['DueDate'] =        'Datum splatnosti';
 $caption['Title'] =          'Titulek';
 $caption['Description'] =    'Popis';
+$caption['Name'] =           'Název';
 $caption['Status'] =         'Stav';
+$caption['ModifyDate'] =     'Datum změny';
+$caption['ACTIONS'] =        'AKCE';
+$caption['Users'] =          'Uživatelé';
+$caption['Synchronize'] =    'Synchronizace';
+$caption['Document'] =       'Dokument';
+$caption['Documents'] =      'Dokumenty';
+$caption['Created'] =        'Vytvořeno';
+$caption['Modified'] =       'Změněno';
+$caption['News'] =           'Novinky';
+$caption['Archive'] =        'Archív';
+$caption['Contacts'] =       'Kontakty';
 
 /**
  * Action's Title
  */
-$caption['home_page']      = 'Úvodní strana';
 $caption['btn_firstpage']  = 'první strana';
 $caption['btn_prevpage']   = 'předchozí strana';
 $caption['btn_nextpage']   = 'další strana';
@@ -101,18 +101,33 @@ $caption['btn_lastpage']   = 'poslední strana';
 $caption['All'] =            'Vše';
 $caption['choose'] =         'Zvolte';
 $caption['Delete'] =         'Smazat';
-$caption['delete'] =         'Smaž';
 $caption['Next'] =           'Další';
 $caption['back'] =           'Zpět';
 $caption['save'] =           'Ulož';
 $caption['Save'] =           'Uložit';
+$caption['New'] =            'Nový';
 $caption['go_back'] =        'Zpět hlavní strana';
 $caption['edit'] =           'Editace';
-$caption['Search'] =         'Hledej';
+$caption['Search'] =         'Vyhledat';
+$caption['Searching'] =      'Hledat';
 $caption['print'] =          'Tisk';
+$caption['createNewFolder'] ='Vytvořit novou složku';
+$caption['newFolder'] =      'Nová složka';
+$caption['folderName'] =     'Název složky';
+$caption['PlaceText'] =      'Zadejte text...';
+$caption['View'] =           'Náhled';
+
 
 /**
  * Messages
  */
-$caption['msg_updateFinished'] = 'Aktualizace databáze dokončena';
+$caption['msg_updateFinished'] =   'Aktualizace databáze dokončena';
+$caption['msg_unauthorized'] =     'Nedostatečné oprávnění k provedení akce';
+$caption['msg_maxLenghtPsw4'] =    'Délka hesla musí být minimálně 4 znaky.';
+$caption['msg_PageNotFound'] =     'Stránka nenalezena';
+$caption['msg_error404'] =         'Stránku, o který máte zájem, se nám bohužel nepodařilo najít. Vraťte se prosím zpět na úvodní stránku a zkuste to znovu.';
+$caption['msg_docNotfound'] =      'Dokument nenalezen.';
+$caption['msg_folderNotCreated'] = 'Složka nebyla založena.';
+$caption['msg_folderExists'] =     'Složka zadaného názvu již existuje.';
+
 ?>

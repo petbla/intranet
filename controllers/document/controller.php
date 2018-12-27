@@ -93,6 +93,8 @@ class Documentcontroller{
 	private function listDocuments( $ID )
 	{
 		global $config, $caption;
+		
+		$perSet = $this->registry->getObject('authenticate')->getPermissionSet();
 
 		require_once( FRAMEWORK_PATH . 'models/entry/model.php');
 		$this->model = new Entry( $this->registry, $ID );
@@ -101,24 +103,30 @@ class Documentcontroller{
 			$entry = $this->model->getData();
 			$level = $entry['Level'];
 			$entryNo = $entry['EntryNo'];
+			$parent = $entry['Parent'];
 			$name = $entry['Name'];
 			$this->registry->setLevel($level);
 			$this->registry->setEntryNo($entryNo);		
 			$sqlFolders = "SELECT ID,title,type,ModifyDateTime FROM DmsEntry ".
-			              "WHERE Archived = 0 AND parent={$entryNo} AND Type = 20 ".
+						  "WHERE Archived = 0 AND parent={$entryNo} AND Type = 20 ".
+						  "AND PermissionSet <= $perSet ".
 			              "ORDER BY Type,Title";
 			$sqlFiles = "SELECT ID,title,Name,type,ModifyDateTime,LOWER(FileExtension) as FileExtension FROM DmsEntry ".
-			            "WHERE Archived = 0 AND parent={$entryNo} AND Type = 30 ".
+						"WHERE Archived = 0 AND parent={$entryNo} AND Type = 30 ".
+						"AND PermissionSet <= $perSet ".
 			            "ORDER BY Type,Title";
 		}
 		else
 		{
-			$sqlFolders = "SELECT ID,title,type,ModifyDateTime FROM DmsEntry ".
-				          "WHERE Archived = 0 AND parent=0 AND Type = 20 ".
+			$sqlFolders = "SELECT ID,title,type,Parent,ModifyDateTime FROM DmsEntry ".
+						  "WHERE Archived = 0 AND parent=0 AND Type = 20 ".
+						  "AND PermissionSet <= $perSet ".
 				          "ORDER BY Type,Title ";
-			$sqlFiles = "SELECT ID,title,Name,type,ModifyDateTime,LOWER(FileExtension) as FileExtension FROM DmsEntry  ".
-				        "WHERE Archived = 0 AND parent=0 AND Type = 30 ".
+			$sqlFiles = "SELECT ID,title,Name,type,Parent,ModifyDateTime,LOWER(FileExtension) as FileExtension FROM DmsEntry  ".
+						"WHERE Archived = 0 AND parent=0 AND Type = 30 ".
+						"AND PermissionSet <= $perSet ".
 						"ORDER BY Type,Title ";
+			$entryNo = 0;
 		}
 		$breads = $this->getBreads($ID);
 		$cache = $this->registry->getObject('db')->cacheQuery( $sqlFolders );
@@ -129,16 +137,18 @@ class Documentcontroller{
 		if ($isFolder){
 			$this->registry->getObject('template')->getPage()->addTag( 'FolderItems', array( 'SQL', $cache ) );
 		}
-		$this->registry->getObject('document')->listDocuments($sqlFiles, $entry['Parent'],'',$isHeader, $isFolder, $isFiles, $isFooter,$breads);
+		$this->registry->getObject('document')->listDocuments($sqlFiles, $entryNo,'',$isHeader, $isFolder, $isFiles, $isFooter,$breads);
 	}	
 
 	private function searchDocument( $searchText )
 	{
 		global $config, $caption;
+        $perSet = $this->registry->getObject('authenticate')->getPermissionSet();
 
 		$searchText = htmlspecialchars($searchText);
 		$sqlFiles = "SELECT ID,title,Name,type,ModifyDateTime,LOWER(FileExtension) as FileExtension FROM DmsEntry ".
-					"WHERE Archived = 0 AND Type = 30 AND MATCH(Title) AGAINST ('*$searchText*' IN BOOLEAN MODE) ".
+					"WHERE Archived = 0 AND Type BETWEEN 20 AND 30 AND MATCH(Title) AGAINST ('*$searchText*' IN BOOLEAN MODE) ".
+					"AND PermissionSet <= $perSet ".
 					"ORDER BY Name";
 		$isHeader = true;
 		$isFolder = false;
@@ -150,6 +160,7 @@ class Documentcontroller{
 	private function viewDocument( $ID )
 	{
 		global $config, $caption;
+        $perSet = $this->registry->getObject('authenticate')->getPermissionSet();
 
 		require_once( FRAMEWORK_PATH . 'models/entry/model.php');
 		$this->model = new Entry( $this->registry, $ID );

@@ -17,10 +17,12 @@ class document {
         $this->registry = $registry;
     }
     
-	public function listDocuments( $sql, $parentEntryNo, $pageLink , $isHeader, $isFolder, $isFiles, $isFooter, $breads, $template = 'list-entry.tpl.php')
+	public function listDocuments( $sql, $entryNo, $pageLink , $isHeader, $isFolder, $isFiles, $isFooter, $breads, $template = 'list-entry.tpl.php')
 	{
 		global $config, $caption;
         
+        $perSet = $this->registry->getObject('authenticate')->getPermissionSet();
+
         // Stránkování
         $cacheFull = $this->registry->getObject('db')->cacheQuery( $sql );
         $records = $this->registry->getObject('db')->numRowsFromCache( $cacheFull );
@@ -67,20 +69,27 @@ class document {
         {
             $this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'invalid-document.tpl.php', 'footer.tpl.php');
         }
-        $this->registry->getObject('template')->addTemplateBit('actionpanel', 'actionpanel.tpl.php');
+        if ($perSet == 9)
+        {
+            $this->registry->getObject('template')->addTemplateBit('actionpanel', 'actionpanel.tpl.php');
+        }
+        else
+        {
+            $this->registry->getObject('template')->getPage()->addTag( 'actionpanel', '' );
+        }
         
         // Parent folder
-        if (isset($parentEntryNo))
+        if (isset($entryNo) != null)
         {
+            $parentPath = $config['fileserver'];
             $this->registry->getObject('db')->initQuery('dmsentry');
-            $this->registry->getObject('db')->setFilter('EntryNo',$parentEntryNo);
-            if ($this->registry->getObject('db')->findFirst())
+            $this->registry->getObject('db')->setFilter('EntryNo',$entryNo);
+            if (($entryNo > 0) && $this->registry->getObject('db')->findFirst())
             {
                 $data = $this->registry->getObject('db')->getResult();
-                $parentPath = $config['fileserver'] . $data['Name'];
-                $this->registry->getObject('template')->getPage()->addTag('parentfoldername', $parentPath );
+                $parentPath .=  $data['Name'];
             }
-            
+            $this->registry->getObject('template')->getPage()->addTag('parentfoldername', $parentPath );
         }
         else
         {
@@ -102,6 +111,8 @@ class document {
 
     public function createCategoryMenu()
     {
+        $perSet = $this->registry->getObject('authenticate')->getPermissionSet();
+
         $entryNo = $this->registry->getEntryNo();
         if (!isset($entryNo))
         {
@@ -110,8 +121,9 @@ class document {
         $sql = "SELECT id as idCat,title as titleCat ,name,path as pathCat,
                        IF(EntryNo = $entryNo,'active','') as activeCat 
                        FROM dmsentry 
-                       WHERE `level` = 0 AND `Type` = 20
+                       WHERE `level` = 0 AND `Type` = 20 AND PermissionSet <= $perSet
                        ORDER BY Title";
+        
         $cache = $this->registry->getObject('db')->cacheQuery( $sql );
         $cacheCategory = $this->registry->getObject('db')->cacheQuery( $sql );
         $this->registry->getObject('template')->getPage()->addTag( 'categoryList', array( 'SQL', $cache ) );
@@ -139,6 +151,7 @@ class document {
         $icon20 = "<img src='views/classic/images/icon/folder.png' />";
         $icon30 = "<img src='views/classic/images/icon/file.png' />";
         $this->registry->getObject('template')->getPage()->addTag( 'icon20', $icon20 );
+        $this->registry->getObject('template')->getPage()->addTag( 'icon', $icon20 );
         $this->registry->getObject('template')->getPage()->addTag( 'icon30', $icon30 );
     }    
 }

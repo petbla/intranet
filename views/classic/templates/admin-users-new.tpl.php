@@ -1,19 +1,19 @@
 <div id="users">
-    <h3>Založení nového uživatele</h3>
+    <h3>{lbl_CreateNewUser}</h3>
     <form action="index.php?page=admin/adduser" method="post" id="addNewUser">
         <fieldset>
             <ul class="form-style-user">
                 <li>
                     <label>Jméno</label>
-                    <input type="text" name="usr_name" id="usr_name" autofocus placeholder="Jméno uživatele" required>
+                    <input type="text" name="usr_name" id="usr_name" autofocus placeholder="{lbl_User_name}" required>
                 </li>
                 <li>
                     <label>Heslo</label>
-                    <input type="password" name="usr_psw1" id="usr_psw1" required pattern=".{4}" title="Délka hesla musí být minimálně 4 znaky." placeholder="Heslo" required>
+                    <input type="password" name="usr_psw1" id="usr_psw1" required pattern=".{4}" title="{lbl_msg_maxLenghtPsw4}" placeholder="{lbl_Password}" required>
                 </li>
                 <li>
                     <label>Zopakovat heslo</label>
-                    <input type="password" name="usr_psw2" id="usr_psw2" placeholder="Potvrdit heslo" required>
+                    <input type="password" name="usr_psw2" id="usr_psw2" placeholder="{lbl_ConfirmPsw}" required>
                 </li>
                 <li>
                     <label for="usr_perset">Role</label>
@@ -24,7 +24,7 @@
                     </select>
                 </li>
                 <li>
-                    <input type="submit" class="action" value="Založit uživatele">
+                    <input type="submit" class="action" value="{lbl_CreateUser}">
                 </li>
             </ul>
         </fieldset>

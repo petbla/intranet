@@ -1,4 +1,4 @@
-<h1>Kontakty</h1>
+<h1>{lbl_Contacts}</h1>
 <table>
     <tr>
         <th>{lbl_FirstLast_name}</th>

@@ -22,6 +22,7 @@ class Entry{
 	private $CreateDate;
 	private $Archived;
 	private $NewEntry;
+	private $PermissionSet;
 	private $activeEntry;
 	private $link;
 		
@@ -54,6 +55,7 @@ class Entry{
 				$this->CreateDate = $data['CreateDate'];
 				$this->Archived = $data['Archived'];
 				$this->NewEntry = $data['NewEntry'];
+				$this->PermissionSet = $data['PermissionSet'];
 				$this->activeEntry = true;
 				$this->link = $data['Name'];  //iconv("windows-1250","utf-8",
 			}
