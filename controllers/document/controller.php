@@ -49,6 +49,10 @@ class Documentcontroller{
 					case 'addFiles':
 						$this->addFiles();
 						break;
+					case 'modify':
+						$ID = isset($urlBits[2]) ? $urlBits[2] : '';
+						$this->modifyDocument($ID);
+						break;
 					default:
 						break;
 				}
@@ -187,6 +191,42 @@ class Documentcontroller{
 			// File Not Found
 			$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page.tpl.php', 'footer.tpl.php');
 		}
+	}	
+
+	private function modifyDocument( $ID )
+	{
+		global $config, $caption;
+        $perSet = $this->registry->getObject('authenticate')->getPermissionSet();
+
+		require_once( FRAMEWORK_PATH . 'models/entry/model.php');
+		$this->model = new Entry( $this->registry, $ID );
+		if( ($perSet > 0) AND $this->model->isValid() )
+		{
+			$document = $this->model->getData();
+			$newTitle = ($_POST['newTitle'] !== null) ? $_POST['newTitle'] : '';
+			if ($newTitle)
+			{
+				$newTitle = $this->registry->getObject('db')->sanitizeData($newTitle);
+				
+				// Update
+				$changes['Title'] = $newTitle;
+				$condition = "ID = '$ID'";
+				$this->registry->getObject('db')->updateRecords('dmsentry',$changes, $condition);
+			}
+			$ID = '';
+			$this->registry->getObject('db')->initQuery('dmsentry');
+			$this->registry->getObject('db')->setFilter('EntryNo',$document['Parent'] );
+			if ($this->registry->getObject('db')->findFirst())
+			{
+				$document = $this->registry->getObject('db')->getResult();
+				$ID = $document['ID'];
+			}
+		}
+		else
+		{
+			$ID = '';
+		}
+		$this->listDocuments($ID);
 	}	
 
 	private function addFiles( )

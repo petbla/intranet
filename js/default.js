@@ -8,6 +8,8 @@ var search;
 var formAdUser;
 var password, password_confirm;
 var loginForm;
+var documents;
+var lastEditElement;
 
 documentLink = document.querySelector('#cosumentLink');
 fileTitle = document.querySelector('#FileTitle');
@@ -67,4 +69,36 @@ if (password_confirm) {
     password_confirm.onkeyup = validatePassword;
 }
 
+documents = document.querySelectorAll('[className="item"]');
+documents.forEach(function(item){
+    item.onclick = function (e) {
+        var att;
+        var a,form,input;
 
+        if (lastEditElement)
+        {
+            att = '[a_id="' + lastEditElement.target.id + '"]';
+            a = document.querySelector(att)
+            a.style.display = '';
+            
+            att = '[form_id="' + lastEditElement.target.id + '"]';
+            form = document.querySelector(att)
+            form.style.display = 'none';
+        }
+
+        att = '[a_id="' + e.target.id + '"]';
+        a = document.querySelector(att)
+        att = '[form_id="' + e.target.id + '"]';
+        form = document.querySelector(att)
+        att = '[input_id="' + e.target.id + '"]';
+        input = document.querySelector(att)
+        
+        a.style.display = 'none';
+        form.style.display = '';
+        input.value = a.innerText;
+
+        lastEditElement = e;
+    }
+})
+
+console.log(documents);

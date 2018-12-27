@@ -498,3 +498,11 @@ div#users .form-style-user label{
 div#actionpanel{
   margin: 10px;
 }
+
+.editInLine{
+  width: 80%;
+  margin: 0;
+  padding: 2px;
+  color: #000;
+  background-color: #fff;
+}
