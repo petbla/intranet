@@ -17,10 +17,10 @@ class document {
         $this->registry = $registry;
     }
     
-	public function listDocuments( $sql, $pageLink , $isHeader, $isFolder, $isFiles, $isFooter, $breads, $template = 'list-entry.tpl.php')
+	public function listDocuments( $sql, $parentEntryNo, $pageLink , $isHeader, $isFolder, $isFiles, $isFooter, $breads, $template = 'list-entry.tpl.php')
 	{
 		global $config, $caption;
-
+        
         // Stránkování
         $cacheFull = $this->registry->getObject('db')->cacheQuery( $sql );
         $records = $this->registry->getObject('db')->numRowsFromCache( $cacheFull );
@@ -67,6 +67,26 @@ class document {
         {
             $this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'invalid-document.tpl.php', 'footer.tpl.php');
         }
+        $this->registry->getObject('template')->addTemplateBit('actionpanel', 'actionpanel.tpl.php');
+        
+        // Parent folder
+        if (isset($parentEntryNo))
+        {
+            $this->registry->getObject('db')->initQuery('dmsentry');
+            $this->registry->getObject('db')->setFilter('EntryNo',$parentEntryNo);
+            if ($this->registry->getObject('db')->findFirst())
+            {
+                $data = $this->registry->getObject('db')->getResult();
+                $parentPath = $config['fileserver'] . $data['Name'];
+                $this->registry->getObject('template')->getPage()->addTag('parentfoldername', $parentPath );
+            }
+            
+        }
+        else
+        {
+
+        }
+        
     }	
 
 	public function viewDocument( $document, $breads, $filePath)

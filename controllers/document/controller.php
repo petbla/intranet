@@ -129,7 +129,7 @@ class Documentcontroller{
 		if ($isFolder){
 			$this->registry->getObject('template')->getPage()->addTag( 'FolderItems', array( 'SQL', $cache ) );
 		}
-		$this->registry->getObject('document')->listDocuments($sqlFiles,'',$isHeader, $isFolder, $isFiles, $isFooter,$breads);
+		$this->registry->getObject('document')->listDocuments($sqlFiles, $entry['Parent'],'',$isHeader, $isFolder, $isFiles, $isFooter,$breads);
 	}	
 
 	private function searchDocument( $searchText )
@@ -144,7 +144,7 @@ class Documentcontroller{
 		$isFolder = false;
 		$isFiles = true;
 		$isFooter = true;
-		$this->registry->getObject('document')->listDocuments($sqlFiles,'',$isHeader, $isFolder, $isFiles, $isFooter,'','list-entry-resultsearch.tpl.php');
+		$this->registry->getObject('document')->listDocuments($sqlFiles,null,'',$isHeader, $isFolder, $isFiles, $isFooter,'','list-entry-resultsearch.tpl.php');
 	}	
 
 	private function viewDocument( $ID )

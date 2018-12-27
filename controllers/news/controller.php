@@ -54,7 +54,7 @@ class Newscontroller{
 			   "ORDER BY Level,Parent,Type,LineNo" ;
 		$this->registry->setLevel(0);
 		$this->registry->setEntryNo(0);
-		$this->registry->getObject('document')->listDocuments($sql,'<h3>Nové dokumenty</h3>',false,false,true,false, '');
+		$this->registry->getObject('document')->listDocuments($sql,null,'<h3>Nové dokumenty</h3>',false,false,true,false, '');
 	}	
 }
 ?>

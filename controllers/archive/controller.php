@@ -54,7 +54,7 @@ class Archivecontroller{
 			   "ORDER BY Level,Parent,Type,LineNo" ;
 		$this->registry->setLevel(0);
 		$this->registry->setEntryNo(0);
-		$this->registry->getObject('document')->listDocuments($sql,'<h3>Archív dokumentů</h3>',false,false,true,false, '', 'list-entry-archive.tpl.php');
+		$this->registry->getObject('document')->listDocuments($sql,null,'<h3>Archív dokumentů</h3>',false,false,true,false, '', 'list-entry-archive.tpl.php');
 	}	
 }
 ?>

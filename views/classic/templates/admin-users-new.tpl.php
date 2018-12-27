@@ -24,7 +24,7 @@
                     </select>
                 </li>
                 <li>
-                    <input type="submit" value="odeslat">
+                    <input type="submit" class="action" value="Založit uživatele">
                 </li>
             </ul>
         </fieldset>

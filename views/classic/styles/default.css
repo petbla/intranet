@@ -352,6 +352,21 @@ input#submit{
   padding: 0;
   vertical-align: middle;
 }
+.action{
+  border: 1px solid #808080;
+  background-color: #dadada;
+  color: #808080;
+  margin: 5px 0px;
+  padding: 20px 10px;
+  text-decoration: none;
+  border-radius: 3px;
+}
+.action:hover{
+  color: #000;
+}
+.action img{
+  vertical-align: middle;
+}
 
 /* END Search menu */
 
@@ -451,7 +466,7 @@ div#admin a{
 
 div#users table{
   width: 80%; 
-  margin: 16px;
+  margin: 16px 0;
   border: 1px solid #337AB7;
   font-size: 14px; 
   text-align: left;
@@ -460,11 +475,11 @@ div#users th{
   background-color: #337AB7;
 }
 div#users td{
-  padding: 4px 0;
+  padding: 5px;
 }
 div#users .form-style-user{
-	margin:30px;
-	max-width: 400px;
+  margin:30px;
+  width: 50%;
 	padding: 20px 12px 10px 20px;
 	font: 13px "Lucida Sans Unicode", "Lucida Grande", sans-serif;
 }
@@ -479,4 +494,7 @@ div#users .form-style-user label{
 	padding:0px;
 	display:block;
 	font-weight: bold;
+}
+div#actionpanel{
+  margin: 10px;
 }

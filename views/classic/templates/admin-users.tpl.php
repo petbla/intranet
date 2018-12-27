@@ -1,21 +1,21 @@
 <div id="users">
     <table>
-        <!-- START UserList -->
         <tr>
-            <th>ID</th>
             <th>Jnémo</th>
             <th>Sada práv</th>
             <th>AKCE</th>
         </tr>
+        <!-- START UserList -->
         <tr>
-            <td>{ID}</td>
             <td>{Name}</td>
-            <td>{PermissionSet}</td>
+            <td>{Role}</td>
             <td>
-                <a href="index.php?page=admin/modifyuser">Změna</a>
+                <a href="index.php?page=admin/modifyuser"><img src="views/classic/images/icon/modify.png" alt="Změna" title="Změna"></a>
+                &nbsp;
+                <a href="index.php?page=admin/deleteuser"><img src="views/classic/images/icon/delete.png" alt="Odstranit" title="Odstranit"></a>
             </td>
         </tr>
         <!-- END UserList -->
     </table>
-    <a href="index.php?page=admin/newuser" class="action">Nový uživatel</a>
+    <a href="index.php?page=admin/newuser" class="action"><img src="views/classic/images/nav/adduser.png" alt="Nový">&nbsp;Nový uživatel</a>
 </div>

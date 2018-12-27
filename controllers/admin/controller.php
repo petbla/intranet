@@ -59,7 +59,9 @@ class Admincontroller {
 
 	private function listUsers()
 	{
-		$sql = "SELECT ID, Name, PermissionSet FROM user";
+		$sql = "SELECT u.ID, u.Name, u.PermissionSet, p.Name as Role ".
+		       "FROM user u, permissionset p ".
+		       "WHERE u.PermissionSet = p.Level";
 		$cache = $this->registry->getObject('db')->cacheQuery( $sql );
 		if (!$this->registry->getObject('db')->isEmpty( $cache ))
 		{

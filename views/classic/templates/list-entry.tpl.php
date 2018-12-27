@@ -8,6 +8,7 @@
 <div id="breads">
 {breads}
 </div>
+{actionpanel}
 <div id="pagecounter">
 {navigate_menu}
 </div>
