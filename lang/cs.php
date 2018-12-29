@@ -39,7 +39,7 @@ $caption['notAvailableMsg']             = 'Je nám líto, ale tento produkt je v
  * Titles
  **/
 $caption['TodayIs'] =        'Dnes je';
-$caption['DmsLabel'] =       'Sptáva dokumentů';
+$caption['DmsLabel'] =       'Správa dokumentů';
 $caption['CreateNewUser'] =  'Založení nového uživatele';
 $caption['CreateUser'] =     'Založit uživatele';
 $caption['home_page']      = 'Úvodní strana';

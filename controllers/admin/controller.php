@@ -76,7 +76,7 @@ class Admincontroller {
 	{
 		global $caption, $config;
 	    $this->urlBits = $this->registry->getURLBits();
-		$files = $this->registry->getObject('file')->updateFiles($config['fileserver']);
+		$files = $this->registry->getObject('file')->synchroPath($config['fileserver']);
 		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page.tpl.php', 'footer.tpl.php');
 		$this->registry->getObject('template')->getPage()->addTag('message',$caption['msg_updateFinished']);
 	}

@@ -21,7 +21,7 @@ class file {
 	 * @param string $root
 	 * @return void
 	 */
-  public function updateFiles($root = '.'){ 
+  public function synchroPath($root = '.'){ 
     $last_letter  = $root[strlen($root)-1]; 
     $root = ($last_letter == '\\' || $last_letter == '/') ? $root : $root.DIRECTORY_SEPARATOR; 
 
@@ -167,6 +167,7 @@ class file {
     $data['Name'] = $this->registry->getObject('db')->sanitizeData($name);
     $data['FileExtension'] = $fileExtension;
     $data['ModifyDateTime'] = date("Y-m-d H:i:s", filemtime($fullName)); // datum a čas změny
+    $data['PermissionSet'] = 1;
     $this->registry->getObject('db')->insertRecords( 'DmsEntry', $data );
     $this->registry->getObject('db')->findFirst();
     $parentEntry = $this->registry->getObject('db')->getResult();
