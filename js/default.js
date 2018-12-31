@@ -10,6 +10,7 @@ var password, password_confirm;
 var loginForm;
 var documents;
 var lastEditElement;
+var tags;
 
 documentLink = document.querySelector('#cosumentLink');
 fileTitle = document.querySelector('#FileTitle');
@@ -19,6 +20,7 @@ search = document.querySelector('#search');
 password = document.querySelector('#usr_psw1');
 password_confirm = document.querySelector('#usr_psw2');
 loginForm = document.querySelector('#loginForm');
+tags = document.querySelectorAll('[class="tags"]');
 
 function validatePassword () {
     if (password.value != password_confirm.value) {
@@ -34,6 +36,76 @@ if (pagecounter != null){
     if (pagecounter.innerText == ""){
         pagecounter.style.display = 'none';
     }
+}
+
+function formatElementClass (classText) {
+    var att,e,i;
+    att = '[class="' + classText + '"]';
+    e = document.querySelectorAll(att);
+    for (i = 0; i < e.length; i++) {
+        e[i].innerHTML = formatText(e[i].innerHTML,classText);
+    }   
+}
+
+function formatText (text, type)
+{
+    var newtext = ''
+    var arr,val;        
+    if(type == '')
+    {
+        return text;
+    }
+    type = type.toLowerCase();
+    if(text == '')
+    {
+        return '';
+    }
+    arr = text.split(',');              
+    arr.forEach(val => {
+        switch (type) {
+            case 'phone':
+                val = formatPhoneNumber(val);
+                break;
+            case 'email':
+                val = formatEmailTo(val);
+                break;
+        }
+        if(newtext)
+        {
+            newtext = newtext + ',';
+        }
+        newtext = newtext + val;
+    });
+    return(newtext);
+}   
+
+function formatPhoneNumber (phone)
+{
+    var newphone;
+    if(phone.length == 9) {
+        newphone = phone.replace(/(\d{3})(\d{3})(\d{3})/, '$1 $2 $3'); 
+    }
+    if(phone.length == 14) {
+        newphone = phone.replace(/(\d{5})(\d{3})(\d{3})(\d{3})/, '$1 $2 $3 $4'); 
+    }
+    else if(phone[0] == '+'){
+        newphone = phone.replace(/(\+\d{3})(\d{3})(\d{3})(\d{3})/, '$1 $2 $3 $4'); 
+    }            
+    if(newphone !== '')
+    {
+        newphone = "<a href='tel:" + newphone + "'>" + newphone + "</a>";
+    }    
+    return(newphone);
+}
+
+function formatEmailTo (email)
+{
+    var newemail = '';
+    if(email !== '')
+    {
+        newemail = "<a href='mailto:" + email + "'>" + email + "</a>";
+    }    
+    return(newemail);
 }
 
 if ((fileExtension) && ('innerText' in fileExtension)) {
@@ -61,6 +133,8 @@ if ((fileExtension) && ('innerText' in fileExtension)) {
         documentLink.innerText = linkTitle;
     }   
 }
+
+
 
 if (password) {
     password.onchange = validatePassword;
@@ -101,4 +175,22 @@ documents.forEach(function(item){
     }
 })
 
-console.log(documents);
+formatElementClass('phone');
+formatElementClass('email');
+
+if(tags){
+    for (let i = 0; i < tags.length; i++) {
+        var e;
+        e = tags[i];
+        
+        if (e.innerText !== ''){
+            var val, newval='';
+            val = (e.innerText).split(',');
+            val.forEach(str => {
+                str = "<span class='tags-item'>" + str + "</span>";
+                newval += str;
+            });
+            e.innerHTML = newval;
+        }
+    }
+}

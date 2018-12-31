@@ -154,6 +154,11 @@ class Registry {
 				$urldata = $_REQUEST['searchDocument'];
 				$urldata = "document/search/$urldata"; 
 			} 
+			elseif (isset($_REQUEST['searchContact']))
+			{
+				$urldata = $_REQUEST['searchContact'];
+				$urldata = "contact/search/$urldata"; 
+			} 
 			else
 			{
 				$urldata = '';

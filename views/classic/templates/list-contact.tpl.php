@@ -10,19 +10,27 @@
 {navigate_menu}
 </div>
 {pageLink}
-<div id="DocumentItems">
+<div id="ContactItems">
     <table>
         <tr>
             <th>{lbl_FirstLast_name}</th>
             <th>{lbl_Function}</th>      
-            <th>{lbl_Phone}</th>
-            <th></th>
+            <th>{lbl_Phone}/{lbl_Email}</th>
+            <th>{lbl_Label}</th>
+            <th>{lbl_Comment}</th>
         </tr>
         <!-- START ContactList -->
-        <tr>        
-            <td>{FullName}</td>
+        <tr onclick='window.location = "index.php?page=contact/view/{ID}";' >        
+            <td class="fullname"><a href="index.php?page=contact/edit/{ID}">{FullName}</a></td>
             <td>{Function}<br>{Company}</td>
-            <td>{Phone}<br>{Email}</td>
+            <td> 
+                <span class="phone" >{Phone}</span>
+                <br>
+                <span class="email">{Email}</span>
+            </td>
+            <td class="tags">
+                {Groups}
+            </td>
             <td style="width: 300px; font-size: 12px;">{Note}</td>
         </tr>
         <!-- END ContactList -->
@@ -31,3 +39,4 @@
 <div id="pagecounter" class="bottom">
 {navigate_menu}
 </div>
+

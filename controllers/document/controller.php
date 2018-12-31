@@ -43,7 +43,7 @@ class Documentcontroller{
 					case 'search':
 						$searchText = isset($urlBits[2]) ? $urlBits[2] : '';
 						if ($searchText){
-							$this->searchDocument($searchText);
+							$this->searchDocuments($searchText);
 						}
 						break;
 					case 'addFiles':
@@ -57,7 +57,6 @@ class Documentcontroller{
 						break;
 				}
 			}
-			$this->registry->getObject('template')->getPage()->addTag( 'actionSearch', 'Document/search');
 		}
 	}
 	
@@ -147,7 +146,7 @@ class Documentcontroller{
 		$this->registry->getObject('document')->listDocuments($sqlFiles, $entryNo,'',$isHeader, $isFolder, $isFiles, $isFooter,$breads);
 	}	
 
-	private function searchDocument( $searchText )
+	private function searchDocuments( $searchText )
 	{
 		global $config, $caption;
         $perSet = $this->registry->getObject('authenticate')->getPermissionSet();

@@ -56,8 +56,8 @@ class Contact{
 				$this->Note = $data['Note'];
 				$this->Address = $data['Address'];
 				$this->Close = $data['Close'];
-				$this->active = ($data['Close'] === 0);
-				$this->groups = explode(',',$data['Groups']);
+				$this->active = ($data['Close'] !== 0);
+				$this->Groups = $data['Groups'];
 			}
 		}
 		else

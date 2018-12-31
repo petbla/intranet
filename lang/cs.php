@@ -68,6 +68,7 @@ $caption['Phone'] =          'Telefon';
 $caption['Address'] =        'Adresa';
 $caption['ShippAddress']  =  'Adresa doručení';
 $caption['Email'] =          'E-mail';
+$caption['Web'] =            'Webové stránky';
 $caption['PermissionSet'] =  'Sada práv';
 $caption['Comment'] =        'Poznámka';
 $caption['ConfirmPsw'] =     'Potvrdit heslo';
@@ -90,6 +91,7 @@ $caption['Modified'] =       'Změněno';
 $caption['News'] =           'Novinky';
 $caption['Archive'] =        'Archív';
 $caption['Contacts'] =       'Kontakty';
+$caption['Label'] =          'Štítek (skupina)';
 
 /**
  * Action's Title
@@ -129,5 +131,6 @@ $caption['msg_error404'] =         'Stránku, o který máte zájem, se nám boh
 $caption['msg_docNotfound'] =      'Dokument nenalezen.';
 $caption['msg_folderNotCreated'] = 'Složka nebyla založena.';
 $caption['msg_folderExists'] =     'Složka zadaného názvu již existuje.';
+$caption['msg_contactNotfound'] =  'Kontakt nenalezen.';
 
 ?>

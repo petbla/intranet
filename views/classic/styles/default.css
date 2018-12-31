@@ -43,6 +43,46 @@ input{
   /* KONEC: Webkit */
   color: #808080;
 }
+span.email a, span.phone a{
+  color: #00f;
+  text-decoration: none;
+}
+span.email a:hover, span.phone a:hover{
+  color: #00c;
+  text-decoration: underline;
+}
+.fullname{
+  width: 200px;
+}
+.fullname a{
+  text-decoration: none;
+  color: #000;
+}
+.fullname a:hover{
+  text-decoration: underline;
+  color: #0000ff;
+}
+
+.editInLine{
+  width: 80%;
+  margin: 0;
+  padding: 2px;
+  color: #000;
+  background-color: #fff;
+}
+.tags-item{
+  padding: 4px;
+  font-size: 12px;
+  border: 1px solid #ddd;
+  color: #fff;
+  background-color: #337AB7;
+  border-radius: 6px;
+}
+.tags-item:hover{
+  border: 1px solid #000;
+  cursor: pointer;
+}
+
 /* END Default */
 
 /*
@@ -259,6 +299,20 @@ div#DocumentItems a:hover{
   color: rgb(9, 13, 221); 
   text-decoration: underline;
 }
+div#DocumentItems img{
+  vertical-align: middle;
+}
+
+div#ContactItems td{
+  font-family: Century-gothic, Calibri, Arial, sans-serif; 
+  font-size: 16px;
+  font-weight:normal;
+  text-decoration: none;
+  padding: 4px 0;
+  color: black;  
+}
+
+
 div#FolderItems ul li{
   width: 30%;
   float: left;
@@ -356,15 +410,18 @@ input#submit{
   border: 1px solid #808080;
   background-color: #dadada;
   color: #808080;
-  margin: 5px 0px;
-  padding: 20px 10px;
+  margin: 2px 0px;
+  padding: 5px;
   text-decoration: none;
   border-radius: 3px;
 }
 .action:hover{
   color: #000;
 }
-.action img{
+.action img {
+  vertical-align: middle;
+}
+input#submitAddFile {
   vertical-align: middle;
 }
 
@@ -498,11 +555,90 @@ div#users .form-style-user label{
 div#actionpanel{
   margin: 10px;
 }
+div#actionpanel input{
+  vertical-align: middle;
+}
 
-.editInLine{
-  width: 80%;
-  margin: 0;
-  padding: 2px;
-  color: #000;
-  background-color: #fff;
+/* Contact CARD */
+
+.contact-card {
+	margin:20px auto;
+	max-width: 400px;
+	padding: 20px 12px 10px 20px;
+  font: 13px "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+  background-color: #ffc;
+}
+.contact-card li {
+	padding: 10px;
+	display: block;
+	list-style: none;
+	margin: 10px 0 0 0;
+}
+.contact-card label{
+	margin:0 0 3px 0;
+	padding:0px;
+	display:block;
+	font-weight: bold;
+}
+.contact-card input[type=text], 
+.contact-card input[type=date],
+.contact-card input[type=datetime],
+.contact-card input[type=number],
+.contact-card input[type=search],
+.contact-card input[type=time],
+.contact-card input[type=url],
+.contact-card input[type=email],
+textarea, 
+select{
+	box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	border:1px solid #BEBEBE;
+	padding: 7px;
+	margin:0px;
+  transition: all 0.30s ease-in-out;
+  -webkit-transition: all 0.30s ease-in-out;
+	-moz-transition: all 0.30s ease-in-out;
+	-ms-transition: all 0.30s ease-in-out;
+	-o-transition: all 0.30s ease-in-out;
+	outline: none;	
+}
+.contact-card input[type=text]:focus, 
+.contact-card input[type=date]:focus,
+.contact-card input[type=datetime]:focus,
+.contact-card input[type=number]:focus,
+.contact-card input[type=search]:focus,
+.contact-card input[type=time]:focus,
+.contact-card input[type=url]:focus,
+.contact-card input[type=email]:focus,
+.contact-card textarea:focus, 
+.contact-card select:focus{
+	-moz-box-shadow: 0 0 8px #88D5E9;
+	-webkit-box-shadow: 0 0 8px #88D5E9;
+	box-shadow: 0 0 8px #88D5E9;
+	border: 1px solid #88D5E9;
+}
+.contact-card .value{
+	width: 100%;
+}
+.contact-card .field-select{
+	width: 100%;
+}
+.contact-card .field-textarea{
+	height: 100px;
+}
+.contact-card input[type=submit], .contact-card input[type=button]{
+	background: #4B99AD;
+	padding: 8px 15px 8px 15px;
+	border: none;
+	color: #fff;
+}
+.contact-card input[type=submit]:hover, .contact-card input[type=button]:hover{
+	background: #4691A4;
+	box-shadow:none;
+	-moz-box-shadow:none;
+	-webkit-box-shadow:none;
+}
+.contact-card .required{
+	color:red;
 }
