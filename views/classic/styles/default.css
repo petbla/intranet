@@ -51,6 +51,9 @@ span.email a:hover, span.phone a:hover{
   color: #00c;
   text-decoration: underline;
 }
+h1, .actions img{
+  vertical-align: middle;
+}
 .fullname{
   width: 200px;
 }

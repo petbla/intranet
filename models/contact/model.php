@@ -22,8 +22,10 @@ class Contact{
 	private $Note;
 	private $Address;
 	private $Close;
+	private $Groups = array();
 	private $active = false;
-	private $groups = array();
+	private $groupList = array();
+	
 		   
 	public function __construct( Registry $registry, $id )
 	{
@@ -31,7 +33,6 @@ class Contact{
 		$this->registry = $registry;
 		if( $id != '' )
 		{
-			$id = $this->registry->getObject('db')->sanitizeData( $id );
 			$sql = "SELECT c.ID, c.FullName, c.FirstName, c.LastName, c.Title, c.Function, c.Company, ".
 							"c.Email, c.Phone, c.Web, c.Note, c.Address, c.Close, ".
 							"(SELECT GROUP_CONCAT( cg.GroupCode SEPARATOR ',' ) FROM contactgroups cg ".
@@ -56,19 +57,41 @@ class Contact{
 				$this->Note = $data['Note'];
 				$this->Address = $data['Address'];
 				$this->Close = $data['Close'];
-				$this->active = ($data['Close'] !== 0);
+				$this->active = ($data['Close'] === 0);
 				$this->Groups = $data['Groups'];
 			}
 		}
 		else
 		{
-			// zde můžeme chtít provést něco jiného...
+			// New empty contact card
+			$this->ID = '';
+			$this->FullName = '';
+			$this->FirstName = '';
+			$this->LastName = '';
+			$this->Title = '';
+			$this->Function = '';
+			$this->Company = '';
+			$this->Email = '';
+			$this->Phone = '';
+			$this->Web = '';
+			$this->Note = '';
+			$this->Address = '';
+			$this->Close = 0;
+			$this->active = ($data['Close'] === 0);
+			$this->Groups = null;
+		}
+
+		// List of all groups
+		$this->registry->getObject('db')->initQuery('contactgroup');
+		if($this->registry->getObject('db')->findSet())
+		{
+			$this->groupList = $this->registry->getObject('db')->getResult();
 		}
 	}
 
 	public function isActive()
 	{
-		return $this->active;
+		return ($this->active !== 0);
 	}
 	
 	public function getData()
@@ -82,6 +105,11 @@ class Contact{
 			}
 		}
 		return $data;
+	}
+
+	public function getGroupList()
+	{
+		return $this->groupList;
 	}
 }
 ?>

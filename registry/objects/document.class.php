@@ -127,7 +127,7 @@ class document {
         $sql = "SELECT id as idCat,title as titleCat ,name,path as pathCat,
                        IF(EntryNo = $entryNo,'active','') as activeCat 
                        FROM dmsentry 
-                       WHERE `level` = 0 AND `Type` = 20 AND PermissionSet <= $perSet
+                       WHERE `level` = 0 AND `Type` BETWEEN 20 AND 25 AND PermissionSet <= $perSet
                        ORDER BY Title";
         
         $cache = $this->registry->getObject('db')->cacheQuery( $sql );
@@ -156,9 +156,13 @@ class document {
         
         $icon20 = "<img src='views/classic/images/icon/folder.png' />";
         $icon30 = "<img src='views/classic/images/icon/file.png' />";
+        $icon25 = "<img src='views/classic/images/icon/note.png' />";
+        $icon35 = "<img src='views/classic/images/icon/comment.png' />";
         $this->registry->getObject('template')->getPage()->addTag( 'icon20', $icon20 );
         $this->registry->getObject('template')->getPage()->addTag( 'icon', $icon20 );
         $this->registry->getObject('template')->getPage()->addTag( 'icon30', $icon30 );
+        $this->registry->getObject('template')->getPage()->addTag( 'icon25', $icon25 );
+        $this->registry->getObject('template')->getPage()->addTag( 'icon35', $icon35 );
     }    
 }
 ?>

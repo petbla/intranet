@@ -42,6 +42,14 @@
                 <textarea class="value" name="Note" rows="10">{Note}</textarea>
             </li>
             <li>
+                <label for="grouplist">{lbl_Groups}</label>
+                <select name="grouplist" id="grouplist">
+                    <!-- START GroupList -->
+                    <option value="{Code}">{Name}</option>
+                    <!-- END GroupList -->
+                </select>
+            </li>
+            <li>
                 <label class="title">{lbl_Label}</label>
                 <p class="tags">{Groups}</p>
             </li>

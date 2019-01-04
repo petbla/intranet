@@ -5,7 +5,7 @@
         <input type="image" src="views/classic/images/icon/search.png" value="{lbl_Searching}" id="submit">
     </form>
 </div>
-<h1>{lbl_Contacts}</h1>
+<a href="index.php?page=contact/new" class="actions"><img src="views/classic/images/nav/addcontact.png" alt="{lbl_New}" title="{lbl_NewContact}"></a>
 <div id="pagecounter">
 {navigate_menu}
 </div>

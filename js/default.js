@@ -11,6 +11,7 @@ var loginForm;
 var documents;
 var lastEditElement;
 var tags;
+var grouplist;
 
 documentLink = document.querySelector('#cosumentLink');
 fileTitle = document.querySelector('#FileTitle');
@@ -21,6 +22,7 @@ password = document.querySelector('#usr_psw1');
 password_confirm = document.querySelector('#usr_psw2');
 loginForm = document.querySelector('#loginForm');
 tags = document.querySelectorAll('[class="tags"]');
+
 
 function validatePassword () {
     if (password.value != password_confirm.value) {
@@ -178,19 +180,45 @@ documents.forEach(function(item){
 formatElementClass('phone');
 formatElementClass('email');
 
+var arrGroup = null;
+
 if(tags){
     for (let i = 0; i < tags.length; i++) {
         var e;
         e = tags[i];
-        
+        arrGroup = (e.innerText).split(',');
         if (e.innerText !== ''){
-            var val, newval='';
-            val = (e.innerText).split(',');
-            val.forEach(str => {
-                str = "<span class='tags-item'>" + str + "</span>";
-                newval += str;
-            });
-            e.innerHTML = newval;
+            e.innerHTML = tags2Html( arrGroup );
         }
     }
 }
+
+function tags2Html( arr ){
+    var newval='';
+    arr.forEach(str => {
+        str = "<span class='tags-item'>" + str + "</span>";
+        newval += str;
+    });
+    return newval;
+}
+
+grouplist = document.querySelector('#grouplist').onchange = function (e2) {
+    if (tags[0] !== null)
+    {
+        var e,oldValue,newValue;
+        if(arrGroup)
+        {
+            var idx;
+            idx = arrGroup.indexOf(e2.target.value);
+            if (idx > -1)
+            {
+                arrGroup.splice(idx,1);
+            }
+            else
+            {
+                arrGroup.push(e2.target.value);
+            }            
+            tags[0].innerHTML = tags2Html( arrGroup );            
+        }
+    }
+};

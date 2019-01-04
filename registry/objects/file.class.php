@@ -13,8 +13,6 @@ class file {
   {
     $this->registry = $registry;
   }
-
-
   /**
    * Funkce pro aktualizaci databáze, tj. založení složek a jijich podsložek a souborů 
    * 
@@ -24,13 +22,15 @@ class file {
   public function synchroPath($root = '.'){ 
     $last_letter  = $root[strlen($root)-1]; 
     $root = ($last_letter == '\\' || $last_letter == '/') ? $root : $root.DIRECTORY_SEPARATOR; 
+        
+    //$fullname =  iconv("utf-8","windows-1250",$root.'Smlouvy');
+    //$s= !is_dir($fullname);
+    //$h = opendir($s);
 
+    
     /*
      * Find deleted OR renamed documents
      */
-    $slozka = 0;
-    $soubor = 0;
-    $neni = 0;
     $this->registry->getObject('db')->initQuery('DmsEntry','EntryNo,ID,Name,Type');
     $this->registry->getObject('db')->setCondition('Archived = false');
     if( $this->registry->getObject('db')->findSet())
@@ -42,7 +42,6 @@ class file {
         switch ($entry['Type']) {
           case 20:
             # Folder
-            $slozka += 1;
             if (!is_dir($fullname))
             {
               $changes['Archived'] = true;
@@ -52,10 +51,8 @@ class file {
             break;
           case 30:
             # File
-            $soubor += 1;
             if (!is_file($fullname))
             {
-              $neni += 1;
               $changes['Archived'] = true;
               $condition = "ID = '$ID'";
               $this->registry->getObject('db')->updateRecords('DmsEntry',$changes,$condition);
@@ -64,7 +61,6 @@ class file {
         }        
       }
     }
-
     $directories[]  = $root; 
     $paret = 0;
     $level = 0;
@@ -89,8 +85,6 @@ class file {
         closedir($handle); 
       } 
     } 
-
-    
   } 
 
 

@@ -113,37 +113,34 @@ class Documentcontroller{
 			$name = $entry['Name'];
 			$this->registry->setLevel($level);
 			$this->registry->setEntryNo($entryNo);		
-			$sqlFolders = "SELECT ID,title,Name,type,ModifyDateTime FROM DmsEntry ".
-						  "WHERE Archived = 0 AND parent={$entryNo} AND Type = 20 ".
-						  "AND PermissionSet <= $perSet ".
-			              "ORDER BY Type,Title";
-			$sqlFiles = "SELECT ID,title,Name,type,ModifyDateTime,LOWER(FileExtension) as FileExtension FROM DmsEntry ".
-						"WHERE Archived = 0 AND parent={$entryNo} AND Type = 30 ".
-						"AND PermissionSet <= $perSet ".
-			            "ORDER BY Type,Title";
 		}
 		else
 		{
-			$sqlFolders = "SELECT ID,title,Name,type,Parent,ModifyDateTime FROM DmsEntry ".
-						  "WHERE Archived = 0 AND parent=0 AND Type = 20 ".
-						  "AND PermissionSet <= $perSet ".
-				          "ORDER BY Type,Title ";
-			$sqlFiles = "SELECT ID,title,Name,type,Parent,ModifyDateTime,LOWER(FileExtension) as FileExtension FROM DmsEntry  ".
-						"WHERE Archived = 0 AND parent=0 AND Type = 30 ".
-						"AND PermissionSet <= $perSet ".
-						"ORDER BY Type,Title ";
+			$parent = 0;
 			$entryNo = 0;
 		}
-		$breads = $this->getBreads($ID);
-		$cache = $this->registry->getObject('db')->cacheQuery( $sqlFolders );
-		$isHeader = true;
+		// Folders
+		$sql = "SELECT ID,title,Name,type,Parent,ModifyDateTime FROM DmsEntry ".
+					"WHERE Archived = 0 AND parent={$entryNo} AND Type IN (20,25) ".
+					"AND PermissionSet <= $perSet ".
+					"ORDER BY Type,Title";
+		$cache = $this->registry->getObject('db')->cacheQuery( $sql );
 		$isFolder = ($this->registry->getObject('db')->isEmpty($cache) == false);
-		$isFiles = true;
-		$isFooter = true;
 		if ($isFolder){
 			$this->registry->getObject('template')->getPage()->addTag( 'FolderItems', array( 'SQL', $cache ) );
 		}
-		$this->registry->getObject('document')->listDocuments($sqlFiles, $entryNo,'',$isHeader, $isFolder, $isFiles, $isFooter,$breads);
+
+		$breads = $this->getBreads($ID);
+		$isHeader = true;
+		$isFiles = true;
+		$isFooter = true;
+
+		// Files (and Comment, Headers, Footers)
+		$sql = "SELECT ID,title,Name,type,Parent,ModifyDateTime,LOWER(FileExtension) as FileExtension FROM DmsEntry ".
+				  "WHERE Archived = 0 AND parent={$entryNo} AND Type IN (10,30,35,40) ".
+				  "AND PermissionSet <= $perSet ".
+				  "ORDER BY Type,Title";
+		$this->registry->getObject('document')->listDocuments($sql, $entryNo,'',$isHeader, $isFolder, $isFiles, $isFooter,$breads);
 	}	
 
 	private function searchDocuments( $searchText )
@@ -152,8 +149,8 @@ class Documentcontroller{
         $perSet = $this->registry->getObject('authenticate')->getPermissionSet();
 
 		$searchText = htmlspecialchars($searchText);
-		$sqlFiles = "SELECT ID,title,Name,type,ModifyDateTime,LOWER(FileExtension) as FileExtension FROM DmsEntry ".
-					"WHERE Archived = 0 AND Type BETWEEN 20 AND 30 AND MATCH(Title) AGAINST ('*$searchText*' IN BOOLEAN MODE) ".
+		$sqlFiles = "SELECT ID,title,Name,type,Parent,ModifyDateTime,LOWER(FileExtension) as FileExtension FROM DmsEntry ".
+					"WHERE Archived = 0 AND Type IN (20,25,30,35) AND MATCH(Title) AGAINST ('*$searchText*' IN BOOLEAN MODE) ".
 					"AND PermissionSet <= $perSet ".
 					"ORDER BY Name";
 		$isHeader = true;
@@ -174,7 +171,7 @@ class Documentcontroller{
 		{
 			$document = $this->model->getData();
 			$breads = $this->getBreads($ID);			
-			$filePath = $this->model->getLink();
+			$filePath = $this->model->getlinkToFile();
 			$filePath = iconv("utf-8","windows-1250",$filePath);
 			if ($document['Type'] == 20)
 			{

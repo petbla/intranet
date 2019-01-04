@@ -5,6 +5,13 @@
  * @author  Petr Blažek
  * @version 1.0
  * @date    18.11.2018
+ * 
+ * Type 10 - Header		položka      	   .... položka jako text v záhlaví (první část na stránce)
+ * 		20 - Folder 	obal (10,30,35,40) .... fyzický (soubory) i virtuální obsah
+ * 		25 - Block		obal (10,35,40)    .... virtuální obsah
+ * 		30 - File		položka            .... fyzický soubor
+ * 		35 - Note		položka            .... virtuální, jako odkaz, text, poznámka
+ * 		40 - Footer     položka			   .... položka jako text v zápatí (poslední část na stránce)
  */
 
 class Entry{
@@ -18,13 +25,14 @@ class Entry{
 	private $Title;
 	private $Name;
 	private $FileExtension;
+	private $Url;
 	private $ModifyDateTime;
 	private $CreateDate;
 	private $Archived;
 	private $NewEntry;
 	private $PermissionSet;
 	private $activeEntry;
-	private $link;
+	private $linkToFile;
 		
 	public function __construct( Registry $registry, $id )
 	{
@@ -51,13 +59,14 @@ class Entry{
 				$this->Title = $data['Title'];
 				$this->Name = $data['Name'];
 				$this->FileExtension = $data['FileExtension'];
+				$this->Url = $data['Url'];
 				$this->ModifyDateTime = $data['ModifyDateTime'];
 				$this->CreateDate = $data['CreateDate'];
 				$this->Archived = $data['Archived'];
 				$this->NewEntry = $data['NewEntry'];
 				$this->PermissionSet = $data['PermissionSet'];
 				$this->activeEntry = true;
-				$this->link = $data['Name'];  //iconv("windows-1250","utf-8",
+				$this->linkToFile = $data['Name'];  //iconv("windows-1250","utf-8",
 			}
 		}
 		else
@@ -83,11 +92,11 @@ class Entry{
 		}
 		return $data;
 	}
-	public function getLink()
+	public function getlinkToFileToFile()
 	{
 		if ($this->isValid())
 		{
-			return $this->link;
+			return $this->linkToFile;
 		}
 		return null;
 	}

@@ -46,6 +46,15 @@ class Contactcontroller {
 						}
 						$this->editContact($ID);
 						break;
+					case 'new':
+						if($perSet < 0)  
+						{
+							$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page.tpl.php', 'footer.tpl.php');
+							$this->registry->getObject('template')->getPage()->addTag('message',$caption['msg_unauthorized']);
+							break;
+						}
+						$this->addContact();
+						break;
 					case 'save':
 						$ID = isset( $urlBits[2] ) ? $urlBits[2] : '';
 						if($perSet == 0)  
@@ -93,6 +102,7 @@ class Contactcontroller {
 			$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'invalid-contact.tpl.php', 'footer.tpl.php');
 		}
 	}	
+
 	private function editContact( $ID )
 	{
 		global $config, $caption;
@@ -104,6 +114,12 @@ class Contactcontroller {
 			foreach ($contact as $property => $value) {
 				$this->registry->getObject('template')->getPage()->addTag( $property, $value );
 			}
+
+			$groupList = $this->model->getGroupList();
+			$cache = $this->registry->getObject('db')->cacheQuery('SELECT * FROM contactgroup');
+			$this->registry->getObject('template')->getPage()->addTag( 'GroupList', array('SQL' , $cache) );
+			
+
 			$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'edit-contact.tpl.php', 'footer.tpl.php');
 		}
 		else
@@ -113,12 +129,33 @@ class Contactcontroller {
 		}
 	}	
 
+	private function addContact( )
+	{
+		global $config, $caption;
+		require_once( FRAMEWORK_PATH . 'models/contact/model.php');
+		$this->model = new Contact( $this->registry, '' );
+		$contact = $this->model->getData();
+		foreach ($contact as $property => $value) {
+			$this->registry->getObject('template')->getPage()->addTag( $property, $value );
+		}
+		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'edit-contact.tpl.php', 'footer.tpl.php');
+	}	
+
 	private function saveContact( $ID )
 	{
 		global $config, $caption;
 		if( isset($_POST['submitEditContact']) )
 		{
 			$ID = isset($_POST['ID']) ? $_POST['ID'] : null;
+
+			if($ID === '')
+			{
+				$ID = $this->registry->getObject('fce')->GUID();
+				$data['ID'] = $ID;
+				$data['FullName'] = $ID;
+				$this->registry->getObject('db')->insertRecords('contact',$data);
+			}
+			
 			if ($ID)
 			{
 				require_once( FRAMEWORK_PATH . 'models/contact/model.php');
@@ -155,7 +192,9 @@ class Contactcontroller {
 					if(isset($_POST['Function']))
 					{
 						if($contact['Function'] !== $_POST['Function'])
-						{$data['Function'] = $_POST['Function'];}
+						{
+							$data['Function'] = $_POST['Function'];
+						}
 					}
 					if(isset($_POST['Company']))
 					{
@@ -167,32 +206,44 @@ class Contactcontroller {
 					if(isset($_POST['Email']))
 					{
 						if($contact['Email'] !== $_POST['Email'])
-						{$data['Email'] = $_POST['Email'];}
+						{
+							$data['Email'] = $_POST['Email'];
+						}
 					}
 					if(isset($_POST['Phone']))
 					{
 						if($contact['Phone'] !== $_POST['Phone'])
-						{$data['Phone'] = $_POST['Phone'];}
+						{
+							$data['Phone'] = str_replace(' ','',$_POST['Phone']);
+						}
 					}
 					if(isset($_POST['Web']))
 					{
 						if($contact['Web'] !== $_POST['Web'])
-						{$data['Web'] = $_POST['Web'];}
+						{
+							$data['Web'] = $_POST['Web'];
+						}
 					}
 					if(isset($_POST['Note']))
 					{
 						if($contact['Note'] !== $_POST['Note'])
-						{$data['Note'] = $_POST['Note'];}
+						{
+							$data['Note'] = $_POST['Note'];
+						}
 					}
 					if(isset($_POST['Address']))
 					{
 						if($contact['Address'] !== $_POST['Address'])
-						{$data['Address'] = $_POST['Address'];}
+						{
+							$data['Address'] = $_POST['Address'];
+						}
 					}
 					if(isset($_POST['Close']))
 					{
 						if($contact['Close'] !== $_POST['Close'])
-						{$data['Close'] = $_POST['Close'];}
+						{
+							$data['Close'] = ($_POST['Close'] === '1') ? 1 : 0;
+						}
 					}
 
 					$data['FullName'] = isset($data['LastName']) ? $data['LastName'] : "";
@@ -212,7 +263,7 @@ class Contactcontroller {
 					$condition = "ID = '$ID'";
 					$this->registry->getObject('db')->updateRecords('contact',$data,$condition);
 				}
-				$this->editContact($ID);
+				$this->listContacts();
 			}
 		}
 		else
