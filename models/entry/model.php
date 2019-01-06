@@ -31,19 +31,22 @@ class Entry{
 	private $Archived;
 	private $NewEntry;
 	private $PermissionSet;
+	private $LastChange;
 	private $activeEntry;
 	private $linkToFile;
 		
 	public function __construct( Registry $registry, $id )
 	{
 		global $config;
+        $pref = $config['dbPrefix'];
+
 		$this->registry = $registry;
 		$this->activeEntry = false;
 		if( $id != '' )
 		{
 			$id = $this->registry->getObject('db')->sanitizeData( $id );
 			$sql = "SELECT *
-                		FROM DmsEntry
+                		FROM ".$pref."DmsEntry
                 		WHERE  id='$id'";
 
       		$this->registry->getObject('db')->executeQuery( $sql );
@@ -65,6 +68,7 @@ class Entry{
 				$this->Archived = $data['Archived'];
 				$this->NewEntry = $data['NewEntry'];
 				$this->PermissionSet = $data['PermissionSet'];
+				$this->LastChange = $data['LastChange'];
 				$this->activeEntry = true;
 				$this->linkToFile = $data['Name'];  //iconv("windows-1250","utf-8",
 			}
@@ -92,7 +96,7 @@ class Entry{
 		}
 		return $data;
 	}
-	public function getlinkToFileToFile()
+	public function getlinkToFile()
 	{
 		if ($this->isValid())
 		{

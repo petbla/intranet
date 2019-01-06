@@ -181,7 +181,10 @@ class mysqldatabase {
      */
     public function deleteRecords( $table, $condition, $limit )
     {
-    	$limit = ( $limit == '' ) ? '' : ' LIMIT ' . $limit;
+      global $config;
+      $table = $config['dbPrefix'].$table;
+
+      $limit = ( $limit == '' ) ? '' : ' LIMIT ' . $limit;
     	$delete = "DELETE FROM {$table} WHERE {$condition} {$limit}";
     	$this->executeQuery( $delete );
     }
@@ -195,6 +198,9 @@ class mysqldatabase {
      */
     public function updateRecords( $table, $changes, $condition )
     {
+      global $config;
+      $table = $config['dbPrefix'].$table;
+
     	$update = "UPDATE " . $table . " SET ";
     	foreach( $changes as $field => $value )
     	{
@@ -222,6 +228,9 @@ class mysqldatabase {
      */
     public function insertRecords( $table, $data )
     {
+      global $config;
+      $table = $config['dbPrefix'].$table;
+
     	// setup some variables for fields and values
     	$fields = "";
   		$values = "";
@@ -252,6 +261,9 @@ class mysqldatabase {
      */
     public function initQuery( $tableName, $fieldList = '*' )
     {
+      global $config;
+      global $config;
+
       $this->querySql = '';
       $this->queryResult = null;
       $this->queryTableName = '';
@@ -269,6 +281,8 @@ class mysqldatabase {
       {
         return;
       }
+      $tableName = $config['dbPrefix'].$tableName;
+
       $this->queryTableName = $tableName;
       $this->queryFieldList = $fieldList;
     }

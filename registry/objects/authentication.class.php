@@ -26,8 +26,9 @@ class authentication {
   private function sessionAuthenticate( $uid )
   {
   	global $caption;
+    $pref = $config['dbPrefix'];
   	
-  	$sql = "SELECT ID, Name, PermissionSet FROM user WHERE ID='$uid'";
+  	$sql = "SELECT ID, Name, PermissionSet FROM ".$pref."user WHERE ID='$uid'";
   	$username = '';
     $this->registry->getObject('db')->executeQuery( $sql );
   	if( $this->registry->getObject('db')->numRows() == 1 )
@@ -61,8 +62,9 @@ class authentication {
   public function checkForAuthentication()
   {
   	global $caption, $deb;
-  	
-    $sql = "SELECT * FROM intranet.user";
+    $pref = $config['dbPrefix'];
+ 	
+    $sql = "SELECT * FROM ".$pref."user";
     $this->registry->getObject('db')->executeQuery( $sql );
   	if( $this->registry->getObject('db')->numRows() == 0 )
   	{

@@ -22,22 +22,22 @@ class Contact{
 	private $Note;
 	private $Address;
 	private $Close;
+	private $ContactGroups;
 	private $Groups = array();
 	private $active = false;
-	private $groupList = array();
 	
 		   
 	public function __construct( Registry $registry, $id )
 	{
 		global $config;
+        $pref = $config['dbPrefix'];
+
 		$this->registry = $registry;
 		if( $id != '' )
 		{
 			$sql = "SELECT c.ID, c.FullName, c.FirstName, c.LastName, c.Title, c.Function, c.Company, ".
-							"c.Email, c.Phone, c.Web, c.Note, c.Address, c.Close, ".
-							"(SELECT GROUP_CONCAT( cg.GroupCode SEPARATOR ',' ) FROM contactgroups cg ".
-							" WHERE cg.ContactID = c.ID) AS Groups ".
-                		"FROM Contact c ".
+							"c.Email, c.Phone, c.Web, c.Note, c.Address, c.Close, c.ContactGroups ".
+                		"FROM ".$pref."Contact c ".
                 		"WHERE  ID='$id'";
 
       		$this->registry->getObject('db')->executeQuery( $sql );
@@ -57,8 +57,8 @@ class Contact{
 				$this->Note = $data['Note'];
 				$this->Address = $data['Address'];
 				$this->Close = $data['Close'];
+				$this->ContactGroups = $data['ContactGroups'];
 				$this->active = ($data['Close'] === 0);
-				$this->Groups = $data['Groups'];
 			}
 		}
 		else
@@ -78,6 +78,7 @@ class Contact{
 			$this->Address = '';
 			$this->Close = 0;
 			$this->active = ($data['Close'] === 0);
+			$this->ContactGroups = '';
 			$this->Groups = null;
 		}
 
@@ -85,7 +86,7 @@ class Contact{
 		$this->registry->getObject('db')->initQuery('contactgroup');
 		if($this->registry->getObject('db')->findSet())
 		{
-			$this->groupList = $this->registry->getObject('db')->getResult();
+			$this->Groups = $this->registry->getObject('db')->getResult();
 		}
 	}
 
@@ -109,7 +110,7 @@ class Contact{
 
 	public function getGroupList()
 	{
-		return $this->groupList;
+		return $this->Groups;
 	}
 }
 ?>

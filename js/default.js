@@ -12,6 +12,7 @@ var documents;
 var lastEditElement;
 var tags;
 var grouplist;
+var contactGroups;
 
 documentLink = document.querySelector('#cosumentLink');
 fileTitle = document.querySelector('#FileTitle');
@@ -22,7 +23,7 @@ password = document.querySelector('#usr_psw1');
 password_confirm = document.querySelector('#usr_psw2');
 loginForm = document.querySelector('#loginForm');
 tags = document.querySelectorAll('[class="tags"]');
-
+contactGroups = document.querySelector('#ContactGroups');
 
 function validatePassword () {
     if (password.value != password_confirm.value) {
@@ -218,7 +219,12 @@ grouplist = document.querySelector('#grouplist').onchange = function (e2) {
             {
                 arrGroup.push(e2.target.value);
             }            
+            arrGroup = arrGroup.filter(function(el){ return el;});
             tags[0].innerHTML = tags2Html( arrGroup );            
+            if(contactGroups)
+            {
+                contactGroups.value = arrGroup.join(',');
+            }
         }
     }
 };

@@ -99,6 +99,7 @@ class Documentcontroller{
 	private function listDocuments( $ID )
 	{
 		global $config, $caption;
+        $pref = $config['dbPrefix'];
 		
 		$perSet = $this->registry->getObject('authenticate')->getPermissionSet();
 
@@ -120,7 +121,7 @@ class Documentcontroller{
 			$entryNo = 0;
 		}
 		// Folders
-		$sql = "SELECT ID,title,Name,type,Parent,ModifyDateTime FROM DmsEntry ".
+		$sql = "SELECT ID,title,Name,type,Parent,ModifyDateTime FROM ".$pref."DmsEntry ".
 					"WHERE Archived = 0 AND parent={$entryNo} AND Type IN (20,25) ".
 					"AND PermissionSet <= $perSet ".
 					"ORDER BY Type,Title";
@@ -136,7 +137,7 @@ class Documentcontroller{
 		$isFooter = true;
 
 		// Files (and Comment, Headers, Footers)
-		$sql = "SELECT ID,title,Name,type,Parent,ModifyDateTime,LOWER(FileExtension) as FileExtension FROM DmsEntry ".
+		$sql = "SELECT ID,title,Name,type,Parent,ModifyDateTime,LOWER(FileExtension) as FileExtension FROM ".$pref."DmsEntry ".
 				  "WHERE Archived = 0 AND parent={$entryNo} AND Type IN (10,30,35,40) ".
 				  "AND PermissionSet <= $perSet ".
 				  "ORDER BY Type,Title";
@@ -149,7 +150,7 @@ class Documentcontroller{
         $perSet = $this->registry->getObject('authenticate')->getPermissionSet();
 
 		$searchText = htmlspecialchars($searchText);
-		$sqlFiles = "SELECT ID,title,Name,type,Parent,ModifyDateTime,LOWER(FileExtension) as FileExtension FROM DmsEntry ".
+		$sqlFiles = "SELECT ID,title,Name,type,Parent,ModifyDateTime,LOWER(FileExtension) as FileExtension FROM ".$pref."DmsEntry ".
 					"WHERE Archived = 0 AND Type IN (20,25,30,35) AND MATCH(Title) AGAINST ('*$searchText*' IN BOOLEAN MODE) ".
 					"AND PermissionSet <= $perSet ".
 					"ORDER BY Name";

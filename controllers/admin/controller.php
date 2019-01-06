@@ -76,15 +76,18 @@ class Admincontroller {
 	{
 		global $caption, $config;
 	    $this->urlBits = $this->registry->getURLBits();
-		$files = $this->registry->getObject('file')->synchroPath($config['fileserver']);
+		$files = $this->registry->getObject('file')->synchroRoot();
 		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page.tpl.php', 'footer.tpl.php');
 		$this->registry->getObject('template')->getPage()->addTag('message',$caption['msg_updateFinished']);
 	}
 
 	private function listUsers()
 	{
+		global $config;
+        $pref = $config['dbPrefix'];
+
 		$sql = "SELECT u.ID, u.Name, u.PermissionSet, p.Name as Role ".
-		       "FROM user u, permissionset p ".
+		       "FROM ".$pref."user u, ".$pref."permissionset p ".
 		       "WHERE u.PermissionSet = p.Level";
 		$cache = $this->registry->getObject('db')->cacheQuery( $sql );
 		if (!$this->registry->getObject('db')->isEmpty( $cache ))
@@ -102,7 +105,10 @@ class Admincontroller {
 
 	private function newUser()
 	{
-		$sql = "SELECT * FROM permissionset";
+		global $config;
+		$pref = $config['dbPrefix'];
+		
+		$sql = "SELECT * FROM ".$pref."permissionset";
 		$cache = $this->registry->getObject('db')->cacheQuery( $sql );
 		$this->registry->getObject('template')->getPage()->addTag( 'PermissionSet', array( 'SQL', $cache ) ); 
 		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'admin-users-new.tpl.php', 'footer.tpl.php');		

@@ -106,6 +106,8 @@ class Contactcontroller {
 	private function editContact( $ID )
 	{
 		global $config, $caption;
+        $pref = $config['dbPrefix'];
+
 		require_once( FRAMEWORK_PATH . 'models/contact/model.php');
 		$this->model = new Contact( $this->registry, $ID );
 		if( $this->model->isActive() )
@@ -116,7 +118,7 @@ class Contactcontroller {
 			}
 
 			$groupList = $this->model->getGroupList();
-			$cache = $this->registry->getObject('db')->cacheQuery('SELECT * FROM contactgroup');
+			$cache = $this->registry->getObject('db')->cacheQuery("SELECT * FROM ".$pref."contactgroup");
 			$this->registry->getObject('template')->getPage()->addTag( 'GroupList', array('SQL' , $cache) );
 			
 
@@ -231,6 +233,13 @@ class Contactcontroller {
 							$data['Note'] = $_POST['Note'];
 						}
 					}
+					if(isset($_POST['ContactGroups']))
+					{
+						if($contact['ContactGroups'] !== $_POST['ContactGroups'])
+						{
+							$data['ContactGroups'] = $_POST['ContactGroups'];
+						}
+					}
 					if(isset($_POST['Address']))
 					{
 						if($contact['Address'] !== $_POST['Address'])
@@ -275,11 +284,12 @@ class Contactcontroller {
 	
 	private function listContacts()
 	{
+		global $config;
+        $pref = $config['dbPrefix'];
+		
 		$sql = "SELECT c.ID, c.FullName, c.FirstName, c.LastName, c.Title, c.Function, c.Company, ".
-						"c.Email, c.Phone, c.Web, c.Note, c.Address, c.Close, ".
-						"(SELECT GROUP_CONCAT( cg.GroupCode SEPARATOR ',' ) FROM contactgroups cg ".
-						" WHERE cg.ContactID = c.ID) AS Groups ".
-					"FROM Contact c ".
+						"c.Email, c.Phone, c.Web, c.Note, c.Address, c.Close, c.ContactGroups ".
+					"FROM ".$pref."Contact c ".
 					"WHERE  Close=0 ".
 					"ORDER BY c.FullName ";
 		$isHeader = true;
@@ -331,14 +341,15 @@ class Contactcontroller {
 	private function searchContacts( $searchText )
 	{
 		global $config, $caption;
+        $pref = $config['dbPrefix'];
+
         $perSet = $this->registry->getObject('authenticate')->getPermissionSet();
 
 		$searchText = htmlspecialchars($searchText);
 		$sql = "SELECT c.ID, c.FullName, c.FirstName, c.LastName, c.Title, c.Function, c.Company, ".
-						"c.Email, c.Phone, c.Web, c.Note, c.Address, c.Close, ".
-				"(SELECT GROUP_CONCAT( cg.GroupCode SEPARATOR ',' ) FROM contactgroups cg WHERE cg.ContactID = c.ID) AS Groups ".
-				"FROM Contact c ".
-				"WHERE Close = 0 AND MATCH(FullName,Function,Company,Address,Note,Phone,Email) AGAINST ('*$searchText*' IN BOOLEAN MODE) ".
+						"c.Email, c.Phone, c.Web, c.Note, c.Address, c.Close, c.ContactGroups ".
+				"FROM ".$pref."Contact c ".
+				"WHERE Close = 0 AND MATCH(FullName,Function,Company,Address,Note,Phone,Email,ContactGroups AGAINST ('*$searchText*' IN BOOLEAN MODE) ".
 				"ORDER BY FullName";
 		$isHeader = true;
 		$isFooter = true;

@@ -45,13 +45,14 @@
                 <label for="grouplist">{lbl_Groups}</label>
                 <select name="grouplist" id="grouplist">
                     <!-- START GroupList -->
-                    <option value="{Code}">{Name}</option>
+                    <option value="{Code}">{Code} - {Name}</option>
                     <!-- END GroupList -->
                 </select>
             </li>
             <li>
                 <label class="title">{lbl_Label}</label>
-                <p class="tags">{Groups}</p>
+                <p class="tags">{ContactGroups}</p>
+                <input type="hidden" id="ContactGroups" name="ContactGroups" value="{ContactGroups}">
             </li>
             <li>
                 <input type="submit" name="submitEditContact" class="action" value="{lbl_Save}">

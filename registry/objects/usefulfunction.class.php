@@ -120,10 +120,12 @@ class UsefulFunction {
 
 	public function nextSeriesNo( $type, $isoDT )
 	{
+		global $config;
+    $pref = $config['dbPrefix'];
     $docNo = 0;
 
     $date = date('Y-m-d', strtotime($isoDT));
-    $sql = "SELECT ID,valid_from,first_no,last_no FROM no_series WHERE type='$type'";
+    $sql = "SELECT ID,valid_from,first_no,last_no FROM ".$pref."no_series WHERE type='$type'";
     if (isset($date) && ($date != null) )
       $sql .= " AND valid_from <= '" . $date . "' ORDER BY valid_from DESC";
     else

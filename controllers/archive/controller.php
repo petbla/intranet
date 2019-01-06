@@ -48,8 +48,10 @@ class Archivecontroller{
 	private function listDocuments( $ID )
 	{
 		global $config, $caption;
+		$pref = $config['dbPrefix'];
+		
     	$sql = "SELECT ID,Name as title,type,ModifyDateTime,LOWER(FileExtension) as FileExtension ".
-			   "FROM DmsEntry AS d ".
+			   "FROM ".$pref."DmsEntry AS d ".
 			   "WHERE NewEntry = 0 AND Type = 30 AND Archived = true ".
 			   "ORDER BY Level,Parent,Type,LineNo" ;
 		$this->registry->setLevel(0);

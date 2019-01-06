@@ -43,7 +43,7 @@
             </li>
             <li>
                 <label class="title">{lbl_Label}</label>
-                <p class="tags">{Groups}</p>
+                <p class="tags">{ContactGroups}</p>
             </li>
         </ul>    
     </form>

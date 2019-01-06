@@ -65,6 +65,8 @@ if (($registry->getObject('authenticate')->isLoggedIn()) || ($registry->getObjec
 }
 $registry->getObject('template')->getPage()->addTag('UserName',$registry->getObject('authenticate')->getUserName());
 
+// Check database Update
+$registry->getObject('upgrade')->checkUpgrade();
 
 // Check Active Controllers
 $activeControllers = array();

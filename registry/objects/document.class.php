@@ -117,6 +117,8 @@ class document {
 
     public function createCategoryMenu()
     {
+		global $config;
+        $pref = $config['dbPrefix'];
         $perSet = $this->registry->getObject('authenticate')->getPermissionSet();
 
         $entryNo = $this->registry->getEntryNo();
@@ -126,8 +128,8 @@ class document {
         }
         $sql = "SELECT id as idCat,title as titleCat ,name,path as pathCat,
                        IF(EntryNo = $entryNo,'active','') as activeCat 
-                       FROM dmsentry 
-                       WHERE `level` = 0 AND `Type` BETWEEN 20 AND 25 AND PermissionSet <= $perSet
+                       FROM ".$pref."dmsentry 
+                       WHERE `level` = 0 AND Archived = 0 AND `Type` BETWEEN 20 AND 25 AND PermissionSet <= $perSet
                        ORDER BY Title";
         
         $cache = $this->registry->getObject('db')->cacheQuery( $sql );
@@ -138,7 +140,9 @@ class document {
     public function addIcons()
     {
         global $config;
-        $sql = "SELECT DISTINCT FileExtension FROM dmsentry WHERE FileExtension <> ''";
+        $pref = $config['dbPrefix'];
+
+        $sql = "SELECT DISTINCT FileExtension FROM ".$pref."dmsentry WHERE FileExtension <> ''";
         $this->registry->getObject('db')->executeQuery( $sql );
         while( $data = $this->registry->getObject('db')->getRows() )
         {

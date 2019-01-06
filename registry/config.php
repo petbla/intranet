@@ -10,35 +10,43 @@
  // načti informace o připojení k databázi 
 require_once('_private/config.php');
 
-/**
- *  Set Language
- */ 
-$registry->storeSetting('lang','cs');
-require_once('lang/'.$registry->getSetting('lang').'.php');
 
-
-/**
- *  Setting Webpage
+/*
+ *************************************************************************************************
+ *                                  Customer Settings  Webpage                                   *
+ *************************************************************************************************
  */
-$config['skin']             = 'classic';
 $config['sitename']         = 'Intranet - DMS';
-$config['siteshortname']    = 'Intranet';
-$config['siteurl']          = 'http://localhost/intranet/';
 $config['metadescription']  = 'Intranet - správa dokumentů';
-$config['metakeywords']		  = '';
+$config['siteshortname']    = 'Intranet';
 $config['headtitle']        = 'Intranet';
-$config['Copyright']        = 'Copyright &bull; Petbla';
-$config['CopyrightYear']    = 'petbla 2018';
+$config['siteurl']          = 'http://localhost/intranet/';
 $config['fileserver']       = '\\\\petblanb\\FileServer\\';
+$config['dbPrefix']         = '';    // test_
 
 /**
- *  Setting Personal Information
+ *  Address
  */
 $config['compName']      = 'OBEC Mistřice';
 $config['compAddress']   = 'Mistřice 9';
 $config['compCity']      = 'Mistřice';
 $config['compZip']       = '68712';
 $config['compICO']       = '00267267';
+
+/*
+*************************************************************************************************
+*/
+
+/**
+ *  Web setting
+ */ 
+$config['skin']             = 'classic';
+$config['metakeywords']		= '';
+$config['Copyright']        = 'Copyright &bull; Petbla';
+$config['CopyrightYear']    = 'petbla 2018';
+
+$registry->storeSetting('lang','cs');
+require_once('lang/'.$registry->getSetting('lang').'.php');
 
 /**
  *  Save to Registry
@@ -49,6 +57,7 @@ $registry->storeObject('authenticate', 'authentication');
 $registry->storeObject('fce', 'usefulfunction');
 $registry->storeObject('document', 'document');
 $registry->storeObject('file','file');
+$registry->storeObject('upgrade','upgrademanagement');
 
 /**
  *  PEAR modul and set library

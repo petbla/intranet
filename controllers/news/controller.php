@@ -48,8 +48,10 @@ class Newscontroller{
 	private function listDocuments( $ID )
 	{
 		global $config, $caption;
+        $pref = $config['dbPrefix'];
+
     	$sql = "SELECT ID,Name as title,Name,type,ModifyDateTime,LOWER(FileExtension) as FileExtension ".
-			   "FROM DmsEntry AS d ".
+			   "FROM ".$pref."DmsEntry AS d ".
 			   "WHERE NewEntry = 1 AND Type = 30 AND Archived = false ".
 			   "ORDER BY Level,Parent,Type,LineNo" ;
 		$this->registry->setLevel(0);

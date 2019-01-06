@@ -29,7 +29,7 @@
                 <span class="email">{Email}</span>
             </td>
             <td class="tags">
-                {Groups}
+                {ContactGroups}
             </td>
             <td style="width: 300px; font-size: 12px;">{Note}</td>
         </tr>
