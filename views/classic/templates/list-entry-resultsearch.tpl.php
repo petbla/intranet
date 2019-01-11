@@ -18,7 +18,7 @@
     </tr>
 	  <!-- START DocumentItems -->
     <tr>
-      <td>{icon{FileExtension}}</td>
+      <td><a href="FileServer/{Name}" target="_blank">{icon{FileExtension}}</a></td>
       <td>
         <a href="index.php?page=document/view/{ID}">{title}</a>
         <br>

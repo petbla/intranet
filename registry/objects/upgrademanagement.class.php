@@ -135,9 +135,51 @@ class upgrademanagement {
 
         switch ($this->version) {
             case '1.0':
+                // upgrade to 1.1
                 $this->upgrade_001();
                 break;
+            case '1.1':
+                // upgrade to 1.2
+                $this->upgrade_002();
+                break;
         }
+    }
+    private function upgrade_002()
+    {
+		global $config;
+        $pref = $config['dbPrefix'];
+
+        $sql = "ALTER TABLE ".$pref."dmsentry ADD `Multimedia` VARCHAR(30) NULL DEFAULT '' AFTER `Type`";
+        $this->registry->getObject('db')->executeQuery( $sql );
+
+        $sql = "SELECT ID,FileExtension FROM ".$pref."dmsentry WHERE Archived = 0 AND Type = 30";
+        $entries = array();
+        $this->registry->getObject('db')->executeQuery( $sql );
+        while( $entry = $this->registry->getObject('db')->getRows() )
+        {
+            switch (strtolower($entry['FileExtension'])) {
+                case 'bmp':
+                case 'jpg':
+                case 'png':
+                    $entry['Multimedia'] = 'image';
+                    $entries[] = $entry;
+                    break;
+                case 'mp3':
+                    $entry['Multimedia'] = 'audio';
+                    $entries[] = $entry;
+                    break;
+                case 'mp4':
+                    $entry['Multimedia'] = 'video';
+                    $entries[] = $entry;
+                    break;
+            }
+        }
+        foreach ($entries as $entry ) {
+            $changes['Multimedia'] = $entry['Multimedia'];
+            $condition = "ID = '".$entry['ID']."'";
+            $this->registry->getObject('db')->updateRecords( 'dmsentry', $changes, $condition); 
+        }
+        $this->setNewVersion('1.2');
     }
 
     private function upgrade_001()

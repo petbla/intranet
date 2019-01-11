@@ -8,21 +8,6 @@
  */
 
 class file {
-  
-  private $fullName;
-  private $root;
-  private $itemName;
-  private $parent;
-  private $item;
-  private $itemTitle;
-  private $itemExists;
-  private $itemType;
-  private $itemLevel;
-  private $winFullName;
-  private $winItem;
-  private $winParent;
-  private $fileExtension;
-
   public function __construct( $registry ) 
   {
     global $config;
@@ -45,6 +30,7 @@ class file {
     /*
      * Find deleted OR renamed documents
      */
+    ini_set('max_execution_time', 600);
     $this->registry->getObject('db')->initQuery('DmsEntry','EntryNo,ID,Name,Type');
     $this->registry->getObject('db')->setCondition('Archived = false AND Type IN (20,30)');
     if( $this->registry->getObject('db')->findSet())
@@ -54,8 +40,8 @@ class file {
       foreach ($data as $key => $entry) {
         $ID = $entry['ID'];
         $counter += 1;
-        $this->setName($entry['Name']);
-        if(! $this->itemExists)
+        $item = $this->getItem($entry['Name']);
+        if(! $item['Exist'])
         {
           $changes['Archived'] = true;
           $changes['LastChange'] = date("Y-m-d H:i:s");
@@ -64,6 +50,7 @@ class file {
         }        
       }
     }
+
     $directories[]  = $this->root; 
     $paret = 0;
     $level = 0;
@@ -105,29 +92,31 @@ class file {
     {
       return 0;
     }
+    $item = $this->getItem($name);
     $this->registry->getObject('db')->initQuery('DmsEntry','EntryNo,Name');
-    $name = $this->registry->getObject('db')->sanitizeData($name);
-    $this->registry->getObject('db')->setCondition( "Name='$name'" );
+    $sanitizename = $this->registry->getObject('db')->sanitizeData($name);
+    $this->registry->getObject('db')->setCondition( 'Name="'.$sanitizename.'" AND Archived=0' );
     if( $this->registry->getObject('db')->findFirst())
     {
        $entry = $this->registry->getObject('db')->getResult();
        return $entry['EntryNo'];
     }
-    $this->setName($name);
     
     // Insert NEW folder
     $data = array();
     $data['ID'] = $this->registry->getObject('fce')->GUID();
-    $data['Level'] = $this->itemLevel;
-    $data['Parent'] = $this->findItem($this->itemParent);
-    $data['Path'] = $this->itemParent;
-    $data['Type'] = $this->itemType;
+    $data['Level'] = $item['Level'];
+    $data['Parent'] = $this->findItem($item['WinParent']);
+    $data['Path'] = $item['Parent'];
+    $data['Type'] = $item['Type'];
     $data['LineNo'] = $this->getNextLineNo($data['Parent']);
-    $data['Title'] = $this->registry->getObject('db')->sanitizeData($this->itemTitle); 
-    $data['Name'] = $this->registry->getObject('db')->sanitizeData($this->itemName);
-    $data['FileExtension'] = $this->fileExtension;
-    $data['ModifyDateTime'] = date("Y-m-d H:i:s", filemtime($this->winFullName)); // datum a čas změny
+//    $data['Title'] = $this->registry->getObject('db')->sanitizeData($item['Title']); 
+    $data['Title'] = $item['Title']; 
+    $data['Name'] = $this->registry->getObject('db')->sanitizeData($item['Name']);
+    $data['FileExtension'] = $item['Extension'];
+    $data['ModifyDateTime'] = date("Y-m-d H:i:s", filemtime($item['WinFullName'])); // datum a čas změny
     $data['PermissionSet'] = 1;
+    $data['Url'] = '';
     $this->registry->getObject('db')->insertRecords( 'DmsEntry', $data );
     $this->registry->getObject('db')->findFirst();
     $entry = $this->registry->getObject('db')->getResult();
@@ -153,70 +142,69 @@ class file {
     return $lineNo;
   }
 
-  public function setName( $name )
+  public function getItem( $name )
   {
-    $this->fullName = '';
-    $this->itemName = '';
-    $this->parent = '';
-    $this->item = '';
-    $this->itemTitle = '';
-    $this->itemExists = false;
-    $this->itemType = 0;
-    $this->itemLevel = 0;
-    $this->winFullName = '';
-    $this->winItem = '';
-    $this->winParent = '';
-    $this->fileExtension = '';
+    $item = array();
+    $item['FullName'] = '';
+    $item['Name'] = '';
+    $item['Parent'] = '';
+    $item['Item'] = '';
+    $item['Title'] = '';
+    $item['Exist'] = false;
+    $item['Type'] = 0;
+    $item['Level'] = 0;
+    $item['WinFullName'] = '';
+    $item['WinItem'] = '';
+    $item['WinParent'] = '';
+    $item['Extension'] = '';
 
-    $this->itemName = str_replace('\\',DIRECTORY_SEPARATOR,$name);
-    $this->itemName = str_replace('/',DIRECTORY_SEPARATOR,$this->itemName);
-    $this->fullName =  $this->root.$this->itemName;
-    $this->winFullName =  iconv("utf-8","windows-1250",$this->fullName);
-    $arr = explode(DIRECTORY_SEPARATOR,$this->itemName);
-    $this->item = (count($arr) > 0) ? $arr[count($arr) - 1] : '';
-    $this->winItem =  iconv("utf-8","windows-1250",$this->item);
+    $item['Name'] = str_replace('\\',DIRECTORY_SEPARATOR,$name);
+    $item['Name'] = str_replace('/',DIRECTORY_SEPARATOR,$item['Name']);
+    $item['FullName'] =  $this->root.$item['Name'];
+    $arr = explode(DIRECTORY_SEPARATOR,$item['Name']);
+    $item['Item'] = (count($arr) > 0) ? $arr[count($arr) - 1] : '';
     if(count($arr) > 0)
     {
       array_pop($arr);
-      $this->parent = implode(DIRECTORY_SEPARATOR,$arr);
+      $item['Parent'] = implode(DIRECTORY_SEPARATOR,$arr);
     }
-    else
-    {
-      $this->parent = '';
-    }
-    $this->winParent =  iconv("utf-8","windows-1250",$this->parent);
-    $parentItems = scandir($this->root.$this->winParent);
+    $item['WinFullName'] =  iconv("utf-8","windows-1250",$item['FullName']);
+    $item['WinItem'] =  iconv("utf-8","windows-1250",$item['Item']);
+    $item['WinParent'] =  iconv("utf-8","windows-1250",$item['Parent']);
+    
+    $parentItems = scandir($this->root.$item['WinParent']);
     for ($i=0; $i < count($parentItems); $i++) { 
       $parentItems[$i] = strtoupper(iconv("windows-1250","utf-8",$parentItems[$i]));
     }
-    $this->itemExists = in_array(strtoupper($this->item),$parentItems);
+    $item['Exist'] = in_array(strtoupper($item['Item']),$parentItems);
 
-    $this->itemLevel = substr_count($this->itemName,DIRECTORY_SEPARATOR);
-    $this->fileExtension = pathinfo($this->winFullName,PATHINFO_EXTENSION);
-    if (is_dir($this->winFullName)) 
+    $item['Level'] = substr_count($item['Name'],DIRECTORY_SEPARATOR);
+    if (is_dir($item['WinFullName'])) 
     { 
-      $this->itemType = 20;
+      $item['Type'] = 20;
     } 
-    elseif (is_file($this->winFullName)) 
+    elseif (is_file($item['WinFullName'])) 
     { 
-      $this->itemType = 30;
+      $item['Type'] = 30;
+      $item['Extension'] = pathinfo($item['WinFullName'],PATHINFO_EXTENSION);
     }
     else
     {
-      $this->itemType = 30;
+      $item['Type'] = 30;
     }
-    $this->itemTitle = $this->item;
-    if ($this->itemTitle !== '')
+    $item['Title'] = $item['Item'];
+    if (($item['Title'] !== '') && ($item['Type'] === 30))
     {
-      if ($this->fileExtension !== '')
+      if ($item['Extension'] !== '') 
       {
-        $this->itemTitle = substr($this->itemTitle,0,strlen($this->itemTitle) - strlen($this->fileExtension) - 1);            
+        $item['Title'] = substr($item['Title'],0,strlen($item['Title']) - strlen($item['Extension']) - 1);            
       }
-      if($this->itemTitle[strlen($this->itemTitle)-1] == '.')
+      if($item['Title'][strlen($item['Title'])-1] == '.')
       {
-        $this->itemTitle = substr($this->itemTitle,0,strlen($this->itemTitle) );            
+        $item['Title'] = substr($item['Title'],0,strlen($item['Title']) );            
       }
     }
+    return $item;
   }
 
   public function getIdByName( $name )

@@ -18,8 +18,8 @@
       <nav>
         <ul>
           <li><a href="index.php?page=document/list">{lbl_Documents}</a></li>
-          <li><a href="index.php?page=news/list">{lbl_News}</a></li>
-          <li><a href="index.php?page=archive/list">{lbl_Archive}</a></li>
+          {newsBarMenuItem}
+          {archiveBarMenuItem}
           {contactBarMenuItem}
           {calendarBarMenuItem}
           {adminBarMenuItem}

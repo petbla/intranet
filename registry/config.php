@@ -22,7 +22,7 @@ $config['siteshortname']    = 'Intranet';
 $config['headtitle']        = 'Intranet';
 $config['siteurl']          = 'http://localhost/intranet/';
 $config['fileserver']       = '\\\\petblanb\\FileServer\\';
-$config['dbPrefix']         = '';    // test_
+$config['dbPrefix']         = '';    // test_, mis_
 
 /**
  *  Address

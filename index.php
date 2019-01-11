@@ -33,6 +33,9 @@ if( isset($_COOKIE["maxVisibleItem"]) ){
 // Connect to database
 $registry->getObject('db')->newConnection($config['db_host'], $config['db_user'], $config['db_pass'], $config['db_name']);
 
+// Check database Update
+$registry->getObject('upgrade')->checkUpgrade();
+
 // zkontroluj data požadavku POST pro uživatele snažící se přihlásit a data relace 
 // pro uživatele, kteří jsou přihlášení
 $registry->getObject('authenticate')->checkForAuthentication();
@@ -65,14 +68,10 @@ if (($registry->getObject('authenticate')->isLoggedIn()) || ($registry->getObjec
 }
 $registry->getObject('template')->getPage()->addTag('UserName',$registry->getObject('authenticate')->getUserName());
 
-// Check database Update
-$registry->getObject('upgrade')->checkUpgrade();
 
 // Check Active Controllers
 $activeControllers = array();
 $activeControllers[] = 'document';
-$activeControllers[] = 'news';
-$activeControllers[] = 'archive';
 $activeControllers[] = 'contact';
 $activeControllers[] = 'admin';
 $currentController = $registry->getURLBit( 0 );  // controller
@@ -102,12 +101,34 @@ $registry->getObject('document')->createCategoryMenu();
 // Barmenu 
 $perSet = $registry->getObject('authenticate')->getPermissionSet();
 $isAdmin = $registry->getObject('authenticate')->isAdmin();
-$contactBarMenuItem = $perSet > 0 ? "<li><a href='index.php?page=contact/list'>Kontakty</a></li>" : '';
-$calendarBarMenuItem = $perSet > 0 ? "<li><a href='https://teamup.com/ksx5ivfw8yrnn6gbqy'>Kalendář</a></li>" : '';
+$contactBarMenuItem = $perSet > 0 ? "<li><a href='index.php?page=contact/list'>".$caption['Contacts']."</a></li>" : '';
+$archiveBarMenuItem = $perSet == 9 ? "<li><a href='index.php?page=document/listArchive'>".$caption['Archive']."</a></li>" : '';
+$newsBarMenuItem = $perSet == 9 ? "<li><a href='index.php?page=document/listNew'>".$caption['_News']."</a></li>" : '';
+switch ($perSet) {
+	case 9:
+		$calendarBarMenuItem = "<li><a href='https://teamup.com/ks7xn3roxm7uo5r44z' target='_blank'>Kalendář</a></li>";
+		break;
+	case 5:
+		$calendarBarMenuItem = "<li><a href='https://teamup.com/ksekgkc9ebu9deai3e' target='_blank'>Kalendář</a></li>";
+		break;
+ 	case 4:
+ 	case 3:
+ 	case 2:
+		$calendarBarMenuItem = "<li><a href='https://teamup.com/ksx5ivfw8yrnn6gbqy' target='_blank'>Kalendář</a></li>";
+		break;
+	case 1:
+		$calendarBarMenuItem = "<li><a href='https://teamup.com/ksmoedn1dphw6gy7vf' target='_blank'>Kalendář</a></li>";
+		break;
+	default:
+		$calendarBarMenuItem = "";
+		break;
+}
 $adminBarMenuItem = $isAdmin ? "<li><a href='index.php?page=admin'>Administrace</a></li>" : '';
+$registry->getObject('template')->getPage()->addTag( 'adminBarMenuItem', $adminBarMenuItem );
 $registry->getObject('template')->getPage()->addTag( 'contactBarMenuItem', $contactBarMenuItem );
 $registry->getObject('template')->getPage()->addTag( 'calendarBarMenuItem', $calendarBarMenuItem );
-$registry->getObject('template')->getPage()->addTag( 'adminBarMenuItem', $adminBarMenuItem );
+$registry->getObject('template')->getPage()->addTag( 'archiveBarMenuItem', $archiveBarMenuItem );
+$registry->getObject('template')->getPage()->addTag( 'newsBarMenuItem', $newsBarMenuItem );
 
 
 // vše analyzuj a zobraz výsledek

@@ -5,7 +5,11 @@
         <input type="image" src="views/classic/images/icon/search.png" value="{lbl_Searching}" id="submit">
     </form>
 </div>
-<a href="index.php?page=contact/new" class="actions"><img src="views/classic/images/nav/addcontact.png" alt="{lbl_New}" title="{lbl_NewContact}"></a>
+<div id="actionpanel">
+    &nbsp;
+    {lbl_NewContact}
+    <a href="index.php?page=contact/new" class="actions"><img src="views/classic/images/nav/addContact.png" alt="{lbl_New}" title="{lbl_NewContact}"></a>
+</div>
 <div id="pagecounter">
 {navigate_menu}
 </div>

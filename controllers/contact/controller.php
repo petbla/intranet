@@ -15,6 +15,13 @@ class Contactcontroller {
 		if( $directCall == true )
 		{
       		$urlBits = $this->registry->getURLBits();     
+			
+			if($perSet == 0)
+			{
+				$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page.tpl.php', 'footer.tpl.php');
+				$this->registry->getObject('template')->getPage()->addTag('message',$caption['msg_unauthorized']);
+				return;
+			}
 
 			if( !isset( $urlBits[1] ) )
 			{		
@@ -33,12 +40,6 @@ class Contactcontroller {
 						break;
 					case 'edit':
 						$ID = isset( $urlBits[2] ) ? $urlBits[2] : '';
-						if($perSet == 0)  
-						{
-							$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page.tpl.php', 'footer.tpl.php');
-							$this->registry->getObject('template')->getPage()->addTag('message',$caption['msg_unauthorized']);
-							break;
-						}
 						if($perSet < 5) // změna pouze pro Starosta(5), Adninistrátor(9)
 						{
 							$this->viewContact($ID);
@@ -47,22 +48,10 @@ class Contactcontroller {
 						$this->editContact($ID);
 						break;
 					case 'new':
-						if($perSet < 0)  
-						{
-							$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page.tpl.php', 'footer.tpl.php');
-							$this->registry->getObject('template')->getPage()->addTag('message',$caption['msg_unauthorized']);
-							break;
-						}
 						$this->addContact();
 						break;
 					case 'save':
 						$ID = isset( $urlBits[2] ) ? $urlBits[2] : '';
-						if($perSet == 0)  
-						{
-							$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page.tpl.php', 'footer.tpl.php');
-							$this->registry->getObject('template')->getPage()->addTag('message',$caption['msg_unauthorized']);
-							break;
-						}
 						if($perSet >= 5) // změna pouze pro Starosta(5), Adninistrátor(9)
 						{
 							$this->saveContact($ID);
@@ -116,12 +105,9 @@ class Contactcontroller {
 			foreach ($contact as $property => $value) {
 				$this->registry->getObject('template')->getPage()->addTag( $property, $value );
 			}
-
 			$groupList = $this->model->getGroupList();
 			$cache = $this->registry->getObject('db')->cacheQuery("SELECT * FROM ".$pref."contactgroup");
 			$this->registry->getObject('template')->getPage()->addTag( 'GroupList', array('SQL' , $cache) );
-			
-
 			$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'edit-contact.tpl.php', 'footer.tpl.php');
 		}
 		else
@@ -140,13 +126,20 @@ class Contactcontroller {
 		foreach ($contact as $property => $value) {
 			$this->registry->getObject('template')->getPage()->addTag( $property, $value );
 		}
+		$groupList = $this->model->getGroupList();
+		$cache = $this->registry->getObject('db')->cacheQuery("SELECT * FROM ".$pref."contactgroup");
+		$this->registry->getObject('template')->getPage()->addTag( 'GroupList', array('SQL' , $cache) );
 		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'edit-contact.tpl.php', 'footer.tpl.php');
 	}	
 
 	private function saveContact( $ID )
 	{
 		global $config, $caption;
-		if( isset($_POST['submitEditContact']) )
+		if( isset($_POST['back']) )
+		{
+			$this->listContacts();
+		}
+		else if( isset($_POST['submitEditContact']) )
 		{
 			$ID = isset($_POST['ID']) ? $_POST['ID'] : null;
 
@@ -349,7 +342,7 @@ class Contactcontroller {
 		$sql = "SELECT c.ID, c.FullName, c.FirstName, c.LastName, c.Title, c.Function, c.Company, ".
 						"c.Email, c.Phone, c.Web, c.Note, c.Address, c.Close, c.ContactGroups ".
 				"FROM ".$pref."Contact c ".
-				"WHERE Close = 0 AND MATCH(FullName,Function,Company,Address,Note,Phone,Email,ContactGroups AGAINST ('*$searchText*' IN BOOLEAN MODE) ".
+				"WHERE Close = 0 AND MATCH(FullName,Function,Company,Address,Note,Phone,Email,ContactGroups) AGAINST ('*$searchText*' IN BOOLEAN MODE) ".
 				"ORDER BY FullName";
 		$isHeader = true;
 		$isFooter = true;

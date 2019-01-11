@@ -44,6 +44,7 @@
             <li>
                 <label for="grouplist">{lbl_Groups}</label>
                 <select name="grouplist" id="grouplist">
+                    <option value="">{lbl_choiceAction}</option>
                     <!-- START GroupList -->
                     <option value="{Code}">{Code} - {Name}</option>
                     <!-- END GroupList -->
@@ -56,6 +57,7 @@
             </li>
             <li>
                 <input type="submit" name="submitEditContact" class="action" value="{lbl_Save}">
+                <input type="submit" name="back" class="action" value="{lbl_back}">
             </li>
             <li>
                 <input type="hidden" name="ID" value="{ID}">

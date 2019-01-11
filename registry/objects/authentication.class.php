@@ -25,7 +25,7 @@ class authentication {
   
   private function sessionAuthenticate( $uid )
   {
-  	global $caption;
+  	global $caption, $config;
     $pref = $config['dbPrefix'];
   	
   	$sql = "SELECT ID, Name, PermissionSet FROM ".$pref."user WHERE ID='$uid'";
@@ -61,7 +61,7 @@ class authentication {
 
   public function checkForAuthentication()
   {
-  	global $caption, $deb;
+  	global $caption,$config;
     $pref = $config['dbPrefix'];
  	
     $sql = "SELECT * FROM ".$pref."user";
@@ -78,7 +78,7 @@ class authentication {
     }
     else
     {
-      if( isset( $_SESSION['int_auth_session_uid'] ) && intval( $_SESSION['int_auth_session_uid'] ) > 0 )
+      if( isset( $_SESSION['int_auth_session_uid'] ) && ( $_SESSION['int_auth_session_uid'] <> '' ))
       {
         return ($this->sessionAuthenticate( $_SESSION['int_auth_session_uid'] ));
       }

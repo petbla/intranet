@@ -18,7 +18,7 @@
     </table>
     <br />
     <p>
-        <a id="cosumentLink" href="FileServer/{Name}">{lbl_View}</a>
+        <a id="cosumentLink" href="FileServer/{Name}" target="_blank">{lbl_View}</a>
     </p>
     
 </div>

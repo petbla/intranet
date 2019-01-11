@@ -9,7 +9,8 @@ class Documentcontroller{
 	
 	private $registry;
 	private $model;
-	
+	private $perSet;
+	private $prefDb;
 
 	/**
 	 * @param Registry $registry 
@@ -17,11 +18,20 @@ class Documentcontroller{
 	 */
 	public function __construct( Registry $registry, $directCall )
 	{
+		global $config, $caption;
 		$this->registry = $registry;
+		$this->perSet = $this->registry->getObject('authenticate')->getPermissionSet();
+        $this->prefDb = $config['dbPrefix'];
 		
 		if( $directCall == true )
 		{
 			$urlBits = $this->registry->getURLBits();     
+			if($this->perSet == 0)
+			{
+				$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page.tpl.php', 'footer.tpl.php');
+				$this->registry->getObject('template')->getPage()->addTag('message',$caption['msg_unauthorized']);
+				return;
+			}
 
 			if( !isset( $urlBits[1] ) )
 			{		
@@ -35,6 +45,14 @@ class Documentcontroller{
 					case 'list':
 						$ID = isset($urlBits[2]) ? $urlBits[2] : '';
 						$this->listDocuments($ID);
+						break;
+					case 'listNew':
+						$ID = isset($urlBits[2]) ? $urlBits[2] : '';
+						$this->listNewDocuments($ID);
+						break;
+					case 'listArchive':
+						$ID = isset($urlBits[2]) ? $urlBits[2] : '';
+						$this->listArchiveDocuments($ID);
 						break;
 					case 'view':
 						$ID = isset($urlBits[2]) ? $urlBits[2] : '';
@@ -71,7 +89,7 @@ class Documentcontroller{
 	
 	public function getBreads ($ID)
 	{
-		global $config, $caption;
+		global $caption;
 
 		$title = $caption['home_page'];
 		$href = "index.php?page=document/list";
@@ -98,16 +116,13 @@ class Documentcontroller{
 
 	private function listDocuments( $ID )
 	{
-		global $config, $caption;
-        $pref = $config['dbPrefix'];
-		
-		$perSet = $this->registry->getObject('authenticate')->getPermissionSet();
+		global $caption;
 
 		require_once( FRAMEWORK_PATH . 'models/entry/model.php');
 		$this->model = new Entry( $this->registry, $ID );
+		$entry = $this->model->getData();
 		if( $this->model->isValid() )
 		{
-			$entry = $this->model->getData();
 			$level = $entry['Level'];
 			$entryNo = $entry['EntryNo'];
 			$parent = $entry['Parent'];
@@ -121,9 +136,9 @@ class Documentcontroller{
 			$entryNo = 0;
 		}
 		// Folders
-		$sql = "SELECT ID,title,Name,type,Parent,ModifyDateTime FROM ".$pref."DmsEntry ".
+		$sql = "SELECT ID,title,Name,type,Parent,ModifyDateTime FROM ".$this->prefDb."DmsEntry ".
 					"WHERE Archived = 0 AND parent={$entryNo} AND Type IN (20,25) ".
-					"AND PermissionSet <= $perSet ".
+					"AND PermissionSet <= $this->perSet ".
 					"ORDER BY Type,Title";
 		$cache = $this->registry->getObject('db')->cacheQuery( $sql );
 		$isFolder = ($this->registry->getObject('db')->isEmpty($cache) == false);
@@ -137,22 +152,47 @@ class Documentcontroller{
 		$isFooter = true;
 
 		// Files (and Comment, Headers, Footers)
-		$sql = "SELECT ID,title,Name,type,Parent,ModifyDateTime,LOWER(FileExtension) as FileExtension FROM ".$pref."DmsEntry ".
+		$sql = "SELECT ID,title,Name,type,Parent,ModifyDateTime,LOWER(FileExtension) as FileExtension FROM ".$this->prefDb."DmsEntry ".
 				  "WHERE Archived = 0 AND parent={$entryNo} AND Type IN (10,30,35,40) ".
-				  "AND PermissionSet <= $perSet ".
+				  "AND PermissionSet <= $this->perSet ".
 				  "ORDER BY Type,Title";
 		$this->registry->getObject('document')->listDocuments($sql, $entryNo,'',$isHeader, $isFolder, $isFiles, $isFooter,$breads);
+	}	
+	
+	private function listNewDocuments( $ID )
+	{
+    	$sql = "SELECT ID,Name as title,Name,type,ModifyDateTime,LOWER(FileExtension) as FileExtension ".
+			   "FROM ".$this->pref."DmsEntry AS d ".
+			   "WHERE NewEntry = 1 AND Type = 30 AND Archived = false ".
+			   "AND PermissionSet <= $this->perSet ".
+			   "ORDER BY Level,Parent,Type,LineNo" ;
+		$this->registry->setLevel(0);
+		$this->registry->setEntryNo(0);
+		$this->registry->getObject('document')->listDocuments($sql,null,'<h3>Nové dokumenty</h3>',false,false,true,false, '');
+	}	
+
+	private function listArchiveDocuments( $ID )
+	{
+    	$sql = "SELECT ID,Name as title,type,ModifyDateTime,LOWER(FileExtension) as FileExtension ".
+			   "FROM ".$this->pref."DmsEntry AS d ".
+			   "WHERE NewEntry = 0 AND Type = 30 AND Archived = true ".
+			   "AND PermissionSet <= $this->perSet ".
+			   "ORDER BY Level,Parent,Type,LineNo" ;
+		$this->registry->setLevel(0);
+		$this->registry->setEntryNo(0);
+		$this->registry->getObject('document')->listDocuments($sql,null,'<h3>Archív dokumentů</h3>',false,false,true,false, '', 'list-entry-archive.tpl.php');
 	}	
 
 	private function searchDocuments( $searchText )
 	{
-		global $config, $caption;
-        $perSet = $this->registry->getObject('authenticate')->getPermissionSet();
+		global $caption;
 
 		$searchText = htmlspecialchars($searchText);
-		$sqlFiles = "SELECT ID,title,Name,type,Parent,ModifyDateTime,LOWER(FileExtension) as FileExtension FROM ".$pref."DmsEntry ".
-					"WHERE Archived = 0 AND Type IN (20,25,30,35) AND MATCH(Title) AGAINST ('*$searchText*' IN BOOLEAN MODE) ".
-					"AND PermissionSet <= $perSet ".
+		$sqlFiles = "SELECT ID,title,Name,type,Parent,ModifyDateTime,LOWER(FileExtension) as FileExtension FROM ".$this->prefDb."DmsEntry ".
+					"WHERE Archived = 0 AND Type IN (20,25,30,35) ".
+					//"AND MATCH(Title) AGAINST ('*".$searchText."*' IN BOOLEAN MODE) ".
+					"AND Title like '%".$searchText."%' ".
+					"AND PermissionSet <= $this->perSet ".
 					"ORDER BY Name";
 		$isHeader = true;
 		$isFolder = false;
@@ -163,8 +203,7 @@ class Documentcontroller{
 
 	private function viewDocument( $ID )
 	{
-		global $config, $caption;
-        $perSet = $this->registry->getObject('authenticate')->getPermissionSet();
+		global $caption;
 
 		require_once( FRAMEWORK_PATH . 'models/entry/model.php');
 		$this->model = new Entry( $this->registry, $ID );
@@ -192,12 +231,11 @@ class Documentcontroller{
 
 	private function modifyDocument( $ID )
 	{
-		global $config, $caption;
-        $perSet = $this->registry->getObject('authenticate')->getPermissionSet();
+		global $caption;
 
 		require_once( FRAMEWORK_PATH . 'models/entry/model.php');
 		$this->model = new Entry( $this->registry, $ID );
-		if( ($perSet > 0) AND $this->model->isValid() )
+		if( ($this->perSet > 0) AND $this->model->isValid() )
 		{
 			$document = $this->model->getData();
 			$newTitle = ($_POST['newTitle'] !== null) ? $_POST['newTitle'] : '';

@@ -556,7 +556,12 @@ div#users .form-style-user label{
 	font-weight: bold;
 }
 div#actionpanel{
-  margin: 10px;
+  color: #808080;
+  font-size: 12px;
+  margin: 10px 0;
+  padding: 4px;
+  border: 1px solid black;
+  background-color: #ffc;
 }
 div#actionpanel input{
   vertical-align: middle;

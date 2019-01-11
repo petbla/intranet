@@ -1,26 +1,31 @@
 <?php
-/**
+/*
  * Class DMS Entry
  * 
  * @author  Petr Blažek
  * @version 1.0
  * @date    18.11.2018
  * 
- * Type 10 - Header		položka      	   .... položka jako text v záhlaví (první část na stránce)
- * 		20 - Folder 	obal (10,30,35,40) .... fyzický (soubory) i virtuální obsah
- * 		25 - Block		obal (10,35,40)    .... virtuální obsah
- * 		30 - File		položka            .... fyzický soubor
- * 		35 - Note		položka            .... virtuální, jako odkaz, text, poznámka
- * 		40 - Footer     položka			   .... položka jako text v zápatí (poslední část na stránce)
+ * Type: 10 - Header		položka      	   .... položka jako text v záhlaví (první část na stránce)
+ * 	   	 20 - Folder 	obal (10,30,35,40) .... fyzický (soubory) i virtuální obsah
+ * 	 	 25 - Block		obal (10,35,40)    .... virtuální obsah
+ * 		 30 - File		položka            .... fyzický soubor
+ * 		 35 - Note		položka            .... virtuální, jako odkaz, text, poznámka
+ * 		 40 - Footer     položka			   .... položka jako text v zápatí (poslední část na stránce)
+ *
+ * Multimedia: 	image
+ * 				audio
+ * 				video
  */
 
 class Entry{
 	private $registry;
-	private $EntryNo;
+	private $EntryNo = 0;
 	private $ID;
 	private $Level;
 	private $Parent;
 	private $Type;
+	private $Multimedia;
 	private $LineNo;
 	private $Title;
 	private $Name;
@@ -34,6 +39,15 @@ class Entry{
 	private $LastChange;
 	private $activeEntry;
 	private $linkToFile;
+	private $isHeader = false;
+	private $isFooter = false;
+	private $isFolder = false;
+	private $isFiles = false;
+	private $isBlock = false;
+	private $isNote = false;
+	private $isAudio = false;
+	private $isVideo = false;
+	private $isImage = false;
 		
 	public function __construct( Registry $registry, $id )
 	{
@@ -58,6 +72,7 @@ class Entry{
 				$this->Level = $data['Level'];
 				$this->Parent = $data['Parent'];
 				$this->Type = $data['Type'];
+				$this->Multimedia = $data['Multimedia'];
 				$this->LineNo = $data['LineNo'];
 				$this->Title = $data['Title'];
 				$this->Name = $data['Name'];
@@ -71,6 +86,58 @@ class Entry{
 				$this->LastChange = $data['LastChange'];
 				$this->activeEntry = true;
 				$this->linkToFile = $data['Name'];  //iconv("windows-1250","utf-8",
+				
+				if(($this->Type == 20) || ($this->Type == 25))
+				{
+					$this->registry->getObject('db')->initQuery('dmsentry');
+					$this->registry->getObject('db')->setFilter('Parent',$this->EntryNo);
+					$this->registry->getObject('db')->setFilter('Type',10);
+					$this->isHeader = $this->registry->getObject('db')->findFirst();
+
+					$this->registry->getObject('db')->initQuery('dmsentry');
+					$this->registry->getObject('db')->setFilter('Parent',$this->EntryNo);
+					$this->registry->getObject('db')->setFilter('Type',40);
+					$this->isFooter = $this->registry->getObject('db')->findFirst();
+
+					$this->registry->getObject('db')->initQuery('dmsentry');
+					$this->registry->getObject('db')->setFilter('Parent',$this->EntryNo);
+					$this->registry->getObject('db')->setFilter('Type',30);
+					$this->registry->getObject('db')->setFilter('Multimedia','audio');
+					$this->isAudio = $this->registry->getObject('db')->findFirst();
+
+					$this->registry->getObject('db')->initQuery('dmsentry');
+					$this->registry->getObject('db')->setFilter('Parent',$this->EntryNo);
+					$this->registry->getObject('db')->setFilter('Type',30);
+					$this->registry->getObject('db')->setFilter('Multimedia','video');
+					$this->isVideo = $this->registry->getObject('db')->findFirst();
+
+					$this->registry->getObject('db')->initQuery('dmsentry');
+					$this->registry->getObject('db')->setFilter('Parent',$this->EntryNo);
+					$this->registry->getObject('db')->setFilter('Type',30);
+					$this->registry->getObject('db')->setFilter('Multimedia','image');
+					$this->isImage = $this->registry->getObject('db')->findFirst();
+
+					$this->registry->getObject('db')->initQuery('dmsentry');
+					$this->registry->getObject('db')->setFilter('Parent',$this->EntryNo);
+					$this->registry->getObject('db')->setFilter('Type',20);
+					$this->isFolder = $this->registry->getObject('db')->findFirst();
+
+					$this->registry->getObject('db')->initQuery('dmsentry');
+					$this->registry->getObject('db')->setFilter('Parent',$this->EntryNo);
+					$this->registry->getObject('db')->setFilter('Type',30);
+					$this->registry->getObject('db')->setFilter('Multimedia','');
+					$this->isFiles = $this->registry->getObject('db')->findFirst();
+
+					$this->registry->getObject('db')->initQuery('dmsentry');
+					$this->registry->getObject('db')->setFilter('Parent',$this->EntryNo);
+					$this->registry->getObject('db')->setFilter('Type',25);
+					$this->isBlock = $this->registry->getObject('db')->findFirst();
+
+					$this->registry->getObject('db')->initQuery('dmsentry');
+					$this->registry->getObject('db')->setFilter('Parent',$this->EntryNo);
+					$this->registry->getObject('db')->setFilter('Type',35);
+					$this->isNote = $this->registry->getObject('db')->findFirst();
+				}
 			}
 		}
 		else

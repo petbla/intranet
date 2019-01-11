@@ -10,7 +10,7 @@
     {addFiles}
     <!-- START DocumentItems -->
     <tr>
-      <td><a href="FileServer/{Name}">{icon{FileExtension}}</a></td>
+      <td><a href="FileServer/{Name}" target="_blank">{icon{FileExtension}}</a></td>
       <td>
         <a href="index.php?page=document/view/{ID}" a_id="{ID}">{title}</a>
         <form action="index.php?page=document/modify/{ID}" method="post" form_id="{ID}" style="display: none;">

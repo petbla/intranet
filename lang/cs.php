@@ -93,6 +93,7 @@ $caption['News'] =           'Novinky';
 $caption['Archive'] =        'Archív';
 $caption['Contacts'] =       'Kontakty';
 $caption['Label'] =          'Štítek (skupina)';
+$caption['choiceAction'] =   '--vybrat--';
 
 /**
  * Action's Title
@@ -109,15 +110,20 @@ $caption['back'] =           'Zpět';
 $caption['save'] =           'Ulož';
 $caption['Save'] =           'Uložit';
 $caption['New'] =            'Nový';
+$caption['NewFolder'] =      'Nová složka';
+$caption['NewBlock'] =       'Nový blok';
 $caption['go_back'] =        'Zpět hlavní strana';
 $caption['edit'] =           'Editace';
 $caption['Search'] =         'Vyhledat';
 $caption['Searching'] =      'Hledat';
+$caption['Create'] =         'Vytvořit';
 $caption['print'] =          'Tisk';
 $caption['Groups'] =         'Skupiny';
 $caption['createNewFolder'] ='Vytvořit novou složku';
+$caption['createNewFolBlo'] ='Vytvořit novou složku / blok';
 $caption['newFolder'] =      'Nová složka';
 $caption['folderName'] =     'Název složky';
+$caption['folderBlocName'] = 'Název složky/bloku';
 $caption['PlaceText'] =      'Zadejte text...';
 $caption['View'] =           'Náhled';
 
