@@ -103,7 +103,7 @@ $perSet = $registry->getObject('authenticate')->getPermissionSet();
 $isAdmin = $registry->getObject('authenticate')->isAdmin();
 $contactBarMenuItem = $perSet > 0 ? "<li><a href='index.php?page=contact/list'>".$caption['Contacts']."</a></li>" : '';
 $archiveBarMenuItem = $perSet == 9 ? "<li><a href='index.php?page=document/listArchive'>".$caption['Archive']."</a></li>" : '';
-$newsBarMenuItem = $perSet == 9 ? "<li><a href='index.php?page=document/listNew'>".$caption['_News']."</a></li>" : '';
+$newsBarMenuItem = $perSet == 9 ? "<li><a href='index.php?page=document/listNew'>".$caption['News']."</a></li>" : '';
 switch ($perSet) {
 	case 9:
 		$calendarBarMenuItem = "<li><a href='https://teamup.com/ks7xn3roxm7uo5r44z' target='_blank'>Kalendář</a></li>";

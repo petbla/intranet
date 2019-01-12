@@ -17,10 +17,12 @@ class document {
         $this->registry = $registry;
     }
     
-	public function listDocuments( $sql, $entryNo, $pageLink , $isHeader, $isFolder, $isFiles, $isFooter, $breads, $template = 'list-entry.tpl.php')
+    //public function listDocuments( $sql, $entryNo, $pageLink , $isHeader, $isFolder, $isFiles, $isFooter, $breads, $template = 'list-entry.tpl.php')
+    public function listDocuments( $entry, $showFolder, $sql, $showBreads, $template )
 	{
 		global $config, $caption;
         
+        $template = ($template == '' ? 'list-entry.tpl.php' : $template);
         $perSet = $this->registry->getObject('authenticate')->getPermissionSet();
 
         // Stránkování
@@ -36,16 +38,23 @@ class document {
         $this->registry->getObject('template')->getPage()->addTag( 'navigate_menu', $navigate );
         $sql .= " LIMIT $fromItem," . $config['maxVisibleItem']; 
         $cache = $this->registry->getObject('db')->cacheQuery( $sql );
-        if ($this->registry->getObject('db')->isEmpty( $cache )){
-            $isFiles = false;
-        }else{
+        $isEntries = ($this->registry->getObject('db')->isEmpty( $cache )) ? false : true;
+        if($isEntries)
+        {
             $this->registry->getObject('template')->getPage()->addTag( 'DocumentItems', array( 'SQL', $cache ) );
         }
-        $this->registry->getObject('template')->getPage()->addTag( 'pageLink', $pageLink );
-        $this->addIcons();
-        $this->registry->getObject('template')->getPage()->addTag( 'breads', $breads );
         
-        if ($isFolder)
+//        $this->registry->getObject('template')->getPage()->addTag( 'pageLink', $pageLink );
+        //
+        // Show icons
+        $this->addIcons();
+
+        // Breds navigation
+        $breads = $showBreads ? $this->getBreads($entry) : '';
+        $this->registry->getObject('template')->getPage()->addTag( 'breads', $breads );
+
+        // Show Folders
+        if ($showFolder)
         {
             $this->registry->getObject('template')->addTemplateBit('folderitems', 'list-entry-folders.tpl.php');
         }
@@ -53,7 +62,9 @@ class document {
         {
             $this->registry->getObject('template')->getPage()->addTag( 'folderitems', '' );
         }
-        if ($isFiles)
+
+        // Show result of SQL request
+        if ($isEntries)
         {
             $this->registry->getObject('template')->addTemplateBit('documentitems', 'list-entry-documents.tpl.php');
         }
@@ -61,14 +72,8 @@ class document {
         {
             $this->registry->getObject('template')->getPage()->addTag( 'documentitems', '' );
         }
-        if ($isFiles || $isFolder)
-        {
-            $this->registry->getObject('template')->buildFromTemplates('header.tpl.php', $template, 'footer.tpl.php');
-        }
-        else
-        {
-            $this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'invalid-document.tpl.php', 'footer.tpl.php');
-        }
+        $this->registry->getObject('template')->buildFromTemplates('header.tpl.php', $template, 'footer.tpl.php');
+        
         if ($perSet > 0)
         {
             $this->registry->getObject('template')->addTemplateBit('actionpanel', 'actionpanel.tpl.php');
@@ -82,6 +87,7 @@ class document {
 
         
         // Parent folder
+        $entryNo = $entry['EntryNo'];
         if (isset($entryNo) != null)
         {
             $parentPath = $config['fileserver'];
@@ -97,11 +103,6 @@ class document {
             $this->registry->getObject('template')->getPage()->addTag('parentfoldername', $parentPath );
             $this->registry->getObject('template')->getPage()->addTag('parentID', $parentID );            
         }
-        else
-        {
-
-        }
-        
     }	
 
 	public function viewDocument( $document, $breads, $filePath)
@@ -130,7 +131,7 @@ class document {
                        IF(EntryNo = $entryNo,'active','') as activeCat 
                        FROM ".$pref."dmsentry 
                        WHERE `level` = 0 AND Archived = 0 AND `Type` BETWEEN 20 AND 25 AND PermissionSet <= $perSet
-                       ORDER BY Title";
+                       ORDER BY Type,Title";
         
         $cache = $this->registry->getObject('db')->cacheQuery( $sql );
         $cacheCategory = $this->registry->getObject('db')->cacheQuery( $sql );
@@ -168,5 +169,30 @@ class document {
         $this->registry->getObject('template')->getPage()->addTag( 'icon25', $icon25 );
         $this->registry->getObject('template')->getPage()->addTag( 'icon35', $icon35 );
     }    
+
+	private function getBreads ($entry)
+	{
+		global $caption;
+
+        $ID = $entry['ID'];
+        $title = $caption['home_page'];
+		$href = "index.php?page=document/list";
+		$breads = "<a href='$href'>$title</a>";
+		
+		if( $entry['activeEntry'])
+		{
+			$names = explode(DIRECTORY_SEPARATOR,$entry['Name']);
+			$name = '';
+            foreach ($names as $idx => $title) 
+            {
+				$name .= ($name != '') ? DIRECTORY_SEPARATOR:'';
+				$name .= $title;
+				$breads .= ($breads != '') ? ' > ':'';
+				$ID = $this->registry->GetObject('file')->getIdByName($name);
+				$breads .= "<a href='$href/$ID'>$title</a> ";
+			}
+		}
+		return $breads;
+	}
 }
 ?>

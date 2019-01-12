@@ -123,6 +123,54 @@ class file {
     return $entry['EntryNo'];
   }
 
+	/**
+   * Funkce pro vyhledání položky (Block) v databázi a pokud neexistuje, tak dojde k založení 
+   * 
+	 * @param string $fullParent
+   * @param string $item
+	 * @return bool $EntryNo  
+	 */
+  public function findBlock( $fullParent,$name )
+  {
+    $parentPath = str_replace($this->root,'',$fullParent);
+    $parentID = $this->getIdByName($parentPath);
+
+    $fullName = $parentPath !== '' ? $parentPath.DIRECTORY_SEPARATOR.$name : $name;
+    $entryID = $this->getIdByName($fullName);
+
+    if ($entryID !== '')
+      return (-1);
+
+    if ($parentID !== '')
+    {
+      require_once( FRAMEWORK_PATH . 'models/entry/model.php');
+      $this->model = new Entry( $this->registry, $parentID );
+      $item = $this->model->getData();
+    }else
+    {
+      $item = array();
+      $item['Level'] = -1;
+      $item['EntryNo'] = 0;
+    }
+
+    // Insert NEW Block to folder
+    $data = array();
+    $data['ID'] = $this->registry->getObject('fce')->GUID();
+    $data['Level'] = $item['Level'] + 1;
+    $data['Parent'] = $item['EntryNo'];
+    $data['Path'] = $parentPath;
+    $data['Type'] = 25;
+    $data['LineNo'] = $this->getNextLineNo($data['Parent']);
+//    $data['Title'] = $this->registry->getObject('db')->sanitizeData($item['Title']); 
+    $data['Name'] = $this->registry->getObject('db')->sanitizeData($fullName);
+    $data['Title'] = $this->registry->getObject('db')->sanitizeData($name); 
+    $data['PermissionSet'] = 1;
+    $data['Url'] = '';
+    $this->registry->getObject('db')->insertRecords( 'DmsEntry', $data );
+    $this->registry->getObject('db')->findFirst();
+    $entry = $this->registry->getObject('db')->getResult();
+    return $entry['EntryNo'];
+  }
   
   private function getNextLineNo ($Parent)
   {

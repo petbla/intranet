@@ -42,7 +42,7 @@ class Entry{
 	private $isHeader = false;
 	private $isFooter = false;
 	private $isFolder = false;
-	private $isFiles = false;
+	private $isFile = false;
 	private $isBlock = false;
 	private $isNote = false;
 	private $isAudio = false;
@@ -142,7 +142,26 @@ class Entry{
 		}
 		else
 		{
-			// zde můžeme chtít provést něco jiného...
+			// Init empty
+			$this->EntryNo = 0;
+			$this->ID = '';
+			$this->Level = 0;
+			$this->Parent = 0;
+			$this->Type = 0;
+			$this->Multimedia = '';
+			$this->LineNo = 0;
+			$this->Title = '';
+			$this->Name = '';
+			$this->FileExtension = '';
+			$this->Url = '';
+			$this->ModifyDateTime = null;
+			$this->CreateDate = null;
+			$this->Archived = false;
+			$this->NewEntry = false;
+			$this->PermissionSet = '';
+			$this->LastChange = null;
+			$this->activeEntry = false;
+			$this->linkToFile = '';
 		}
 	}
 

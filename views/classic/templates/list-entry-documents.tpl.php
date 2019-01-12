@@ -12,7 +12,7 @@
     <tr>
       <td><a href="FileServer/{Name}" target="_blank">{icon{FileExtension}}</a></td>
       <td>
-        <a href="index.php?page=document/view/{ID}" a_id="{ID}">{title}</a>
+        <a href="index.php?page=document/view/{ID}" a_id="{ID}">{Title}</a>
         <form action="index.php?page=document/modify/{ID}" method="post" form_id="{ID}" style="display: none;">
           <input type="text" class="editInLine" name="newTitle" input_id="{ID}">
           <input type="submit" value="Zapsat">

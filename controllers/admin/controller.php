@@ -49,12 +49,6 @@ class Admincontroller {
 							$this->addUser();
 							return;
 						}
-					case 'addfolder':
-						if ( $this->registry->getObject('authenticate')->getPermissionSet() > 0 )
-						{
-							$this->addfolder();
-							return;
-						}
 				}
 			}
 			else
@@ -149,48 +143,6 @@ class Admincontroller {
 
 			}
 		}
-		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page.tpl.php', 'footer.tpl.php');
-		$this->registry->getObject('template')->getPage()->addTag('message',$message);
-	}
-
-	private function addfolder()
-	{
-		global $caption;
-		
-		if(! $this->registry->getObject('authenticate')->isAdmin())
-		{
-			$message = $caption['new_user_failed'];
-		}
-		else
-		{
-			$message = $caption['msg_folderNotCreated'];
-			if (isset($_POST['fld_name']) && isset($_POST['root']))
-			{
-				$fullName = $_POST['root'];
-				if ($fullName[strlen($fullName)-1] != DIRECTORY_SEPARATOR)
-				{
-					$fullName .= DIRECTORY_SEPARATOR;
-				}
-				$fullName .= $_POST['fld_name'];
-				$fullName = iconv("utf-8","windows-1250",$fullName);
-
-				if(!file_exists($fullName))
-				{
-					if(mkdir($fullName, 0777, true))
-					{
-						// create succes
-						$EntryNo = $this->registry->getObject('file')->findItem($fullName);
-						
-						$message = 'složka založena';
-					}
-				}
-				else
-				{
-					$message = $caption['msg_folderExists'];
-				}
-			}
-		}
-
 		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page.tpl.php', 'footer.tpl.php');
 		$this->registry->getObject('template')->getPage()->addTag('message',$message);
 	}

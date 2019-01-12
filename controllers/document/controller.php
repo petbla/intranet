@@ -67,6 +67,12 @@ class Documentcontroller{
 					case 'addFiles':
 						$this->addFiles();
 						break;
+					case 'addfolder':
+						if ( $this->registry->getObject('authenticate')->getPermissionSet() > 0 )
+						{
+							$this->addfolder();
+						}
+						break;
 					case 'modify':
 						$ID = isset($urlBits[2]) ? $urlBits[2] : '';
 						$this->modifyDocument($ID);
@@ -87,33 +93,6 @@ class Documentcontroller{
 		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'invalid-document.tpl.php', 'footer.tpl.php');
 	}
 	
-	public function getBreads ($ID)
-	{
-		global $caption;
-
-		$title = $caption['home_page'];
-		$href = "index.php?page=document/list";
-		$breads = "<a href='$href'>$title</a>";
-		
-		require_once( FRAMEWORK_PATH . 'models/entry/model.php');
-		$this->model = new Entry( $this->registry, $ID );
-		if( $this->model->isValid() )
-		{
-			$entry = $this->model->getData();
-			$names = explode(DIRECTORY_SEPARATOR,$entry['Name']);
-			$name = '';
-			foreach ($names as $idx => $title) {
-				$name .= ($name != '') ? DIRECTORY_SEPARATOR:'';
-				$name .= $title;
-				$breads .= ($breads != '') ? ' > ':'';
-				$ID = $this->registry->GetObject('file')->getIdByName($name);
-				$breads .= "<a href='$href/$ID'>$title</a> ";
-			}
-		}
-		return $breads;
-	}
-
-
 	private function listDocuments( $ID )
 	{
 		global $caption;
@@ -123,49 +102,36 @@ class Documentcontroller{
 		$entry = $this->model->getData();
 		if( $this->model->isValid() )
 		{
-			$level = $entry['Level'];
-			$entryNo = $entry['EntryNo'];
-			$parent = $entry['Parent'];
-			$name = $entry['Name'];
-			$this->registry->setLevel($level);
-			$this->registry->setEntryNo($entryNo);		
-		}
-		else
-		{
-			$parent = 0;
-			$entryNo = 0;
+			$this->registry->setLevel($entry['Level']);
+			$this->registry->setEntryNo($entry['EntryNo']);		
 		}
 		// Folders
-		$sql = "SELECT ID,title,Name,type,Parent,ModifyDateTime FROM ".$this->prefDb."DmsEntry ".
-					"WHERE Archived = 0 AND parent={$entryNo} AND Type IN (20,25) ".
+		$sql = "SELECT ID,Title,Name,Type,Parent,ModifyDateTime FROM ".$this->prefDb."DmsEntry ".
+					"WHERE Archived = 0 AND parent=".$entry['EntryNo']." AND Type IN (20,25) ".
 					"AND PermissionSet <= $this->perSet ".
 					"ORDER BY Type,Title";
 		$cache = $this->registry->getObject('db')->cacheQuery( $sql );
-		$isFolder = ($this->registry->getObject('db')->isEmpty($cache) == false);
-		if ($isFolder){
-			$this->registry->getObject('template')->getPage()->addTag( 'FolderItems', array( 'SQL', $cache ) );
+		$showFolder = ($this->registry->getObject('db')->isEmpty($cache) == false);
+		if ($showFolder){
+			$this->registry->getObject('template')->getPage()->addTag( 'FolderItems', array( 'SQL', $cache ) );			
 		}
-
-		$breads = $this->getBreads($ID);
-		$isHeader = true;
-		$isFiles = true;
-		$isFooter = true;
-
-		// Files (and Comment, Headers, Footers)
-		$sql = "SELECT ID,title,Name,type,Parent,ModifyDateTime,LOWER(FileExtension) as FileExtension FROM ".$this->prefDb."DmsEntry ".
-				  "WHERE Archived = 0 AND parent={$entryNo} AND Type IN (10,30,35,40) ".
+		$sql = "SELECT ID,Title,Name,Type,Parent,ModifyDateTime,LOWER(FileExtension) as FileExtension ".
+		  		  "FROM ".$this->prefDb."DmsEntry ".
+				  "WHERE Archived = 0 AND parent=".$entry['EntryNo']." AND Type IN (10,30,35,40) ".
 				  "AND PermissionSet <= $this->perSet ".
 				  "ORDER BY Type,Title";
-		$this->registry->getObject('document')->listDocuments($sql, $entryNo,'',$isHeader, $isFolder, $isFiles, $isFooter,$breads);
+		$showBreads = true;
+		$template = '';
+		$this->registry->getObject('document')->listDocuments($entry,$showFolder,$sql,$showBreads,$template);
 	}	
 	
 	private function listNewDocuments( $ID )
 	{
-    	$sql = "SELECT ID,Name as title,Name,type,ModifyDateTime,LOWER(FileExtension) as FileExtension ".
-			   "FROM ".$this->pref."DmsEntry AS d ".
-			   "WHERE NewEntry = 1 AND Type = 30 AND Archived = false ".
+    	$sql = "SELECT ID,Title,Name,Type,Parent,ModifyDateTime,LOWER(FileExtension) as FileExtension ".
+			   "FROM ".$this->pref."DmsEntry ".
+			   "WHERE Archived = 0 AND NewEntry = 1 AND Type = 30  ".
 			   "AND PermissionSet <= $this->perSet ".
-			   "ORDER BY Level,Parent,Type,LineNo" ;
+			   "ORDER BY Level,Parent,Type,Title" ;
 		$this->registry->setLevel(0);
 		$this->registry->setEntryNo(0);
 		$this->registry->getObject('document')->listDocuments($sql,null,'<h3>Nové dokumenty</h3>',false,false,true,false, '');
@@ -173,9 +139,9 @@ class Documentcontroller{
 
 	private function listArchiveDocuments( $ID )
 	{
-    	$sql = "SELECT ID,Name as title,type,ModifyDateTime,LOWER(FileExtension) as FileExtension ".
+    	$sql = "SELECT ID,Title,Name,Type,Parent,ModifyDateTime,LOWER(FileExtension) as FileExtension ".
 			   "FROM ".$this->pref."DmsEntry AS d ".
-			   "WHERE NewEntry = 0 AND Type = 30 AND Archived = true ".
+			   "WHERE Archived = true AND NewEntry = 0 AND Type = 30 ".
 			   "AND PermissionSet <= $this->perSet ".
 			   "ORDER BY Level,Parent,Type,LineNo" ;
 		$this->registry->setLevel(0);
@@ -188,12 +154,13 @@ class Documentcontroller{
 		global $caption;
 
 		$searchText = htmlspecialchars($searchText);
-		$sqlFiles = "SELECT ID,title,Name,type,Parent,ModifyDateTime,LOWER(FileExtension) as FileExtension FROM ".$this->prefDb."DmsEntry ".
+		$sqlFiles = "SELECT ID,Title,Name,Type,Parent,ModifyDateTime,LOWER(FileExtension) as FileExtension ".
+		     	    "FROM ".$this->prefDb."DmsEntry ".
 					"WHERE Archived = 0 AND Type IN (20,25,30,35) ".
 					//"AND MATCH(Title) AGAINST ('*".$searchText."*' IN BOOLEAN MODE) ".
 					"AND Title like '%".$searchText."%' ".
 					"AND PermissionSet <= $this->perSet ".
-					"ORDER BY Name";
+					"ORDER BY Title";
 		$isHeader = true;
 		$isFolder = false;
 		$isFiles = true;
@@ -263,6 +230,73 @@ class Documentcontroller{
 		}
 		$this->listDocuments($ID);
 	}	
+
+	private function addfolder()
+	{
+		global $caption;
+		
+		if(! $this->registry->getObject('authenticate')->isAdmin())
+		{
+			$message = $caption['new_user_failed'];
+		}
+		else
+		{
+			$message = $caption['msg_folderNotCreated'];
+			$action = '';
+			foreach ($_POST as $key => $value) {
+				$pos = strpos($key,'Folder');
+				if($pos !== false)
+					$action = 'addFolder';
+				$pos = strpos($key,'Block');
+				if($pos !== false )
+					$action = 'addBlock';
+			}
+			if (isset($_POST['fld_name']) && isset($_POST['root']))
+			{
+				$fullName = $_POST['root'];
+				if($action == 'addBlock')
+				{
+					$item = $_POST['fld_name'];
+					$EntryNo = $this->registry->getObject('file')->findBlock($fullName,$item);
+					if($EntryNo === -1)
+					{
+						$message = $caption['msg_blockExist'];
+					}
+					else if($EntryNo !== 0)
+					{
+						$message = $caption['NewBlockCreated'];
+					}
+					// toto
+				}
+				if($action == 'addFolder')
+				{
+					if ($fullName[strlen($fullName)-1] != DIRECTORY_SEPARATOR)
+					{
+						$fullName .= DIRECTORY_SEPARATOR;
+					}
+					$fullName .= $_POST['fld_name'];
+					$fullName = iconv("utf-8","windows-1250",$fullName);
+					if(!file_exists($fullName))
+					{
+						if(mkdir($fullName, 0777, true))
+						{
+							// create succes
+							$EntryNo = $this->registry->getObject('file')->findItem($fullName);
+							
+							$message = $caption['NewFolderCreated'];
+						}
+					}
+					else
+					{
+						$message = $caption['msg_folderExists'];
+					}
+				}
+			}
+		}
+
+		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page.tpl.php', 'footer.tpl.php');
+		$this->registry->getObject('template')->getPage()->addTag('message',$message);
+	}
 
 	private function addFiles( )
 	{

@@ -111,6 +111,8 @@ $caption['save'] =           'Ulož';
 $caption['Save'] =           'Uložit';
 $caption['New'] =            'Nový';
 $caption['NewFolder'] =      'Nová složka';
+$caption['NewFolderCreated'] = 'Nová složka byla vytvořena';
+$caption['NewBlockCreated'] = 'Nový blok byl založen';
 $caption['NewBlock'] =       'Nový blok';
 $caption['go_back'] =        'Zpět hlavní strana';
 $caption['edit'] =           'Editace';
@@ -139,6 +141,7 @@ $caption['msg_error404'] =         'Stránku, o který máte zájem, se nám boh
 $caption['msg_docNotfound'] =      'Dokument nenalezen.';
 $caption['msg_folderNotCreated'] = 'Složka nebyla založena.';
 $caption['msg_folderExists'] =     'Složka zadaného názvu již existuje.';
+$caption['msg_blockExist'] =       'Blok zadaného názvu již existuje.';
 $caption['msg_contactNotfound'] =  'Kontakt nenalezen.';
 
 ?>

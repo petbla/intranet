@@ -20,7 +20,7 @@
     <tr>
       <td><a href="FileServer/{Name}" target="_blank">{icon{FileExtension}}</a></td>
       <td>
-        <a href="index.php?page=document/view/{ID}">{title}</a>
+        <a href="index.php?page=document/view/{ID}">{Title}</a>
         <br>
         <span style="font-size:12px;color:black;">{Name}</span>
       </td>

@@ -15,7 +15,7 @@
 	  <!-- START DocumentItems -->
     <tr>
       <td>{icon{FileExtension}}</td>
-      <td>{title}</td>
+      <td>{Title}</td>
       <td>{ModifyDateTime}</td>
   	</tr>
     <!-- END DocumentItems -->
