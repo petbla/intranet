@@ -78,6 +78,14 @@ class document {
         {
             $this->registry->getObject('template')->addTemplateBit('actionpanel', 'actionpanel.tpl.php');
             $this->registry->getObject('template')->addTemplateBit('addFiles', 'add-files.tpl.php');
+            if($entry['Type'] == 20)
+            {   
+                $this->registry->getObject('template')->addTemplateBit('addFolder', 'actionpanel-addFolder.tpl.php');
+            }
+            else
+            {
+                $this->registry->getObject('template')->getPage()->addTag( 'addFolder', '' );
+            }
         }
         else
         {
@@ -126,7 +134,7 @@ class document {
         {
             $entryNo = 0;
         }
-        $sql = "SELECT id as idCat,title as titleCat ,name,path as pathCat,
+        $sql = "SELECT id as idCat,title as titleCat ,name,path as pathCat,Type,
                        IF(EntryNo = $entryNo,'active','') as activeCat 
                        FROM ".$pref."dmsentry 
                        WHERE `level` = 0 AND Archived = 0 AND `Type` BETWEEN 20 AND 25 AND PermissionSet <= $perSet

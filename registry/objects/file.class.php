@@ -130,7 +130,7 @@ class file {
    * @param string $item
 	 * @return bool $EntryNo  
 	 */
-  public function findBlock( $fullParent,$name )
+  public function addBlock( $fullParent,$name )
   {
     $parentPath = str_replace($this->root,'',$fullParent);
     $parentID = $this->getIdByName($parentPath);
@@ -169,9 +169,29 @@ class file {
     $this->registry->getObject('db')->insertRecords( 'DmsEntry', $data );
     $this->registry->getObject('db')->findFirst();
     $entry = $this->registry->getObject('db')->getResult();
-    return $entry['EntryNo'];
+    return $data['ID'];
   }
   
+  public function newNote ( $parentEntry )
+	{
+		// Insert NEW Note
+		$data = array();
+		$data['ID'] = $this->registry->getObject('fce')->GUID();
+		$data['Level'] = $parentEntry['Level'] + 1;
+		$data['Parent'] = $parentEntry['EntryNo'];
+		$data['Path'] = $parentEntry['Name'];
+		$data['Type'] = 35;
+		$data['LineNo'] = $this->getNextLineNo($data['Parent']);
+		$data['Title'] = 'Nová poznámka'; 
+		$data['Name'] = $this->registry->getObject('db')->sanitizeData($data['Path'].DIRECTORY_SEPARATOR.$data['ID']);
+		$data['PermissionSet'] = $parentEntry['PermissionSet'];
+    $data['Url'] = '';
+		$this->registry->getObject('db')->insertRecords( 'DmsEntry', $data );
+		$this->registry->getObject('db')->findFirst();
+		$entry = $this->registry->getObject('db')->getResult();
+		return $entry['ID'];
+	}
+
   private function getNextLineNo ($Parent)
   {
     $this->registry->getObject('db')->initQuery('DmsEntry','EntryNo,LineNo');
@@ -260,6 +280,22 @@ class file {
     $name = $this->registry->getObject('db')->sanitizeData($name);
     $this->registry->getObject('db')->initQuery('DmsEntry','ID');
     $this->registry->getObject('db')->setCondition("Name='$name'");
+    if( $this->registry->getObject('db')->findFirst())
+    {
+      $entry = $this->registry->getObject('db')->getResult();
+      return $entry['ID'];
+    }
+    else
+    {
+      return ('');
+    }
+    
+  }
+
+  public function getIdByEntryNo( $entryNo )
+  {
+    $this->registry->getObject('db')->initQuery('DmsEntry','ID');
+    $this->registry->getObject('db')->setCondition("EntryNo='$entryNo'");
     if( $this->registry->getObject('db')->findFirst())
     {
       $entry = $this->registry->getObject('db')->getResult();

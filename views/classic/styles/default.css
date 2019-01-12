@@ -199,6 +199,13 @@ section#navigate ul li.active{
 section#navigate ul li.active a{
   color: #ffffff;
 }
+section#navigate ul li a.EntryType25{
+  color: blue;
+}
+section#navigate ul li.active a.EntryType25{
+  color: blue;
+}
+
 section#navigate ul li:hover.active{
   background-color: #337AB7;
 }
@@ -290,6 +297,10 @@ div#breads a{
 div#breads a:hover{
   color: #000;
 }
+.ContentEntryType25 td{
+  border: 1px solid #000;
+}
+
 div#DocumentItems td a, div#DocumentItems td{
   font-family: Century-gothic, Calibri, Arial, sans-serif; 
   font-size: 18px;

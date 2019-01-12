@@ -28,8 +28,7 @@ class Documentcontroller{
 			$urlBits = $this->registry->getURLBits();     
 			if($this->perSet == 0)
 			{
-				$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page.tpl.php', 'footer.tpl.php');
-				$this->registry->getObject('template')->getPage()->addTag('message',$caption['msg_unauthorized']);
+				$this->error($caption['msg_unauthorized']);
 				return;
 			}
 
@@ -66,16 +65,18 @@ class Documentcontroller{
 						$this->addFiles();
 						break;
 					case 'addfolder':
-						if ( $this->registry->getObject('authenticate')->getPermissionSet() > 0 )
-						{
-							$this->addfolder();
-						}
+						$this->addfolder();
+						break;
+					case 'deleteFolder':
+						$ID = isset($urlBits[2]) ? $urlBits[2] : '';
+						$this->deleteFolder( $ID );
 						break;
 					case 'modify':
 						$ID = isset($urlBits[2]) ? $urlBits[2] : '';
 						$this->modifyDocument($ID);
 						break;
 					default:
+						$this->documentNotFound();
 						break;
 				}
 			}
@@ -90,7 +91,12 @@ class Documentcontroller{
 		//TOTO: doplnit šablonu
 		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'invalid-document.tpl.php', 'footer.tpl.php');
 	}
-	
+	private function error( $message )
+	{
+		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page.tpl.php', 'footer.tpl.php');
+		$this->registry->getObject('template')->getPage()->addTag('message',$message);
+	}
+
 	private function listDocuments( $ID )
 	{
 		require_once( FRAMEWORK_PATH . 'models/entry/model.php');
@@ -208,7 +214,7 @@ class Documentcontroller{
 		else
 		{
 			// File Not Found
-			$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page.tpl.php', 'footer.tpl.php');
+			$this->documentNotFound();
 		}
 	}	
 
@@ -266,19 +272,23 @@ class Documentcontroller{
 				$pos = strpos($key,'Block');
 				if($pos !== false )
 					$action = 'addBlock';
+				$pos = strpos($key,'Note');
+				if($pos !== false )
+					$action = 'addNote';
 			}
-			if (isset($_POST['fld_name']) && isset($_POST['root']))
+			if (isset($_POST['fld_name']) && ($_POST['fld_name'] !== "") && isset($_POST['root']))
 			{
 				$fullName = $_POST['root'];
 				if($action == 'addBlock')
 				{
 					$item = $_POST['fld_name'];
-					$EntryNo = $this->registry->getObject('file')->findBlock($fullName,$item);
-					if($EntryNo === -1)
+					$ID = $this->registry->getObject('file')->addBlock($fullName,$item);
+					if($ID !== '')
 					{
-						$message = $caption['msg_blockExist'];
+						$this->listDocuments($ID);
+						return;
 					}
-					else if($EntryNo !== 0)
+					else
 					{
 						$message = $caption['NewBlockCreated'];
 					}
@@ -297,8 +307,9 @@ class Documentcontroller{
 						{
 							// create succes
 							$EntryNo = $this->registry->getObject('file')->findItem($fullName);
-							
-							$message = $caption['NewFolderCreated'];
+							$ID = $this->registry->getObject('file')->getIdByEntryNo($EntryNo);
+							$this->listDocuments($ID);
+							return;
 						}
 					}
 					else
@@ -307,10 +318,29 @@ class Documentcontroller{
 					}
 				}
 			}
-		}
+			else
+			{
+				if($action == 'addNote')
+				{
+					// Create New Note
+					$parentID = isset($_POST['parentID']) ? $_POST['parentID'] : '';
+					if ($parentID !== '')
+					{
+						require_once( FRAMEWORK_PATH . 'models/entry/model.php');
+						$this->model = new Entry( $this->registry, $parentID );
+						if( ($this->perSet > 0) AND $this->model->isValid() )
+						{
+							$parentEntry = $this->model->getData();
+							$ID = $this->registry->getObject('file')->newNote( $parentEntry );
+							$this->listDocuments($parentID);
+							return;
+						}				
+					}
+				}
 
-		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page.tpl.php', 'footer.tpl.php');
-		$this->registry->getObject('template')->getPage()->addTag('message',$message);
+			}
+		}
+		$this->error($message);
 	}
 
 	private function addFiles( )
@@ -338,6 +368,40 @@ class Documentcontroller{
 		$this->listDocuments($ID);
 	}
 
+	private function deletefolder( $ID )
+	{
+		global $caption;
+
+		$message = $caption['msg_noalloved'];
+		require_once( FRAMEWORK_PATH . 'models/entry/model.php');
+		$this->model = new Entry( $this->registry, $ID );
+		if( ($this->perSet > 0) AND $this->model->isValid() )
+		{
+			$entry = $this->model->getData();
+			if($entry['Type'] != 25)
+			{
+				$message = 'Odstranit lze pouze prázdný blok.';
+			}
+			else
+			{
+				if($entry['isNote'])
+				{
+					$message = 'Nelze odstranit blok s poznámkami.';
+				}
+				else
+				{
+					//ok
+					$condition = "ID = '".$entry['ID']."'";
+					$this->registry->getObject('db')->deleteRecords('dmsentry',$condition,1);
+					$ID = $this->registry->getObject('file')->getIdByEntryNo($entry['Parent']);
+					$this->listDocuments($ID);
+			return;
+				}
+			}
+		}				
+		$this->error($message);
+	}
+		
 	private function reArrayFiles($file)
 	{
 		$file_ary = array();

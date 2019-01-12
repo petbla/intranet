@@ -1,5 +1,5 @@
 <div id="DocumentItems">
-  <table>
+  <table class="ContentEntryType{Type}">
     <tr>
       <th>&nbsp;</th>
       <th>{lbl_Name}</th>

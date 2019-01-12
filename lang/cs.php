@@ -115,6 +115,7 @@ $caption['NewDocument'] =    'Nové položky';
 $caption['NewFolderCreated'] = 'Nová složka byla vytvořena';
 $caption['NewBlockCreated'] = 'Nový blok byl založen';
 $caption['NewBlock'] =       'Nový blok';
+$caption['NewNote'] =        'Nová poznámka';
 $caption['go_back'] =        'Zpět hlavní strana';
 $caption['edit'] =           'Editace';
 $caption['Search'] =         'Vyhledat';
@@ -144,5 +145,6 @@ $caption['msg_folderNotCreated'] = 'Složka nebyla založena.';
 $caption['msg_folderExists'] =     'Složka zadaného názvu již existuje.';
 $caption['msg_blockExist'] =       'Blok zadaného názvu již existuje.';
 $caption['msg_contactNotfound'] =  'Kontakt nenalezen.';
+$caption['msg_noalloved'] =        'Akce není povolena nebo v této části dostupná.';
 
 ?>

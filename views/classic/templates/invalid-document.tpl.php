@@ -5,6 +5,4 @@
         <input type="image" src="views/classic/images/icon/search.png" value="{lbl_Searching}" id="submit">
     </form>
 </div>
-{actionpanel}
-{addFiles}
 <h2>{lbl_msg_docNotfound}</h2>
