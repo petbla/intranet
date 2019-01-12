@@ -111,6 +111,7 @@ $caption['save'] =           'Ulož';
 $caption['Save'] =           'Uložit';
 $caption['New'] =            'Nový';
 $caption['NewFolder'] =      'Nová složka';
+$caption['NewDocument'] =    'Nové položky';
 $caption['NewFolderCreated'] = 'Nová složka byla vytvořena';
 $caption['NewBlockCreated'] = 'Nový blok byl založen';
 $caption['NewBlock'] =       'Nový blok';

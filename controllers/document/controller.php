@@ -47,12 +47,10 @@ class Documentcontroller{
 						$this->listDocuments($ID);
 						break;
 					case 'listNew':
-						$ID = isset($urlBits[2]) ? $urlBits[2] : '';
-						$this->listNewDocuments($ID);
+						$this->listNewDocuments();
 						break;
 					case 'listArchive':
-						$ID = isset($urlBits[2]) ? $urlBits[2] : '';
-						$this->listArchiveDocuments($ID);
+						$this->listArchiveDocuments();
 						break;
 					case 'view':
 						$ID = isset($urlBits[2]) ? $urlBits[2] : '';
@@ -95,8 +93,6 @@ class Documentcontroller{
 	
 	private function listDocuments( $ID )
 	{
-		global $caption;
-
 		require_once( FRAMEWORK_PATH . 'models/entry/model.php');
 		$this->model = new Entry( $this->registry, $ID );
 		$entry = $this->model->getData();
@@ -121,51 +117,72 @@ class Documentcontroller{
 				  "AND PermissionSet <= $this->perSet ".
 				  "ORDER BY Type,Title";
 		$showBreads = true;
+		$pageTitle = '';
 		$template = '';
-		$this->registry->getObject('document')->listDocuments($entry,$showFolder,$sql,$showBreads,$template);
+		$this->registry->getObject('document')->listDocuments($entry,$showFolder,$sql,$showBreads,$pageTitle,$template);
 	}	
 	
-	private function listNewDocuments( $ID )
+	private function listNewDocuments( )
 	{
+		global $caption;		
+		require_once( FRAMEWORK_PATH . 'models/entry/model.php');
+		$this->model = new Entry( $this->registry,'' );
+		$entry = $this->model->getData();
+		$this->registry->setLevel(0);
+		$this->registry->setEntryNo(0);
+		$showFolder = false;
     	$sql = "SELECT ID,Title,Name,Type,Parent,ModifyDateTime,LOWER(FileExtension) as FileExtension ".
 			   "FROM ".$this->pref."DmsEntry ".
 			   "WHERE Archived = 0 AND NewEntry = 1 AND Type = 30  ".
 			   "AND PermissionSet <= $this->perSet ".
 			   "ORDER BY Level,Parent,Type,Title" ;
-		$this->registry->setLevel(0);
-		$this->registry->setEntryNo(0);
-		$this->registry->getObject('document')->listDocuments($sql,null,'<h3>Nové dokumenty</h3>',false,false,true,false, '');
+		$showBreads = false;
+		$pageTitle = '<h3>'.$caption['NewDocument'].'</h3>';
+		$template = '';
+		$this->registry->getObject('document')->listDocuments($entry,$showFolder,$sql,$showBreads,$pageTitle,$template);
 	}	
 
-	private function listArchiveDocuments( $ID )
+	private function listArchiveDocuments()
 	{
+		global $caption;		
+		require_once( FRAMEWORK_PATH . 'models/entry/model.php');
+		$this->model = new Entry( $this->registry,'' );
+		$entry = $this->model->getData();
+		$this->registry->setLevel(0);
+		$this->registry->setEntryNo(0);
+		$showFolder = false;
     	$sql = "SELECT ID,Title,Name,Type,Parent,ModifyDateTime,LOWER(FileExtension) as FileExtension ".
 			   "FROM ".$this->pref."DmsEntry AS d ".
 			   "WHERE Archived = true AND NewEntry = 0 AND Type = 30 ".
 			   "AND PermissionSet <= $this->perSet ".
 			   "ORDER BY Level,Parent,Type,LineNo" ;
-		$this->registry->setLevel(0);
-		$this->registry->setEntryNo(0);
-		$this->registry->getObject('document')->listDocuments($sql,null,'<h3>Archív dokumentů</h3>',false,false,true,false, '', 'list-entry-archive.tpl.php');
+		$showBreads = false;
+		$pageTitle = '<h3>'.$caption['Archive'].'</h3>';
+		$template = 'list-entry-archive.tpl.php';
+		$this->registry->getObject('document')->listDocuments($entry,$showFolder,$sql,$showBreads,$pageTitle,$template);
 	}	
 
 	private function searchDocuments( $searchText )
 	{
-		global $caption;
-
+		global $caption;		
+		require_once( FRAMEWORK_PATH . 'models/entry/model.php');
+		$this->model = new Entry( $this->registry,'' );
+		$entry = $this->model->getData();
+		$this->registry->setLevel(0);
+		$this->registry->setEntryNo(0);
+		$showFolder = false;
 		$searchText = htmlspecialchars($searchText);
-		$sqlFiles = "SELECT ID,Title,Name,Type,Parent,ModifyDateTime,LOWER(FileExtension) as FileExtension ".
+		$sql = "SELECT ID,Title,Name,Type,Parent,ModifyDateTime,LOWER(FileExtension) as FileExtension ".
 		     	    "FROM ".$this->prefDb."DmsEntry ".
 					"WHERE Archived = 0 AND Type IN (20,25,30,35) ".
 					//"AND MATCH(Title) AGAINST ('*".$searchText."*' IN BOOLEAN MODE) ".
 					"AND Title like '%".$searchText."%' ".
 					"AND PermissionSet <= $this->perSet ".
 					"ORDER BY Title";
-		$isHeader = true;
-		$isFolder = false;
-		$isFiles = true;
-		$isFooter = true;
-		$this->registry->getObject('document')->listDocuments($sqlFiles,null,'',$isHeader, $isFolder, $isFiles, $isFooter,'','list-entry-resultsearch.tpl.php');
+		$showBreads = false;
+		$pageTitle = '<h3>'.$caption['Archive'].'</h3>';
+		$template = 'list-entry-resultsearch.tpl.php';
+		$this->registry->getObject('document')->listDocuments($entry,$showFolder,$sql,$showBreads,$pageTitle,$template);
 	}	
 
 	private function viewDocument( $ID )
@@ -176,17 +193,16 @@ class Documentcontroller{
 		$this->model = new Entry( $this->registry, $ID );
 		if( $this->model->isValid() )
 		{
-			$document = $this->model->getData();
-			$breads = $this->getBreads($ID);			
+			$entry = $this->model->getData();
 			$filePath = $this->model->getlinkToFile();
 			$filePath = iconv("utf-8","windows-1250",$filePath);
-			if ($document['Type'] == 20)
+			if (($entry['Type'] == 20) || ($entry['Type'] == 25))
 			{
 				$this->listDocuments($ID);
 			}
 			else
 			{
-				$this->registry->getObject('document')->viewDocument($document,$breads,$filePath);
+				$this->registry->getObject('document')->viewDocument($entry,$filePath);
 			}
 		}
 		else
@@ -266,7 +282,6 @@ class Documentcontroller{
 					{
 						$message = $caption['NewBlockCreated'];
 					}
-					// toto
 				}
 				if($action == 'addFolder')
 				{

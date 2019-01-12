@@ -37,8 +37,10 @@ class Entry{
 	private $NewEntry;
 	private $PermissionSet;
 	private $LastChange;
+
 	private $activeEntry;
 	private $linkToFile;
+	private $breads;
 	private $isHeader = false;
 	private $isFooter = false;
 	private $isFolder = false;
@@ -86,7 +88,8 @@ class Entry{
 				$this->LastChange = $data['LastChange'];
 				$this->activeEntry = true;
 				$this->linkToFile = $data['Name'];  //iconv("windows-1250","utf-8",
-				
+				$this->breads = $this->getBreads();
+
 				if(($this->Type == 20) || ($this->Type == 25))
 				{
 					$this->registry->getObject('db')->initQuery('dmsentry');
@@ -162,6 +165,7 @@ class Entry{
 			$this->LastChange = null;
 			$this->activeEntry = false;
 			$this->linkToFile = '';
+			$this->breads = '';
 		}
 	}
 
@@ -190,5 +194,31 @@ class Entry{
 		}
 		return null;
 	}
+
+	private function getBreads ()
+	{
+		global $caption;
+
+        $ID = $this->ID;
+        $title = $caption['home_page'];
+		$href = "index.php?page=document/list";
+		$breads = "<a href='$href'>$title</a>";
+		
+		if( $this->activeEntry )
+		{
+			$names = explode(DIRECTORY_SEPARATOR,$this->Name);
+			$name = '';
+            foreach ($names as $idx => $title) 
+            {
+				$name .= ($name != '') ? DIRECTORY_SEPARATOR:'';
+				$name .= $title;
+				$breads .= ($breads != '') ? ' > ':'';
+				$ID = $this->registry->GetObject('file')->getIdByName($name);
+				$breads .= "<a href='$href/$ID'>$title</a> ";
+			}
+		}
+		return $breads;
+	}
+	
 }
 ?>

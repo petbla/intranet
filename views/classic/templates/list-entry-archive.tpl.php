@@ -4,7 +4,7 @@
 <div id="pagecounter">
 {navigate_menu}
 </div>
-{pageLink}
+{pageTitle}
 <div id="DocumentItems">
   <table>
     <tr>

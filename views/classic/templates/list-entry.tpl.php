@@ -12,7 +12,7 @@
 <div id="pagecounter">
 {navigate_menu}
 </div>
-{pageLink}
+{pageTitle}
 {folderitems}
 {documentitems}
 <div id="pagecounter" class="bottom">

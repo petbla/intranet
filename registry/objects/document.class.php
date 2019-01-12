@@ -18,7 +18,7 @@ class document {
     }
     
     //public function listDocuments( $sql, $entryNo, $pageLink , $isHeader, $isFolder, $isFiles, $isFooter, $breads, $template = 'list-entry.tpl.php')
-    public function listDocuments( $entry, $showFolder, $sql, $showBreads, $template )
+    public function listDocuments( $entry, $showFolder, $sql, $showBreads, $pageTitle, $template )
 	{
 		global $config, $caption;
         
@@ -44,13 +44,13 @@ class document {
             $this->registry->getObject('template')->getPage()->addTag( 'DocumentItems', array( 'SQL', $cache ) );
         }
         
-//        $this->registry->getObject('template')->getPage()->addTag( 'pageLink', $pageLink );
+        $this->registry->getObject('template')->getPage()->addTag( 'pageTitle', $pageTitle );
         //
         // Show icons
         $this->addIcons();
 
         // Breds navigation
-        $breads = $showBreads ? $this->getBreads($entry) : '';
+        $breads = $showBreads ? $entry['breads'] : '';
         $this->registry->getObject('template')->getPage()->addTag( 'breads', $breads );
 
         // Show Folders
@@ -105,14 +105,13 @@ class document {
         }
     }	
 
-	public function viewDocument( $document, $breads, $filePath)
+	public function viewDocument( $entry, $filePath)
 	{
-		global $config, $caption;
+        $breads = $entry['breads'];
 
-       
         $this->registry->getObject('template')->getPage()->addTag( 'breads', $breads );
         $this->registry->getObject('template')->getPage()->addTag( 'filePath', $filePath );
-        $this->registry->getObject('template')->dataToTags( $document, '' );
+        $this->registry->getObject('template')->dataToTags( $entry, '' );
         $this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'view-entry-document.tpl.php', 'footer.tpl.php');
     }
 
@@ -169,30 +168,5 @@ class document {
         $this->registry->getObject('template')->getPage()->addTag( 'icon25', $icon25 );
         $this->registry->getObject('template')->getPage()->addTag( 'icon35', $icon35 );
     }    
-
-	private function getBreads ($entry)
-	{
-		global $caption;
-
-        $ID = $entry['ID'];
-        $title = $caption['home_page'];
-		$href = "index.php?page=document/list";
-		$breads = "<a href='$href'>$title</a>";
-		
-		if( $entry['activeEntry'])
-		{
-			$names = explode(DIRECTORY_SEPARATOR,$entry['Name']);
-			$name = '';
-            foreach ($names as $idx => $title) 
-            {
-				$name .= ($name != '') ? DIRECTORY_SEPARATOR:'';
-				$name .= $title;
-				$breads .= ($breads != '') ? ' > ':'';
-				$ID = $this->registry->GetObject('file')->getIdByName($name);
-				$breads .= "<a href='$href/$ID'>$title</a> ";
-			}
-		}
-		return $breads;
-	}
 }
 ?>

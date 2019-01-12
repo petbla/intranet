@@ -29,6 +29,8 @@ if( isset($_COOKIE["maxVisibleItem"]) ){
 }else
   $config['maxVisibleItem'] = 30;  
 
+  $config['maxVisibleItem'] = 10;  
+
 
 // Connect to database
 $registry->getObject('db')->newConnection($config['db_host'], $config['db_user'], $config['db_pass'], $config['db_name']);
