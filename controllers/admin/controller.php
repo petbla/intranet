@@ -65,7 +65,6 @@ class Admincontroller {
 		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page.tpl.php', 'footer.tpl.php');
 	}
 
-	
 	private function updateDmsStore()
 	{
 		global $caption, $config;

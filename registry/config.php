@@ -21,8 +21,16 @@ $config['metadescription']  = 'Intranet - správa dokumentů';
 $config['siteshortname']    = 'Intranet';
 $config['headtitle']        = 'Intranet';
 $config['siteurl']          = 'http://localhost/intranet/';
+
+// OBEC
 $config['fileserver']       = '\\\\petblanb\\FileServer\\';
 $config['dbPrefix']         = '';    // test_, mis_
+$config['ftp']              = false;
+
+// Zahrádkáři
+//$config['fileserver']       = 'ftp://venuse/users/petr/Job/Zahradkari/';
+//$config['dbPrefix']         = 'czs_';   
+//$config['ftp']              = true;
 
 /**
  *  Address

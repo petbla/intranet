@@ -30,6 +30,8 @@ class file {
     /*
      * Find deleted OR renamed documents
      */
+    global $config;
+    
     ini_set('max_execution_time', 600);
     $this->registry->getObject('db')->initQuery('DmsEntry','EntryNo,ID,Name,Type');
     $this->registry->getObject('db')->setCondition('Archived = false AND Type IN (20,30)');
@@ -46,12 +48,22 @@ class file {
           $changes['Archived'] = true;
           $changes['LastChange'] = date("Y-m-d H:i:s");
           $condition = "ID = '$ID'";
+          $item = $this->getItem($entry['Name']);         
           $this->registry->getObject('db')->updateRecords('DmsEntry',$changes,$condition);
         }        
       }
     }
 
-    $directories[]  = $this->root; 
+    if($config['ftp'])
+    {
+      //TODO
+      $directories[]  = 'ftp://petr:Petr369*@venuse/users/petr/Job/Zahradkari/'; 
+    }
+    else
+    {
+      $directories[]  = $this->root; 
+    }
+    
     $paret = 0;
     $level = 0;
     while (sizeof($directories)) { 
@@ -59,12 +71,13 @@ class file {
       if ($handle = opendir($dir)) { 
         while (false !== ($file = readdir($handle))) 
         { 
-          if ($file == '.' || $file == '..') 
+          if ($file == '.' |0| $file == '..') 
           { 
             continue; 
           };
           $fullItemPath = $dir.$file;
-          $entryNo = $this->findItem($fullItemPath);
+          $winFullItemPath = iconv("utf-8","windows-1250",$fullItemPath);
+          $entryNo = $this->findItem($winFullItemPath);
           if(is_dir($fullItemPath))
           { 
             $directory_path = $fullItemPath.DIRECTORY_SEPARATOR; 
@@ -161,7 +174,6 @@ class file {
     $data['Path'] = $parentPath;
     $data['Type'] = 25;
     $data['LineNo'] = $this->getNextLineNo($data['Parent']);
-//    $data['Title'] = $this->registry->getObject('db')->sanitizeData($item['Title']); 
     $data['Name'] = $this->registry->getObject('db')->sanitizeData($fullName);
     $data['Title'] = $this->registry->getObject('db')->sanitizeData($name); 
     $data['PermissionSet'] = 1;
@@ -212,6 +224,8 @@ class file {
 
   public function getItem( $name )
   {
+    global $config;
+
     $item = array();
     $item['FullName'] = '';
     $item['Name'] = '';
@@ -240,9 +254,27 @@ class file {
     $item['WinItem'] =  iconv("utf-8","windows-1250",$item['Item']);
     $item['WinParent'] =  iconv("utf-8","windows-1250",$item['Parent']);
     
+    // TODO
+    if($config['ftp'])
+    {
+      $ftp_server = 'venuse';
+      $ftp_user_name = 'petr';
+      $ftp_user_pass = 'Petr369*';
+      $conn_id = ftp_connect($ftp_server);
+      // login with username and password
+      $login_result = ftp_login($conn_id, $ftp_user_name, $ftp_user_pass);
+      // get contents of the current directory
+      $contents = ftp_nlist($conn_id, "./users/petr/Job/Zahradkari/Archiv/Projekty/Zelenina");
+    }
+    else
+    {
+
+    }
+    
     $parentItems = scandir($this->root.$item['WinParent']);
     for ($i=0; $i < count($parentItems); $i++) { 
-      $parentItems[$i] = strtoupper(iconv("windows-1250","utf-8",$parentItems[$i]));
+//      $parentItems[$i] = strtoupper(iconv("windows-1250","utf-8",$parentItems[$i]));
+      $parentItems[$i] = strtoupper($parentItems[$i]);
     }
     $item['Exist'] = in_array(strtoupper($item['Item']),$parentItems);
 
@@ -279,7 +311,7 @@ class file {
   {
     $name = $this->registry->getObject('db')->sanitizeData($name);
     $this->registry->getObject('db')->initQuery('DmsEntry','ID');
-    $this->registry->getObject('db')->setCondition("Name='$name'");
+    $this->registry->getObject('db')->setCondition("Name='$name' AND Archived=0");
     if( $this->registry->getObject('db')->findFirst())
     {
       $entry = $this->registry->getObject('db')->getResult();

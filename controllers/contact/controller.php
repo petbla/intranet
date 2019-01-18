@@ -71,6 +71,17 @@ class Contactcontroller {
 		}
 	}
 
+	private function notFound()
+	{
+		//TOTO: doplnit šablonu
+		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'invalid-contact.tpl.php', 'footer.tpl.php');
+	}
+	private function error( $message )
+	{
+		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page.tpl.php', 'footer.tpl.php');
+		$this->registry->getObject('template')->getPage()->addTag('message',$message);
+	}
+
 	private function viewContact( $ID )
 	{
 		global $config, $caption;
@@ -88,7 +99,7 @@ class Contactcontroller {
 		else
 		{
 			// File Not Found
-			$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'invalid-contact.tpl.php', 'footer.tpl.php');
+			$this->notFound();
 		}
 	}	
 
@@ -113,7 +124,7 @@ class Contactcontroller {
 		else
 		{
 			// File Not Found
-			$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'invalid-contact.tpl.php', 'footer.tpl.php');
+			$this->notFound();
 		}
 	}	
 
@@ -270,8 +281,7 @@ class Contactcontroller {
 		}
 		else
 		{
-			// File Not Found
-			$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'invalid-contact.tpl.php', 'footer.tpl.php');
+			$this->notFound();
 		}
 	}	
 	
@@ -316,18 +326,22 @@ class Contactcontroller {
 			if (!$this->registry->getObject('db')->isEmpty( $cache )){
 				$this->registry->getObject('template')->getPage()->addTag( 'ContactList', array( 'SQL', $cache ) );
 				$this->registry->getObject('template')->getPage()->addTag( 'pageLink', $pageLink );
+
+				$this->registry->getObject('template')->addTemplateBit('editEntry', 'list-contact-editcard.tpl.php');
+				$this->registry->getObject('template')->addTemplateBit('editIcon', 'list-editicon.tpl.php');
+				$this->registry->getObject('template')->getPage()->addTag( 'dmsClassName', 'contact' );
+	
+
 				$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', $template, 'footer.tpl.php');			
 			}
 			else
 			{
-				$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'invalid-contact.tpl.php', 'footer.tpl.php');
+				$this->notFound();
 			}
 		}
-        if ($perSet > 0)
-        {
-        }
         else
         {
+			$this->error($caption['msg_unauthorized']);
         }
     }	
 

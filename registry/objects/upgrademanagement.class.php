@@ -42,6 +42,10 @@ class upgrademanagement {
 
             $setup['version'] = $this->version;
             $this->registry->getObject('db')->insertRecords('setup',$setup);
+            $this->registry->getObject('db')->initQuery('setup');
+            $this->registry->getObject('db')->findFirst();
+            $setup = $this->registry->getObject('db')->getResult();
+            $this->PK = $setup['PrimaryKey'];
 
             // dmsentry
             $sql = "CREATE TABLE IF NOT EXISTS `".$pref."dmsentry` (
@@ -133,15 +137,15 @@ class upgrademanagement {
         
         // Check upgrade
 
-        switch ($this->version) {
-            case '1.0':
-                // upgrade to 1.1
-                $this->upgrade_001();
-                break;
-            case '1.1':
-                // upgrade to 1.2
-                $this->upgrade_002();
-                break;
+        if ($this->version == '1.0') 
+        {
+            // upgrade to 1.1
+            $this->upgrade_001();
+        }
+        if ($this->version == '1.1') 
+        {
+            // upgrade to 1.2
+            $this->upgrade_002();
         }
     }
     private function upgrade_002()
@@ -252,6 +256,7 @@ class upgrademanagement {
         $changes['Version'] = $ver;
         $condition = 'PrimaryKey = ' . $this->PK;
         $this->registry->getObject('db')->updateRecords( 'setup', $changes, $condition); 
+        $this->Version = $ver;
     }
 }
 

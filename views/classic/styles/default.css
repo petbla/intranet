@@ -43,27 +43,8 @@ input{
   /* KONEC: Webkit */
   color: #808080;
 }
-span.email a, span.phone a{
-  color: #00f;
-  text-decoration: none;
-}
-span.email a:hover, span.phone a:hover{
-  color: #00c;
-  text-decoration: underline;
-}
 h1, .actions img{
   vertical-align: middle;
-}
-.fullname{
-  width: 200px;
-}
-.fullname a{
-  text-decoration: none;
-  color: #000;
-}
-.fullname a:hover{
-  text-decoration: underline;
-  color: #0000ff;
 }
 
 .editInLine{
@@ -84,6 +65,15 @@ h1, .actions img{
 .tags-item:hover{
   border: 1px solid #000;
   cursor: pointer;
+}
+span.email a, span.phone a{
+  color: #00f;
+  text-decoration: none;
+  font-size: 14px;
+}
+span.email a:hover, span.phone a:hover{
+  color: #00c;
+  text-decoration: underline;
 }
 
 /* END Default */
@@ -318,14 +308,13 @@ div#DocumentItems img{
 }
 
 div#ContactItems td{
-  font-family: Century-gothic, Calibri, Arial, sans-serif; 
-  font-size: 16px;
+  font-family: Arial, sans-serif, Calibri; 
+  font-size: 12px;
   font-weight:normal;
   text-decoration: none;
   padding: 4px 0;
   color: black;  
 }
-
 
 div#FolderItems ul li{
   width: 30%;
@@ -577,6 +566,71 @@ div#actionpanel{
 div#actionpanel input{
   vertical-align: middle;
 }
+div#editwindow{
+	max-width: 700px;
+  font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+  background-color: #ffc;
+}
+div#editwindow label{
+  display: block;
+  margin-bottom: 10px;  
+}
+div#editwindow label > span{
+	float: left;
+	width: 100px;
+	color: #808080;
+	font-weight: bold;
+	font-size: 13px;
+	text-shadow: 1px 1px 1px #fff;
+}
+div#editwindow textarea{
+	width:250px;
+	height:100px;
+}
+div#editwindow input[type=text],
+div#editwindow input[type=date],
+div#editwindow input[type=datetime],
+div#editwindow input[type=number],
+div#editwindow input[type=search],
+div#editwindow input[type=time],
+div#editwindow input[type=url],
+div#editwindow input[type=email],
+div#editwindow select, 
+div#editwindow textarea{
+	border-radius: 3px;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border: 1px solid #FFC2DC;
+	outline: none;
+	color: #F072A9;
+	padding: 5px 8px 5px 8px;
+	box-shadow: inset 1px 1px 4px #FFD5E7;
+	-moz-box-shadow: inset 1px 1px 4px #FFD5E7;
+	-webkit-box-shadow: inset 1px 1px 4px #FFD5E7;
+	background: #FFEFF6;
+	width:80%;
+}
+div#editwindow span.button,
+div#editwindow input[type=submit],
+div#editwindow input[type=button]{
+	background: #EB3B88;
+	border: 1px solid #C94A81;
+	padding: 5px 15px 5px 15px;
+	color: #FFCBE2;
+	box-shadow: inset -1px -1px 3px #FF62A7;
+	-moz-box-shadow: inset -1px -1px 3px #FF62A7;
+	-webkit-box-shadow: inset -1px -1px 3px #FF62A7;
+	border-radius: 3px;
+	border-radius: 3px;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;	
+	font-weight: bold;
+}
+div#editwindow .required{
+	color:red;
+	font-weight:normal;
+}
+
 
 /* Contact CARD */
 
@@ -660,4 +714,29 @@ select{
 }
 .contact-card .required{
 	color:red;
+}
+.col_function,
+.col_email{
+  width: 200px;
+}
+.col_email,
+.col_note{
+  width: 300px;
+}
+.col_fullname,
+.col_company,
+.col_phone{
+  width: 700px;
+}
+.col_fullname a{
+  text-decoration: none;
+  color: #000;
+  font-weight: bold;
+}
+.col_fullname a:hover{
+  text-decoration: underline;
+  color: #0000ff;
+}
+.col_note{
+  font-size: 30px;
 }

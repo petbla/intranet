@@ -18,24 +18,31 @@
     <table>
         <tr>
             <th>{lbl_FirstLast_name}</th>
-            <th>{lbl_Function}</th>      
-            <th>{lbl_Phone}/{lbl_Email}</th>
-            <th>{lbl_Label}</th>
+            <th></th>      
+            <th>{lbl_Function}</th>
+            <th>{lbl_Phone}</th>
+            <th>{lbl_Email}</th>
             <th>{lbl_Comment}</th>
+            <th>{lbl_Label}</th>
         </tr>
         <!-- START ContactList -->
-        <tr onclick='window.location = "index.php?page=contact/view/{ID}";' >        
-            <td class="fullname"><a href="index.php?page=contact/edit/{ID}">{FullName}</a></td>
-            <td>{Function}<br>{Company}</td>
-            <td> 
-                <span class="phone" >{Phone}</span>
-                <br>
-                <span class="email">{Email}</span>
+        <tr>        
+            <td class="col_fullname">
+                <a href="index.php?page=contact/view/{ID}">
+                    <img src="views/classic/images/icon/view.png" alt="{lbl_edit}" id="{ID}" dmsClassName="contact" />
+                </a>
+                {editIcon}
+                <a href="index.php?page=contact/edit/{ID}" a_id="{ID}">{FullName}</a>
+                {editEntry}                
             </td>
-            <td class="tags">
-                {ContactGroups}
+            <td>
+                <td class="col_company">{Company}</td>
             </td>
-            <td style="width: 300px; font-size: 12px;">{Note}</td>
+            <td class="col_function">{Function}</td>
+            <td class="col_phone" ><span class="phone" >{Phone}</span></td>
+            <td class="col_email"><span class="email">{Email}</span></td>
+            <td class="col_note">{Note}</td>
+            <td class="tags">{ContactGroups}</td>
         </tr>
         <!-- END ContactList -->
     </table>

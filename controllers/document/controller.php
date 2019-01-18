@@ -117,7 +117,7 @@ class Documentcontroller{
 		if ($showFolder){
 			$this->registry->getObject('template')->getPage()->addTag( 'FolderItems', array( 'SQL', $cache ) );			
 		}
-		$sql = "SELECT ID,Title,Name,Type,Parent,ModifyDateTime,LOWER(FileExtension) as FileExtension ".
+		$sql = "SELECT ID,Title,Name,Type,Url,Parent,ModifyDateTime,LOWER(FileExtension) as FileExtension ".
 		  		  "FROM ".$this->prefDb."DmsEntry ".
 				  "WHERE Archived = 0 AND parent=".$entry['EntryNo']." AND Type IN (10,30,35,40) ".
 				  "AND PermissionSet <= $this->perSet ".
@@ -137,7 +137,7 @@ class Documentcontroller{
 		$this->registry->setLevel(0);
 		$this->registry->setEntryNo(0);
 		$showFolder = false;
-    	$sql = "SELECT ID,Title,Name,Type,Parent,ModifyDateTime,LOWER(FileExtension) as FileExtension ".
+    	$sql = "SELECT ID,Title,Name,Type,Url,Parent,ModifyDateTime,LOWER(FileExtension) as FileExtension ".
 			   "FROM ".$this->pref."DmsEntry ".
 			   "WHERE Archived = 0 AND NewEntry = 1 AND Type = 30  ".
 			   "AND PermissionSet <= $this->perSet ".
@@ -157,7 +157,7 @@ class Documentcontroller{
 		$this->registry->setLevel(0);
 		$this->registry->setEntryNo(0);
 		$showFolder = false;
-    	$sql = "SELECT ID,Title,Name,Type,Parent,ModifyDateTime,LOWER(FileExtension) as FileExtension ".
+    	$sql = "SELECT ID,Title,Name,Type,Url,Parent,ModifyDateTime,LOWER(FileExtension) as FileExtension ".
 			   "FROM ".$this->pref."DmsEntry AS d ".
 			   "WHERE Archived = true AND NewEntry = 0 AND Type = 30 ".
 			   "AND PermissionSet <= $this->perSet ".
@@ -178,7 +178,7 @@ class Documentcontroller{
 		$this->registry->setEntryNo(0);
 		$showFolder = false;
 		$searchText = htmlspecialchars($searchText);
-		$sql = "SELECT ID,Title,Name,Type,Parent,ModifyDateTime,LOWER(FileExtension) as FileExtension ".
+		$sql = "SELECT ID,Title,Name,Type,Url,Parent,ModifyDateTime,LOWER(FileExtension) as FileExtension ".
 		     	    "FROM ".$this->prefDb."DmsEntry ".
 					"WHERE Archived = 0 AND Type IN (20,25,30,35) ".
 					//"AND MATCH(Title) AGAINST ('*".$searchText."*' IN BOOLEAN MODE) ".
@@ -226,24 +226,25 @@ class Documentcontroller{
 		$this->model = new Entry( $this->registry, $ID );
 		if( ($this->perSet > 0) AND $this->model->isValid() )
 		{
-			$document = $this->model->getData();
-			$newTitle = ($_POST['newTitle'] !== null) ? $_POST['newTitle'] : '';
-			if ($newTitle)
+			$entry = $this->model->getData();
+			
+			if(isset($_POST['save']))
 			{
-				$newTitle = $this->registry->getObject('db')->sanitizeData($newTitle);
-				
-				// Update
-				$changes['Title'] = $newTitle;
-				$condition = "ID = '$ID'";
-				$this->registry->getObject('db')->updateRecords('dmsentry',$changes, $condition);
+				$newTitle = ($_POST['newTitle'] !== null) ? $_POST['newTitle'] : '';
+				if ($newTitle)
+				{
+					$newTitle = $this->registry->getObject('db')->sanitizeData($newTitle);
+					
+					// Update
+					$changes['Title'] = $newTitle;
+					$condition = "ID = '$ID'";
+					$this->registry->getObject('db')->updateRecords('dmsentry',$changes, $condition);
+				}
+				$ID = $entry['parentID'];
 			}
-			$ID = '';
-			$this->registry->getObject('db')->initQuery('dmsentry');
-			$this->registry->getObject('db')->setFilter('EntryNo',$document['Parent'] );
-			if ($this->registry->getObject('db')->findFirst())
+			elseif(isset($_POST['back']))			
 			{
-				$document = $this->registry->getObject('db')->getResult();
-				$ID = $document['ID'];
+				$ID = $entry['parentID'];
 			}
 		}
 		else
@@ -390,12 +391,8 @@ class Documentcontroller{
 				}
 				else
 				{
-					//ok
-					$condition = "ID = '".$entry['ID']."'";
-					$this->registry->getObject('db')->deleteRecords('dmsentry',$condition,1);
-					$ID = $this->registry->getObject('file')->getIdByEntryNo($entry['Parent']);
-					$this->listDocuments($ID);
-			return;
+					$this->listDocuments($entry['parentID']);
+					return;
 				}
 			}
 		}				

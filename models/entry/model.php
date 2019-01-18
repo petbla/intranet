@@ -22,6 +22,7 @@ class Entry{
 	private $registry;
 	private $EntryNo = 0;
 	private $ID;
+	private $parentID = '';
 	private $Level;
 	private $Parent;
 	private $Type;
@@ -63,7 +64,7 @@ class Entry{
 			$id = $this->registry->getObject('db')->sanitizeData( $id );
 			$sql = "SELECT *
                 		FROM ".$pref."DmsEntry
-                		WHERE  id='$id'";
+                		WHERE  id='$id' AND Archived=0";
 
       		$this->registry->getObject('db')->executeQuery( $sql );
 			if( $this->registry->getObject('db')->numRows() == 1 )
@@ -141,6 +142,14 @@ class Entry{
 					$this->registry->getObject('db')->setFilter('Type',35);
 					$this->isNote = $this->registry->getObject('db')->findFirst();
 				}
+
+				$this->registry->getObject('db')->initQuery('dmsentry');
+				$this->registry->getObject('db')->setFilter('EntryNo',$this->Parent );
+				if ($this->registry->getObject('db')->findFirst())
+				{
+					$entryParent = $this->registry->getObject('db')->getResult();
+					$this->parentID = $entryParent['ID'];
+				}
 			}
 		}
 		else
@@ -148,6 +157,7 @@ class Entry{
 			// Init empty
 			$this->EntryNo = 0;
 			$this->ID = '';
+			$this->parentID = '';
 			$this->Level = 0;
 			$this->Parent = 0;
 			$this->Type = 0;

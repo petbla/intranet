@@ -8,11 +8,12 @@ var search;
 var formAdUser;
 var password, password_confirm;
 var loginForm;
-var documents;
-var lastEditElement;
-var tags;
+var items,contacts;
+var lastEditEntry,lastEditContact;
+var tags,deleteEntryType20;
 var grouplist;
 var contactGroups;
+var entriesType35;
 
 documentLink = document.querySelector('#cosumentLink');
 fileTitle = document.querySelector('#FileTitle');
@@ -24,6 +25,13 @@ password_confirm = document.querySelector('#usr_psw2');
 loginForm = document.querySelector('#loginForm');
 tags = document.querySelectorAll('[class="tags"]');
 contactGroups = document.querySelector('#ContactGroups');
+grouplist = document.querySelector('#grouplist');
+deleteEntryType20 = document.querySelectorAll('#DeleteEntryType20');
+items = document.querySelectorAll('[dmsClassName="item"]');
+contacts = document.querySelectorAll('[dmsClassName="contact"]');
+entriesType35 = document.querySelectorAll('a[entrytype="35"]');
+
+console.log(items);
 
 function validatePassword () {
     if (password.value != password_confirm.value) {
@@ -75,7 +83,7 @@ function formatText (text, type)
         }
         if(newtext)
         {
-            newtext = newtext + ',';
+            newtext = newtext + '<br>';
         }
         newtext = newtext + val;
     });
@@ -146,37 +154,108 @@ if (password_confirm) {
     password_confirm.onkeyup = validatePassword;
 }
 
-documents = document.querySelectorAll('[className="item"]');
-documents.forEach(function(item){
-    item.onclick = function (e) {
-        var att;
-        var a,form,input;
+if(items){
+    items.forEach(function(item){
+        item.onclick = function (e) {
+            var a,form;
+            var oldValue,inputValue,back;
+    
+            // Clean (HIDE) Old Entry
+            if (lastEditEntry)
+            {
+                a = document.querySelector( '[a_id="' + lastEditEntry.target.id + '"]' );
+                a.style.display = '';
+                
+                form = document.querySelector( '[form_id="' + lastEditEntry.target.id + '"]' );
+                form.style.display = 'none';
+            }
+            // Prepare New Entry to Edit
+            a = document.querySelector( '[a_id="' + e.target.id + '"]' );
+            a.style.display = 'none';
+            form = document.querySelector( '[form_id="' + e.target.id + '"]' );
+            form.style.display = '';
+            back = document.querySelector( '[back_id="' + e.target.id + '"]' );
+            back.onclick = function (ee) {
+                var a,form;
+                a = document.querySelector( '[a_id="' + lastEditEntry.target.id + '"]' );
+                a.style.display = '';
+                form = document.querySelector( '[form_id="' + e.target.id + '"]' );
+                form.style.display = 'none';
+                ee.preventDefault();
+            };
 
-        if (lastEditElement)
-        {
-            att = '[a_id="' + lastEditElement.target.id + '"]';
-            a = document.querySelector(att)
-            a.style.display = '';
+            // Write value from Hidden do Forms Input
+            oldValue = document.querySelector( '[oldtitle_id="' + e.target.id + '"]' );
+            inputValue = document.querySelector( '[inputtitle_id="' + e.target.id + '"]' );
+            inputValue.value = oldValue.value;
             
-            att = '[form_id="' + lastEditElement.target.id + '"]';
-            form = document.querySelector(att)
-            form.style.display = 'none';
+            oldValue = document.querySelector( '[oldurl_id="' + e.target.id + '"]' );
+            inputValue = document.querySelector( '[inputurl_id="' + e.target.id + '"]' );
+            
+            //todo - nefunguje
+            console.log(e.target.dmsEntryType);
+            if(e.target.dmsEntryType == "35"){
+                inputValue.style.display = "none";
+            }else{
+                inputValue.value = oldValue.value;
+            }
+    
+            lastEditEntry = e;
         }
+    })   
+}
 
-        att = '[a_id="' + e.target.id + '"]';
-        a = document.querySelector(att)
-        att = '[form_id="' + e.target.id + '"]';
-        form = document.querySelector(att)
-        att = '[input_id="' + e.target.id + '"]';
-        input = document.querySelector(att)
-        
-        a.style.display = 'none';
-        form.style.display = '';
-        input.value = a.innerText;
+if(contacts){
+    contacts.forEach(function(contact){
+        contact.onclick = function (e) {
+            var a,form;
+            var oldValue,inputValue,back;
+    
+            // Clean (HIDE) Old Entry
+            if (lastEditContact)
+            {
+                a = document.querySelector( '[a_id="' + lastEditContact.target.id + '"]' );
+                a.style.display = '';
+                
+                form = document.querySelector( '[form_id="' + lastEditContact.target.id + '"]' );
+                form.style.display = 'none';
+            }
+            // Prepare New Entry to Edit
+            a = document.querySelector( '[a_id="' + e.target.id + '"]' );
+            a.style.display = 'none';
+            form = document.querySelector( '[form_id="' + e.target.id + '"]' );
+            form.style.display = '';
+            back = document.querySelector( '[back_id="' + e.target.id + '"]' );
+            back.onclick = function (ee) {
+                var a,form;
+                a = document.querySelector( '[a_id="' + lastEditContact.target.id + '"]' );
+                a.style.display = '';
+                form = document.querySelector( '[form_id="' + e.target.id + '"]' );
+                form.style.display = 'none';
+                ee.preventDefault();
+            };
 
-        lastEditElement = e;
-    }
-})
+            // Write value from Hidden do Forms Input
+            oldValue = document.querySelector( '[oldtitle_id="' + e.target.id + '"]' );
+            inputValue = document.querySelector( '[inputtitle_id="' + e.target.id + '"]' );
+            inputValue.value = oldValue.value;
+            
+            oldValue = document.querySelector( '[oldurl_id="' + e.target.id + '"]' );
+            inputValue = document.querySelector( '[inputurl_id="' + e.target.id + '"]' );
+   
+            lastEditContact = e;
+        }
+    })   
+}
+
+
+if(entriesType35){
+    entriesType35.forEach( function(entry) {
+        entry.onclick = function (e) {
+            e.preventDefault();
+        }
+    })
+}
 
 formatElementClass('phone');
 formatElementClass('email');
@@ -194,6 +273,14 @@ if(tags){
     }
 }
 
+if(deleteEntryType20){
+    for (let i = 0; i < deleteEntryType20.length; i++) {
+        var e;
+        e = deleteEntryType20[i];
+        e.style.display = "none";
+    }
+}
+
 function tags2Html( arr ){
     var newval='';
     arr.forEach(str => {
@@ -203,28 +290,30 @@ function tags2Html( arr ){
     return newval;
 }
 
-grouplist = document.querySelector('#grouplist').onchange = function (e2) {
-    if (tags[0] !== null)
-    {
-        var e,oldValue,newValue;
-        if(arrGroup)
+if(grouplist){
+    grouplist.onchange = function (e2) {
+        if (tags[0] !== null)
         {
-            var idx;
-            idx = arrGroup.indexOf(e2.target.value);
-            if (idx > -1)
+            var e,oldValue,newValue;
+            if(arrGroup)
             {
-                arrGroup.splice(idx,1);
-            }
-            else
-            {
-                arrGroup.push(e2.target.value);
-            }            
-            arrGroup = arrGroup.filter(function(el){ return el;});
-            tags[0].innerHTML = tags2Html( arrGroup );            
-            if(contactGroups)
-            {
-                contactGroups.value = arrGroup.join(',');
+                var idx;
+                idx = arrGroup.indexOf(e2.target.value);
+                if (idx > -1)
+                {
+                    arrGroup.splice(idx,1);
+                }
+                else
+                {
+                    arrGroup.push(e2.target.value);
+                }            
+                arrGroup = arrGroup.filter(function(el){ return el;});
+                tags[0].innerHTML = tags2Html( arrGroup );            
+                if(contactGroups)
+                {
+                    contactGroups.value = arrGroup.join(',');
+                }
             }
         }
-    }
+    };
 };
