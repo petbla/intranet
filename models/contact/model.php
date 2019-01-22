@@ -58,7 +58,7 @@ class Contact{
 				$this->Address = $data['Address'];
 				$this->Close = $data['Close'];
 				$this->ContactGroups = $data['ContactGroups'];
-				$this->active = ($data['Close'] === 0);
+				$this->active = ($data['Close'] == "0") ? true : false;
 			}
 		}
 		else
@@ -77,7 +77,7 @@ class Contact{
 			$this->Note = '';
 			$this->Address = '';
 			$this->Close = 0;
-			$this->active = ($data['Close'] === 0);
+			$this->active = true;
 			$this->ContactGroups = '';
 			$this->Groups = null;
 		}
@@ -92,7 +92,7 @@ class Contact{
 
 	public function isActive()
 	{
-		return ($this->active !== 0);
+		return ($this->active);
 	}
 	
 	public function getData()

@@ -4,8 +4,12 @@
         <fieldset>
             <ul class="form-style-user">
                 <li>
-                    <label>Jméno</label>
-                    <input type="text" name="usr_name" id="usr_name" autofocus placeholder="{lbl_User_name}" required>
+                    <label>{lbl_auth_username}</label>
+                    <input type="text" name="usr_name" id="usr_name" autofocus placeholder="{lbl_auth_username}" required>
+                </li>
+                <li>
+                    <label>{lbl_FirstLast_name}</label>
+                    <input type="text" name="usr_fullname" id="usr_fullname" autofocus placeholder="{lbl_User_name}" required>
                 </li>
                 <li>
                     <label>Heslo</label>

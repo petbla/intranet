@@ -24,7 +24,13 @@ $config['siteurl']          = 'http://localhost/intranet/';
 
 // OBEC
 $config['fileserver']       = '\\\\petblanb\\FileServer\\';
-$config['dbPrefix']         = '';    // test_, mis_
+$config['dbPrefix']         = 'mis_'; 
+$config['compName']         = 'OBEC Mistřice';
+
+// Testing
+$config['dbPrefix']         = ''; 
+$config['compName']         = 'TEST Zkušební společnost';
+
 $config['ftp']              = false;
 
 // Zahrádkáři
@@ -35,7 +41,6 @@ $config['ftp']              = false;
 /**
  *  Address
  */
-$config['compName']      = 'OBEC Mistřice';
 $config['compAddress']   = 'Mistřice 9';
 $config['compCity']      = 'Mistřice';
 $config['compZip']       = '68712';
@@ -66,6 +71,7 @@ $registry->storeObject('fce', 'usefulfunction');
 $registry->storeObject('document', 'document');
 $registry->storeObject('file','file');
 $registry->storeObject('upgrade','upgrademanagement');
+$registry->storeObject('log','login');
 
 /**
  *  PEAR modul and set library

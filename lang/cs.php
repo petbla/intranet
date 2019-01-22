@@ -17,7 +17,7 @@ $caption['db_error_executequery'] = 'Chyba při provádění dotazu';
 $caption['auth_errorlogin_inactive']    = 'neaktivní';
 $caption['auth_errorlogin_banned']      = 'zakázaný';
 $caption['auth_errorlogin_nouser']      = 'žádný uživatel';
-$caption['auth_username']               = 'Uživatelské jméno';
+$caption['auth_username']               = 'Login';
 $caption['auth_userpsw']                = 'Heslo';
 $caption['auth_userpsw_repeat']         = 'Potvrzení hesla';
 $caption['auth_error_repeatPsw']        = 'Chyba při potvrzení hesla';
@@ -120,6 +120,7 @@ $caption['go_back'] =        'Zpět hlavní strana';
 $caption['edit'] =           'Editace';
 $caption['Search'] =         'Vyhledat';
 $caption['Searching'] =      'Hledat';
+$caption['Cancel'] =         'Zrušit';
 $caption['Create'] =         'Vytvořit';
 $caption['print'] =          'Tisk';
 $caption['Groups'] =         'Skupiny';
@@ -146,5 +147,6 @@ $caption['msg_folderExists'] =     'Složka zadaného názvu již existuje.';
 $caption['msg_blockExist'] =       'Blok zadaného názvu již existuje.';
 $caption['msg_contactNotfound'] =  'Kontakt nenalezen.';
 $caption['msg_noalloved'] =        'Akce není povolena nebo v této části dostupná.';
+$caption['msg_EditContact'] =      'Editace kontaktu';
 
 ?>

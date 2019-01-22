@@ -79,7 +79,7 @@ class document {
             $this->registry->getObject('template')->addTemplateBit('actionpanel', 'actionpanel.tpl.php');
             $this->registry->getObject('template')->addTemplateBit('addFiles', 'add-files.tpl.php');
             $this->registry->getObject('template')->addTemplateBit('editEntry', 'list-entry-editcard.tpl.php');
-            $this->registry->getObject('template')->addTemplateBit('editIcon', 'list-editicon.tpl.php');
+            $this->registry->getObject('template')->addTemplateBit('editIcon', 'list-entry-editicon.tpl.php');
             $this->registry->getObject('template')->getPage()->addTag( 'dmsClassName', 'item' );
             if($entry['Type'] == 20)
             {   
@@ -173,8 +173,8 @@ class document {
         
         $icon20 = "<img src='views/classic/images/icon/folder.png' />";
         $icon30 = "<img src='views/classic/images/icon/file.png' />";
-        $icon25 = "<img src='views/classic/images/icon/note.png' />";
-        $icon35 = "<img src='views/classic/images/icon/comment.png' />";
+        $icon25 = "<img src='views/classic/images/icon/block.png' />";
+        $icon35 = "<img src='views/classic/images/icon/note.png' />";
         $this->registry->getObject('template')->getPage()->addTag( 'icon20', $icon20 );
         $this->registry->getObject('template')->getPage()->addTag( 'icon', $icon20 );
         $this->registry->getObject('template')->getPage()->addTag( 'icon30', $icon30 );

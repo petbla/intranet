@@ -79,7 +79,7 @@ class Admincontroller {
 		global $config;
         $pref = $config['dbPrefix'];
 
-		$sql = "SELECT u.ID, u.Name, u.PermissionSet, p.Name as Role ".
+		$sql = "SELECT u.ID, u.Name, u.FullName, u.PermissionSet, p.Name as Role ".
 		       "FROM ".$pref."user u, ".$pref."permissionset p ".
 		       "WHERE u.PermissionSet = p.Level";
 		$cache = $this->registry->getObject('db')->cacheQuery( $sql );
@@ -91,6 +91,7 @@ class Admincontroller {
 		{
 			$this->registry->getObject('template')->getPage()->AddTag('ID','');
 			$this->registry->getObject('template')->getPage()->AddTag('Name','');
+			$this->registry->getObject('template')->getPage()->AddTag('FullName','');
 			$this->registry->getObject('template')->getPage()->AddTag('PermissionSet','');
 		}
 		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'admin-users.tpl.php', 'footer.tpl.php');		
@@ -116,7 +117,9 @@ class Admincontroller {
 		if (isset($_POST['usr_name']) && isset($_POST['usr_perset']) && isset($_POST['usr_psw1']) && isset($_POST['usr_psw2']))
 		{
 			$name = $_POST['usr_name'];
+			$fullname = $_POST['usr_fullname'];
 			$name = $this->registry->getObject('db')->sanitizeData($name);
+			$fullname = $this->registry->getObject('db')->sanitizeData($fullname);
 			$perset = $_POST['usr_perset'];
 			$psw = ($_POST['usr_psw1'] === $_POST['usr_psw2']) ? $_POST['usr_psw1'] : '';
 			if ($psw != '')
@@ -133,6 +136,7 @@ class Admincontroller {
 				// Insert to Databáze
 				$data['ID'] = $this->registry->getObject('fce')->GUID();
 				$data['Name'] = $name;
+				$data['FullName'] = $fullname;
 				$data['Password'] = $psw;
 				$data['PermissionSet'] = $isFirst ? 9 : $perset;
 				if ($this->registry->getObject('db')->insertRecords('user',$data))

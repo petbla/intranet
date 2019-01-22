@@ -5,6 +5,7 @@
       <th>{lbl_Name}</th>
       <th>{lbl_ModifyDate}</th>
       <th></th>
+      <th></th>
     </tr>
     {addFiles}
     <!-- START DocumentItems -->
@@ -13,7 +14,6 @@
         <a href="FileServer/{Name}" target="_blank" entrytype="{Type}">
           {icon{Type}{FileExtension}}
         </a>
-        {editIcon}
       </td>
       <td>
         <a href="index.php?page=document/view/{ID}" a_id="{ID}">{Title}</a>
@@ -21,6 +21,9 @@
       </td>
       <td>{ModifyDateTime}</td>
       <td>.{FileExtension}</td>
+      <td class="col_action">
+        {editIcon}
+      </td>
   	</tr>
     <!-- END DocumentItems -->
   </table>

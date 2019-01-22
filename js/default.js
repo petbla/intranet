@@ -14,6 +14,8 @@ var tags,deleteEntryType20;
 var grouplist;
 var contactGroups;
 var entriesType35;
+var mouseFromX,mouseFromY;
+var activeForm;
 
 documentLink = document.querySelector('#cosumentLink');
 fileTitle = document.querySelector('#FileTitle');
@@ -30,8 +32,6 @@ deleteEntryType20 = document.querySelectorAll('#DeleteEntryType20');
 items = document.querySelectorAll('[dmsClassName="item"]');
 contacts = document.querySelectorAll('[dmsClassName="contact"]');
 entriesType35 = document.querySelectorAll('a[entrytype="35"]');
-
-console.log(items);
 
 function validatePassword () {
     if (password.value != password_confirm.value) {
@@ -157,28 +157,37 @@ if (password_confirm) {
 if(items){
     items.forEach(function(item){
         item.onclick = function (e) {
-            var a,form;
+            var form;
             var oldValue,inputValue,back;
+            var activeForm;
     
             // Clean (HIDE) Old Entry
             if (lastEditEntry)
             {
-                a = document.querySelector( '[a_id="' + lastEditEntry.target.id + '"]' );
-                a.style.display = '';
-                
                 form = document.querySelector( '[form_id="' + lastEditEntry.target.id + '"]' );
                 form.style.display = 'none';
             }
             // Prepare New Entry to Edit
-            a = document.querySelector( '[a_id="' + e.target.id + '"]' );
-            a.style.display = 'none';
             form = document.querySelector( '[form_id="' + e.target.id + '"]' );
             form.style.display = '';
+            form.style.left = '300px';
+            form.style.top = '100px';
+            
+            /*
+            activeForm = form;
+            window.onkeyup = function (event) {
+                if (event.keyCode == 27) {
+                    activeForm.style.display = "none";
+                }
+            }
+            */
+            // Make the DIV element draggable:
+            // TODO: toto nefunguje správně
+            //dragElement(form);
+
             back = document.querySelector( '[back_id="' + e.target.id + '"]' );
             back.onclick = function (ee) {
-                var a,form;
-                a = document.querySelector( '[a_id="' + lastEditEntry.target.id + '"]' );
-                a.style.display = '';
+                var form;
                 form = document.querySelector( '[form_id="' + e.target.id + '"]' );
                 form.style.display = 'none';
                 ee.preventDefault();
@@ -191,9 +200,9 @@ if(items){
             
             oldValue = document.querySelector( '[oldurl_id="' + e.target.id + '"]' );
             inputValue = document.querySelector( '[inputurl_id="' + e.target.id + '"]' );
+            inputValue.value = oldValue.value;
             
             //todo - nefunguje
-            console.log(e.target.dmsEntryType);
             if(e.target.dmsEntryType == "35"){
                 inputValue.style.display = "none";
             }else{
@@ -208,45 +217,159 @@ if(items){
 if(contacts){
     contacts.forEach(function(contact){
         contact.onclick = function (e) {
-            var a,form;
+            var form;
             var oldValue,inputValue,back;
+            var grouplist;
+            var tag,arrGroup;
+            
+            tag = document.querySelector('[class="tags' + e.target.id + '"]' );
+            grouplist = document.querySelector( '[id="grouplist' + e.target.id + '"]' );
+            arrGroup = (tag.innerText).split(',');
+            if (tag.innerText !== ''){
+                tag.innerHTML = tags2Html( arrGroup );
+            }
+            grouplist.onchange = function  (ee) {
+                var tag,arrGroup; 
+                var oldValue,newValue;
+                var contactGroups;
+                
+                tag = document.querySelector('[class="tags' + e.target.id + '"]' );
+                contactGroups = document.querySelector('[id="ContactGroups' + e.target.id + '"]' );
+                if (tag !== null)
+                {
+                    arrGroup = (contactGroups.value).split(',');
+                    if(arrGroup)
+                    {
+                        var idx;
+                        idx = arrGroup.indexOf(ee.target.value);
+                        if (idx > -1)
+                        {
+                            arrGroup.splice(idx,1);
+                        }
+                        else
+                        {
+                            arrGroup.push(ee.target.value);
+                        }            
+                        arrGroup = arrGroup.filter(function(el){ return el;});
+                        tag.innerHTML = tags2Html( arrGroup );       
+                        if(contactGroups)
+                        {
+                            contactGroups.value = arrGroup.join(',');
+                        }
+                    }
+                }
+                ee.target.value = '';
+            };
     
             // Clean (HIDE) Old Entry
             if (lastEditContact)
             {
-                a = document.querySelector( '[a_id="' + lastEditContact.target.id + '"]' );
-                a.style.display = '';
-                
                 form = document.querySelector( '[form_id="' + lastEditContact.target.id + '"]' );
                 form.style.display = 'none';
             }
             // Prepare New Entry to Edit
-            a = document.querySelector( '[a_id="' + e.target.id + '"]' );
-            a.style.display = 'none';
             form = document.querySelector( '[form_id="' + e.target.id + '"]' );
             form.style.display = '';
+            form.style.left = '300px';
+            form.style.top = '100px';
+            
+            /*
+            activeForm = form;
+            window.onkeyup = function (event) {
+                if (event.keyCode == 27) {
+                    activeForm.style.display = "none";
+                }
+            }
+            */
+            // Make the DIV element draggable:
+            // TODO: toto nefunguje správně
+            //dragElement(form);
+
             back = document.querySelector( '[back_id="' + e.target.id + '"]' );
             back.onclick = function (ee) {
-                var a,form;
-                a = document.querySelector( '[a_id="' + lastEditContact.target.id + '"]' );
-                a.style.display = '';
+                var form;
                 form = document.querySelector( '[form_id="' + e.target.id + '"]' );
                 form.style.display = 'none';
                 ee.preventDefault();
             };
 
             // Write value from Hidden do Forms Input
-            oldValue = document.querySelector( '[oldtitle_id="' + e.target.id + '"]' );
-            inputValue = document.querySelector( '[inputtitle_id="' + e.target.id + '"]' );
+            oldValue = document.querySelector( '[oldFirstName_id="' + e.target.id + '"]' );
+            inputValue = document.querySelector( '[inputFirstName_id="' + e.target.id + '"]' );
             inputValue.value = oldValue.value;
             
-            oldValue = document.querySelector( '[oldurl_id="' + e.target.id + '"]' );
-            inputValue = document.querySelector( '[inputurl_id="' + e.target.id + '"]' );
+            oldValue = document.querySelector( '[oldLastName_id="' + e.target.id + '"]' );
+            inputValue = document.querySelector( '[inputLastName_id="' + e.target.id + '"]' );
+            inputValue.value = oldValue.value;
+   
+            oldValue = document.querySelector( '[oldTitle_id="' + e.target.id + '"]' );
+            inputValue = document.querySelector( '[inputTitle_id="' + e.target.id + '"]' );
+            inputValue.value = oldValue.value;
+   
+            oldValue = document.querySelector( '[oldFunction_id="' + e.target.id + '"]' );
+            inputValue = document.querySelector( '[inputFunction_id="' + e.target.id + '"]' );
+            inputValue.value = oldValue.value;
+   
+            oldValue = document.querySelector( '[oldCompany_id="' + e.target.id + '"]' );
+            inputValue = document.querySelector( '[inputCompany_id="' + e.target.id + '"]' );
+            inputValue.value = oldValue.value;
+   
+            oldValue = document.querySelector( '[oldPhone_id="' + e.target.id + '"]' );
+            inputValue = document.querySelector( '[inputPhone_id="' + e.target.id + '"]' );
+            inputValue.value = oldValue.value;
+   
+            oldValue = document.querySelector( '[oldEmail_id="' + e.target.id + '"]' );
+            inputValue = document.querySelector( '[inputEmail_id="' + e.target.id + '"]' );
+            inputValue.value = oldValue.value;
+   
+            oldValue = document.querySelector( '[oldAddress_id="' + e.target.id + '"]' );
+            inputValue = document.querySelector( '[inputAddress_id="' + e.target.id + '"]' );
+            inputValue.value = oldValue.value;
+   
+            oldValue = document.querySelector( '[oldNote_id="' + e.target.id + '"]' );
+            inputValue = document.querySelector( '[inputNote_id="' + e.target.id + '"]' );
+            inputValue.value = oldValue.value;
    
             lastEditContact = e;
         }
     })   
 }
+
+var grouplistnewcontact;
+grouplistnewcontact = document.querySelector( '[id="grouplistnewcontact"]' );
+grouplistnewcontact.onchange = function  (ee) {
+    var tag,arrGroup; 
+    var oldValue,newValue;
+    var contactGroups;
+    
+    tag = document.querySelector('[class="tagsnewcontact"]' );
+    contactGroups = document.querySelector('[id="ContactGroupsnewcontact"]' );
+    if (tag !== null)
+    {
+        arrGroup = (contactGroups.value).split(',');
+        if(arrGroup)
+        {
+            var idx;
+            idx = arrGroup.indexOf(ee.target.value);
+            if (idx > -1)
+            {
+                arrGroup.splice(idx,1);
+            }
+            else
+            {
+                arrGroup.push(ee.target.value);
+            }            
+            arrGroup = arrGroup.filter(function(el){ return el;});
+            tag.innerHTML = tags2Html( arrGroup );       
+            if(contactGroups)
+            {
+                contactGroups.value = arrGroup.join(',');
+            }
+        }
+    }
+    ee.target.value = '';
+};
+
 
 
 if(entriesType35){
@@ -290,8 +413,9 @@ function tags2Html( arr ){
     return newval;
 }
 
+
 if(grouplist){
-    grouplist.onchange = function (e2) {
+    grouplist.onchange = function  (e2) {
         if (tags[0] !== null)
         {
             var e,oldValue,newValue;
@@ -317,3 +441,47 @@ if(grouplist){
         }
     };
 };
+
+
+function dragElement(elmnt) {
+    var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+
+    if (document.getElementById(elmnt.id + "header")) {
+        // if present, the header is where you move the DIV from:
+        document.getElementById(elmnt.id + "header").onmousedown = dragMouseDown;
+    } else {
+        // otherwise, move the DIV from anywhere inside the DIV: 
+        elmnt.onmousedown = dragMouseDown;
+    }
+
+    function dragMouseDown(e) {
+        e = e || window.event;
+        e.preventDefault();
+        // get the mouse cursor position at startup:
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        // call a function whenever the cursor moves:
+        document.onmousemove = elementDrag;
+    }
+
+    function closeDragElement() {
+        // stop moving when mouse button is released:
+        document.onmouseup = null;
+        document.onmousemove = null;
+    }
+
+    function elementDrag(e) {
+        e = e || window.event;
+        e.preventDefault();
+        // calculate the new cursor position:
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        // set the element's new position:
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+    }
+}
+

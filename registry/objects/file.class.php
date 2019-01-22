@@ -49,6 +49,7 @@ class file {
           $changes['LastChange'] = date("Y-m-d H:i:s");
           $condition = "ID = '$ID'";
           $item = $this->getItem($entry['Name']);         
+					$this->registry->getObject('log')->addMessage("Zobrazení a aktualizace dokumentu",'contact',$ID);
           $this->registry->getObject('db')->updateRecords('DmsEntry',$changes,$condition);
         }        
       }
@@ -120,11 +121,10 @@ class file {
     $data['ID'] = $this->registry->getObject('fce')->GUID();
     $data['Level'] = $item['Level'];
     $data['Parent'] = $this->findItem($item['WinParent']);
-    $data['Path'] = $item['Parent'];
+    $data['Path'] = $this->registry->getObject('db')->sanitizeData($item['Parent']);
     $data['Type'] = $item['Type'];
     $data['LineNo'] = $this->getNextLineNo($data['Parent']);
-//    $data['Title'] = $this->registry->getObject('db')->sanitizeData($item['Title']); 
-    $data['Title'] = $item['Title']; 
+    $data['Title'] = $this->registry->getObject('db')->sanitizeData($item['Title']); 
     $data['Name'] = $this->registry->getObject('db')->sanitizeData($item['Name']);
     $data['FileExtension'] = $item['Extension'];
     $data['ModifyDateTime'] = date("Y-m-d H:i:s", filemtime($item['WinFullName'])); // datum a čas změny
@@ -171,7 +171,7 @@ class file {
     $data['ID'] = $this->registry->getObject('fce')->GUID();
     $data['Level'] = $item['Level'] + 1;
     $data['Parent'] = $item['EntryNo'];
-    $data['Path'] = $parentPath;
+    $data['Path'] = $this->registry->getObject('db')->sanitizeData($parentPath);
     $data['Type'] = 25;
     $data['LineNo'] = $this->getNextLineNo($data['Parent']);
     $data['Name'] = $this->registry->getObject('db')->sanitizeData($fullName);
@@ -191,11 +191,11 @@ class file {
 		$data['ID'] = $this->registry->getObject('fce')->GUID();
 		$data['Level'] = $parentEntry['Level'] + 1;
 		$data['Parent'] = $parentEntry['EntryNo'];
-		$data['Path'] = $parentEntry['Name'];
+		$data['Path'] = $this->registry->getObject('db')->sanitizeData($parentEntry['Name']);
 		$data['Type'] = 35;
 		$data['LineNo'] = $this->getNextLineNo($data['Parent']);
 		$data['Title'] = 'Nová poznámka'; 
-		$data['Name'] = $this->registry->getObject('db')->sanitizeData($data['Path'].DIRECTORY_SEPARATOR.$data['ID']);
+		$data['Name'] = $data['Path'].DIRECTORY_SEPARATOR.$data['ID'];
 		$data['PermissionSet'] = $parentEntry['PermissionSet'];
     $data['Url'] = '';
 		$this->registry->getObject('db')->insertRecords( 'DmsEntry', $data );

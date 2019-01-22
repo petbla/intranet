@@ -69,7 +69,7 @@ class upgrademanagement {
                 PRIMARY KEY (`EntryNo`),
                 KEY `ID` (`ID`),
                 KEY `Level` (`Level`,`Parent`,`Type`,`LineNo`)
-              ) ENGINE=InnoDB AUTO_INCREMENT=3225 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci";
+              ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci";
             $this->registry->getObject('db')->executeQuery( $sql );
 
             $sql = "ALTER TABLE `".$pref."dmsentry` ADD FULLTEXT KEY `Title` (`Title`)";
@@ -147,7 +147,55 @@ class upgrademanagement {
             // upgrade to 1.2
             $this->upgrade_002();
         }
+        if ($this->version == '1.2') 
+        {
+            // upgrade to 1.3
+            $this->upgrade_003();
+        }
+        if ($this->version == '1.3') 
+        {
+            // upgrade to 1.4
+            $this->upgrade_004();
+        }
     }
+    private function upgrade_004()
+    {
+		global $config;
+        $pref = $config['dbPrefix'];
+        
+        // upgrade table 'log'
+        $sql = "ALTER TABLE ".$pref."log ADD `IP` VARCHAR(30) NULL DEFAULT '' AFTER `UserName`";
+        $this->registry->getObject('db')->executeQuery( $sql );
+
+        $this->setNewVersion('1.4');
+    }
+
+    private function upgrade_003()
+    {
+		global $config;
+        $pref = $config['dbPrefix'];
+
+        // new table 'log'
+        $sql = "CREATE TABLE IF NOT EXISTS `".$pref."log` (
+            `EntryNo` int(11) NOT NULL AUTO_INCREMENT,
+            `Table` varchar(20) COLLATE utf8_czech_ci DEFAULT '',
+            `ID` varchar(36) COLLATE utf8_czech_ci DEFAULT '00000000-0000-0000-0000-000000000000',
+            `UserID` varchar(36) COLLATE utf8_czech_ci DEFAULT '00000000-0000-0000-0000-000000000000',
+            `UserName` varchar(50) COLLATE utf8_czech_ci DEFAULT '',
+            `LogDateDate` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            `Description` varchar(250) COLLATE utf8_czech_ci DEFAULT '',
+            PRIMARY KEY (`EntryNo`),
+            KEY `ID` (`ID`,`LogDateDate`)
+            ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci";
+        $this->registry->getObject('db')->executeQuery( $sql );
+
+        // upgrade table 'user'
+        $sql = "ALTER TABLE ".$pref."user ADD `FullName` VARCHAR(200) NULL DEFAULT '' AFTER `Name`";
+        $this->registry->getObject('db')->executeQuery( $sql );
+
+        $this->setNewVersion('1.3');
+    }
+
     private function upgrade_002()
     {
 		global $config;
@@ -210,6 +258,7 @@ class upgrademanagement {
         foreach ($contacts as $contact ) {
             $changes['ContactGroups'] = $contact['ContactGroups'];
             $condition = "ID = '".$contact['ID']."'";
+            $this->registry->getObject('log')->addMessage("Zobrazení a aktualizace kontaktu",'contact',$ID);
             $this->registry->getObject('db')->updateRecords( 'contact', $changes, $condition); 
         }
         $sql = "DROP TABLE contactgroups";
@@ -255,6 +304,7 @@ class upgrademanagement {
     {
         $changes['Version'] = $ver;
         $condition = 'PrimaryKey = ' . $this->PK;
+        $this->registry->getObject('log')->addMessage("Aktualizace nastavení",'setup',$ID);
         $this->registry->getObject('db')->updateRecords( 'setup', $changes, $condition); 
         $this->Version = $ver;
     }

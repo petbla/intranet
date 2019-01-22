@@ -4,6 +4,7 @@
     <meta charset="utf-8" />
     <title>{cfg_sitename}</title>
     <link rel="stylesheet" type="text/css" href="views/classic/styles/default.css"> 
+    <script src="js/functions.js"></script>
   </head>
 
   <body>

@@ -8,7 +8,10 @@
 <div id="actionpanel">
     &nbsp;
     {lbl_NewContact}
-    <a href="index.php?page=contact/new" class="actions"><img src="views/classic/images/nav/addContact.png" alt="{lbl_New}" title="{lbl_NewContact}"></a>
+    <img src="views/classic/images/nav/addContact.png" alt="{lbl_New}" title="{lbl_NewContact}" onclick="addNewContact();">
+    &nbsp;
+    {lbl_Groups}
+    <img src="views/classic/images/nav/groups.png" alt="{lbl_Groups}" title="{lbl_Groups}">
 </div>
 <div id="pagecounter">
 {navigate_menu}
@@ -19,20 +22,19 @@
         <tr>
             <th>{lbl_FirstLast_name}</th>
             <th></th>      
+            <th></th>      
             <th>{lbl_Function}</th>
             <th>{lbl_Phone}</th>
             <th>{lbl_Email}</th>
             <th>{lbl_Comment}</th>
             <th>{lbl_Label}</th>
+            <th></th>
         </tr>
+        {editEntry}                
         <!-- START ContactList -->
         <tr>        
             <td class="col_fullname">
-                <a href="index.php?page=contact/view/{ID}">
-                    <img src="views/classic/images/icon/view.png" alt="{lbl_edit}" id="{ID}" dmsClassName="contact" />
-                </a>
-                {editIcon}
-                <a href="index.php?page=contact/edit/{ID}" a_id="{ID}">{FullName}</a>
+                {FullName}
                 {editEntry}                
             </td>
             <td>
@@ -42,7 +44,15 @@
             <td class="col_phone" ><span class="phone" >{Phone}</span></td>
             <td class="col_email"><span class="email">{Email}</span></td>
             <td class="col_note">{Note}</td>
-            <td class="tags">{ContactGroups}</td>
+            <td class="tags">
+                {ContactGroups}
+            </td>
+            <td class="col_action">
+                <a href="index.php?page=contact/view/{ID}">
+                    <img src="views/classic/images/icon/view.png" alt="{lbl_edit}" id="{ID}" />
+                </a>
+                {editIcon}
+            </td>
         </tr>
         <!-- END ContactList -->
     </table>

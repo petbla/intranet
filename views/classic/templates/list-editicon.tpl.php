@@ -1,1 +1,0 @@
-<img src="views/classic/images/icon/modify.png" dmsEntryType="{Type}" alt="{lbl_edit}" id="{ID}" dmsClassName="{dmsClassName}"/>

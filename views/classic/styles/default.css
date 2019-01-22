@@ -563,14 +563,26 @@ div#actionpanel{
   border: 1px solid black;
   background-color: #ffc;
 }
-div#actionpanel input{
+div#actionpanel input, div#actionpanel img{
   vertical-align: middle;
+  cursor: pointer;
 }
 div#editwindow{
+  position: fixed;
+  z-index: 9;
 	max-width: 700px;
   font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
   background-color: #ffc;
+  right: 15px;
+  border: 3px solid #f1f1f1;
 }
+div#editwindowHeader{
+  padding: 10px;
+  cursor: move;
+  background-color: #2196F3;
+  color: #fff;
+}
+
 div#editwindow label{
   display: block;
   margin-bottom: 10px;  
@@ -602,7 +614,7 @@ div#editwindow textarea{
 	-moz-border-radius: 3px;
 	border: 1px solid #FFC2DC;
 	outline: none;
-	color: #F072A9;
+	color: #000;
 	padding: 5px 8px 5px 8px;
 	box-shadow: inset 1px 1px 4px #FFD5E7;
 	-moz-box-shadow: inset 1px 1px 4px #FFD5E7;
@@ -630,7 +642,6 @@ div#editwindow .required{
 	color:red;
 	font-weight:normal;
 }
-
 
 /* Contact CARD */
 
@@ -727,6 +738,13 @@ select{
 .col_company,
 .col_phone{
   width: 700px;
+}
+.col_action{
+  width: 300px;
+  text-align: right;
+}
+.col_action img{
+  cursor: pointer;
 }
 .col_fullname a{
   text-decoration: none;

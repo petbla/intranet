@@ -14,6 +14,7 @@ class authentication {
 	private $admin = false;
 	
   private $name = '';
+  private $fullname = '';
   private $permissionSet = 0;
 	private $justProcessed = false;
 	private $loginFailureReason = '';
@@ -28,7 +29,7 @@ class authentication {
   	global $caption, $config;
     $pref = $config['dbPrefix'];
   	
-  	$sql = "SELECT ID, Name, PermissionSet FROM ".$pref."user WHERE ID='$uid'";
+  	$sql = "SELECT ID, Name, FullName, PermissionSet FROM ".$pref."user WHERE ID='$uid'";
   	$username = '';
     $this->registry->getObject('db')->executeQuery( $sql );
   	if( $this->registry->getObject('db')->numRows() == 1 )
@@ -39,6 +40,7 @@ class authentication {
       $this->permissionSet = $userData['PermissionSet'];
       $this->admin = ( $userData['PermissionSet'] == 9 ) ? true : false;
       $this->name = $userData['Name'];
+      $this->fullname = $userData['FullName'];
       $username = $this->name;
       return true;
   	}
@@ -49,7 +51,7 @@ class authentication {
   	}
   	
   	if($this->loginFailureReason != '') 		  	
-      $this->registry->getObject('log')->logMsg("Chyba přihlášení uživatele ID=$uid, name=$username",$this->loginFailureReason);
+      $this->registry->getObject('log')->addMessage("Chyba přihlášení uživatele ID=$uid, name=$username",'User',$uid);
 
     if( $this->loggedIn == false )
   	{
@@ -72,7 +74,8 @@ class authentication {
       $this->userID = '';
       $this->permissionSet = 9;
       $this->admin = ($this->permissionSet == 9) ? true : false;
-      $this->name = 'Sytem Administrator';
+      $this->name =  'admin';
+      $this->fullname =  'Sytem Administrator';
       $username = $this->name;
       return true;
     }
@@ -102,6 +105,7 @@ class authentication {
             $this->permissionSet = $data['PermissionSet'];
             $this->admin = ($this->permissionSet == 9) ? true : false;
             $this->name = $data['Name'];
+            $this->fullname = $data['FullName'];
             $username = $this->name;
             $_SESSION['int_auth_session_uid'] = $data['ID']; 
             return true;
@@ -144,9 +148,9 @@ class authentication {
   	return $this->admin;
   }
   
-  public function getUsername()
+  public function getUserName()
   {
-  	return $this->name;
+  	return $this->fullname;
   }
   
   public function getPermissionSet()

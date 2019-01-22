@@ -64,12 +64,16 @@ class Documentcontroller{
 					case 'addFiles':
 						$this->addFiles();
 						break;
-					case 'addfolder':
-						$this->addfolder();
+					case 'addFolder':
+						$this->addFolder();
 						break;
 					case 'deleteFolder':
 						$ID = isset($urlBits[2]) ? $urlBits[2] : '';
 						$this->deleteFolder( $ID );
+						break;
+					case 'deleteFile':
+						$ID = isset($urlBits[2]) ? $urlBits[2] : '';
+						$this->deleteFile( $ID );
 						break;
 					case 'modify':
 						$ID = isset($urlBits[2]) ? $urlBits[2] : '';
@@ -89,10 +93,12 @@ class Documentcontroller{
 	private function documentNotFound()
 	{
 		//TOTO: doplnit šablonu
+		$this->registry->getObject('log')->addMessage("Pokus o zobrazení neznámého dokumentu",'dmsentry','');
 		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'invalid-document.tpl.php', 'footer.tpl.php');
 	}
 	private function error( $message )
 	{
+		$this->registry->getObject('log')->addMessage("Chyba: $message",'dmsentry','');
 		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page.tpl.php', 'footer.tpl.php');
 		$this->registry->getObject('template')->getPage()->addTag('message',$message);
 	}
@@ -125,6 +131,7 @@ class Documentcontroller{
 		$showBreads = true;
 		$pageTitle = '';
 		$template = '';
+		$this->registry->getObject('log')->addMessage('Zobrazení seznamu souborů a složek','DmsEntry',$ID);
 		$this->registry->getObject('document')->listDocuments($entry,$showFolder,$sql,$showBreads,$pageTitle,$template);
 	}	
 	
@@ -145,6 +152,7 @@ class Documentcontroller{
 		$showBreads = false;
 		$pageTitle = '<h3>'.$caption['NewDocument'].'</h3>';
 		$template = '';
+		$this->registry->getObject('log')->addMessage('Zobrazení seznamu souborů a složek','DmsEntry',$ID);
 		$this->registry->getObject('document')->listDocuments($entry,$showFolder,$sql,$showBreads,$pageTitle,$template);
 	}	
 
@@ -165,6 +173,7 @@ class Documentcontroller{
 		$showBreads = false;
 		$pageTitle = '<h3>'.$caption['Archive'].'</h3>';
 		$template = 'list-entry-archive.tpl.php';
+		$this->registry->getObject('log')->addMessage('Zobrazení seznamu souborů a složek','DmsEntry',$ID);
 		$this->registry->getObject('document')->listDocuments($entry,$showFolder,$sql,$showBreads,$pageTitle,$template);
 	}	
 
@@ -188,6 +197,7 @@ class Documentcontroller{
 		$showBreads = false;
 		$pageTitle = '<h3>'.$caption['Archive'].'</h3>';
 		$template = 'list-entry-resultsearch.tpl.php';
+		$this->registry->getObject('log')->addMessage('Zobrazení seznamu souborů a složek','DmsEntry',$ID);
 		$this->registry->getObject('document')->listDocuments($entry,$showFolder,$sql,$showBreads,$pageTitle,$template);
 	}	
 
@@ -208,6 +218,7 @@ class Documentcontroller{
 			}
 			else
 			{
+				$this->registry->getObject('log')->addMessage("Zobrazení ".$entry['Name'],'DmsEntry',$ID);
 				$this->registry->getObject('document')->viewDocument($entry,$filePath);
 			}
 		}
@@ -238,6 +249,7 @@ class Documentcontroller{
 					// Update
 					$changes['Title'] = $newTitle;
 					$condition = "ID = '$ID'";
+					$this->registry->getObject('log')->addMessage("Zobrazení a aktualizace dokumentu",'contact',$ID);
 					$this->registry->getObject('db')->updateRecords('dmsentry',$changes, $condition);
 				}
 				$ID = $entry['parentID'];
@@ -254,7 +266,7 @@ class Documentcontroller{
 		$this->listDocuments($ID);
 	}	
 
-	private function addfolder()
+	private function addFolder()
 	{
 		global $caption;
 		
@@ -369,7 +381,7 @@ class Documentcontroller{
 		$this->listDocuments($ID);
 	}
 
-	private function deletefolder( $ID )
+	private function deleteFolder( $ID )
 	{
 		global $caption;
 
@@ -394,6 +406,34 @@ class Documentcontroller{
 					$this->listDocuments($entry['parentID']);
 					return;
 				}
+			}
+		}				
+		$this->error($message);
+	}
+		
+	private function deleteFile( $ID )
+	{
+		global $caption;
+
+		$message = $caption['msg_noalloved'];
+		require_once( FRAMEWORK_PATH . 'models/entry/model.php');
+		$this->model = new Entry( $this->registry, $ID );
+		if( ($this->perSet > 0) AND $this->model->isValid() )
+		{
+			$entry = $this->model->getData();
+			if($entry['Type'] != 35)
+			{
+				$message = 'Odstranit lze pouze prázdný poznámky.';
+			}
+			else
+			{
+				$condition = "ID = '$ID'";
+				$data['Archived'] = 1;
+				$this->registry->getObject('log')->addMessage("Výmaz poznámky",'dmsentry',$ID);
+				$this->registry->getObject('db')->updateRecords('dmsentry',$data,$condition);			
+					
+				$this->listDocuments($entry['parentID']);
+				return;
 			}
 		}				
 		$this->error($message);

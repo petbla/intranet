@@ -1,14 +1,16 @@
 <div id="users">
     <table>
         <tr>
-            <th>{lbl_First_name}</th>
+            <th>{lbl_auth_username}</th>
+            <th>{lbl_User_name}</th>
             <th>{lbl_PermissionSet}</th>
             <th>{lbl_ACTIONS}</th>
         </tr>
         <!-- START UserList -->
         <tr>
             <td>{Name}</td>
-            <td>{Role}</td>
+            <td>{FullName}</td>
+            <td>{PermissionSet}</td>
             <td>
                 <a href="index.php?page=admin/modifyuser"><img src="views/classic/images/icon/modify.png" alt="{lbl_edit}" title="{lbl_edit}"></a>
                 &nbsp;
