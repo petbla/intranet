@@ -20,3 +20,25 @@ function addNewContact(e){
         ee.preventDefault();
     };
 }    
+
+function sendContactRequest(ID) {
+    const Http = new XMLHttpRequest();
+    var url;
+    url= 'http://localhost/intranet/index.php?page=contact/logview/' + ID;
+    Http.open("GET", url);
+    Http.send();
+    Http.onreadystatechange=(e)=>{
+      //console.log(Http.responseText)      
+    }
+}
+
+function sendEntryRequest(ID) {
+    const Http = new XMLHttpRequest();
+    var url;
+    url = 'http://localhost/intranet/index.php?page=document/logview/' + ID;
+    Http.open("GET", url);
+    Http.send();
+    Http.onreadystatechange = (e) => {
+        //console.log(Http.responseText)      
+    };
+}

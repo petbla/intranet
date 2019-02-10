@@ -314,12 +314,19 @@ class template {
   
   private function NavigateBit( $actualPage, $countPage, $symbol ){
     global $caption;
+    $element = 'page';
      
     $imgPath = 'views/' . $this->registry->getSetting('view') . '/images/navigate/';
     if ( isset($_GET["page"]) )
       $urlPath = $_GET["page"];
-    else
-      $urlPath = '';
+    else{
+      if ( isset($_GET["searchDocument"]) ){
+        $urlPath = $_GET["searchDocument"];
+        $element = 'searchDocument';
+      }
+      else
+        $urlPath = '';            
+    }
 
     switch ($symbol)
     {
@@ -357,7 +364,7 @@ class template {
         
         break;
     }
-    $element = "<a href=\"index.php?page=$urlPath&p=$actualPage\">" . $symbol . "</a>";
+    $element = "<a href=\"index.php?$element=$urlPath&p=$actualPage\">" . $symbol . "</a>";
     return $element;  
   }
 }

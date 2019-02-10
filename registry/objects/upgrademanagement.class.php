@@ -157,7 +157,25 @@ class upgrademanagement {
             // upgrade to 1.4
             $this->upgrade_004();
         }
+        if ($this->version == '1.4') 
+        {
+            // upgrade to 1.5
+            $this->upgrade_005();
+        }
     }
+
+    private function upgrade_005()
+    {
+		global $config;
+        $pref = $config['dbPrefix'];
+        
+        // upgrade table 'user'
+        $sql = "ALTER TABLE ".$pref."user ADD `Close` int(1) NULL DEFAULT 0";
+        $this->registry->getObject('db')->executeQuery( $sql );
+
+        $this->setNewVersion('1.5');
+    }
+
     private function upgrade_004()
     {
 		global $config;

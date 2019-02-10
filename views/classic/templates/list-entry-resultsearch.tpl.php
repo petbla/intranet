@@ -8,27 +8,7 @@
 <div id="pagecounter">
 {navigate_menu}
 </div>
-{pageLink}
-<div id="DocumentItems">
-  <table>
-    <tr>
-      <th>&nbsp;</th>
-      <th>{lbl_Name}</th>
-      <th>{lbl_ModifyDate}</th>
-    </tr>
-	  <!-- START DocumentItems -->
-    <tr>
-      <td><a href="FileServer/{Name}" target="_blank">{icon{Type}{FileExtension}}</a></td>
-      <td>
-        <a href="index.php?page=document/view/{ID}">{Title}</a>
-        <br>
-        <span style="font-size:12px;color:black;">{Name}</span>
-      </td>
-      <td>{ModifyDateTime}</td>
-  	</tr>
-    <!-- END DocumentItems -->
-  </table>
-</div>
+{documentitems}
 <div id="pagecounter" class="bottom">
 {navigate_menu}
 </div>

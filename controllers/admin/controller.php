@@ -20,7 +20,22 @@ class Admincontroller {
 
 		if( $directCall == true )
 		{
-			$urlBits = $this->registry->getURLBits();     
+			$urlBits = $this->registry->getURLBits();    
+			$params = $this->registry->getURLParam();
+			$ID = '';
+			if ($params !== '')
+			{
+				$params = explode('&',$params);
+				if (isset($params[1]))
+				{
+					$arr = explode('=',$params[1]);
+					if($arr[0] == 'ID')
+					{
+						$ID = $arr[1];
+					}
+				}
+			}
+
 			if( isset( $urlBits[1] ) )
 			{		
 				switch( $urlBits[1] )
@@ -47,6 +62,18 @@ class Admincontroller {
 						if ( $this->registry->getObject('authenticate')->isAdmin())
 						{
 							$this->addUser();
+							return;
+						}
+					case 'deleteuser':
+						if ( $this->registry->getObject('authenticate')->isAdmin())
+						{
+							$this->deleteUser($ID);
+							return;
+						}
+					case 'modifyuser':
+						if ( $this->registry->getObject('authenticate')->isAdmin())
+						{
+							$this->modifyUser($ID);
 							return;
 						}
 				}
@@ -79,7 +106,7 @@ class Admincontroller {
 		global $config;
         $pref = $config['dbPrefix'];
 
-		$sql = "SELECT u.ID, u.Name, u.FullName, u.PermissionSet, p.Name as Role ".
+		$sql = "SELECT u.ID, u.Name, u.FullName, u.PermissionSet, p.Name as Role, u.Close ".
 		       "FROM ".$pref."user u, ".$pref."permissionset p ".
 		       "WHERE u.PermissionSet = p.Level";
 		$cache = $this->registry->getObject('db')->cacheQuery( $sql );
@@ -148,6 +175,29 @@ class Admincontroller {
 		}
 		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page.tpl.php', 'footer.tpl.php');
 		$this->registry->getObject('template')->getPage()->addTag('message',$message);
+	}
+
+	private function deleteUser( $ID )
+	{
+		global $config, $caption;
+        $pref = $config['dbPrefix'];
+
+		$UserID = $this->registry->getObject('authenticate')->getUserID();
+		$userName = $this->registry->getObject('authenticate')->getUserName();
+		if ($UserID == $ID)
+		{
+			$message = 'Nelze odstranit Sám Sebe - aktuálně přihlášeného uživatele.';
+			$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page.tpl.php', 'footer.tpl.php');
+			$this->registry->getObject('template')->getPage()->addTag('message',$message);
+			}
+		else
+		{
+			$condition = "ID = '$ID'";
+			$data['Close'] = 1;
+			$this->registry->getObject('log')->addMessage("Uzavření uživatele",'user',$ID);
+			$this->registry->getObject('db')->updateRecords('user',$data,$condition);			
+			$this->listUsers();
+		}
 	}
 
 	private function createPermissionSetTable()

@@ -11,13 +11,11 @@
     <!-- START DocumentItems -->
     <tr>
       <td>
-        <a href="FileServer/{Name}" target="_blank" entrytype="{Type}">
-          {icon{Type}{FileExtension}}
-        </a>
+        {icon{Type}{FileExtension}}
       </td>
       <td>
-        <a href="index.php?page=document/view/{ID}" a_id="{ID}">{Title}</a>
-        {editEntry}
+        <a href="" a_id="{ID}" a_type="entry" data-dms-url="{Url}" data-dms-name="{Name}" data-dms-entrytype="{Type}" onclick="sendEntryRequest('{ID}');">{Title}</a>
+        {editcard}
       </td>
       <td>{ModifyDateTime}</td>
       <td>.{FileExtension}</td>

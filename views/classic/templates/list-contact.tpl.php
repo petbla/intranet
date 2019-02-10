@@ -30,12 +30,12 @@
             <th>{lbl_Label}</th>
             <th></th>
         </tr>
-        {editEntry}                
+        {editcard}                
         <!-- START ContactList -->
         <tr>        
             <td class="col_fullname">
                 {FullName}
-                {editEntry}                
+                {editcard}                
             </td>
             <td>
                 <td class="col_company">{Company}</td>
@@ -48,7 +48,7 @@
                 {ContactGroups}
             </td>
             <td class="col_action">
-                <a href="index.php?page=contact/view/{ID}">
+                <a href="index.php?page=contact/view/{ID}" onclick="sendContactRequest('{ID}');">
                     <img src="views/classic/images/icon/view.png" alt="{lbl_edit}" id="{ID}" />
                 </a>
                 {editIcon}
@@ -56,6 +56,7 @@
         </tr>
         <!-- END ContactList -->
     </table>
+    <p id="sqlrequest" valus={sqlrequest} stype="display:none;"></p>
 </div>
 <div id="pagecounter" class="bottom">
 {navigate_menu}

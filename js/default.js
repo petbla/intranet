@@ -9,13 +9,15 @@ var formAdUser;
 var password, password_confirm;
 var loginForm;
 var items,contacts;
-var lastEditEntry,lastEditContact;
+var lasteditcard,lastEditContact;
 var tags,deleteEntryType20;
 var grouplist;
 var contactGroups;
 var entriesType35;
 var mouseFromX,mouseFromY;
 var activeForm;
+var sqlrequest;
+var a_type;
 
 documentLink = document.querySelector('#cosumentLink');
 fileTitle = document.querySelector('#FileTitle');
@@ -32,6 +34,8 @@ deleteEntryType20 = document.querySelectorAll('#DeleteEntryType20');
 items = document.querySelectorAll('[dmsClassName="item"]');
 contacts = document.querySelectorAll('[dmsClassName="contact"]');
 entriesType35 = document.querySelectorAll('a[entrytype="35"]');
+sqlrequest = document.querySelector('#sqlrequest');
+a_type = document.querySelectorAll('[a_type="entry"]');
 
 function validatePassword () {
     if (password.value != password_confirm.value) {
@@ -162,9 +166,9 @@ if(items){
             var activeForm;
     
             // Clean (HIDE) Old Entry
-            if (lastEditEntry)
+            if (lasteditcard)
             {
-                form = document.querySelector( '[form_id="' + lastEditEntry.target.id + '"]' );
+                form = document.querySelector( '[form_id="' + lasteditcard.target.id + '"]' );
                 form.style.display = 'none';
             }
             // Prepare New Entry to Edit
@@ -194,11 +198,11 @@ if(items){
             };
 
             // Write value from Hidden do Forms Input
-            oldValue = document.querySelector( '[oldtitle_id="' + e.target.id + '"]' );
+            oldValue = document.querySelector( '[oldTitle_id="' + e.target.id + '"]' );
             inputValue = document.querySelector( '[inputtitle_id="' + e.target.id + '"]' );
             inputValue.value = oldValue.value;
             
-            oldValue = document.querySelector( '[oldurl_id="' + e.target.id + '"]' );
+            oldValue = document.querySelector( '[oldUrl_id="' + e.target.id + '"]' );
             inputValue = document.querySelector( '[inputurl_id="' + e.target.id + '"]' );
             inputValue.value = oldValue.value;
             
@@ -209,7 +213,7 @@ if(items){
                 inputValue.value = oldValue.value;
             }
     
-            lastEditEntry = e;
+            lasteditcard = e;
         }
     })   
 }
@@ -337,39 +341,40 @@ if(contacts){
 
 var grouplistnewcontact;
 grouplistnewcontact = document.querySelector( '[id="grouplistnewcontact"]' );
-grouplistnewcontact.onchange = function  (ee) {
-    var tag,arrGroup; 
-    var oldValue,newValue;
-    var contactGroups;
-    
-    tag = document.querySelector('[class="tagsnewcontact"]' );
-    contactGroups = document.querySelector('[id="ContactGroupsnewcontact"]' );
-    if (tag !== null)
-    {
-        arrGroup = (contactGroups.value).split(',');
-        if(arrGroup)
+if (grouplistnewcontact !== null){
+    grouplistnewcontact.onchange = function  (ee) {
+        var tag,arrGroup; 
+        var oldValue,newValue;
+        var contactGroups;
+        
+        tag = document.querySelector('[class="tagsnewcontact"]' );
+        contactGroups = document.querySelector('[id="ContactGroupsnewcontact"]' );
+        if (tag !== null)
         {
-            var idx;
-            idx = arrGroup.indexOf(ee.target.value);
-            if (idx > -1)
+            arrGroup = (contactGroups.value).split(',');
+            if(arrGroup)
             {
-                arrGroup.splice(idx,1);
-            }
-            else
-            {
-                arrGroup.push(ee.target.value);
-            }            
-            arrGroup = arrGroup.filter(function(el){ return el;});
-            tag.innerHTML = tags2Html( arrGroup );       
-            if(contactGroups)
-            {
-                contactGroups.value = arrGroup.join(',');
+                var idx;
+                idx = arrGroup.indexOf(ee.target.value);
+                if (idx > -1)
+                {
+                    arrGroup.splice(idx,1);
+                }
+                else
+                {
+                    arrGroup.push(ee.target.value);
+                }            
+                arrGroup = arrGroup.filter(function(el){ return el;});
+                tag.innerHTML = tags2Html( arrGroup );       
+                if(contactGroups)
+                {
+                    contactGroups.value = arrGroup.join(',');
+                }
             }
         }
-    }
-    ee.target.value = '';
-};
-
+        ee.target.value = '';
+    };
+}
 
 
 if(entriesType35){
@@ -382,6 +387,31 @@ if(entriesType35){
 
 formatElementClass('phone');
 formatElementClass('email');
+
+
+if(a_type){
+    a_type.forEach( function (entry) {
+        switch (entry.getAttribute('data-dms-entrytype')) {
+            case '30':
+                // File
+                entry.href = 'FileServer/' + entry.getAttribute('data-dms-name');
+                entry.target = '_blank';
+                break;
+            case '35':
+                // Note
+                entry.href = 'http://' + entry.getAttribute('data-dms-url');
+                entry.target = '_blank';
+                break;
+            case '20':
+            case '25':
+                // Folder, Block
+                entry.href = 'index.php?page=document/list/' + entry.getAttribute('a_id');
+                entry.target = '';
+            default:
+                break;
+        }
+    })
+}
 
 var arrGroup = null;
 

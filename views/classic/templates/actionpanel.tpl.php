@@ -1,5 +1,5 @@
 <div id="actionpanel">
-    <form action="index.php?page=document/addfolder" method="post">
+    <form action="index.php?page=document/addFolder" method="post">
         <ul>
             <li>
                 <label for="fld_name">{lbl_Create}</label>

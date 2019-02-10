@@ -4,10 +4,10 @@
     <meta charset="utf-8" />
     <title>{cfg_sitename}</title>
     <link rel="stylesheet" type="text/css" href="views/classic/styles/default.css"> 
-    <script src="js/functions.js"></script>
+    <script type="text/javascript" src="js/functions.js"></script>
   </head>
 
-  <body>
+  <body>    
     <header id="page_header">
       <p>
         {dateText}<br/>

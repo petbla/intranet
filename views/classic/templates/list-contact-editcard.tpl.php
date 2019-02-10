@@ -62,6 +62,7 @@
             <input type="hidden" name="Email" value="{Email}" oldEmail_id="{ID}">
             <input type="hidden" name="Address" value="{Address}" oldAddress_id="{ID}">
             <input type="hidden" name="Note" value="{Note}" oldNote_id="{ID}">
+            <input type="hidden" name="sqlrequest" value="{sqlrequest}" oldNote_id="{ID}">
         </fieldset>
     </form>
 </div>

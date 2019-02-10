@@ -51,7 +51,13 @@ class Documentcontroller{
 					case 'listArchive':
 						$this->listArchiveDocuments();
 						break;
+					case 'logview':
+						// Je voláno jako XMLHttpRequest (function.js) a pouze loguje zobrazené položky
+						$ID = isset($urlBits[2]) ? $urlBits[2] : '';
+						$this->logViewDocument($ID);
+						break;
 					case 'view':
+						// Je voláno jako XMLHttpRequest (function.js) a pouze loguje zobrazené položky
 						$ID = isset($urlBits[2]) ? $urlBits[2] : '';
 						$this->viewDocument($ID);
 						break;
@@ -187,6 +193,7 @@ class Documentcontroller{
 		$this->registry->setEntryNo(0);
 		$showFolder = false;
 		$searchText = htmlspecialchars($searchText);
+		$searchText = str_replace('*','',$searchText);
 		$sql = "SELECT ID,Title,Name,Type,Url,Parent,ModifyDateTime,LOWER(FileExtension) as FileExtension ".
 		     	    "FROM ".$this->prefDb."DmsEntry ".
 					"WHERE Archived = 0 AND Type IN (20,25,30,35) ".
@@ -197,34 +204,38 @@ class Documentcontroller{
 		$showBreads = false;
 		$pageTitle = '<h3>'.$caption['Archive'].'</h3>';
 		$template = 'list-entry-resultsearch.tpl.php';
-		$this->registry->getObject('log')->addMessage('Zobrazení seznamu souborů a složek','DmsEntry',$ID);
+		$this->registry->getObject('template')->getPage()->addTag( 'sqlrequest', $searchText );
+		$this->registry->getObject('log')->addMessage('Zobrazení seznamu souborů a složek','DmsEntry','');
 		$this->registry->getObject('document')->listDocuments($entry,$showFolder,$sql,$showBreads,$pageTitle,$template);
 	}	
-
-	private function viewDocument( $ID )
+	
+	private function logViewDocument( $ID )
 	{
-		global $caption;
+		// Je voláno jako XMLHttpRequest (function.js) a pouze loguje zobrazené položky
 
 		require_once( FRAMEWORK_PATH . 'models/entry/model.php');
 		$this->model = new Entry( $this->registry, $ID );
 		if( $this->model->isValid() )
 		{
 			$entry = $this->model->getData();
-			$filePath = $this->model->getlinkToFile();
-			$filePath = iconv("utf-8","windows-1250",$filePath);
-			if (($entry['Type'] == 20) || ($entry['Type'] == 25))
-			{
-				$this->listDocuments($ID);
-			}
-			else
-			{
-				$this->registry->getObject('log')->addMessage("Zobrazení ".$entry['Name'],'DmsEntry',$ID);
-				$this->registry->getObject('document')->viewDocument($entry,$filePath);
-			}
+			$this->registry->getObject('log')->addMessage("Zobrazení ".$entry['Name'],'DmsEntry',$ID);
+		}
+		print "<h1>Page Not Found.<h1>";
+		exit();		
+	}	
+
+	private function viewDocument( $ID )
+	{
+		require_once( FRAMEWORK_PATH . 'models/entry/model.php');
+		$this->model = new Entry( $this->registry, $ID );
+		if( $this->model->isValid() )
+		{
+			$entry = $this->model->getData();
+			$this->registry->getObject('log')->addMessage("Zobrazení ".$entry['Name'],'DmsEntry',$ID);
+			//TODO
 		}
 		else
 		{
-			// File Not Found
 			$this->documentNotFound();
 		}
 	}	
@@ -242,12 +253,14 @@ class Documentcontroller{
 			if(isset($_POST['save']))
 			{
 				$newTitle = ($_POST['newTitle'] !== null) ? $_POST['newTitle'] : '';
+				$newUrl = ($_POST['newUrl'] !== null) ? $_POST['newUrl'] : '';
 				if ($newTitle)
 				{
 					$newTitle = $this->registry->getObject('db')->sanitizeData($newTitle);
 					
 					// Update
 					$changes['Title'] = $newTitle;
+					$changes['Url'] = $newUrl;
 					$condition = "ID = '$ID'";
 					$this->registry->getObject('log')->addMessage("Zobrazení a aktualizace dokumentu",'contact',$ID);
 					$this->registry->getObject('db')->updateRecords('dmsentry',$changes, $condition);
@@ -423,7 +436,7 @@ class Documentcontroller{
 			$entry = $this->model->getData();
 			if($entry['Type'] != 35)
 			{
-				$message = 'Odstranit lze pouze prázdný poznámky.';
+				$message = 'Odstranit lze pouze prázdnou poznámku.';
 			}
 			else
 			{

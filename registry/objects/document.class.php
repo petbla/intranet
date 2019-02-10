@@ -70,15 +70,22 @@ class document {
         }
         else
         {
-            $this->registry->getObject('template')->getPage()->addTag( 'documentitems', '' );
+            $this->registry->getObject('template')->addTemplateBit('documentitems', 'add-files.tpl.php');
         }
         $this->registry->getObject('template')->buildFromTemplates('header.tpl.php', $template, 'footer.tpl.php');
         
         if ($perSet > 0)
         {
             $this->registry->getObject('template')->addTemplateBit('actionpanel', 'actionpanel.tpl.php');
-            $this->registry->getObject('template')->addTemplateBit('addFiles', 'add-files.tpl.php');
-            $this->registry->getObject('template')->addTemplateBit('editEntry', 'list-entry-editcard.tpl.php');
+            if($template == 'list-entry-resultsearch.tpl.php')
+            {
+                $this->registry->getObject('template')->getPage()->addTag( 'addFiles', '' );
+            }
+            else
+            {
+                $this->registry->getObject('template')->addTemplateBit('addFiles', 'add-files.tpl.php');
+            };
+            $this->registry->getObject('template')->addTemplateBit('editcard', 'list-entry-editcard.tpl.php');
             $this->registry->getObject('template')->addTemplateBit('editIcon', 'list-entry-editicon.tpl.php');
             $this->registry->getObject('template')->getPage()->addTag( 'dmsClassName', 'item' );
             if($entry['Type'] == 20)
@@ -94,7 +101,7 @@ class document {
         {
             $this->registry->getObject('template')->getPage()->addTag( 'actionpanel', '' );
             $this->registry->getObject('template')->getPage()->addTag( 'addFiles', '' );
-            $this->registry->getObject('template')->getPage()->addTag( 'editEntry', '' );
+            $this->registry->getObject('template')->getPage()->addTag( 'editcard', '' );
             $this->registry->getObject('template')->getPage()->addTag( 'editIcon', '' );
         }
 

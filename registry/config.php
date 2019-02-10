@@ -28,8 +28,8 @@ $config['dbPrefix']         = 'mis_';
 $config['compName']         = 'OBEC Mistřice';
 
 // Testing
-$config['dbPrefix']         = ''; 
-$config['compName']         = 'TEST Zkušební společnost';
+//$config['dbPrefix']         = ''; 
+//$config['compName']         = 'TEST Zkušební společnost';
 
 $config['ftp']              = false;
 

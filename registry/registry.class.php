@@ -138,7 +138,6 @@ class Registry {
 		   2 - id           (<GUID>)
 		   ..index.php?page=document/list
 		   ..index.php?page=document/list/<GUID>
-		   ..index.php?page=document/view/<GUID>
 		   ..index.php?searchDocument=text&x=99&y=99
 	    */
 		

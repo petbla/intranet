@@ -88,7 +88,7 @@ class Entry{
 				$this->PermissionSet = $data['PermissionSet'];
 				$this->LastChange = $data['LastChange'];
 				$this->activeEntry = true;
-				$this->linkToFile = $data['Name'];  //iconv("windows-1250","utf-8",
+				$this->linkToFile = str_replace(DIRECTORY_SEPARATOR,'/', $data['Name']);  //iconv("windows-1250","utf-8",
 				$this->breads = $this->getBreads();
 
 				if(($this->Type == 20) || ($this->Type == 25))
