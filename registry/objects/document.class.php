@@ -89,13 +89,13 @@ class document {
             $this->registry->getObject('template')->addTemplateBit('editIcon', 'list-entry-editicon.tpl.php');
             $this->registry->getObject('template')->getPage()->addTag( 'dmsClassName', 'item' );
             if($entry['Type'] == 20)
-            {   
                 $this->registry->getObject('template')->addTemplateBit('addFolder', 'actionpanel-addFolder.tpl.php');
-            }
             else
-            {
                 $this->registry->getObject('template')->getPage()->addTag( 'addFolder', '' );
-            }
+            if($entry['isImage'] == true)
+                $this->registry->getObject('template')->addTemplateBit('slideshow', 'actionpanel-slideshow.tpl.php');
+            else
+                $this->registry->getObject('template')->getPage()->addTag( 'slideshow', '' );
         }
         else
         {

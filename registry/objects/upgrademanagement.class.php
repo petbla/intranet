@@ -162,6 +162,46 @@ class upgrademanagement {
             // upgrade to 1.5
             $this->upgrade_005();
         }
+        if ($this->version == '1.5') 
+        {
+            // upgrade to 1.6
+            $this->upgrade_006();
+        }
+    }
+
+    private function upgrade_006()
+    {
+		global $config;
+        $pref = $config['dbPrefix'];
+
+        $sql = "SELECT ID,FileExtension FROM ".$pref."dmsentry WHERE Archived = 0 AND Type = 30";
+        $entries = array();
+        $this->registry->getObject('db')->executeQuery( $sql );
+        while( $entry = $this->registry->getObject('db')->getRows() )
+        {
+            switch (strtolower($entry['FileExtension'])) {
+                case 'bmp':
+                case 'jpg':
+                case 'png':
+                    $entry['Multimedia'] = 'image';
+                    $entries[] = $entry;
+                    break;
+                case 'mp3':
+                    $entry['Multimedia'] = 'audio';
+                    $entries[] = $entry;
+                    break;
+                case 'mp4':
+                    $entry['Multimedia'] = 'video';
+                    $entries[] = $entry;
+                    break;
+            }
+        }
+        foreach ($entries as $entry ) {
+            $changes['Multimedia'] = $entry['Multimedia'];
+            $condition = "ID = '".$entry['ID']."'";
+            $this->registry->getObject('db')->updateRecords( 'dmsentry', $changes, $condition); 
+        }
+        $this->setNewVersion('1.6');
     }
 
     private function upgrade_005()

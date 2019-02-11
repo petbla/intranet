@@ -12,6 +12,7 @@
                 <input type="hidden" name="parentID" value="{parentID}">
                 <input type="hidden" name="root" value="{parentfoldername}">
             </li>
-        </ul>    
-    </form>    
+        </ul>
+    </form>      
+    {slideshow}      
 </div>

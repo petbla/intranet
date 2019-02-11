@@ -4,7 +4,11 @@
     <meta charset="utf-8" />
     <title>{cfg_sitename}</title>
     <link rel="stylesheet" type="text/css" href="views/classic/styles/default.css"> 
+    <link rel="stylesheet" type="text/css" href="views/classic/styles/slideshow.css"> 
     <script type="text/javascript" src="js/functions.js"></script>
+    <style>
+      .mySlides {display:none}
+    </style>
   </head>
 
   <body>    
