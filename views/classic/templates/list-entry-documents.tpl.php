@@ -18,7 +18,7 @@
         {editcard}
       </td>
       <td>{ModifyDateTime}</td>
-      <td>.{FileExtension}{Multimedia}</td>
+      <td>.{FileExtension}</td>
       <td class="col_action">
         {editIcon}
       </td>

@@ -56,44 +56,44 @@ class document {
         // Show Folders
         if ($showFolder)
         {
-            $this->registry->getObject('template')->addTemplateBit('folderitems', 'list-entry-folders.tpl.php');
+            $this->registry->getObject('template')->addTemplateBit('folders', 'list-entry-folders.tpl.php');
         }
         else
         {
-            $this->registry->getObject('template')->getPage()->addTag( 'folderitems', '' );
+            $this->registry->getObject('template')->getPage()->addTag( 'folders', '' );
         }
 
         // Show result of SQL request
         if ($isEntries)
         {
-            $this->registry->getObject('template')->addTemplateBit('documentitems', 'list-entry-documents.tpl.php');
+            $this->registry->getObject('template')->addTemplateBit('documents', 'list-entry-documents.tpl.php');
         }
         else
         {
-            $this->registry->getObject('template')->addTemplateBit('documentitems', 'add-files.tpl.php');
+            $this->registry->getObject('template')->addTemplateBit('documents', 'list-entry-addfiles.tpl.php');
         }
         $this->registry->getObject('template')->buildFromTemplates('header.tpl.php', $template, 'footer.tpl.php');
         
         if ($perSet > 0)
         {
-            $this->registry->getObject('template')->addTemplateBit('actionpanel', 'actionpanel.tpl.php');
+            $this->registry->getObject('template')->addTemplateBit('actionpanel', 'list-entry-actionpanel.tpl.php');
             if($template == 'list-entry-resultsearch.tpl.php')
             {
                 $this->registry->getObject('template')->getPage()->addTag( 'addFiles', '' );
             }
             else
             {
-                $this->registry->getObject('template')->addTemplateBit('addFiles', 'add-files.tpl.php');
+                $this->registry->getObject('template')->addTemplateBit('addFiles', 'list-entry-addfiles.tpl.php');
             };
             $this->registry->getObject('template')->addTemplateBit('editcard', 'list-entry-editcard.tpl.php');
             $this->registry->getObject('template')->addTemplateBit('editIcon', 'list-entry-editicon.tpl.php');
             $this->registry->getObject('template')->getPage()->addTag( 'dmsClassName', 'item' );
             if($entry['Type'] == 20)
-                $this->registry->getObject('template')->addTemplateBit('addFolder', 'actionpanel-addFolder.tpl.php');
+                $this->registry->getObject('template')->addTemplateBit('addFolder', 'list-entry-actionpanel-addFolder.tpl.php');
             else
                 $this->registry->getObject('template')->getPage()->addTag( 'addFolder', '' );
             if($entry['isImage'] == true)
-                $this->registry->getObject('template')->addTemplateBit('slideshow', 'actionpanel-slideshow.tpl.php');
+                $this->registry->getObject('template')->addTemplateBit('slideshow', 'list-entry-actionpanel-slideshow.tpl.php');
             else
                 $this->registry->getObject('template')->getPage()->addTag( 'slideshow', '' );
         }

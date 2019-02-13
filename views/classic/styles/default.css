@@ -290,6 +290,9 @@ div#breads a:hover{
 .ContentEntryType25 td{
   border: 1px solid #000;
 }
+div#insertDocument{
+  text-align: left;
+}
 
 div#DocumentItems td a, div#DocumentItems td{
   font-family: Century-gothic, Calibri, Arial, sans-serif; 

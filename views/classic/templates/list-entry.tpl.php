@@ -13,8 +13,8 @@
 {navigate_menu}
 </div>
 {pageTitle}
-{folderitems}
-{documentitems}
+{folders}
+{documents}
 <div id="pagecounter" class="bottom">
 {navigate_menu}
 </div>
