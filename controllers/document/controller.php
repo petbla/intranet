@@ -85,6 +85,10 @@ class Documentcontroller{
 						$ID = isset($urlBits[2]) ? $urlBits[2] : '';
 						$this->modifyDocument($ID);
 						break;
+					case 'slideshow':
+						$ID = isset($urlBits[2]) ? $urlBits[2] : '';
+						$this->slideshow($ID);
+						break;
 					default:
 						$this->documentNotFound();
 						break;
@@ -107,6 +111,44 @@ class Documentcontroller{
 		$this->registry->getObject('log')->addMessage("Chyba: $message",'dmsentry','');
 		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page.tpl.php', 'footer.tpl.php');
 		$this->registry->getObject('template')->getPage()->addTag('message',$message);
+	}
+
+	private function slideshow( $ID )
+	{
+		require_once( FRAMEWORK_PATH . 'models/entry/model.php');
+		$this->model = new Entry( $this->registry, $ID );
+		$entry = $this->model->getData();
+		if( $this->model->isValid() )
+		{
+			if($entry['isImage'] == true)
+			{
+				$this->registry->getObject('db')->initQuery('dmsentry');
+				$this->registry->getObject('db')->setFilter('Parent',$entry['EntryNo']);
+				$this->registry->getObject('db')->setFilter('Type',30);
+				$this->registry->getObject('db')->setFilter('Multimedia','image');
+				if ($this->registry->getObject('db')->findSet())
+				{
+					$images = $this->registry->getObject('db')->getResult();
+		    		foreach ($images as $key => $image) {
+        				$ID = $entry['ID'];
+				
+					}
+					$data[] = array('index' => 1);
+					$data[] = array('index' => 2);
+					$data[] = array('index' => 3);
+					$data[] = array('index' => 4);
+					$this->registry->getObject('template')->getPage()->addTag( 'IndexList', array('DATA', $data));
+
+					// Breds navigation
+					$breads = $entry['breads'];
+					$this->registry->getObject('template')->getPage()->addTag( 'breads', $breads );
+
+					$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'slideshow.tpl.php', 'footer.tpl.php');
+					return;
+				}
+			}
+		}
+		$this->documentNotFound();	
 	}
 
 	private function listDocuments( $ID )
