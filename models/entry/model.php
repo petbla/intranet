@@ -56,6 +56,7 @@ class Entry{
 	{
 		global $config;
         $pref = $config['dbPrefix'];
+		$root = $config['fileserver'];
 
 		$this->registry = $registry;
 		$this->activeEntry = false;
@@ -88,7 +89,11 @@ class Entry{
 				$this->PermissionSet = $data['PermissionSet'];
 				$this->LastChange = $data['LastChange'];
 				$this->activeEntry = true;
-				$this->linkToFile = str_replace(DIRECTORY_SEPARATOR,'/', $data['Name']);  //iconv("windows-1250","utf-8",
+				
+				$link = str_replace(DIRECTORY_SEPARATOR,'/', $data['Name']);  //iconv("windows-1250","utf-8",
+				$link = $root.$link;
+				$this->linkToFile = $link;
+		
 				$this->breads = $this->getBreads();
 
 				if(($this->Type == 20) || ($this->Type == 25))

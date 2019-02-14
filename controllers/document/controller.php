@@ -115,6 +115,9 @@ class Documentcontroller{
 
 	private function slideshow( $ID )
 	{
+		global $config;
+		$root = $config['mediaurl'];
+
 		require_once( FRAMEWORK_PATH . 'models/entry/model.php');
 		$this->model = new Entry( $this->registry, $ID );
 		$entry = $this->model->getData();
@@ -129,15 +132,20 @@ class Documentcontroller{
 				if ($this->registry->getObject('db')->findSet())
 				{
 					$images = $this->registry->getObject('db')->getResult();
-		    		foreach ($images as $key => $image) {
-        				$ID = $entry['ID'];
-				
+					$i = 0;
+					foreach ($images as $image) {
+						$i++;
+						$ID = $image['ID'];
+						$data[] = array('index' => $i);
+						$link = $root.$image['Name'];
+						$link = str_replace(DIRECTORY_SEPARATOR,'/', $link); 
+
+						$img[] = array('imagepath' => $link, 'Title' => $image['Title']);
 					}
-					$data[] = array('index' => 1);
-					$data[] = array('index' => 2);
-					$data[] = array('index' => 3);
-					$data[] = array('index' => 4);
-					$this->registry->getObject('template')->getPage()->addTag( 'IndexList', array('DATA', $data));
+					$CacheId = $this->registry->getObject('db')->cacheData($img);
+					$this->registry->getObject('template')->getPage()->addTag( 'ImageList', array('DATA', $CacheId));
+					$CacheId = $this->registry->getObject('db')->cacheData($data);
+					$this->registry->getObject('template')->getPage()->addTag( 'IndexList', array('DATA', $CacheId));
 
 					// Breds navigation
 					$breads = $entry['breads'];

@@ -20,16 +20,17 @@ $config['sitename']         = 'Intranet - DMS';
 $config['metadescription']  = 'Intranet - správa dokumentů';
 $config['siteshortname']    = 'Intranet';
 $config['headtitle']        = 'Intranet';
-$config['siteurl']          = 'http://localhost/intranet/';
+$config['siteurl']          = 'http://petblanb/intranet/';
+$config['mediaurl']         = 'http://petblanb/intranet/fileserver/';
 
 // OBEC
-$config['fileserver']       = '\\\\petblanb\\FileServer\\';
+$config['fileserver']       = '//petblanb/FileServer/';
 $config['dbPrefix']         = 'mis_'; 
 $config['compName']         = 'OBEC Mistřice';
 
 // Testing
-$config['dbPrefix']         = ''; 
-$config['compName']         = 'TEST Zkušební společnost';
+//$config['dbPrefix']         = ''; 
+//$config['compName']         = 'TEST Zkušební společnost';
 
 $config['ftp']              = false;
 
