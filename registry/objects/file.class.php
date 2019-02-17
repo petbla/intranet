@@ -107,6 +107,10 @@ class file {
       return 0;
     }
     $item = $this->getItem($name);
+    if(! $item['Exist'])
+    {
+      return 0;
+    }
     $this->registry->getObject('db')->initQuery('DmsEntry','EntryNo,Name');
     $sanitizename = $this->registry->getObject('db')->sanitizeData($name);
     $this->registry->getObject('db')->setCondition( 'Name="'.$sanitizename.'" AND Archived=0' );
@@ -130,6 +134,20 @@ class file {
     $data['ModifyDateTime'] = date("Y-m-d H:i:s", filemtime($item['WinFullName'])); // datum a čas změny
     $data['PermissionSet'] = 1;
     $data['Url'] = '';
+    switch (strtolower($data['FileExtension'])) {
+      case 'bmp':
+      case 'jpg':
+      case 'gif':
+      case 'png':
+          $data['Multimedia'] = 'image';
+          break;
+      case 'mp3':
+          $data['Multimedia'] = 'audio';
+          break;
+      case 'mp4':
+          $data['Multimedia'] = 'video';
+          break;
+    }
     $this->registry->getObject('db')->insertRecords( 'DmsEntry', $data );
     $this->registry->getObject('db')->findFirst();
     $entry = $this->registry->getObject('db')->getResult();
@@ -243,6 +261,13 @@ class file {
     $item['Name'] = str_replace('\\',DIRECTORY_SEPARATOR,$name);
     $item['Name'] = str_replace('/',DIRECTORY_SEPARATOR,$item['Name']);
     $item['FullName'] =  $this->root.$item['Name'];
+
+    if(!is_file($item['FullName']) && !is_dir($item['FullName']) && !$config['ftp'])
+    {
+      return $item;
+    }
+
+
     $arr = explode(DIRECTORY_SEPARATOR,$item['Name']);
     $item['Item'] = (count($arr) > 0) ? $arr[count($arr) - 1] : '';
     if(count($arr) > 0)
@@ -268,15 +293,13 @@ class file {
     }
     else
     {
-
+      $parentItems = scandir($this->root.$item['WinParent']);
+      for ($i=0; $i < count($parentItems); $i++) { 
+  //      $parentItems[$i] = strtoupper(iconv("windows-1250","utf-8",$parentItems[$i]));
+        $parentItems[$i] = strtoupper($parentItems[$i]);
+      }
+      $item['Exist'] = in_array(strtoupper($item['Item']),$parentItems);
     }
-    
-    $parentItems = scandir($this->root.$item['WinParent']);
-    for ($i=0; $i < count($parentItems); $i++) { 
-//      $parentItems[$i] = strtoupper(iconv("windows-1250","utf-8",$parentItems[$i]));
-      $parentItems[$i] = strtoupper($parentItems[$i]);
-    }
-    $item['Exist'] = in_array(strtoupper($item['Item']),$parentItems);
 
     $item['Level'] = substr_count($item['Name'],DIRECTORY_SEPARATOR);
     if (is_dir($item['WinFullName'])) 

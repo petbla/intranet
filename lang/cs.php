@@ -131,6 +131,10 @@ $caption['folderName'] =     'Název složky';
 $caption['folderBlocName'] = 'Název složky/bloku';
 $caption['PlaceText'] =      'Zadejte text...';
 $caption['View'] =           'Náhled';
+$caption['Import'] =         'Import';
+$caption['ContTemplateImp'] ='Šablona pro import';
+$caption['Export'] =         'Export';
+$caption['Error'] =          'Chyba';
 
 
 /**
@@ -148,5 +152,6 @@ $caption['msg_blockExist'] =       'Blok zadaného názvu již existuje.';
 $caption['msg_contactNotfound'] =  'Kontakt nenalezen.';
 $caption['msg_noalloved'] =        'Akce není povolena nebo v této části dostupná.';
 $caption['msg_EditContact'] =      'Editace kontaktu';
+$caption['ImmportContactsCsv'] =   'Import kontaktů z Excelu (CSV)';
 
 ?>

@@ -12,6 +12,20 @@
     &nbsp;
     {lbl_Groups}
     <img src="views/classic/images/nav/groups.png" alt="{lbl_Groups}" title="{lbl_Groups}">
+    &nbsp;
+    {lbl_Import}
+    <img src="views/classic/images/nav/import.png" alt="{lbl_Import}" title="{lbl_Import}" onclick="importContactCSV();">
+    &nbsp;
+    {lbl_ContTemplateImp}
+    <img src="views/classic/images/nav/export.png" alt="{lbl_Export}" title="{lbl_Export}" onclick="exportContactCSV();">
+</div>
+<div style="display: none;" id="formImportContactCSV">
+    <form action="index.php?page=contact/importCsv" method="POST" enctype="multipart/form-data">
+        <label for="file">{lbl_ImmportContactsCsv}</label>
+        <input type="file" name="file" id="file" class="action" >  
+        &nbsp;
+        <input type="image" src="views/classic/images/nav/upload.png" name="submit" id="submitImport">
+    </form>
 </div>
 <div id="pagecounter">
 {navigate_menu}

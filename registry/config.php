@@ -21,21 +21,24 @@ $config['metadescription']  = 'Intranet - správa dokumentů';
 $config['siteshortname']    = 'Intranet';
 $config['headtitle']        = 'Intranet';
 $config['siteurl']          = 'http://petblanb/intranet/';
-$config['mediaurl']         = 'http://petblanb/intranet/fileserver/';
 
 // OBEC
 $config['fileserver']       = '//petblanb/FileServer/';
+$config['webserver']         = 'http://petblanb/intranet/fileserver/';
 $config['dbPrefix']         = 'mis_'; 
 $config['compName']         = 'OBEC Mistřice';
 
 // Testing
-//$config['dbPrefix']         = ''; 
+//$config['fileserver']       = '//venuse/eBook/MySQL/';
+//$config['webserver']         = 'file://venuse/eBook/MySQL/';
+//$config['dbPrefix']         = 'test_'; 
 //$config['compName']         = 'TEST Zkušební společnost';
 
 $config['ftp']              = false;
 
 // Zahrádkáři
 //$config['fileserver']       = 'ftp://venuse/users/petr/Job/Zahradkari/';
+//$config['webserver']         = 'http://petblanb/intranet/fileserver/';
 //$config['dbPrefix']         = 'czs_';   
 //$config['ftp']              = true;
 

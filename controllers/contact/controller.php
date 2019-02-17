@@ -67,6 +67,26 @@ class Contactcontroller {
 							$this->saveContact($ID);
 						}
 						break;
+					case 'importCsv':
+						if($perSet >= 5) // změna pouze pro Starosta(5), Adninistrátor(9)
+						{
+							// TODO
+							//importCsv();
+							$this->listContacts();
+						}
+						else
+							$this->error($caption['Error'].' - '.$caption['msg_unauthorized']);
+						break;
+					case 'exportCsv':
+						if($perSet >= 5) // změna pouze pro Starosta(5), Adninistrátor(9)
+						{
+							// TODO
+							//exportCsv();
+							exit('OK');	
+						}
+						else
+							exit($caption['Error'].' - '.$caption['msg_unauthorized']);	
+						break;
 					case 'search':
 						$searchText = isset($urlBits[2]) ? $urlBits[2] : '';
 						if ($searchText){

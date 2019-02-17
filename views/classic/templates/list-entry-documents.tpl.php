@@ -14,7 +14,7 @@
         {icon{Type}{FileExtension}}
       </td>
       <td>
-        <a href="" a_id="{ID}" a_type="entry" data-dms-url="{Url}" data-dms-name="{Name}" data-dms-entrytype="{Type}" onclick="sendEntryRequest('{ID}');">{Title}</a>
+        <a href="" a_id="{ID}" a_type="entry" data-dms-url="{Url}" data-dms-name="{Name}" data-dms-server="{cfg_webserver}" data-dms-entrytype="{Type}" onclick="sendEntryRequest('{ID}');">{Title}</a>
         {editcard}
       </td>
       <td>{ModifyDateTime}</td>

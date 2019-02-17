@@ -394,7 +394,7 @@ if(a_type){
         switch (entry.getAttribute('data-dms-entrytype')) {
             case '30':
                 // File
-                entry.href = 'FileServer/' + entry.getAttribute('data-dms-name');
+                entry.href = entry.getAttribute('data-dms-server') + entry.getAttribute('data-dms-name');
                 entry.target = '_blank';
                 break;
             case '35':

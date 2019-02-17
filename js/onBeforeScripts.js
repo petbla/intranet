@@ -42,3 +42,23 @@ function sendEntryRequest(ID) {
         //console.log(Http.responseText)      
     };
 }
+
+function importContactCSV() {
+    var form;
+    form = document.querySelector('#formImportContactCSV');
+    if(form){
+        form.style.display = "";
+        console.log('Import');
+    }
+}
+
+function exportContactCSV() {
+    const Http = new XMLHttpRequest();
+    var url;
+    url = 'http://localhost/intranet/index.php?page=contact/exportCsv';
+    Http.open("GET", url);
+    Http.send();
+    Http.onreadystatechange = (e) => {
+        console.log(Http.responseText)      
+    };
+}

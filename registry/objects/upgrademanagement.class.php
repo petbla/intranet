@@ -362,9 +362,12 @@ class upgrademanagement {
     {
         $changes['Version'] = $ver;
         $condition = 'PrimaryKey = ' . $this->PK;
-        $this->registry->getObject('log')->addMessage("Aktualizace nastavení",'setup',$ID);
+        if ($this->version >= 1.3)
+        {
+            $this->registry->getObject('log')->addMessage("Aktualizace nastavení",'setup',$ver);
+        }
         $this->registry->getObject('db')->updateRecords( 'setup', $changes, $condition); 
-        $this->Version = $ver;
+        $this->version = $ver;
     }
 }
 

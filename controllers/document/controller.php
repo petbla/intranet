@@ -57,7 +57,6 @@ class Documentcontroller{
 						$this->logViewDocument($ID);
 						break;
 					case 'view':
-						// Je voláno jako XMLHttpRequest (function.js) a pouze loguje zobrazené položky
 						$ID = isset($urlBits[2]) ? $urlBits[2] : '';
 						$this->viewDocument($ID);
 						break;
@@ -116,7 +115,7 @@ class Documentcontroller{
 	private function slideshow( $ID )
 	{
 		global $config;
-		$root = $config['mediaurl'];
+		$root = $config['webserver'];
 
 		require_once( FRAMEWORK_PATH . 'models/entry/model.php');
 		$this->model = new Entry( $this->registry, $ID );
