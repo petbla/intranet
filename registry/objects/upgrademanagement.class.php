@@ -316,6 +316,7 @@ class upgrademanagement {
         foreach ($contacts as $contact ) {
             $changes['ContactGroups'] = $contact['ContactGroups'];
             $condition = "ID = '".$contact['ID']."'";
+            $ID = $contact['ID'];
             $this->registry->getObject('log')->addMessage("Zobrazení a aktualizace kontaktu",'contact',$ID);
             $this->registry->getObject('db')->updateRecords( 'contact', $changes, $condition); 
         }

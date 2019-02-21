@@ -70,8 +70,7 @@ class Contactcontroller {
 					case 'importCsv':
 						if($perSet >= 5) // změna pouze pro Starosta(5), Adninistrátor(9)
 						{
-							// TODO
-							//importCsv();
+							$this->importCsv();
 							$this->listContacts();
 						}
 						else
@@ -80,8 +79,7 @@ class Contactcontroller {
 					case 'exportCsv':
 						if($perSet >= 5) // změna pouze pro Starosta(5), Adninistrátor(9)
 						{
-							// TODO
-							//exportCsv();
+							$this->exportCsv();
 							exit('OK');	
 						}
 						else
@@ -139,6 +137,122 @@ class Contactcontroller {
 			$this->notFound();
 		}
 	}	
+
+	private function importCsv()
+	{
+		if(isset($_FILES["fileToUpload"]) ) {
+			$file = $_FILES['fileToUpload'];
+			if(!empty($file))
+			{
+				$target_file = 'tmp/' . basename($file["name"]);
+				move_uploaded_file($file['tmp_name'],$target_file);
+			}	
+		}
+
+		// If you need to parse XLS files, include php-excel-reader
+		require_once( FRAMEWORK_PATH . 'vendor/spreadsheet-reader/php-excel-reader/excel_reader2.php');
+		require_once( FRAMEWORK_PATH . 'vendor/spreadsheet-reader/SpreadsheetReader.php');
+	
+		$Reader = new SpreadsheetReader($target_file);
+		$idValidCsv = false;
+		$lineno = 0;
+		foreach ($Reader as $Row)
+		{
+			$lineno++;
+			if ($lineno == 1){
+				if(($Row[0] === 'Jméno') &&
+				   ($Row[1] === 'Příjmení') &&
+				   ($Row[2] === 'Titul') &&
+				   ($Row[3] === 'Funkce') &&
+				   ($Row[4] === 'Společnost') &&
+				   ($Row[5] === 'Telefon') &&
+				   ($Row[6] === 'Email') &&
+				   ($Row[7] === 'Adresa'))
+				{
+					$idValidCsv = true;
+				}
+			}
+			if (! $idValidCsv){
+				return;
+			}
+			if ($lineno > 1){
+				$ID = $this->registry->getObject('fce')->GUID();
+				$data['ID'] = $ID;
+				$data['FirstName'] = $this->registry->getObject('db')->sanitizeData($Row[0]);
+				$data['LastName'] = $this->registry->getObject('db')->sanitizeData($Row[1]);
+				$data['Title'] = $this->registry->getObject('db')->sanitizeData($Row[2]);
+				$data['Function'] = $this->registry->getObject('db')->sanitizeData($Row[3]);
+				$data['Company'] = $this->registry->getObject('db')->sanitizeData($Row[4]);
+				$data['Email'] = $Row[6];
+				$data['Phone'] = str_replace(' ','',$Row[5]);
+				$data['Address'] = $this->registry->getObject('db')->sanitizeData($Row[7]);
+				$data['Close'] = '0';
+				if(($data['FirstName'] !== '') && ($data['LastName'] == ''))
+				{
+					// Jméno obsahuje jméno + příjmní + tituly
+					$name = explode(' ',$data['FirstName']);
+					$data['FirstName'] = $name[0];
+					array_shift($name);
+					if($name[0] !== ''){
+						$data['LastName'] = $name[0];
+						array_shift($name);
+					}
+					if($name[0] !== ''){
+						$data['Title'] = implode(' ',$name);
+					}
+				}
+				else if(($data['FirstName'] == '') && ($data['LastName'] !== ''))
+				{
+					// Jméno obsahuje jméno + příjmní + tituly
+					$name = explode(' ',$data['LastName']);
+					$data['LastName'] = $name[0];
+					array_shift($name);
+					if($name[0] !== ''){
+						$data['FirstName'] = $name[0];
+						array_shift($name);
+					}
+					if($name[0] !== ''){
+						$data['Title'] = implode(' ',$name);
+					}
+				}
+				$data['FullName'] = $this->makeFullName($data);
+				if($data['FullName'] !== ''){
+					$this->registry->getObject('db')->initQuery('contact');
+					$this->registry->getObject('db')->setFilter('FullName',$data['FullName']);
+					if($this->registry->getObject('db')->isEmpty()){
+						$this->registry->getObject('log')->addMessage("Nový kontakt ".$data['FullName'],'Contact',$ID);
+						$this->registry->getObject('db')->insertRecords('contact',$data);
+					}
+				}
+			}
+		}
+	}
+
+	private function exportCsv()
+	{
+		require_once( FRAMEWORK_PATH . 'models/contact/model.php');
+		$this->model = new Contact( $this->registry, '' );
+		$contact = $this->model->getData();
+
+		$filepath = "c:\\temp\\export.csv";
+		$filename = "Sablona_kontaktu.csv";
+		$csvFile = fopen($filepath, "wb");
+		if ($csvFile === false) {
+			die("Cannot create file");
+		}
+		fwrite($csvFile, "\xEF\xBB\xBF");// UTF-8 boom
+		fputcsv($csvFile, ['Jméno','Příjmení','Titul','Funkce','Společnost','Telefon','Email','Adresa'], ";");
+		fclose($csvFile);
+
+		if( !file_exists($filepath) ) 
+			die ("File not found");
+		// Force the download
+
+		header("Content-Disposition: attachment; filename=\"$filename\"");
+		header("Pragma: public");
+		header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+		readfile($filepath);
+	}
 
 	private function deleteContact( $ID )
 	{
@@ -318,19 +432,8 @@ class Contactcontroller {
 						}
 					}
 
-					$data['FullName'] = isset($data['LastName']) ? $data['LastName'] : "";
-					if($data['FirstName'] !== "")
-					{
-						$sp = ($data['FullName'] !== "") ? " " : "";
-						$data['FullName'] = $data['FullName'] . $sp . $data['FirstName'];
-					}
-					if($data['Title'] !== "")
-					{
-						$sp = ($data['FullName'] !== "" ) ? " " : "";
-						$data['FullName'] = $data['FullName'] . $sp . $data['Title'];
-					}
-					$data['FullName'] = ($data['FullName'] !== "" ) ? $data['FullName'] : $data['Company'];
-					
+					$data['FullName'] = $this->makeFulName($data);
+				
 
 					$condition = "ID = '$ID'";
 					$this->registry->getObject('log')->addMessage("Aktualizace kontaktu",'contact',$ID);
@@ -415,7 +518,8 @@ class Contactcontroller {
 			}
 			else
 			{
-				$this->notFound();
+				$this->registry->getObject('log')->addMessage("Zobrazení seznamu kontaktů",'Contact','');
+				$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', $template, 'footer.tpl.php');			
 			}
 		}
         else
@@ -455,11 +559,28 @@ class Contactcontroller {
 		if( $this->model->isActive() )
 		{
 			$contact = $this->model->getData();
-			$this->registry->getObject('log')->addMessage("Zobrazení kontaktu. ".$entry['FullName'],'Contact',$ID);
+			$this->registry->getObject('log')->addMessage("Zobrazení kontaktu. ".$contact['FullName'],'Contact',$ID);
 		}
 		print "<h1>Page Not Found.<h1>";
 		exit();		
 	}		
 
+	private function makeFullName ($data)
+	{
+		$FullName = '';
+		$FullName = isset($data['LastName']) ? $data['LastName'] : "";
+		if($data['FirstName'] !== "")
+		{
+			$sp = ($FullName !== "") ? " " : "";
+			$FullName = $FullName . $sp . $data['FirstName'];
+		}
+		if($data['Title'] !== "")
+		{
+			$sp = ($FullName !== "" ) ? " " : "";
+			$FullName = $FullName . $sp . $data['Title'];
+		}
+		$FullName = ($FullName !== "" ) ? $FullName : $data['Company'];
+		return($FullName);
+	}
 }
 ?>
