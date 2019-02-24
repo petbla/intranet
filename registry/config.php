@@ -31,8 +31,8 @@ $config['compName']         = 'OBEC Mistřice';
 // Testing
 //$config['fileserver']       = '//venuse/eBook/MySQL/';
 //$config['webserver']         = 'file://venuse/eBook/MySQL/';
-//$config['dbPrefix']         = 'test_'; 
-//$config['compName']         = 'TEST Zkušební společnost';
+$config['dbPrefix']         = 'test_'; 
+$config['compName']         = 'TEST Zkušební společnost';
 
 $config['ftp']              = false;
 

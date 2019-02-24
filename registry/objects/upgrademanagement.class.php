@@ -167,6 +167,28 @@ class upgrademanagement {
             // upgrade to 1.6
             $this->upgrade_006();
         }
+        if ($this->version == '1.6') 
+        {
+            // upgrade to 1.7
+            $this->upgrade_007();
+        }
+    }
+
+    private function upgrade_007()
+    {
+		global $config;
+        $pref = $config['dbPrefix'];
+
+        // upgrade table 'user'
+        $sql = "ALTER TABLE ".$pref."dmsentry ADD `Remind` BOOLEAN NULL DEFAULT FALSE".
+               ", ADD `RemindClose` BOOLEAN NULL DEFAULT FALSE".
+               ", ADD `RemindFromDate` DATE NULL".
+               ", ADD `RemindLastDate` DATE NULL".
+               ", ADD `RemindUserGroup` int(11) NOT NULL DEFAULT 0".
+               ", ADD `Content` TEXT NULL";
+        $this->registry->getObject('db')->executeQuery( $sql );
+
+        $this->setNewVersion('1.7');
     }
 
     private function upgrade_006()
@@ -369,6 +391,11 @@ class upgrademanagement {
         }
         $this->registry->getObject('db')->updateRecords( 'setup', $changes, $condition); 
         $this->version = $ver;
+    }
+
+    function getVersion()
+    {
+        return $this->version;
     }
 }
 

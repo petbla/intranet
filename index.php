@@ -66,6 +66,7 @@ if (($registry->getObject('authenticate')->isLoggedIn()) || ($registry->getObjec
 }else{
   $registry->getObject('template')->addTemplateBit('loginform','login.tpl.php');
 }
+$registry->getObject('template')->getPage()->addTag('Version',$registry->getObject('upgrade')->getVersion());
 $registry->getObject('template')->getPage()->addTag('UserName',$registry->getObject('authenticate')->getUserName());
 
 

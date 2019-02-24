@@ -104,7 +104,8 @@ class document {
             $this->registry->getObject('template')->getPage()->addTag( 'editcard', '' );
             $this->registry->getObject('template')->getPage()->addTag( 'editIcon', '' );
         }
-
+        $this->registry->getObject('template')->addTemplateBit('remindIcon','list-entry-remindicon.tpl.php');
+        
         
         // Parent folder
         $entryNo = $entry['EntryNo'];

@@ -205,7 +205,20 @@ if(items){
             oldValue = document.querySelector( '[oldUrl_id="' + e.target.id + '"]' );
             inputValue = document.querySelector( '[inputurl_id="' + e.target.id + '"]' );
             inputValue.value = oldValue.value;
-            
+      
+/*
+TODO: toto nefunguje
+            oldValue = document.querySelector( '[oldRemind_id="' + e.target.id + '"]' );
+            inputValue = document.querySelector( '[inputRemind_id="' + e.target.id + '"]' );
+            if (oldValue.getAttribute('value') == '1'){
+                inputValue.setAttribute('checked','');
+                inputValue.value = 'on';            
+            }
+inputValue.setAttribute('checked','');            
+inputValue.value = 'on';            
+
+console.log(inputValue);            
+*/
             //todo - nefunguje
             if(e.target.dmsEntryType == "35"){
                 inputValue.style.display = "none";

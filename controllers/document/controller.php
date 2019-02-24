@@ -51,11 +51,6 @@ class Documentcontroller{
 					case 'listArchive':
 						$this->listArchiveDocuments();
 						break;
-					case 'logview':
-						// Je voláno jako XMLHttpRequest (function.js) a pouze loguje zobrazené položky
-						$ID = isset($urlBits[2]) ? $urlBits[2] : '';
-						$this->logViewDocument($ID);
-						break;
 					case 'view':
 						$ID = isset($urlBits[2]) ? $urlBits[2] : '';
 						$this->viewDocument($ID);
@@ -87,6 +82,15 @@ class Documentcontroller{
 					case 'slideshow':
 						$ID = isset($urlBits[2]) ? $urlBits[2] : '';
 						$this->slideshow($ID);
+						break;
+					case 'WS':
+						switch ($urlBits[2]) {
+							case 'logview':
+								// Je voláno jako XMLHttpRequest (function.js) a pouze loguje zobrazené položky
+								$ID = isset($urlBits[3]) ? $urlBits[3] : '';
+								$this->logViewDocument($ID);
+								break;
+						}
 						break;
 					default:
 						$this->documentNotFound();
@@ -179,10 +183,11 @@ class Documentcontroller{
 			$this->registry->getObject('template')->getPage()->addTag( 'FolderItems', array( 'SQL', $cache ) );			
 		}
 		$sql = "SELECT ID,Title,Name,Type,Url,Parent,ModifyDateTime,LOWER(FileExtension) as FileExtension ".
-		  		  "FROM ".$this->prefDb."DmsEntry ".
-				  "WHERE Archived = 0 AND parent=".$entry['EntryNo']." AND Type IN (10,30,35,40) ".
-				  "AND PermissionSet <= $this->perSet ".
-				  "ORDER BY Type,Title";
+					",Remind,RemindFromDate,RemindLastDate,Content ".	
+				  	"FROM ".$this->prefDb."DmsEntry ".
+				  	"WHERE Archived = 0 AND parent=".$entry['EntryNo']." AND Type IN (10,30,35,40) ".
+				  	"AND PermissionSet <= $this->perSet ".
+				  	"ORDER BY Type,Title";
 		$showBreads = true;
 		$pageTitle = '';
 		$template = '';
@@ -200,10 +205,11 @@ class Documentcontroller{
 		$this->registry->setEntryNo(0);
 		$showFolder = false;
     	$sql = "SELECT ID,Title,Name,Type,Url,Parent,ModifyDateTime,LOWER(FileExtension) as FileExtension ".
-			   "FROM ".$this->pref."DmsEntry ".
-			   "WHERE Archived = 0 AND NewEntry = 1 AND Type = 30  ".
-			   "AND PermissionSet <= $this->perSet ".
-			   "ORDER BY Level,Parent,Type,Title" ;
+				",Remind,RemindFromDate,RemindLastDate,Content ".	
+				"FROM ".$this->pref."DmsEntry ".
+			   	"WHERE Archived = 0 AND NewEntry = 1 AND Type = 30  ".
+			   	"AND PermissionSet <= $this->perSet ".
+			   	"ORDER BY Level,Parent,Type,Title" ;
 		$showBreads = false;
 		$pageTitle = '<h3>'.$caption['NewDocument'].'</h3>';
 		$template = '';
@@ -221,10 +227,11 @@ class Documentcontroller{
 		$this->registry->setEntryNo(0);
 		$showFolder = false;
     	$sql = "SELECT ID,Title,Name,Type,Url,Parent,ModifyDateTime,LOWER(FileExtension) as FileExtension ".
-			   "FROM ".$this->pref."DmsEntry AS d ".
-			   "WHERE Archived = true AND NewEntry = 0 AND Type = 30 ".
-			   "AND PermissionSet <= $this->perSet ".
-			   "ORDER BY Level,Parent,Type,LineNo" ;
+				",Remind,RemindFromDate,RemindLastDate,Content ".	
+				"FROM ".$this->pref."DmsEntry AS d ".
+			   	"WHERE Archived = true AND NewEntry = 0 AND Type = 30 ".
+			   	"AND PermissionSet <= $this->perSet ".
+			   	"ORDER BY Level,Parent,Type,LineNo" ;
 		$showBreads = false;
 		$pageTitle = '<h3>'.$caption['Archive'].'</h3>';
 		$template = 'list-entry-archive.tpl.php';
@@ -244,7 +251,8 @@ class Documentcontroller{
 		$searchText = htmlspecialchars($searchText);
 		$searchText = str_replace('*','',$searchText);
 		$sql = "SELECT ID,Title,Name,Type,Url,Parent,ModifyDateTime,LOWER(FileExtension) as FileExtension ".
-		     	    "FROM ".$this->prefDb."DmsEntry ".
+					",Remind,RemindFromDate,RemindLastDate,Content ".	
+					"FROM ".$this->prefDb."DmsEntry ".
 					"WHERE Archived = 0 AND Type IN (20,25,30,35) ".
 					//"AND MATCH(Title) AGAINST ('*".$searchText."*' IN BOOLEAN MODE) ".
 					"AND Title like '%".$searchText."%' ".
@@ -303,6 +311,9 @@ class Documentcontroller{
 			{
 				$newTitle = ($_POST['newTitle'] !== null) ? $_POST['newTitle'] : '';
 				$newUrl = ($_POST['newUrl'] !== null) ? $_POST['newUrl'] : '';
+				$newRemind = ($_POST['newRemind'] !== null) ? ($_POST['newRemind'] == '') ? 0 : 1 : 0;
+				$newRemindFromDate = ($_POST['newRemindFromDate'] !== '') ? $_POST['newRemindFromDate'] : 'NULL';
+				$newRemindLastDate = ($_POST['newRemindLastDate'] !== '') ? $_POST['newRemindLastDate'] : 'NULL';
 				if ($newTitle)
 				{
 					$newTitle = $this->registry->getObject('db')->sanitizeData($newTitle);
@@ -310,6 +321,9 @@ class Documentcontroller{
 					// Update
 					$changes['Title'] = $newTitle;
 					$changes['Url'] = $newUrl;
+					$changes['Remind'] = $newRemind;
+					$changes['RemindFromDate'] = $newRemindFromDate;
+					$changes['RemindLastDate'] = $newRemindLastDate;
 					$condition = "ID = '$ID'";
 					$this->registry->getObject('log')->addMessage("Zobrazení a aktualizace dokumentu",'contact',$ID);
 					$this->registry->getObject('db')->updateRecords('dmsentry',$changes, $condition);

@@ -24,7 +24,7 @@ function addNewContact(e){
 function sendContactRequest(ID) {
     const Http = new XMLHttpRequest();
     var url;
-    url= 'http://localhost/intranet/index.php?page=contact/logview/' + ID;
+    url= 'http://localhost/intranet/index.php?page=contact/WS/logview/' + ID;
     Http.open("GET", url);
     Http.send();
     Http.onreadystatechange=(e)=>{
@@ -35,7 +35,7 @@ function sendContactRequest(ID) {
 function sendEntryRequest(ID) {
     const Http = new XMLHttpRequest();
     var url;
-    url = 'http://localhost/intranet/index.php?page=document/logview/' + ID;
+    url = 'http://localhost/intranet/index.php?page=document/WS/logview/' + ID;
     Http.open("GET", url);
     Http.send();
     Http.onreadystatechange = (e) => {
@@ -50,15 +50,4 @@ function importContactCSV() {
         form.style.display = "";
         console.log('Import');
     }
-}
-
-function exportContactCSV() {
-    const Http = new XMLHttpRequest();
-    var url;
-    url = 'http://localhost/intranet/index.php?page=contact/exportCsv';
-    Http.open("GET", url);
-    Http.send();
-    Http.onreadystatechange = (e) => {
-        console.log(Http.responseText)      
-    };
 }

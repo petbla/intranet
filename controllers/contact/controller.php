@@ -76,25 +76,20 @@ class Contactcontroller {
 						else
 							$this->error($caption['Error'].' - '.$caption['msg_unauthorized']);
 						break;
-					case 'exportCsv':
-						if($perSet >= 5) // změna pouze pro Starosta(5), Adninistrátor(9)
-						{
-							$this->exportCsv();
-							exit('OK');	
-						}
-						else
-							exit($caption['Error'].' - '.$caption['msg_unauthorized']);	
-						break;
 					case 'search':
 						$searchText = isset($urlBits[2]) ? $urlBits[2] : '';
 						if ($searchText){
 							$this->searchContacts($searchText);
 						}
 						break;
-					case 'logview':
-						// Je voláno jako XMLHttpRequest (function.js) a pouze loguje zobrazené položky
-						$ID = isset($urlBits[2]) ? $urlBits[2] : '';
-						$this->logViewContact($ID);
+					case 'WS':
+						switch ($urlBits[2]) {
+							case 'logview':
+								// Je voláno jako XMLHttpRequest (function.js) a pouze loguje zobrazené položky
+								$ID = isset($urlBits[3]) ? $urlBits[3] : '';
+								$this->logViewContact($ID);
+								break;
+						}
 						break;
 					default:				
 						$this->listContacts();
@@ -226,32 +221,6 @@ class Contactcontroller {
 				}
 			}
 		}
-	}
-
-	private function exportCsv()
-	{
-		require_once( FRAMEWORK_PATH . 'models/contact/model.php');
-		$this->model = new Contact( $this->registry, '' );
-		$contact = $this->model->getData();
-
-		$filepath = "c:\\temp\\export.csv";
-		$filename = "Sablona_kontaktu.csv";
-		$csvFile = fopen($filepath, "wb");
-		if ($csvFile === false) {
-			die("Cannot create file");
-		}
-		fwrite($csvFile, "\xEF\xBB\xBF");// UTF-8 boom
-		fputcsv($csvFile, ['Jméno','Příjmení','Titul','Funkce','Společnost','Telefon','Email','Adresa'], ";");
-		fclose($csvFile);
-
-		if( !file_exists($filepath) ) 
-			die ("File not found");
-		// Force the download
-
-		header("Content-Disposition: attachment; filename=\"$filename\"");
-		header("Pragma: public");
-		header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
-		readfile($filepath);
 	}
 
 	private function deleteContact( $ID )

@@ -76,7 +76,7 @@ class mysqldatabase {
     public function newConnection( $host, $user, $password, $database )
     {
     	global $caption;
-      $this->connections[] = new mysqli( $host, $user, $password, $database );
+      $this->connections[] = new mysqli( $host, $user, $password, $database, null, null );
     	$connection_id = count( $this->connections )-1;
     	if( mysqli_connect_errno() )
     	{
@@ -204,7 +204,10 @@ class mysqldatabase {
     	$update = "UPDATE " . $table . " SET ";
     	foreach( $changes as $field => $value )
     	{
-    		$update .= "`" . $field . "`='{$value}',";
+        if($value == 'NULL')
+          $update .= "`" . $field . "`= NULL ,";
+        else
+          $update .= "`" . $field . "`='{$value}',";
     	}
     	   	
     	// remove our trailing ,

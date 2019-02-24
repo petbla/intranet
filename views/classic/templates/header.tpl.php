@@ -15,7 +15,8 @@
     <header id="page_header">
       <p>
         {dateText}<br/>
-        <span id="UserName">{UserName}</span>
+        <span id="UserName">{UserName}</span><br/>
+        <span class="version">Verze {Version}</span>
       </p>
       <img src="views/classic/images/logo.png" border="0" alt="" title="{cfg_compName}">
       <h1>{cfg_compName}</h1>

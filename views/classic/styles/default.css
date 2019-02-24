@@ -761,3 +761,7 @@ select{
 .col_note{
   font-size: 30px;
 }
+.version{
+  font-size: 11px;
+  color: dimgray;
+}
