@@ -74,6 +74,10 @@ class document {
         else
         {
             $this->registry->getObject('template')->addTemplateBit('documents', 'list-entry-addfiles.tpl.php');
+            if (!$showFolder){
+                $this->registry->getObject('template')->getPage()->addTag( 'message', '' );
+                $template = 'page.tpl.php';
+            }
         }
         $this->registry->getObject('template')->buildFromTemplates('header.tpl.php', $template, 'footer.tpl.php');
         
