@@ -11,16 +11,24 @@
             <input type="text" class="editInLine" name="newUrl" inputUrl_id="{ID}">
             </label>
             <label for="newRemind">
-            <span>Připomenutí</span>
+            <span>{lbl_Remind}</span>
             <input type="checkbox" name="newRemind" inputRemind_id="{ID}">
             </label>
+            <label for="newRemindClose">
+            <span>Vyřízeno</span>
+            <input type="checkbox" name="newRemindClose" inputRemindClose_id="{ID}" disabled>
+            </label>
             <label for="newRemindFromDate">
-            <span>Připomenout dne</span>
+            <span>{lbl_RemindFromDate}</span>
             <input type="date" name="newRemindFromDate" inputRemindFromDate_id="{ID}">
             </label>
             <label for="newRemindLastDate">
-            <span>Termín splnění</span>
+            <span>{lbl_RemindToDate}</span>
             <input type="date" name="newRemindLastDate" inputRemindLastDate_id="{ID}">
+            </label>
+            <label for="newRemindResponsiblePerson">
+            <span>{lbl_RemindRespPers}</span>
+            <input type="text" name="newRemindResponsiblePerson" inputRemindResponsiblePerson_id="{ID}">
             </label>
             <button type="submit" name="save"  value="Zapsat>">{lbl_Save}</button>
             <button back_id="{ID}">{lbl_Cancel}</button>
@@ -30,6 +38,8 @@
             <input type="hidden" name="Remind" value="{Remind}" oldRemind_id="{ID}">
             <input type="hidden" name="RemindFromDate" value="{RemindFromDate}" oldRemindFromDate_id="{ID}">
             <input type="hidden" name="RemindLastDate" value="{RemindLastDate}" oldRemindLastDate_id="{ID}">
+            <input type="hidden" name="RemindResponsiblePerson" value="{RemindResponsiblePerson}" oldRemindResponsiblePerson_id="{ID}">
+            <input type="hidden" name="RemindClose" value="{RemindClose}" oldRemindClose_id="{ID}">
         </fieldset>
         </form>
     </div>

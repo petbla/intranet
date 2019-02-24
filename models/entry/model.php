@@ -30,6 +30,7 @@ class Entry{
 	private $LineNo;
 	private $Title;
 	private $Name;
+	private $Path;
 	private $FileExtension;
 	private $Url;
 	private $ModifyDateTime;
@@ -38,6 +39,15 @@ class Entry{
 	private $NewEntry;
 	private $PermissionSet;
 	private $LastChange;
+	private $Content;
+	private $Remind;
+	private $RemindClose;
+	private $RemindFromDate;
+	private $RemindLastDate;
+	private $RemindUserGroup;
+	private $RemindResponsiblePerson;
+	private $RemindUserID;
+	private $RemindContactID;
 
 	private $activeEntry;
 	private $linkToFile;
@@ -80,6 +90,7 @@ class Entry{
 				$this->LineNo = $data['LineNo'];
 				$this->Title = $data['Title'];
 				$this->Name = $data['Name'];
+				$this->Path = $data['Path'];
 				$this->FileExtension = $data['FileExtension'];
 				$this->Url = $data['Url'];
 				$this->ModifyDateTime = $data['ModifyDateTime'];
@@ -88,6 +99,16 @@ class Entry{
 				$this->NewEntry = $data['NewEntry'];
 				$this->PermissionSet = $data['PermissionSet'];
 				$this->LastChange = $data['LastChange'];
+				$this->Content = $data['Content'];
+				$this->Remind = $data['Remind'];
+				$this->RemindClose = $data['RemindClose'];
+				$this->RemindFromDate = $data['RemindFromDate'];
+				$this->RemindLastDate = $data['RemindLastDate'];
+				$this->RemindUserGroup = $data['RemindUserGroup'];
+				$this->RemindResponsiblePerson = $data['RemindResponsiblePerson'];
+				$this->RemindUserID = $data['RemindUserID'];
+				$this->RemindContactID = $data['RemindContactID'];
+							
 				$this->activeEntry = true;
 				
 				$link = str_replace(DIRECTORY_SEPARATOR,'/', $data['Name']);  //iconv("windows-1250","utf-8",
@@ -170,6 +191,7 @@ class Entry{
 			$this->LineNo = 0;
 			$this->Title = '';
 			$this->Name = '';
+			$this->Path = '';
 			$this->FileExtension = '';
 			$this->Url = '';
 			$this->ModifyDateTime = null;
@@ -178,6 +200,16 @@ class Entry{
 			$this->NewEntry = false;
 			$this->PermissionSet = '';
 			$this->LastChange = null;
+			$this->Content = '';
+			$this->Remind = 0;
+			$this->RemindClose = 0;
+			$this->RemindFromDate = null;
+			$this->RemindLastDate = null;
+			$this->RemindUserGroup = 0;
+			$this->RemindResponsiblePerson = '';
+			$this->RemindUserID = '';
+			$this->RemindContactID = '';
+
 			$this->activeEntry = false;
 			$this->linkToFile = '';
 			$this->breads = '';

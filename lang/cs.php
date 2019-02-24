@@ -94,6 +94,12 @@ $caption['Archive'] =        'Archív';
 $caption['Contacts'] =       'Kontakty';
 $caption['Label'] =          'Štítek (skupina)';
 $caption['choiceAction'] =   '--vybrat--';
+$caption['Remind'] =         'Připomenutí';
+$caption['RemindFromDate'] = 'Připomenout dne';
+$caption['RemindToDate'] =   'Termín splnění';
+$caption['RemindRespPers'] = 'Zodpovídá';
+$caption['Todos'] =          'Úkoly';
+$caption['Terms'] =          'Termíny';
 
 /**
  * Action's Title

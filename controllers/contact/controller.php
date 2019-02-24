@@ -84,10 +84,10 @@ class Contactcontroller {
 						break;
 					case 'WS':
 						switch ($urlBits[2]) {
-							case 'logview':
+							case 'logView':
 								// Je voláno jako XMLHttpRequest (function.js) a pouze loguje zobrazené položky
 								$ID = isset($urlBits[3]) ? $urlBits[3] : '';
-								$this->logViewContact($ID);
+								$this->wsLogContactView($ID);
 								break;
 						}
 						break;
@@ -519,21 +519,6 @@ class Contactcontroller {
 		$this->listResult($sql, $pageLink, $isHeader, $isFooter );
 	}	
 
-	private function logViewContact( $ID )
-	{
-		// Je voláno jako XMLHttpRequest (function.js) a pouze loguje zobrazené položky
-
-		require_once( FRAMEWORK_PATH . 'models/contact/model.php');
-		$this->model = new Contact( $this->registry, $ID );
-		if( $this->model->isActive() )
-		{
-			$contact = $this->model->getData();
-			$this->registry->getObject('log')->addMessage("Zobrazení kontaktu. ".$contact['FullName'],'Contact',$ID);
-		}
-		print "<h1>Page Not Found.<h1>";
-		exit();		
-	}		
-
 	private function makeFullName ($data)
 	{
 		$FullName = '';
@@ -551,5 +536,18 @@ class Contactcontroller {
 		$FullName = ($FullName !== "" ) ? $FullName : $data['Company'];
 		return($FullName);
 	}
+
+	private function wsLogContactView( $ID )
+	{
+		require_once( FRAMEWORK_PATH . 'models/contact/model.php');
+		$this->model = new Contact( $this->registry, $ID );
+		if( $this->model->isActive() )
+		{
+			$contact = $this->model->getData();
+			$this->registry->getObject('log')->addMessage("Zobrazení kontaktu. ".$contact['FullName'],'Contact',$ID);
+		}
+		print "<h1>Page Not Found.<h1>";
+		exit();		
+	}		
 }
 ?>

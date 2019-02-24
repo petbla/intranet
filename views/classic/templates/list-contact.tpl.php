@@ -62,7 +62,7 @@
                 {ContactGroups}
             </td>
             <td class="col_action">
-                <a href="index.php?page=contact/view/{ID}" onclick="sendContactRequest('{ID}');">
+                <a href="index.php?page=contact/view/{ID}" onclick="wsLogContactView('{ID}');">
                     <img src="views/classic/images/icon/view.png" alt="{lbl_edit}" id="{ID}" />
                 </a>
                 {editIcon}

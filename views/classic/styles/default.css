@@ -309,6 +309,11 @@ div#DocumentItems a:hover{
 div#DocumentItems img{
   vertical-align: middle;
 }
+div#DocumentItems td a.term1, div#DocumentItems td.term1{
+  font-weight:bold;
+  color: yellow; 
+  background-color: crimson;
+}
 
 div#ContactItems td{
   font-family: Arial, sans-serif, Calibri; 

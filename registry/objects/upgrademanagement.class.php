@@ -172,6 +172,26 @@ class upgrademanagement {
             // upgrade to 1.7
             $this->upgrade_007();
         }
+        if ($this->version == '1.7') 
+        {
+            // upgrade to 1.8
+            $this->upgrade_008();
+        }
+    }
+
+    private function upgrade_008()
+    {
+		global $config;
+        $pref = $config['dbPrefix'];
+
+        // upgrade table 'dmsentry'
+        $sql = "ALTER TABLE ".$pref."dmsentry".
+                " ADD `RemindResponsiblePerson` varchar(50) NULL DEFAULT ''".
+                ", ADD `RemindUserID` varchar(36) NULL DEFAULT '00000000-0000-0000-0000-000000000000'".
+                ", ADD `RemindContactID` varchar(36) NULL DEFAULT '00000000-0000-0000-0000-000000000000'";
+        $this->registry->getObject('db')->executeQuery( $sql );
+
+        $this->setNewVersion('1.8');
     }
 
     private function upgrade_007()
@@ -179,7 +199,7 @@ class upgrademanagement {
 		global $config;
         $pref = $config['dbPrefix'];
 
-        // upgrade table 'user'
+        // upgrade table 'dmsentry'
         $sql = "ALTER TABLE ".$pref."dmsentry ADD `Remind` BOOLEAN NULL DEFAULT FALSE".
                ", ADD `RemindClose` BOOLEAN NULL DEFAULT FALSE".
                ", ADD `RemindFromDate` DATE NULL".

@@ -208,23 +208,30 @@ if(items){
       
             oldValue = document.querySelector( '[oldRemind_id="' + e.target.id + '"]' );
             inputValue = document.querySelector( '[inputRemind_id="' + e.target.id + '"]' );
-            
             if (oldValue.getAttribute('value') == '1'){
                 inputValue.setAttribute('checked','');
                 inputValue.value = 'on';            
             }
-inputValue.setAttribute('checked','');            
-inputValue.value = 'on';            
 
-console.log(inputValue);            
-
-            //todo - nefunguje
-            if(e.target.dmsEntryType == "35"){
-                inputValue.style.display = "none";
-            }else{
-                inputValue.value = oldValue.value;
+            oldValue = document.querySelector( '[oldRemindClose_id="' + e.target.id + '"]' );
+            inputValue = document.querySelector( '[inputRemindClose_id="' + e.target.id + '"]' );
+            if (oldValue.getAttribute('value') == '1'){
+                inputValue.setAttribute('checked','');
+                inputValue.value = 'on';            
             }
-    
+
+            oldValue = document.querySelector( '[oldRemindFromDate_id="' + e.target.id + '"]' );
+            inputValue = document.querySelector( '[inputRemindFromDate_id="' + e.target.id + '"]' );
+            inputValue.value = oldValue.value;
+            
+            oldValue = document.querySelector( '[oldRemindLastDate_id="' + e.target.id + '"]' );
+            inputValue = document.querySelector( '[inputRemindLastDate_id="' + e.target.id + '"]' );
+            inputValue.value = oldValue.value;
+            
+            oldValue = document.querySelector( '[oldRemindResponsiblePerson_id="' + e.target.id + '"]' );
+            inputValue = document.querySelector( '[inputRemindResponsiblePerson_id="' + e.target.id + '"]' );
+            inputValue.value = oldValue.value;
+            
             lasteditcard = e;
         }
     })   

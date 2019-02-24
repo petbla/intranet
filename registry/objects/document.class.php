@@ -50,7 +50,10 @@ class document {
         $this->addIcons();
 
         // Breds navigation
-        $breads = $showBreads ? $entry['breads'] : '';
+        if ($entry !== null)
+            $breads = $showBreads ? $entry['breads'] : '';
+        else
+            $breads = $showBreads;
         $this->registry->getObject('template')->getPage()->addTag( 'breads', $breads );
 
         // Show Folders
@@ -88,11 +91,11 @@ class document {
             $this->registry->getObject('template')->addTemplateBit('editcard', 'list-entry-editcard.tpl.php');
             $this->registry->getObject('template')->addTemplateBit('editIcon', 'list-entry-editicon.tpl.php');
             $this->registry->getObject('template')->getPage()->addTag( 'dmsClassName', 'item' );
-            if($entry['Type'] == 20)
+            if(($entry !== null) && ($entry['Type'] == 20))
                 $this->registry->getObject('template')->addTemplateBit('addFolder', 'list-entry-actionpanel-addFolder.tpl.php');
             else
                 $this->registry->getObject('template')->getPage()->addTag( 'addFolder', '' );
-            if($entry['isImage'] == true)
+            if(($entry !== null) && ($entry['isImage'] == true))
                 $this->registry->getObject('template')->addTemplateBit('slideshow', 'list-entry-actionpanel-slideshow.tpl.php');
             else
                 $this->registry->getObject('template')->getPage()->addTag( 'slideshow', '' );
@@ -104,25 +107,30 @@ class document {
             $this->registry->getObject('template')->getPage()->addTag( 'editcard', '' );
             $this->registry->getObject('template')->getPage()->addTag( 'editIcon', '' );
         }
+        $BaseUrl = $this->registry->getURLPath();
+        $this->registry->getObject('template')->getPage()->addTag( 'BaseUrl', $BaseUrl );
         $this->registry->getObject('template')->addTemplateBit('remindIcon','list-entry-remindicon.tpl.php');
         
         
         // Parent folder
-        $entryNo = $entry['EntryNo'];
-        if (isset($entryNo) != null)
+        if($entry !== null)
         {
-            $parentPath = $config['fileserver'];
-            $parentID = '';
-            $this->registry->getObject('db')->initQuery('dmsentry');
-            $this->registry->getObject('db')->setFilter('EntryNo',$entryNo);
-            if (($entryNo > 0) && $this->registry->getObject('db')->findFirst())
+            $entryNo = $entry['EntryNo'];
+            if (isset($entryNo) != null)
             {
-                $data = $this->registry->getObject('db')->getResult();
-                $parentPath .=  $data['Name'];
-                $parentID = $data['ID'];
+                $parentPath = $config['fileserver'];
+                $parentID = '';
+                $this->registry->getObject('db')->initQuery('dmsentry');
+                $this->registry->getObject('db')->setFilter('EntryNo',$entryNo);
+                if (($entryNo > 0) && $this->registry->getObject('db')->findFirst())
+                {
+                    $data = $this->registry->getObject('db')->getResult();
+                    $parentPath .=  $data['Name'];
+                    $parentID = $data['ID'];
+                }
+                $this->registry->getObject('template')->getPage()->addTag('parentfoldername', $parentPath );
+                $this->registry->getObject('template')->getPage()->addTag('parentID', $parentID );            
             }
-            $this->registry->getObject('template')->getPage()->addTag('parentfoldername', $parentPath );
-            $this->registry->getObject('template')->getPage()->addTag('parentID', $parentID );            
         }
     }	
 
