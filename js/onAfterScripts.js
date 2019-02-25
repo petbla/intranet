@@ -66,12 +66,12 @@ function formatText (text, type)
 {
     var newtext = ''
     var arr,val;        
-    if(type == '')
+    if(type === '')
     {
         return text;
     }
     type = type.toLowerCase();
-    if(text == '')
+    if(text === '')
     {
         return '';
     }

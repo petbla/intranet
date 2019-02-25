@@ -22,7 +22,7 @@ class document {
 	{
 		global $config, $caption;
         
-        $template = ($template == '' ? 'list-entry.tpl.php' : $template);
+        $template = ($template === '' ? 'list-entry.tpl.php' : $template);
         $perSet = $this->registry->getObject('authenticate')->getPermissionSet();
 
         // Stránkování
@@ -76,7 +76,7 @@ class document {
             $this->registry->getObject('template')->addTemplateBit('documents', 'list-entry-addfiles.tpl.php');
             if (!$showFolder){
                 $this->registry->getObject('template')->getPage()->addTag( 'message', '' );
-                $template = 'page.tpl.php';
+                $template = 'list-entry-nodocuments.tpl.php';
             }
         }
         $this->registry->getObject('template')->buildFromTemplates('header.tpl.php', $template, 'footer.tpl.php');

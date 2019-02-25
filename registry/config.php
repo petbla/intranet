@@ -23,16 +23,16 @@ $config['headtitle']        = 'Intranet';
 $config['siteurl']          = 'http://petblanb/intranet/';
 
 // OBEC
-$config['fileserver']       = '//petblanb/FileServer/';
+$config['fileserver']       = 'http://petblanb/FileServer/';
 $config['webserver']         = 'http://petblanb/intranet/fileserver/';
 $config['dbPrefix']         = 'mis_'; 
 $config['compName']         = 'OBEC Mistřice';
 
 // Testing
-//$config['fileserver']       = '//venuse/eBook/MySQL/';
-//$config['webserver']         = 'file://venuse/eBook/MySQL/';
-//$config['dbPrefix']         = 'test_'; 
-//$config['compName']         = 'TEST Zkušební společnost';
+$config['fileserver']       = 'http://venuse/eBook/MySQL/';
+$config['webserver']         = 'file://venuse/eBook/MySQL/';
+$config['dbPrefix']         = 'test_'; 
+$config['compName']         = 'TEST Zkušební společnost';
 
 $config['ftp']              = false;
 

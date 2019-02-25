@@ -330,7 +330,7 @@ class Documentcontroller{
 			{
 				$newTitle = ($_POST['newTitle'] !== null) ? $_POST['newTitle'] : '';
 				$newUrl = ($_POST['newUrl'] !== null) ? $_POST['newUrl'] : '';
-				$newRemind = ($_POST['newRemind'] !== null) ? ($_POST['newRemind'] == '') ? 0 : 1 : 0;
+				$newRemind = ($_POST['newRemind'] !== null) ? ($_POST['newRemind'] === '') ? 0 : 1 : 0;
 				$newRemindFromDate = ($_POST['newRemindFromDate'] !== '') ? $_POST['newRemindFromDate'] : 'NULL';
 				$newRemindLastDate = ($_POST['newRemindLastDate'] !== '') ? $_POST['newRemindLastDate'] : 'NULL';
 				$newRemindResponsiblePerson = ($_POST['newRemindResponsiblePerson'] !== '') ? $_POST['newRemindResponsiblePerson'] : '';
@@ -496,12 +496,17 @@ class Documentcontroller{
 			}
 			else
 			{
-				if($entry['isNote'])
+				if($entry['isNote'] || $entry['isBlock'])
 				{
 					$message = 'Nelze odstranit blok s poznámkami.';
 				}
 				else
 				{
+					$condition = "ID = '$ID'";
+					$data = array();
+					$data['Archived'] = 1;
+					$this->registry->getObject('log')->addMessage("Uzavření bloku",'dmsentry',$ID);
+					$this->registry->getObject('db')->updateRecords('dmsentry',$data,$condition);			
 					$this->listDocuments($entry['parentID']);
 					return;
 				}

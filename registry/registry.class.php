@@ -173,7 +173,7 @@ class Registry {
 		// searchDocument : text&x
 		self::$urlParam = $urlparam;
 
-		if( $urldata == '' )
+		if( $urldata === '' )
 		{
 			self::$urlBits[] = 'document';
 			self::$urlPath = 'document';

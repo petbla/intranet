@@ -184,7 +184,7 @@ class mysqldatabase {
       global $config;
       $table = $config['dbPrefix'].$table;
 
-      $limit = ( $limit == '' ) ? '' : ' LIMIT ' . $limit;
+      $limit = ( $limit === '' ) ? '' : ' LIMIT ' . $limit;
     	$delete = "DELETE FROM {$table} WHERE {$condition} {$limit}";
     	$this->executeQuery( $delete );
     }
@@ -276,11 +276,11 @@ class mysqldatabase {
       $this->isCacheQuery = false;
 
 
-      if( $fieldList == '')
+      if( $fieldList === '')
       {
         $this->queryFieldList = '*';
       }
-      if( $tableName == '' )
+      if( $tableName === '' )
       {
         return;
       }
@@ -312,7 +312,7 @@ class mysqldatabase {
      */
     public function setFilter( $key, $value )
     {
-      if( ($key == '')|($value == ''))
+      if( ($key === '')|($value === ''))
       {
         return;
       }
@@ -342,7 +342,7 @@ class mysqldatabase {
      */
     public function setRange( $key, $valueFrom, $valueTo )
     {
-      if( ($key == '')|($valueFrom == '')|($valueTo == ''))
+      if( ($key === '')|($valueFrom === '')|($valueTo === ''))
       {
         return;
       }
@@ -388,7 +388,7 @@ class mysqldatabase {
         return false;
       };
       $this->buildQuery();      
-      if($this->querySql == '')
+      if($this->querySql === '')
       {
         return false;
       }
@@ -413,7 +413,7 @@ class mysqldatabase {
         return false;
       };
       $this->buildQuery();      
-      if($this->querySql == '')
+      if($this->querySql === '')
       {
         return false;
       }
@@ -437,7 +437,7 @@ class mysqldatabase {
       if ($this->isCacheQuery === true){
         return false;
       };
-      if($this->queryOrderBy == '')
+      if($this->queryOrderBy === '')
       {
         return false;
       }
@@ -460,7 +460,7 @@ class mysqldatabase {
         return true;
       };
       $this->buildQuery();      
-      if($this->querySql == '')
+      if($this->querySql === '')
       {
         return true;
       }

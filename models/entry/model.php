@@ -52,15 +52,17 @@ class Entry{
 	private $activeEntry;
 	private $linkToFile;
 	private $breads;
-	private $isHeader = false;
-	private $isFooter = false;
-	private $isFolder = false;
-	private $isFile = false;
-	private $isBlock = false;
-	private $isNote = false;
-	private $isAudio = false;
-	private $isVideo = false;
-	private $isImage = false;
+	private $isHeader;
+	private $isFooter;
+	private $isFolder;
+	private $isFile;
+	private $isBlock = FALSE;
+	private $isNote = FALSE;
+	private $isAudio = FALSE;
+	private $isVideo = FALSE;
+	private $isImage = FALSE;
+	private $jetoAudio = FALSE;
+	private $jeToVideo = FALSE;
 		
 	public function __construct( Registry $registry, $id )
 	{
@@ -69,7 +71,17 @@ class Entry{
 		$root = $config['fileserver'];
 
 		$this->registry = $registry;
-		$this->activeEntry = false;
+		$this->activeEntry = FALSE;
+		$this->isHeader = FALSE;
+		$this->isFooter = FALSE;
+		$this->isFolder = FALSE;
+		$this->isFile = FALSE;
+		$this->isBlock = FALSE;
+		$this->isNote = FALSE;
+		$this->isAudio = FALSE;
+		$this->isVideo = FALSE;
+		$this->isImage = FALSE;
+	
 		if( $id != '' )
 		{
 			$id = $this->registry->getObject('db')->sanitizeData( $id );
@@ -122,50 +134,59 @@ class Entry{
 					$this->registry->getObject('db')->initQuery('dmsentry');
 					$this->registry->getObject('db')->setFilter('Parent',$this->EntryNo);
 					$this->registry->getObject('db')->setFilter('Type',10);
+					$this->registry->getObject('db')->setFilter('Archived',0);
 					$this->isHeader = $this->registry->getObject('db')->findFirst();
 
 					$this->registry->getObject('db')->initQuery('dmsentry');
 					$this->registry->getObject('db')->setFilter('Parent',$this->EntryNo);
 					$this->registry->getObject('db')->setFilter('Type',40);
+					$this->registry->getObject('db')->setFilter('Archived',0);
 					$this->isFooter = $this->registry->getObject('db')->findFirst();
 
 					$this->registry->getObject('db')->initQuery('dmsentry');
 					$this->registry->getObject('db')->setFilter('Parent',$this->EntryNo);
 					$this->registry->getObject('db')->setFilter('Type',30);
 					$this->registry->getObject('db')->setFilter('Multimedia','audio');
+					$this->registry->getObject('db')->setFilter('Archived',0);
 					$this->isAudio = $this->registry->getObject('db')->findFirst();
 
 					$this->registry->getObject('db')->initQuery('dmsentry');
 					$this->registry->getObject('db')->setFilter('Parent',$this->EntryNo);
 					$this->registry->getObject('db')->setFilter('Type',30);
 					$this->registry->getObject('db')->setFilter('Multimedia','video');
+					$this->registry->getObject('db')->setFilter('Archived',0);
 					$this->isVideo = $this->registry->getObject('db')->findFirst();
 
 					$this->registry->getObject('db')->initQuery('dmsentry');
 					$this->registry->getObject('db')->setFilter('Parent',$this->EntryNo);
 					$this->registry->getObject('db')->setFilter('Type',30);
 					$this->registry->getObject('db')->setFilter('Multimedia','image');
+					$this->registry->getObject('db')->setFilter('Archived',0);
 					$this->isImage = $this->registry->getObject('db')->findFirst();
 
 					$this->registry->getObject('db')->initQuery('dmsentry');
 					$this->registry->getObject('db')->setFilter('Parent',$this->EntryNo);
 					$this->registry->getObject('db')->setFilter('Type',20);
+					$this->registry->getObject('db')->setFilter('Archived',0);
 					$this->isFolder = $this->registry->getObject('db')->findFirst();
 
 					$this->registry->getObject('db')->initQuery('dmsentry');
 					$this->registry->getObject('db')->setFilter('Parent',$this->EntryNo);
 					$this->registry->getObject('db')->setFilter('Type',30);
 					$this->registry->getObject('db')->setFilter('Multimedia','');
+					$this->registry->getObject('db')->setFilter('Archived',0);
 					$this->isFiles = $this->registry->getObject('db')->findFirst();
 
 					$this->registry->getObject('db')->initQuery('dmsentry');
 					$this->registry->getObject('db')->setFilter('Parent',$this->EntryNo);
 					$this->registry->getObject('db')->setFilter('Type',25);
+					$this->registry->getObject('db')->setFilter('Archived',0);
 					$this->isBlock = $this->registry->getObject('db')->findFirst();
 
 					$this->registry->getObject('db')->initQuery('dmsentry');
 					$this->registry->getObject('db')->setFilter('Parent',$this->EntryNo);
 					$this->registry->getObject('db')->setFilter('Type',35);
+					$this->registry->getObject('db')->setFilter('Archived',0);
 					$this->isNote = $this->registry->getObject('db')->findFirst();
 				}
 
@@ -196,8 +217,8 @@ class Entry{
 			$this->Url = '';
 			$this->ModifyDateTime = null;
 			$this->CreateDate = null;
-			$this->Archived = false;
-			$this->NewEntry = false;
+			$this->Archived = FALSE;
+			$this->NewEntry = FALSE;
 			$this->PermissionSet = '';
 			$this->LastChange = null;
 			$this->Content = '';
@@ -210,9 +231,19 @@ class Entry{
 			$this->RemindUserID = '';
 			$this->RemindContactID = '';
 
-			$this->activeEntry = false;
+			$this->activeEntry = FALSE;
 			$this->linkToFile = '';
 			$this->breads = '';
+			$this->isHeader = FALSE;
+			$this->isFooter = FALSE;
+			$this->isFolder = FALSE;
+			$this->isFile = FALSE;
+			$this->isBlock = FALSE;
+			$this->isNote = FALSE;
+			$this->isAudio = FALSE;
+			$this->isVideo = FALSE;
+			$this->isImage = FALSE;
+				
 		}
 	}
 

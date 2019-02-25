@@ -182,7 +182,7 @@ class Contactcontroller {
 				$data['Phone'] = str_replace(' ','',$Row[5]);
 				$data['Address'] = $this->registry->getObject('db')->sanitizeData($Row[7]);
 				$data['Close'] = '0';
-				if(($data['FirstName'] !== '') && ($data['LastName'] == ''))
+				if(($data['FirstName'] !== '') && ($data['LastName'] === ''))
 				{
 					// Jméno obsahuje jméno + příjmní + tituly
 					$name = explode(' ',$data['FirstName']);
@@ -196,7 +196,7 @@ class Contactcontroller {
 						$data['Title'] = implode(' ',$name);
 					}
 				}
-				else if(($data['FirstName'] == '') && ($data['LastName'] !== ''))
+				else if(($data['FirstName'] === '') && ($data['LastName'] !== ''))
 				{
 					// Jméno obsahuje jméno + příjmní + tituly
 					$name = explode(' ',$data['LastName']);
@@ -295,7 +295,7 @@ class Contactcontroller {
 		{
 			$ID = isset($_POST['ID']) ? $_POST['ID'] : null;
 
-			if(($ID == '') || ($ID == 'newcontact'))
+			if(($ID === '') || ($ID == 'newcontact'))
 			{
 				$ID = $this->registry->getObject('fce')->GUID();
 				$data['ID'] = $ID;
