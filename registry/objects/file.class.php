@@ -67,8 +67,11 @@ class file {
     
     $paret = 0;
     $level = 0;
-    while (sizeof($directories,'')) { 
+    while (count($directories)) { 
       $dir  = array_pop($directories); 
+      $dir = str_replace('\\','/',$dir);
+      $dir = str_replace('http:','',$dir);
+
       if ($handle = opendir($dir)) { 
         while (false !== ($file = readdir($handle))) 
         { 
@@ -101,7 +104,9 @@ class file {
   public function findItem( $winFullItemPath )
   {
     $fullItemPath = iconv("windows-1250","utf-8",$winFullItemPath);
-    $name = str_replace($this->root,'',$fullItemPath);
+    $name = str_replace('\\',DIRECTORY_SEPARATOR,$fullItemPath);
+    $name = str_replace('/',DIRECTORY_SEPARATOR,$name);
+    $name = str_replace(str_replace('http:','',$this->root),'',$name);
     if ($name === '')
     {
       return 0;
@@ -243,6 +248,7 @@ class file {
   public function getItem( $name )
   {
     global $config;
+    $root = str_replace('http:','',$this->root);
 
     $item = array();
     $item['FullName'] = '';
@@ -260,7 +266,7 @@ class file {
 
     $item['Name'] = str_replace('\\',DIRECTORY_SEPARATOR,$name);
     $item['Name'] = str_replace('/',DIRECTORY_SEPARATOR,$item['Name']);
-    $item['FullName'] =  $this->root.$item['Name'];
+    $item['FullName'] =  $root.$item['Name'];
 
     if(!is_file($item['FullName']) && !is_dir($item['FullName']) && !$config['ftp'])
     {
@@ -293,7 +299,7 @@ class file {
     }
     else
     {
-      $parentItems = scandir($this->root.$item['WinParent']);
+      $parentItems = scandir($root.$item['WinParent']);
       for ($i=0; $i < count($parentItems); $i++) { 
   //      $parentItems[$i] = strtoupper(iconv("windows-1250","utf-8",$parentItems[$i]));
         $parentItems[$i] = strtoupper($parentItems[$i]);
