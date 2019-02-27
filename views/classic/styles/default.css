@@ -770,3 +770,14 @@ select{
   font-size: 11px;
   color: dimgray;
 }
+.quickChoice{
+  font-size: 12px;
+  text-align: center;
+}
+.quickChoice b{
+  font-size: 14px;
+  text-align: center;
+}
+.quickChoice u{
+  cursor: pointer;
+}

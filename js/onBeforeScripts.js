@@ -21,6 +21,21 @@ function addNewContact(e){
     };
 }    
 
+function setValue(attName,attValue,keyWord,value){
+    var att, input, d;
+    switch (keyWord) {
+        case 'addDay':
+            att = '[' + attName + '="' + attValue +'"]';
+            input = document.querySelector( att );
+            d = new Date();
+            d.setDate(d.getDate() + value);
+            input.value = d.toJSON().slice(0, 10);
+            console.log(input);
+            break;
+    }
+}
+
+
 function wsLogContactView(ID) {
     const Http = new XMLHttpRequest();
     var url;

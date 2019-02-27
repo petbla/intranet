@@ -55,15 +55,7 @@ class file {
       }
     }
 
-    if($config['ftp'])
-    {
-      //TODO
-      $directories[]  = 'ftp://petr:Petr369*@venuse/users/petr/Job/Zahradkari/'; 
-    }
-    else
-    {
-      $directories[]  = $this->root; 
-    }
+    $directories[]  = $this->root; 
     
     $paret = 0;
     $level = 0;
@@ -285,27 +277,11 @@ class file {
     $item['WinItem'] =  iconv("utf-8","windows-1250",$item['Item']);
     $item['WinParent'] =  iconv("utf-8","windows-1250",$item['Parent']);
     
-    // TODO
-    if($config['ftp'])
-    {
-      $ftp_server = 'venuse';
-      $ftp_user_name = 'petr';
-      $ftp_user_pass = 'Petr369*';
-      $conn_id = ftp_connect($ftp_server);
-      // login with username and password
-      $login_result = ftp_login($conn_id, $ftp_user_name, $ftp_user_pass);
-      // get contents of the current directory
-      $contents = ftp_nlist($conn_id, "./users/petr/Job/Zahradkari/Archiv/Projekty/Zelenina");
+    $parentItems = scandir($root.$item['WinParent']);
+    for ($i=0; $i < count($parentItems); $i++) { 
+      $parentItems[$i] = strtoupper($parentItems[$i]);
     }
-    else
-    {
-      $parentItems = scandir($root.$item['WinParent']);
-      for ($i=0; $i < count($parentItems); $i++) { 
-  //      $parentItems[$i] = strtoupper(iconv("windows-1250","utf-8",$parentItems[$i]));
-        $parentItems[$i] = strtoupper($parentItems[$i]);
-      }
-      $item['Exist'] = in_array(strtoupper($item['Item']),$parentItems);
-    }
+    $item['Exist'] = in_array(strtoupper($item['Item']),$parentItems);
 
     $item['Level'] = substr_count($item['Name'],DIRECTORY_SEPARATOR);
     if (is_dir($item['WinFullName'])) 

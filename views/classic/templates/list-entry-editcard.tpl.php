@@ -21,10 +21,12 @@
             <label for="newRemindFromDate">
             <span>{lbl_RemindFromDate}</span>
             <input type="date" name="newRemindFromDate" inputRemindFromDate_id="{ID}">
+            <div class="quickChoice">Rychlá volba termínu: do <b><u onclick="setValue('inputRemindFromDate_id','{ID}','addDay',7);">7dní</u>&nbsp;-&nbsp;<u onclick="setValue('inputRemindFromDate_id','{ID}','addDay',14);">14dní</u>&nbsp;-&nbsp;<u onclick="setValue('inputRemindFromDate_id','{ID}','addDay',30);">měsíce</u></b></div>
             </label>
             <label for="newRemindLastDate">
             <span>{lbl_RemindToDate}</span>
             <input type="date" name="newRemindLastDate" inputRemindLastDate_id="{ID}">
+            <div class="quickChoice">Rychlá volba termínu: do <b><u onclick="setValue('inputRemindLastDate_id','{ID}','addDay',7);">7dní</u>&nbsp;-&nbsp;<u onclick="setValue('inputRemindLastDate_id','{ID}','addDay',14);">14dní</u>&nbsp;-&nbsp;<u onclick="setValue('inputRemindLastDate_id','{ID}','addDay',30);">měsíce</u></b></div>
             </label>
             <label for="newRemindResponsiblePerson">
             <span>{lbl_RemindRespPers}</span>

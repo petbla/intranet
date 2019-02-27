@@ -162,8 +162,9 @@ if(items){
     items.forEach(function(item){
         item.onclick = function (e) {
             var form;
-            var oldValue,inputValue,back;
+            var oldValue,inputValue,back,username;
             var activeForm;
+            var isNew;
     
             // Clean (HIDE) Old Entry
             if (lasteditcard)
@@ -177,17 +178,14 @@ if(items){
             form.style.left = '300px';
             form.style.top = '100px';
             
-            /*
             activeForm = form;
             window.onkeyup = function (event) {
                 if (event.keyCode == 27) {
                     activeForm.style.display = "none";
                 }
             }
-            */
             // Make the DIV element draggable:
-            // TODO: toto nefunguje správně
-            //dragElement(form);
+            dragElement(form);
 
             back = document.querySelector( '[back_id="' + e.target.id + '"]' );
             back.onclick = function (ee) {
@@ -200,7 +198,12 @@ if(items){
             // Write value from Hidden do Forms Input
             oldValue = document.querySelector( '[oldTitle_id="' + e.target.id + '"]' );
             inputValue = document.querySelector( '[inputtitle_id="' + e.target.id + '"]' );
-            inputValue.value = oldValue.value;
+            isNew = (oldValue.value == 'Nová poznámka');
+            if (isNew)
+                inputValue.value = '';
+            else
+                inputValue.value = oldValue.value;
+            inputValue.focus();
             
             oldValue = document.querySelector( '[oldUrl_id="' + e.target.id + '"]' );
             inputValue = document.querySelector( '[inputurl_id="' + e.target.id + '"]' );
@@ -208,7 +211,7 @@ if(items){
       
             oldValue = document.querySelector( '[oldRemind_id="' + e.target.id + '"]' );
             inputValue = document.querySelector( '[inputRemind_id="' + e.target.id + '"]' );
-            if (oldValue.getAttribute('value') == '1'){
+            if ((oldValue.getAttribute('value') == '1') || (isNew)){
                 inputValue.setAttribute('checked','');
                 inputValue.value = 'on';            
             }
@@ -228,9 +231,14 @@ if(items){
             inputValue = document.querySelector( '[inputRemindLastDate_id="' + e.target.id + '"]' );
             inputValue.value = oldValue.value;
             
+            username = document.querySelector( '#UserName' );
             oldValue = document.querySelector( '[oldRemindResponsiblePerson_id="' + e.target.id + '"]' );
             inputValue = document.querySelector( '[inputRemindResponsiblePerson_id="' + e.target.id + '"]' );
-            inputValue.value = oldValue.value;
+            if(isNew && (username != null)){
+                inputValue.value = username.innerHTML;
+            }
+            else
+                inputValue.value = oldValue.value;
             
             lasteditcard = e;
         }
@@ -296,17 +304,13 @@ if(contacts){
             form.style.left = '300px';
             form.style.top = '100px';
             
-            /*
             activeForm = form;
             window.onkeyup = function (event) {
                 if (event.keyCode == 27) {
                     activeForm.style.display = "none";
                 }
             }
-            */
             // Make the DIV element draggable:
-            // TODO: toto nefunguje správně
-            //dragElement(form);
 
             back = document.querySelector( '[back_id="' + e.target.id + '"]' );
             back.onclick = function (ee) {
@@ -320,6 +324,7 @@ if(contacts){
             oldValue = document.querySelector( '[oldFirstName_id="' + e.target.id + '"]' );
             inputValue = document.querySelector( '[inputFirstName_id="' + e.target.id + '"]' );
             inputValue.value = oldValue.value;
+            inputValue.focus();
             
             oldValue = document.querySelector( '[oldLastName_id="' + e.target.id + '"]' );
             inputValue = document.querySelector( '[inputLastName_id="' + e.target.id + '"]' );
