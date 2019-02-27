@@ -29,18 +29,15 @@ $config['dbPrefix']         = 'mis_';
 $config['compName']         = 'OBEC Mistřice';
 
 // Testing
-$config['fileserver']       = 'http://venuse/eBook/+Recepty/';                                                                        
-$config['webserver']        = 'http://venuse:5000/eBook/+Recepty/';   
-$config['dbPrefix']         = 'test_'; 
-$config['compName']         = 'TEST Zkušební společnost (VENUSE)';
-
-$config['ftp']              = false;
+//$config['fileserver']       = 'http://venuse/eBook/+Recepty/';                                                                        
+//$config['webserver']        = 'http://venuse:5000/eBook/+Recepty/';   
+//$config['dbPrefix']         = 'test_'; 
+//$config['compName']         = 'TEST Zkušební společnost (VENUSE)';
 
 // Zahrádkáři
 //$config['fileserver']       = 'ftp://venuse/users/petr/Job/Zahradkari/';
 //$config['webserver']         = 'http://petblanb/intranet/fileserver/';
 //$config['dbPrefix']         = 'czs_';   
-//$config['ftp']              = true;
 
 /**
  *  Address

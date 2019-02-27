@@ -260,7 +260,7 @@ class file {
     $item['Name'] = str_replace('/',DIRECTORY_SEPARATOR,$item['Name']);
     $item['FullName'] =  $root.$item['Name'];
 
-    if(!is_file($item['FullName']) && !is_dir($item['FullName']) && !$config['ftp'])
+    if(!is_file($item['FullName']) && !is_dir($item['FullName']))
     {
       return $item;
     }
