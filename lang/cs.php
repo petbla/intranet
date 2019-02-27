@@ -141,6 +141,7 @@ $caption['Import'] =         'Import';
 $caption['ContTemplateImp'] ='Šablona pro import';
 $caption['Export'] =         'Export';
 $caption['Error'] =          'Chyba';
+$caption['Days'] =           'Dní';
 
 
 /**

@@ -51,9 +51,8 @@
                 {FullName}
                 {editcard}                
             </td>
-            <td>
-                <td class="col_company">{Company}</td>
-            </td>
+            <td class="col_company">{Address}</td>
+            <td class="col_company">{Company}</td>
             <td class="col_function">{Function}</td>
             <td class="col_phone" ><span class="phone" >{Phone}</span></td>
             <td class="col_email"><span class="email">{Email}</span></td>

@@ -16,6 +16,7 @@
       <th>{lbl_Name}</th>
       <th>{lbl_RemindRespPers}</th>
       <th>{lbl_RemindToDate}</th>
+      <th>{lbl_Days}</th>
       <th></th>
     </tr>
     <!-- START DocumentItems -->
@@ -32,6 +33,7 @@
       </td>
       <td class="term{term}">{RemindResponsiblePerson}</td>
       <td class="term{term}">{RemindLastDate}</td>
+      <td class="term{term}">{termDays}</td>
       <td class="col_action term{term}">
         {editIcon}
       </td>

@@ -216,6 +216,7 @@ class Documentcontroller{
 		$sql = "SELECT ID,Title,Name,Type,Url,Parent,ModifyDateTime,LOWER(FileExtension) as FileExtension ".
 					",Remind,RemindClose,RemindFromDate,RemindLastDate,Content,RemindResponsiblePerson,RemindUserID,RemindContactID ".	
 					",(DATE_FORMAT(RemindLastDate,'%Y-%m-%d') < CURDATE()) as term ".
+					",(RemindLastDate - CURDATE()) as termDays ".
 				  	"FROM ".$this->prefDb."DmsEntry ".
 				  	"WHERE Archived = 0 AND Remind = 1 ".
 				  	"AND PermissionSet <= $this->perSet ".
