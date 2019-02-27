@@ -488,7 +488,7 @@ class Contactcontroller {
 			else
 			{
 				$this->registry->getObject('log')->addMessage("Zobrazení seznamu kontaktů",'Contact','');
-				$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', $template, 'footer.tpl.php');			
+				$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'list-contact-empty.tpl.php', 'footer.tpl.php');			
 			}
 		}
         else

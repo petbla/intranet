@@ -1,5 +1,5 @@
 <div id="editwindow"  form_id="{ID}" style="display: none;">
-    <div id="editwindowHeader">{lbl_msg_EditContact}</div>
+    <div id="editwindowHeader">{lbl_msg_EditDocument}</div>
         <form action="index.php?page=document/modify/{ID}" method="post">
         <fieldset>
             <label for="newTitle">

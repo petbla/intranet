@@ -311,6 +311,7 @@ if(contacts){
                 }
             }
             // Make the DIV element draggable:
+            dragElement(form);
 
             back = document.querySelector( '[back_id="' + e.target.id + '"]' );
             back.onclick = function (ee) {
