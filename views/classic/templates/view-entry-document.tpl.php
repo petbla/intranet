@@ -21,4 +21,12 @@
         <a id="cosumentLink" href="{Name}" target="_blank">{lbl_View}</a>
     </p>
     
+    <form action="" method="post">
+        <fieldset>
+            <label for="content"></label>
+            <textarea name="content" id="content" cols="30" rows="10">
+            </textarea>
+            <input type="submit" value="submit">
+        </fieldset>
+    </form>
 </div>

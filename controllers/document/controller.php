@@ -309,6 +309,7 @@ class Documentcontroller{
 		{
 			$entry = $this->model->getData();
 			$this->registry->getObject('log')->addMessage("Zobrazení ".$entry['Name'],'DmsEntry',$ID);
+			$this->registry->getObject('document')->viewDocument($entry,'');
 		}
 		else
 		{

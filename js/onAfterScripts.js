@@ -424,8 +424,14 @@ if(a_type){
                 break;
             case '35':
                 // Note
-                entry.href = 'http://' + entry.getAttribute('data-dms-url');
-                entry.target = '_blank';
+                var url;
+                url = entry.getAttribute('data-dms-url');
+                if(url !== ''){
+                    entry.href = 'http://' + url;
+                    entry.target = '_blank';
+                }else{
+                    entry.href = 'index.php?page=document/view/' + entry.getAttribute('a_id');
+                }
                 break;
             case '20':
             case '25':
