@@ -29,10 +29,10 @@ $config['dbPrefix']         = 'mis_';
 $config['compName']         = 'OBEC Mistřice';
 
 // Testing
-$config['fileserver']       = 'http://venuse/eBook/MySQL/';                                                                        
-$config['webserver']        = 'http://venuse:5000/eBook/MySQL/';   
-$config['dbPrefix']         = 'test_'; 
-$config['compName']         = 'TEST Zkušební společnost (VENUSE)';
+//$config['fileserver']       = 'http://venuse/eBook/MySQL/';                                                                        
+//$config['webserver']        = 'http://venuse:5000/eBook/MySQL/';   
+//$config['dbPrefix']         = 'test_'; 
+//$config['compName']         = 'TEST Zkušební společnost (VENUSE)';
 
 // Zahrádkáři
 //$config['fileserver']       = 'ftp://venuse/users/petr/Job/Zahradkari/';

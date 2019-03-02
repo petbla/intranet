@@ -506,16 +506,22 @@ if(grouplist){
 
 function dragElement(elmnt) {
     var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-
-    if (document.getElementById(elmnt.id + "header")) {
+    var ID;
+    ID = elmnt.getAttribute('form_id');
+console.log(elmnt.id + "header" + ID);
+    if (document.getElementById(elmnt.id + "header" + ID)) {
+        console.log('SET onmousedown');
         // if present, the header is where you move the DIV from:
-        document.getElementById(elmnt.id + "header").onmousedown = dragMouseDown;
+        document.getElementById(elmnt.id + "header" + ID).onmousedown = dragMouseDown;
+        console.log('SET onmousedown DOWN');
     } else {
+        console.log('CLEAR onmousedown');
         // otherwise, move the DIV from anywhere inside the DIV: 
         elmnt.onmousedown = dragMouseDown;
     }
 
     function dragMouseDown(e) {
+        console.log('dragMouseDown');
         e = e || window.event;
         e.preventDefault();
         // get the mouse cursor position at startup:
@@ -524,15 +530,18 @@ function dragElement(elmnt) {
         document.onmouseup = closeDragElement;
         // call a function whenever the cursor moves:
         document.onmousemove = elementDrag;
+        console.log('dragMouseDown - DOWN');
     }
 
     function closeDragElement() {
+        console.log('closeDragElement');
         // stop moving when mouse button is released:
         document.onmouseup = null;
         document.onmousemove = null;
     }
 
     function elementDrag(e) {
+        console.log('elementDrag');
         e = e || window.event;
         e.preventDefault();
         // calculate the new cursor position:

@@ -1,5 +1,5 @@
 <div id="editwindow"  form_id="{ID}" style="display: none;">
-    <div id="editwindowHeader">{lbl_msg_EditDocument}</div>
+    <div id="editwindowheader{ID}" class="editwindowheader">{lbl_msg_EditDocument}</div>
         <form action="index.php?page=document/modify/{ID}" method="post">
         <fieldset>
             <label for="newTitle">
@@ -8,7 +8,7 @@
             </label>
             <label for="newUrl">
             <span>Url</span>
-            <input type="text" class="editInLine" name="newUrl" inputUrl_id="{ID}">
+            <input type="url" class="editInLine" name="newUrl" inputUrl_id="{ID}">
             </label>
             <label for="newRemind">
             <span>{lbl_Remind}</span>
@@ -32,6 +32,18 @@
             <span>{lbl_RemindRespPers}</span>
             <input type="text" name="newRemindResponsiblePerson" inputRemindResponsiblePerson_id="{ID}">
             </label>
+            <label for="newRemindState">
+            <span>{lbl_RemindState}</span>
+            <select name="newRemindState" inputRemindState_id="{ID}">
+                <option value="00_new"></option>
+                <option value="10_process">Rozpracováno</option>
+                <option value="20_wait">Čeká na schválení</option>
+                <option value="30_aprowed">Schváleno</option>
+                <option value="40_storno">Zrušeno</option>
+                <option value="50_finish">Dokončeno</option>
+            </select>
+            </label>
+
             <button type="submit" name="save"  value="Zapsat>">{lbl_Save}</button>
             <button type="submit" name="stornoRemind"  value="{lbl_CancelRemind}">{lbl_CancelRemind}</button>
             <button back_id="{ID}">{lbl_Cancel}</button>
@@ -43,6 +55,7 @@
             <input type="hidden" name="RemindLastDate" value="{RemindLastDate}" oldRemindLastDate_id="{ID}">
             <input type="hidden" name="RemindResponsiblePerson" value="{RemindResponsiblePerson}" oldRemindResponsiblePerson_id="{ID}">
             <input type="hidden" name="RemindClose" value="{RemindClose}" oldRemindClose_id="{ID}">
+            <input type="hidden" name="RemindState" value="{RemindState}" oldRemindState_id="{ID}">
         </fieldset>
         </form>
     </div>
