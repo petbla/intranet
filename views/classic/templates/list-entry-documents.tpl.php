@@ -4,14 +4,15 @@
       <th>&nbsp;</th>
       <th>{lbl_Name}</th>
       <th>{lbl_ModifyDate}</th>
-      <th></th>
+      <th>{lbl_RemindToDate}</th>
       <th></th>
     </tr>
     {addFiles}
     <!-- START DocumentItems -->
     <tr>
-      <td>
+      <td class="col_action">
         {icon{Type}{FileExtension}}
+        {editIcon}
         {remindIcon}        
       </td>
       <td>
@@ -19,10 +20,8 @@
         {editcard}
       </td>
       <td>{ModifyDateTime}</td>
+      <td>{RemindLastDate}</td>
       <td>.{FileExtension}</td>
-      <td class="col_action">
-        {editIcon}
-      </td>
   	</tr>
     <!-- END DocumentItems -->
   </table>

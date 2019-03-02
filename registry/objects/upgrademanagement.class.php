@@ -137,46 +137,110 @@ class upgrademanagement {
         
         // Check upgrade
 
-        if ($this->version == '1.0') 
+        if ($this->version === '1.0') 
         {
             // upgrade to 1.1
             $this->upgrade_001();
         }
-        if ($this->version == '1.1') 
+        if ($this->version === '1.1') 
         {
             // upgrade to 1.2
             $this->upgrade_002();
         }
-        if ($this->version == '1.2') 
+        if ($this->version === '1.2') 
         {
             // upgrade to 1.3
             $this->upgrade_003();
         }
-        if ($this->version == '1.3') 
+        if ($this->version === '1.3') 
         {
             // upgrade to 1.4
             $this->upgrade_004();
         }
-        if ($this->version == '1.4') 
+        if ($this->version === '1.4') 
         {
             // upgrade to 1.5
             $this->upgrade_005();
         }
-        if ($this->version == '1.5') 
+        if ($this->version === '1.5') 
         {
             // upgrade to 1.6
             $this->upgrade_006();
         }
-        if ($this->version == '1.6') 
+        if ($this->version === '1.6') 
         {
             // upgrade to 1.7
             $this->upgrade_007();
         }
-        if ($this->version == '1.7') 
+        if ($this->version === '1.7') 
         {
             // upgrade to 1.8
             $this->upgrade_008();
         }
+        if ($this->version === '1.8') 
+        {
+            // upgrade to 1.9
+            $this->upgrade_009();
+        }
+        if ($this->version === '1.9') 
+        {
+            // upgrade to 1.10
+            $this->upgrade_010();
+        }
+        if ($this->version === '2.0') 
+        {
+            // upgrade to 2.01
+            $this->upgrade_011('2.01');
+        }
+        if ($this->version === '2.01') 
+        {
+            // upgrade to 2.02
+            $this->upgrade_012('2.02');
+        }
+    }
+
+    private function upgrade_012($upVer)
+    {
+		global $config;
+        $pref = $config['dbPrefix'];
+
+        // upgrade table 'dmsentry'
+        $sql = "ALTER TABLE ".$pref."dmsentry".
+                " ADD `Private` tinyint(1) NULL DEFAULT 0";
+        $this->registry->getObject('db')->executeQuery( $sql );
+
+        $this->setNewVersion($upVer);
+    }
+
+    private function upgrade_011($upVer)
+    {
+        $this->setNewVersion($upVer);
+    }
+
+    private function upgrade_010()
+    {
+		global $config;
+        $pref = $config['dbPrefix'];
+
+        // upgrade table 'dmsentry'
+        $sql = "ALTER TABLE ".$pref."dmsentry".
+                " ADD `RemindState` varchar(30) NULL DEFAULT ''";
+        $this->registry->getObject('db')->executeQuery( $sql );
+
+        $this->setNewVersion('2.0');
+    }
+
+    private function upgrade_009()
+    {
+		global $config;
+        $pref = $config['dbPrefix'];
+
+        // upgrade table 'dmsentry'
+        $sql = "UPDATE ".$pref."dmsentry".
+                "`mis_dmsentry` SET `RemindClose` = '0' WHERE `Remind` = '1'";
+        $this->registry->getObject('db')->executeQuery( $sql );
+
+        $this->setNewVersion('1.9');
     }
 
     private function upgrade_008()
@@ -200,8 +264,8 @@ class upgrademanagement {
         $pref = $config['dbPrefix'];
 
         // upgrade table 'dmsentry'
-        $sql = "ALTER TABLE ".$pref."dmsentry ADD `Remind` BOOLEAN NULL DEFAULT FALSE".
-               ", ADD `RemindClose` BOOLEAN NULL DEFAULT FALSE".
+        $sql = "ALTER TABLE ".$pref."dmsentry ADD `Remind` tinyint(1) NULL DEFAULT 0".
+               ", ADD `RemindClose` tinyint(1) NULL DEFAULT 0".
                ", ADD `RemindFromDate` DATE NULL".
                ", ADD `RemindLastDate` DATE NULL".
                ", ADD `RemindUserGroup` int(11) NOT NULL DEFAULT 0".

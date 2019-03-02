@@ -148,6 +148,16 @@ class document {
         $this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'view-entry-document.tpl.php', 'footer.tpl.php');
     }
 
+	public function editDocument( $entry, $filePath)
+	{
+        $breads = $entry['breads'];
+
+        $this->registry->getObject('template')->getPage()->addTag( 'breads', $breads );
+        $this->registry->getObject('template')->getPage()->addTag( 'filePath', $filePath );
+        $this->registry->getObject('template')->dataToTags( $entry, '' );
+        $this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'edit-entry-document.tpl.php', 'footer.tpl.php');
+    }
+
     public function createCategoryMenu()
     {
 		global $config;

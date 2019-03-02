@@ -33,6 +33,7 @@
             <input type="text" name="newRemindResponsiblePerson" inputRemindResponsiblePerson_id="{ID}">
             </label>
             <button type="submit" name="save"  value="Zapsat>">{lbl_Save}</button>
+            <button type="submit" name="stornoRemind"  value="{lbl_CancelRemind}">{lbl_CancelRemind}</button>
             <button back_id="{ID}">{lbl_Cancel}</button>
             <input type="hidden" name="EntryType" value="EntryType{Type}">
             <input type="hidden" name="Title" value="{Title}" oldTitle_id="{ID}">

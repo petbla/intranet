@@ -100,6 +100,7 @@ $caption['RemindToDate'] =   'Termín splnění';
 $caption['RemindRespPers'] = 'Zodpovídá';
 $caption['Todos'] =          'Úkoly';
 $caption['Terms'] =          'Termíny';
+$caption['RemindClosed'] =   'Vyřízeno';
 
 /**
  * Action's Title
@@ -115,6 +116,7 @@ $caption['Next'] =           'Další';
 $caption['back'] =           'Zpět';
 $caption['save'] =           'Ulož';
 $caption['Save'] =           'Uložit';
+$caption['CancelRemind'] =   'Zrušit připomenutí';
 $caption['New'] =            'Nový';
 $caption['NewFolder'] =      'Nová složka';
 $caption['NewDocument'] =    'Nové položky';
@@ -142,6 +144,7 @@ $caption['ContTemplateImp'] ='Šablona pro import';
 $caption['Export'] =         'Export';
 $caption['Error'] =          'Chyba';
 $caption['Days'] =           'Dní';
+$caption['State'] =          'Stav';
 
 
 /**
@@ -159,7 +162,10 @@ $caption['msg_blockExist'] =       'Blok zadaného názvu již existuje.';
 $caption['msg_contactNotfound'] =  'Kontakt nenalezen.';
 $caption['msg_noalloved'] =        'Akce není povolena nebo v této části dostupná.';
 $caption['msg_EditContact'] =      'Editace kontaktu';
-$caption['msg_EditDocument'] =     'Editace dokumentu';
+$caption['msg_EditDocument'] =     'Editace názvu položky a nastavení připomenutí';
+$caption['msg_DeleteDocument'] =   'Akce pro odstranění poznámky BEZ OBSAHU. Soubor nelze touto akcí odstranit.';
+$caption['msg_ModifyContentDoc'] = 'Editace obsahu položky (poznámky)';
+$caption['msg_SetRemind'] =        'Označení položky jako vyřízené.';
 $caption['ImmportContactsCsv'] =   'Import kontaktů z Excelu (CSV)';
 
 ?>

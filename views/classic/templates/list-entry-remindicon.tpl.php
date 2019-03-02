@@ -1,1 +1,1 @@
-<img src="views/classic/images/icon/remind{Remind}.png" onclick="wsSetRemindEntry('{ID}','{BaseUrl}');" />
+<img src="views/classic/images/icon/remind{Remind}{RemindClose}.png" alt="Připomenout" title="{lbl_msg_SetRemind}" onclick="wsSetRemindEntry('{ID}','{BaseUrl}');" />

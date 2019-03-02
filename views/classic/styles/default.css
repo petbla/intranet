@@ -748,8 +748,8 @@ select{
   width: 700px;
 }
 .col_action{
-  width: 300px;
-  text-align: right;
+  width: 100px;
+  text-align: left;
 }
 .col_action img{
   cursor: pointer;

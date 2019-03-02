@@ -29,10 +29,10 @@ $config['dbPrefix']         = 'mis_';
 $config['compName']         = 'OBEC Mistřice';
 
 // Testing
-//$config['fileserver']       = 'http://venuse/eBook/+Recepty/';                                                                        
-//$config['webserver']        = 'http://venuse:5000/eBook/+Recepty/';   
-//$config['dbPrefix']         = 'test_'; 
-//$config['compName']         = 'TEST Zkušební společnost (VENUSE)';
+$config['fileserver']       = 'http://venuse/eBook/MySQL/';                                                                        
+$config['webserver']        = 'http://venuse:5000/eBook/MySQL/';   
+$config['dbPrefix']         = 'test_'; 
+$config['compName']         = 'TEST Zkušební společnost (VENUSE)';
 
 // Zahrádkáři
 //$config['fileserver']       = 'ftp://venuse/users/petr/Job/Zahradkari/';
@@ -56,8 +56,7 @@ $config['compICO']       = '00267267';
  */ 
 $config['skin']             = 'classic';
 $config['metakeywords']		= '';
-$config['Copyright']        = 'Copyright &bull; Petbla';
-$config['CopyrightYear']    = 'petbla 2018';
+$config['Copyright']        = '&copy; DMS 2019';
 
 $registry->storeSetting('lang','cs');
 require_once('lang/'.$registry->getSetting('lang').'.php');

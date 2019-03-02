@@ -14,15 +14,15 @@
     <tr>
       <th>&nbsp;</th>
       <th>{lbl_Name}</th>
+      <th>{lbl_State}</th>
       <th>{lbl_RemindRespPers}</th>
       <th>{lbl_RemindToDate}</th>
       <th>{lbl_Days}</th>
-      <th></th>
     </tr>
     <!-- START DocumentItems -->
     <tr>
-      <td class="term{term}">
-        {icon{Type}{FileExtension}}
+      <td class="col_action term{term}">
+        {editIcon}
         {remindIcon}        
       </td>
       <td class="term{term}">
@@ -31,12 +31,10 @@
         </a>
         {editcard}
       </td>
+      <td class="term{term}">{RemindState}</td>
       <td class="term{term}">{RemindResponsiblePerson}</td>
       <td class="term{term}">{RemindLastDate}</td>
       <td class="term{term}">{termDays}</td>
-      <td class="col_action term{term}">
-        {editIcon}
-      </td>
   	</tr>
     <!-- END DocumentItems -->
   </table>

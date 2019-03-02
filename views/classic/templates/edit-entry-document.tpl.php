@@ -20,7 +20,12 @@
     <p>
         <a id="cosumentLink" href="{Name}" target="_blank">{lbl_View}</a>
     </p>
-    <p>
-        {Content}
-    </p>
+    
+    <form action="index.php?page=document/savecontent/{ID}" method="post">
+        <fieldset>
+            <label for="content"></label>
+            <textarea name="content" id="content" cols="120" rows="30">{Content}</textarea>
+            <input type="submit" value="submit">
+        </fieldset>
+    </form>
 </div>

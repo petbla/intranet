@@ -171,9 +171,9 @@ class file {
     if ($entryID !== '')
       return (-1);
 
+    require_once( FRAMEWORK_PATH . 'models/entry/model.php');
     if ($parentID !== '')
     {
-      require_once( FRAMEWORK_PATH . 'models/entry/model.php');
       $this->model = new Entry( $this->registry, $parentID );
       $item = $this->model->getData();
     }else
@@ -185,6 +185,9 @@ class file {
 
     // Insert NEW Block to folder
     $data = array();
+    $this->model->initNew();
+    $data = $this->model->getData();
+
     $data['ID'] = $this->registry->getObject('fce')->GUID();
     $data['Level'] = $item['Level'] + 1;
     $data['Parent'] = $item['EntryNo'];

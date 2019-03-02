@@ -34,7 +34,13 @@ function setValue(attName,attValue,keyWord,value){
             break;
     }
 }
-
+function ConfirnDelete(){
+    var opt;
+    opt = confirm("Skutečně chete odstranit položku?");
+    if (opt === false){
+        return false;
+    }
+}
 
 function wsLogContactView(ID) {
     const Http = new XMLHttpRequest();

@@ -23,7 +23,8 @@
       <h2>{lbl_DmsLabel}</h2>
       <nav>
         <ul>
-          <li><a href="index.php?page=document/listTodo">{lbl_Terms}</a></li>
+          <li><a href="index.php?page=document/listTodo">{lbl_Todos}</a></li>
+          <li><a href="index.php?page=document/listTodoClose">{lbl_RemindClosed}</a></li>
           <li><a href="index.php?page=document/list">{lbl_Documents}</a></li>
           {newsBarMenuItem}
           {archiveBarMenuItem}

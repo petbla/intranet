@@ -48,6 +48,8 @@ class Entry{
 	private $RemindResponsiblePerson;
 	private $RemindUserID;
 	private $RemindContactID;
+	private $RemindState;
+	private $Private;
 
 	private $activeEntry;
 	private $linkToFile;
@@ -120,7 +122,9 @@ class Entry{
 				$this->RemindResponsiblePerson = $data['RemindResponsiblePerson'];
 				$this->RemindUserID = $data['RemindUserID'];
 				$this->RemindContactID = $data['RemindContactID'];
-							
+				$this->RemindState = $data['RemindState'];
+				$this->Private = $data['Private'];
+								
 				$this->activeEntry = true;
 				
 				$link = str_replace(DIRECTORY_SEPARATOR,'/', $data['Name']);  //iconv("windows-1250","utf-8",
@@ -202,48 +206,7 @@ class Entry{
 		else
 		{
 			// Init empty
-			$this->EntryNo = 0;
-			$this->ID = '';
-			$this->parentID = '';
-			$this->Level = 0;
-			$this->Parent = 0;
-			$this->Type = 0;
-			$this->Multimedia = '';
-			$this->LineNo = 0;
-			$this->Title = '';
-			$this->Name = '';
-			$this->Path = '';
-			$this->FileExtension = '';
-			$this->Url = '';
-			$this->ModifyDateTime = null;
-			$this->CreateDate = null;
-			$this->Archived = FALSE;
-			$this->NewEntry = FALSE;
-			$this->PermissionSet = '';
-			$this->LastChange = null;
-			$this->Content = '';
-			$this->Remind = 0;
-			$this->RemindClose = 0;
-			$this->RemindFromDate = null;
-			$this->RemindLastDate = null;
-			$this->RemindUserGroup = 0;
-			$this->RemindResponsiblePerson = '';
-			$this->RemindUserID = '';
-			$this->RemindContactID = '';
-
-			$this->activeEntry = FALSE;
-			$this->linkToFile = '';
-			$this->breads = '';
-			$this->isHeader = FALSE;
-			$this->isFooter = FALSE;
-			$this->isFolder = FALSE;
-			$this->isFile = FALSE;
-			$this->isBlock = FALSE;
-			$this->isNote = FALSE;
-			$this->isAudio = FALSE;
-			$this->isVideo = FALSE;
-			$this->isImage = FALSE;
-				
+			$this->initNew();
 		}
 	}
 
@@ -271,6 +234,52 @@ class Entry{
 			return $this->linkToFile;
 		}
 		return null;
+	}
+	public function initNew()
+	{
+		$this->EntryNo = 0;
+		$this->ID = '';
+		$this->parentID = '';
+		$this->Level = 0;
+		$this->Parent = 0;
+		$this->Type = 0;
+		$this->Multimedia = '';
+		$this->LineNo = 0;
+		$this->Title = '';
+		$this->Name = '';
+		$this->Path = '';
+		$this->FileExtension = '';
+		$this->Url = '';
+		$this->ModifyDateTime = null;
+		$this->CreateDate = null;
+		$this->Archived = FALSE;
+		$this->NewEntry = FALSE;
+		$this->PermissionSet = '';
+		$this->LastChange = null;
+		$this->Content = '';
+		$this->Remind = 0;
+		$this->RemindClose = 0;
+		$this->RemindFromDate = null;
+		$this->RemindLastDate = null;
+		$this->RemindUserGroup = 0;
+		$this->RemindResponsiblePerson = '';
+		$this->RemindUserID = '';
+		$this->RemindContactID = '';
+		$this->RemindState = '';
+		$this->Private = 0;
+
+		$this->activeEntry = FALSE;
+		$this->linkToFile = '';
+		$this->breads = '';
+		$this->isHeader = FALSE;
+		$this->isFooter = FALSE;
+		$this->isFolder = FALSE;
+		$this->isFile = FALSE;
+		$this->isBlock = FALSE;
+		$this->isNote = FALSE;
+		$this->isAudio = FALSE;
+		$this->isVideo = FALSE;
+		$this->isImage = FALSE;
 	}
 
 	private function getBreads ()

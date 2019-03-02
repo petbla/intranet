@@ -48,6 +48,9 @@ class Documentcontroller{
 					case 'listTodo':
 						$this->listTodo();
 						break;
+					case 'listTodoClose':
+						$this->listTodoClose();
+						break;
 					case 'listNew':
 						$this->listNewDocuments();
 						break;
@@ -57,6 +60,10 @@ class Documentcontroller{
 					case 'view':
 						$ID = isset($urlBits[2]) ? $urlBits[2] : '';
 						$this->viewDocument($ID);
+						break;
+					case 'editcontent':
+						$ID = isset($urlBits[2]) ? $urlBits[2] : '';
+						$this->editContentDocument($ID);
 						break;
 					case 'search':
 						$searchText = isset($urlBits[2]) ? $urlBits[2] : '';
@@ -81,6 +88,10 @@ class Documentcontroller{
 					case 'modify':
 						$ID = isset($urlBits[2]) ? $urlBits[2] : '';
 						$this->modifyDocument($ID);
+						break;
+					case 'savecontent':
+						$ID = isset($urlBits[2]) ? $urlBits[2] : '';
+						$this->saveContentDocument($ID);
 						break;
 					case 'slideshow':
 						$ID = isset($urlBits[2]) ? $urlBits[2] : '';
@@ -199,11 +210,12 @@ class Documentcontroller{
 			$this->registry->getObject('template')->getPage()->addTag( 'FolderItems', array( 'SQL', $cache ) );			
 		}
 		$sql = "SELECT ID,Title,Name,Type,Url,Parent,ModifyDateTime,LOWER(FileExtension) as FileExtension ".
-					",Remind,RemindClose,RemindFromDate,RemindLastDate,Content,RemindResponsiblePerson,RemindUserID,RemindContactID ".	
+					",IF(Remind=0,'0','1') as Remind,IF(RemindClose=0,'0','1') as RemindClose,RemindFromDate,RemindLastDate".
+					",Content,RemindResponsiblePerson,RemindUserID,RemindContactID,RemindState ".	
 				  	"FROM ".$this->prefDb."DmsEntry ".
 				  	"WHERE Archived = 0 AND parent=".$entry['EntryNo']." AND Type IN (10,30,35,40) ".
 				  	"AND PermissionSet <= $this->perSet ".
-				  	"ORDER BY Remind DESC,Type,Title ";
+				  	"ORDER BY Remind+RemindClose DESC,Type,Title ";
 		$showBreads = true;
 		$pageTitle = '';
 		$template = '';
@@ -214,11 +226,32 @@ class Documentcontroller{
 	private function listTodo( )
 	{
 		$sql = "SELECT ID,Title,Name,Type,Url,Parent,ModifyDateTime,LOWER(FileExtension) as FileExtension ".
-					",Remind,RemindClose,RemindFromDate,RemindLastDate,Content,RemindResponsiblePerson,RemindUserID,RemindContactID ".	
+					",IF(Remind=0,'0','1') as Remind,IF(RemindClose=0,'0','1') as RemindClose,RemindFromDate,RemindLastDate".
+					",Content,RemindResponsiblePerson,RemindUserID,RemindContactID,RemindState ".	
 					",(DATE_FORMAT(RemindLastDate,'%Y-%m-%d') < CURDATE()) as term ".
 					",(RemindLastDate - CURDATE()) as termDays ".
 				  	"FROM ".$this->prefDb."DmsEntry ".
 				  	"WHERE Archived = 0 AND Remind = 1 ".
+				  	"AND PermissionSet <= $this->perSet ".
+				  	"ORDER BY RemindLastDate,Title ";
+		$entry = null;
+		$showFolder = '';
+		$showBreads = false;
+		$pageTitle = '';
+		$template = 'list-entry-todo.tpl.php';
+		$this->registry->getObject('log')->addMessage('Zobrazení seznamu úkolů.','DmsEntry','');
+		$this->registry->getObject('document')->listDocuments($entry,$showFolder,$sql,$showBreads,$pageTitle,$template);
+	}	
+	
+	private function listTodoClose( )
+	{
+		$sql = "SELECT ID,Title,Name,Type,Url,Parent,ModifyDateTime,LOWER(FileExtension) as FileExtension ".
+					",IF(Remind=0,'0','1') as Remind,IF(RemindClose=0,'0','1') as RemindClose,RemindFromDate,RemindLastDate".
+					",Content,RemindResponsiblePerson,RemindUserID,RemindContactID,RemindState ".	
+					",(DATE_FORMAT(RemindLastDate,'%Y-%m-%d') < CURDATE()) as term ".
+					",(RemindLastDate - CURDATE()) as termDays ".
+				  	"FROM ".$this->prefDb."DmsEntry ".
+				  	"WHERE Archived = 0 AND RemindClose = 1 ".
 				  	"AND PermissionSet <= $this->perSet ".
 				  	"ORDER BY RemindLastDate,Title ";
 		$entry = null;
@@ -240,7 +273,8 @@ class Documentcontroller{
 		$this->registry->setEntryNo(0);
 		$showFolder = false;
     	$sql = "SELECT ID,Title,Name,Type,Url,Parent,ModifyDateTime,LOWER(FileExtension) as FileExtension ".
-				",Remind,RemindClose,RemindFromDate,RemindLastDate,Content,RemindResponsiblePerson,RemindUserID,RemindContactID ".	
+				",IF(Remind=0,'0','1') as Remind,IF(RemindClose=0,'0','1') as RemindClose,RemindFromDate,RemindLastDate".
+				",Content,RemindResponsiblePerson,RemindUserID,RemindContactID,RemindState ".	
 				"FROM ".$this->prefDb."DmsEntry ".
 			   	"WHERE Archived = 0 AND NewEntry = 1 AND Type = 30  ".
 			   	"AND PermissionSet <= $this->perSet ".
@@ -262,7 +296,8 @@ class Documentcontroller{
 		$this->registry->setEntryNo(0);
 		$showFolder = false;
     	$sql = "SELECT ID,Title,Name,Type,Url,Parent,ModifyDateTime,LOWER(FileExtension) as FileExtension ".
-				",Remind,RemindClose,RemindFromDate,RemindLastDate,Content,RemindResponsiblePerson,RemindUserID,RemindContactID ".
+				",IF(Remind=0,'0','1') as Remind,IF(RemindClose=0,'0','1') as RemindClose,RemindFromDate,RemindLastDate".
+				",Content,RemindResponsiblePerson,RemindUserID,RemindContactID,RemindState ".	
 				"FROM ".$this->prefDb."DmsEntry ".
 			   	"WHERE Archived = 1 AND Type = 30 ".
 			   	"AND PermissionSet <= $this->perSet ".
@@ -286,7 +321,8 @@ class Documentcontroller{
 		$searchText = htmlspecialchars($searchText);
 		$searchText = str_replace('*','',$searchText);
 		$sql = "SELECT ID,Title,Name,Type,Url,Parent,ModifyDateTime,LOWER(FileExtension) as FileExtension ".
-					",Remind,RemindClose,RemindFromDate,RemindLastDate,Content,RemindResponsiblePerson,RemindUserID,RemindContactID ".
+					",IF(Remind=0,'0','1') as Remind,IF(RemindClose=0,'0','1') as RemindClose,RemindFromDate,RemindLastDate".
+					",Content,RemindResponsiblePerson,RemindUserID,RemindContactID,RemindState ".	
 					"FROM ".$this->prefDb."DmsEntry ".
 					"WHERE Archived = 0 AND Type IN (20,25,30,35) ".
 					//"AND MATCH(Title) AGAINST ('*".$searchText."*' IN BOOLEAN MODE) ".
@@ -317,6 +353,22 @@ class Documentcontroller{
 		}
 	}	
 
+	private function editContentDocument( $ID )
+	{
+		require_once( FRAMEWORK_PATH . 'models/entry/model.php');
+		$this->model = new Entry( $this->registry, $ID );
+		if( $this->model->isValid() )
+		{
+			$entry = $this->model->getData();
+			$this->registry->getObject('log')->addMessage("Zobrazení ".$entry['Name'],'DmsEntry',$ID);
+			$this->registry->getObject('document')->editDocument($entry,'');
+		}
+		else
+		{
+			$this->documentNotFound();
+		}
+	}	
+
 	private function modifyDocument( $ID )
 	{
 		global $caption;
@@ -327,11 +379,20 @@ class Documentcontroller{
 		{
 			$entry = $this->model->getData();
 			
-			if(isset($_POST['save']))
+			if(isset($_POST['stornoRemind']))
+			{
+				$changes['Remind'] = '0';
+				$changes['RemindClose'] = '0';
+				$condition = "ID = '$ID'";
+				$this->registry->getObject('log')->addMessage("Zobrazení a aktualizace dokumentu",'dmsentry',$ID);
+				$this->registry->getObject('db')->updateRecords('dmsentry',$changes, $condition);
+				$ID = $entry['parentID'];
+		}
+			elseif(isset($_POST['save']))
 			{
 				$newTitle = ($_POST['newTitle'] !== null) ? $_POST['newTitle'] : '';
 				$newUrl = ($_POST['newUrl'] !== null) ? $_POST['newUrl'] : '';
-				$newRemind = ($_POST['newRemind'] !== null) ? ($_POST['newRemind'] === '') ? 0 : 1 : 0;
+				$newRemind = ($_POST['newRemind'] !== null) ? ($_POST['newRemind'] === '') ? '0' : '1' : '0';
 				$newRemindFromDate = ($_POST['newRemindFromDate'] !== '') ? $_POST['newRemindFromDate'] : 'NULL';
 				$newRemindLastDate = ($_POST['newRemindLastDate'] !== '') ? $_POST['newRemindLastDate'] : 'NULL';
 				$newRemindResponsiblePerson = ($_POST['newRemindResponsiblePerson'] !== '') ? $_POST['newRemindResponsiblePerson'] : '';
@@ -343,13 +404,13 @@ class Documentcontroller{
 					$changes['Title'] = $newTitle;
 					$changes['Url'] = $newUrl;
 					$changes['Remind'] = $newRemind;
-					if($newRemind == 1)
-						$changes['RemindClose'] = 0;
+					if($newRemind == '1')
+						$changes['RemindClose'] = '0';
 					$changes['RemindFromDate'] = $newRemindFromDate;
 					$changes['RemindLastDate'] = $newRemindLastDate;
 					$changes['RemindResponsiblePerson'] = $newRemindResponsiblePerson;
 					$condition = "ID = '$ID'";
-					$this->registry->getObject('log')->addMessage("Zobrazení a aktualizace dokumentu",'contact',$ID);
+					$this->registry->getObject('log')->addMessage("Zobrazení a aktualizace dokumentu",'dmsentry',$ID);
 					$this->registry->getObject('db')->updateRecords('dmsentry',$changes, $condition);
 				}
 				$ID = $entry['parentID'];
@@ -362,6 +423,25 @@ class Documentcontroller{
 		else
 		{
 			$ID = '';
+		}
+		$this->listDocuments($ID);
+	}	
+	private function saveContentDocument( $ID )
+	{
+		global $caption;
+
+		require_once( FRAMEWORK_PATH . 'models/entry/model.php');
+		$this->model = new Entry( $this->registry, $ID );
+		if( ($this->perSet > 0) AND $this->model->isValid() )
+		{
+			if(isset($_POST['content']))
+			{
+				// Update
+				$changes['Content'] = $_POST['content'];
+				$condition = "ID = '$ID'";
+				$this->registry->getObject('log')->addMessage("Aktualizace obsahu dokumentu",'dmsentry',$ID);
+				$this->registry->getObject('db')->updateRecords('dmsentry',$changes, $condition);
+			}
 		}
 		$this->listDocuments($ID);
 	}	
@@ -526,9 +606,9 @@ class Documentcontroller{
 		if( ($this->perSet > 0) AND $this->model->isValid() )
 		{
 			$entry = $this->model->getData();
-			if($entry['Type'] != 35)
+			if(($entry['Type'] != 35) || ($entry['Content'] !== '') || ($entry['Remind'] == '1'))
 			{
-				$message = 'Odstranit lze pouze prázdnou poznámku.';
+				$message = 'Odstranit lze pouze prázdnou poznámku BEZ připomenutí.';
 			}
 			else
 			{
@@ -580,10 +660,10 @@ class Documentcontroller{
 		if( $this->model->isValid() )
 		{
 			$entry = $this->model->getData();
-			if ($entry['Remind'] == 1)
+			if ($entry['Remind'] == '1')
 			{
-				$changes['Remind'] = 0;
-				$changes['RemindClose'] = 1;
+				$changes['Remind'] = '0';
+				$changes['RemindClose'] = '1';
 				$this->registry->getObject('log')->addMessage("Úkol vyřízen",'dmsentry',$ID);
 			}
 			// Update
