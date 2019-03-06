@@ -8,7 +8,7 @@
             </label>
             <label for="newUrl">
             <span>Url</span>
-            <input type="url" class="editInLine" name="newUrl" inputUrl_id="{ID}">
+            <input type="text" class="editInLine" name="newUrl" inputUrl_id="{ID}">
             </label>
             <label for="newRemind">
             <span>{lbl_Remind}</span>

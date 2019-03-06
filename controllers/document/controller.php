@@ -258,7 +258,7 @@ class Documentcontroller{
 		$showFolder = '';
 		$showBreads = false;
 		$pageTitle = '';
-		$template = 'list-entry-todo.tpl.php';
+		$template = 'list-entry-todoclose.tpl.php';
 		$this->registry->getObject('log')->addMessage('Zobrazení seznamu úkolů.','DmsEntry','');
 		$this->registry->getObject('document')->listDocuments($entry,$showFolder,$sql,$showBreads,$pageTitle,$template);
 	}	
@@ -282,6 +282,7 @@ class Documentcontroller{
 		$showBreads = false;
 		$pageTitle = '<h3>'.$caption['NewDocument'].'</h3>';
 		$template = '';
+		$this->registry->getObject('template')->getPage()->addTag( 'sqlrequest', '' );
 		$this->registry->getObject('log')->addMessage('Zobrazení seznamu souborů a složek','DmsEntry','');
 		$this->registry->getObject('document')->listDocuments($entry,$showFolder,$sql,$showBreads,$pageTitle,$template);
 	}	
@@ -305,6 +306,7 @@ class Documentcontroller{
 		$showBreads = false;
 		$pageTitle = '<h3>'.$caption['Archive'].'</h3>';
 		$template = 'list-entry-archive.tpl.php';
+		$this->registry->getObject('template')->getPage()->addTag( 'sqlrequest', '' );
 		$this->registry->getObject('log')->addMessage('Zobrazení seznamu souborů a složek','DmsEntry','');
 		$this->registry->getObject('document')->listDocuments($entry,$showFolder,$sql,$showBreads,$pageTitle,$template);
 	}	
@@ -488,22 +490,20 @@ class Documentcontroller{
 				}
 				if($action == 'addFolder')
 				{
-					if ($fullName[strlen($fullName)-1] != DIRECTORY_SEPARATOR)
-					{
-						$fullName .= DIRECTORY_SEPARATOR;
-					}
+					$fullName  = $this->registry->getObject('fce')->ConvertToSharePathName( $fullName );
+					$fullName  = $this->registry->getObject('fce')->ConvertToDirectoryPathName( $fullName );
 					$fullName .= $_POST['fld_name'];
 					$fullName = iconv("utf-8","windows-1250",$fullName);
 					if(!file_exists($fullName))
 					{
-						if(mkdir($fullName, 0777, true))
+						if(mkdir($fullName, 0755, true))
 						{
 							// create succes
 							$EntryNo = $this->registry->getObject('file')->findItem($fullName);
 							$ID = $this->registry->getObject('file')->getIdByEntryNo($EntryNo);
 							$this->listDocuments($ID);
-							return;
 						}
+						return;
 					}
 					else
 					{

@@ -16,11 +16,14 @@
             <td>{ModifyDateTime}</td>
         </tr>
     </table>
-    <br />
+    <div id="actionpanel">
+        <img src="views/classic/images/icon/modify.png" dmsEntryType="{Type}" alt="{lbl_edit}" id="{ID}" dmsClassName="item" onclick="wsLogContactView('{ID}');" />
+        <a href="index.php?page=document/editcontent/{ID}"><img src="views/classic/images/icon/edit.png" alt="OBSAH" title="{lbl_msg_ModifyContentDoc}"></a>
+        <br />
+        {editcard}
+    </div>
     <p>
         <a id="cosumentLink" href="{Name}" target="_blank">{lbl_View}</a>
     </p>
-    <p>
-        {Content}
-    </p>
+    <pre class="content">{Content}</pre>
 </div>

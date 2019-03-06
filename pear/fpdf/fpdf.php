@@ -1324,7 +1324,7 @@ function _readstream($f, $n)
 function _readint($f)
 {
 	//Read a 4-byte integer from stream
-	$a=unpack('Ni',$this->_readstream($f,4));
+	$a=unpack('Ni',$this->_readstream($f,4),0);
 	return $a['i'];
 }
 

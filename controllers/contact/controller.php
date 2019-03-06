@@ -401,7 +401,7 @@ class Contactcontroller {
 						}
 					}
 
-					$data['FullName'] = $this->makeFulName($data);
+					$data['FullName'] = $this->makeFullName($data);
 				
 
 					$condition = "ID = '$ID'";
@@ -487,9 +487,19 @@ class Contactcontroller {
 			}
 			else
 			{
-				$this->registry->getObject('log')->addMessage("Zobrazení seznamu kontaktů",'Contact','');
+				$this->registry->getObject('template')->addTemplateBit('editcard', 'list-contact-editcard.tpl.php');
+				$this->registry->getObject('template')->getPage()->addTag( 'dmsClassName', 'contact' );
+				$this->registry->getObject('template')->getPage()->addTag( 'ID', 'newcontact' );
+				$this->registry->getObject('template')->getPage()->addTag( 'Address', '' );
+				$this->registry->getObject('template')->getPage()->addTag( 'Note', '' );
+				$this->registry->getObject('template')->getPage()->addTag( 'ContactGroups', '' );
+				
+				$cache2 = $this->registry->getObject('db')->cacheQuery("SELECT * FROM ".$pref."contactgroup");
+				$this->registry->getObject('template')->getPage()->addTag( 'GroupList', array('SQL' , $cache2) );
+				
 				$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'list-contact-empty.tpl.php', 'footer.tpl.php');			
 			}
+			$this->registry->getObject('template')->getPage()->addTag( 'sqlrequest', '' );
 		}
         else
         {
@@ -514,6 +524,7 @@ class Contactcontroller {
 		$isHeader = true;
 		$isFooter = true;
 		$pageLink = '';
+
 		$this->registry->getObject('template')->getPage()->addTag( 'sqlrequest', $searchText );
 		$this->registry->getObject('log')->addMessage("Zobrazení vyhledaných kontaktů `$searchText`",'Contact','');
 		$this->listResult($sql, $pageLink, $isHeader, $isFooter );

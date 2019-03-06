@@ -34,6 +34,7 @@
 <div id="ContactItems">
     <table>
         <tr>
+            <th style="width:100px;">..........</th>      
             <th>{lbl_FirstLast_name}</th>
             <th></th>      
             <th></th>      
@@ -47,8 +48,13 @@
         {editcard}                
         <!-- START ContactList -->
         <tr>        
+            <td class="col_action">
+                {editIcon}
+            </td>
             <td class="col_fullname">
-                {FullName}
+                <a href="index.php?page=contact/view/{ID}" onclick="wsLogContactView('{ID}');">
+                    {FullName}
+                </a>
                 {editcard}                
             </td>
             <td class="col_company">{Address}</td>
@@ -59,12 +65,6 @@
             <td class="col_note">{Note}</td>
             <td class="tags">
                 {ContactGroups}
-            </td>
-            <td class="col_action">
-                <a href="index.php?page=contact/view/{ID}" onclick="wsLogContactView('{ID}');">
-                    <img src="views/classic/images/icon/view.png" alt="{lbl_edit}" id="{ID}" />
-                </a>
-                {editIcon}
             </td>
         </tr>
         <!-- END ContactList -->

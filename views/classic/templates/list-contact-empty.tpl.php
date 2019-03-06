@@ -40,6 +40,7 @@
             <th>{lbl_Label}</th>
             <th></th>
         </tr>
+        {editcard}                
     </table>
     <p id="sqlrequest" valus={sqlrequest} stype="display:none;"></p>
 </div>

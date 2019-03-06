@@ -145,6 +145,7 @@ class document {
         $this->registry->getObject('template')->getPage()->addTag( 'breads', $breads );
         $this->registry->getObject('template')->getPage()->addTag( 'filePath', $filePath );
         $this->registry->getObject('template')->dataToTags( $entry, '' );
+        $this->registry->getObject('template')->addTemplateBit('editcard', 'list-entry-editcard.tpl.php');
         $this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'view-entry-document.tpl.php', 'footer.tpl.php');
     }
 

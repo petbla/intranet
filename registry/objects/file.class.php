@@ -14,10 +14,7 @@ class file {
     $root = $config['fileserver'];
 
     $this->registry = $registry;
-    $root = str_replace('\\',DIRECTORY_SEPARATOR,$root);
-    $root = str_replace('/',DIRECTORY_SEPARATOR,$root);
-    $last_letter  = $root[strlen($root)-1]; 
-    $root = ($last_letter == DIRECTORY_SEPARATOR) ? $root : $root.DIRECTORY_SEPARATOR; 
+    $root  = $this->registry->getObject('fce')->ConvertToDirectoryPathName( $root );
     $this->root = $root;
   }
   /**
@@ -61,8 +58,7 @@ class file {
     $level = 0;
     while (count($directories)) { 
       $dir  = array_pop($directories); 
-      $dir = str_replace('\\','/',$dir);
-      $dir = str_replace('http:','',$dir);
+      $dir  = $this->registry->getObject('fce')->ConvertToSharePathName( $dir,false);
 
       if ($handle = opendir($dir)) { 
         while (false !== ($file = readdir($handle))) 
@@ -96,8 +92,7 @@ class file {
   public function findItem( $winFullItemPath )
   {
     $fullItemPath = iconv("windows-1250","utf-8",$winFullItemPath);
-    $name = str_replace('\\',DIRECTORY_SEPARATOR,$fullItemPath);
-    $name = str_replace('/',DIRECTORY_SEPARATOR,$name);
+    $name  = $this->registry->getObject('fce')->ConvertToDirectoryPathName( $fullItemPath,false );    
     $name = str_replace(str_replace('http:','',$this->root),'',$name);
     if ($name === '')
     {
@@ -160,8 +155,7 @@ class file {
 	 */
   public function addBlock( $fullParent,$name )
   {
-    $fullParent = str_replace('\\',DIRECTORY_SEPARATOR,$fullParent);
-    $fullParent = str_replace('/',DIRECTORY_SEPARATOR,$fullParent);
+    $fullParent  = $this->registry->getObject('fce')->ConvertToDirectoryPathName( $fullParent,false );    
     $parentPath = str_replace($this->root,'',$fullParent);
     $parentID = $this->getIdByName($parentPath);
 
@@ -259,8 +253,8 @@ class file {
     $item['WinParent'] = '';
     $item['Extension'] = '';
 
-    $item['Name'] = str_replace('\\',DIRECTORY_SEPARATOR,$name);
-    $item['Name'] = str_replace('/',DIRECTORY_SEPARATOR,$item['Name']);
+    $item['Name'] = $this->registry->getObject('fce')->ConvertToDirectoryPathName( $name,false );    
+
     $item['FullName'] =  $root.$item['Name'];
 
     if(!is_file($item['FullName']) && !is_dir($item['FullName']))
@@ -317,8 +311,8 @@ class file {
 
   public function getIdByName( $name )
   {
-    $name = str_replace('\\',DIRECTORY_SEPARATOR,$name);
-    $name = str_replace('/',DIRECTORY_SEPARATOR,$name);
+    $name = $this->registry->getObject('fce')->ConvertToDirectoryPathName( $name ,false);    
+
     $name = $this->registry->getObject('db')->sanitizeData($name);
     $this->registry->getObject('db')->initQuery('DmsEntry','ID');
     $this->registry->getObject('db')->setCondition("Name='$name' AND Archived=0");

@@ -324,5 +324,30 @@ class UsefulFunction {
     	return sprintf('%04X%04X-%04X-%04X-%04X-%04X%04X%04X', mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(16384, 20479), mt_rand(32768, 49151), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535));
 	}
 
+  public function ConvertToSharePathName( $path )
+  {
+    $path = str_replace('\\','/',$path);
+    $path = str_replace('https:','',$path);
+    $path = str_replace('http:','',$path);
+    if ($path[strlen($path)-1] != '/')
+    {
+      $path .= '/';
+    }
+    return($path);
+  }
+
+  public function ConvertToDirectoryPathName( $path, $addLast = true )
+  {
+    $path = str_replace('\\',DIRECTORY_SEPARATOR,$path);
+    $path = str_replace('/',DIRECTORY_SEPARATOR,$path);
+    if ($addLast == true){
+      if ($path[strlen($path)-1] != DIRECTORY_SEPARATOR)
+      {
+        $path .= DIRECTORY_SEPARATOR;
+      }
+    }
+    return($path);
+ }
+  
 }
 ?>

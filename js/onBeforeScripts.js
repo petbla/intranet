@@ -4,6 +4,8 @@ function addNewContact(e){
     var form, back, contactGroups, tags;
 
     form = document.querySelector( '[form_id="newcontact"]' );
+    if(form == null)
+        return;
     form.style.display = '';
     form.style.left = '200px';
     form.style.top = '100px';
@@ -19,6 +21,14 @@ function addNewContact(e){
         form.style.display = 'none';
         ee.preventDefault();
     };
+    activeForm = form;
+    window.onkeyup = function (event) {
+        if (event.keyCode == 27) {
+            activeForm.style.display = "none";
+        }
+    }
+    // Make the DIV element draggable:
+    dragElement(form);    
 }    
 
 function setValue(attName,attValue,keyWord,value){
