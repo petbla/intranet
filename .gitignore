@@ -2,3 +2,4 @@ FileServer/*
 vendor/*
 tmp/*
 _private/*
+_private/config.php
