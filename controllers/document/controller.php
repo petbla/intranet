@@ -26,7 +26,7 @@ class Documentcontroller{
 		if( $directCall == true )
 		{
 			$urlBits = $this->registry->getURLBits();     
-			if($this->perSet == 0)
+			if($this->perSet == 10)
 			{
 				$this->error($caption['msg_unauthorized']);
 				return;
@@ -113,6 +113,10 @@ class Documentcontroller{
 									$result = 'Error';
 								exit($result);
 								break;
+							case 'eventFile':
+								$result = $this->eventFile();
+								exit($result);
+								break;
 						}
 						break;
 					default:
@@ -193,7 +197,7 @@ class Documentcontroller{
 		if( $this->model->isValid() )
 		{
 			if(($entry['Type'] == 30) || ($entry['Type'] == 35)){
-				$this->model = new Entry( $this->registry, $entry['parentID'] );
+				$this->model = new Entry( $this->registry, $entry['Parent'] );
 				$entry = $this->model->getData();
 			}
 			$this->registry->setLevel($entry['Level']);
@@ -388,7 +392,7 @@ class Documentcontroller{
 				$condition = "ID = '$ID'";
 				$this->registry->getObject('log')->addMessage("Zobrazení a aktualizace dokumentu",'dmsentry',$ID);
 				$this->registry->getObject('db')->updateRecords('dmsentry',$changes, $condition);
-				$ID = $entry['parentID'];
+				$ID = $entry['Parent'];
 		}
 			elseif(isset($_POST['save']))
 			{
@@ -415,11 +419,11 @@ class Documentcontroller{
 					$this->registry->getObject('log')->addMessage("Zobrazení a aktualizace dokumentu",'dmsentry',$ID);
 					$this->registry->getObject('db')->updateRecords('dmsentry',$changes, $condition);
 				}
-				$ID = $entry['parentID'];
+				$ID = $entry['Parent'];
 			}
 			elseif(isset($_POST['back']))			
 			{
-				$ID = $entry['parentID'];
+				$ID = $entry['Parent'];
 			}
 		}
 		else
@@ -561,6 +565,19 @@ class Documentcontroller{
 		$this->listDocuments($ID);
 	}
 
+	private function eventFile()
+	{
+		$fileName = isset($_POST['name']) ? $_POST['name'] : '';
+		$fileName = iconv("utf-8","windows-1250",$fileName);
+		$EntryNo = $this->registry->getObject('file')->findItem($fileName);
+
+		$this->registry->getObject('log')->addMessage("SERVER: Nový soubor EntrNo: $EntryNo",'dmsentry','');
+		
+		$result = 'OK';
+		
+		return($result);
+	}	
+
 	private function deleteFolder( $ID )
 	{
 		global $caption;
@@ -588,7 +605,7 @@ class Documentcontroller{
 					$data['Archived'] = 1;
 					$this->registry->getObject('log')->addMessage("Uzavření bloku",'dmsentry',$ID);
 					$this->registry->getObject('db')->updateRecords('dmsentry',$data,$condition);			
-					$this->listDocuments($entry['parentID']);
+					$this->listDocuments($entry['Parent']);
 					return;
 				}
 			}
@@ -606,9 +623,9 @@ class Documentcontroller{
 		if( ($this->perSet > 0) AND $this->model->isValid() )
 		{
 			$entry = $this->model->getData();
-			if(($entry['Type'] != 35) || ($entry['Content'] !== '') || ($entry['Remind'] == '1'))
+			if($entry['Type'] != 35)
 			{
-				$message = 'Odstranit lze pouze prázdnou poznámku BEZ připomenutí.';
+				$message = 'Odstranit lze pouze poznámky.';
 			}
 			else
 			{
@@ -617,7 +634,7 @@ class Documentcontroller{
 				$this->registry->getObject('log')->addMessage("Výmaz poznámky",'dmsentry',$ID);
 				$this->registry->getObject('db')->updateRecords('dmsentry',$data,$condition);			
 					
-				$this->listDocuments($entry['parentID']);
+				$this->listDocuments($entry['Parent']);
 				return;
 			}
 		}				

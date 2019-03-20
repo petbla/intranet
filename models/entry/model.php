@@ -22,7 +22,6 @@ class Entry{
 	private $registry;
 	private $EntryNo = 0;
 	private $ID;
-	private $parentID = '';
 	private $Level;
 	private $Parent;
 	private $Type;
@@ -39,12 +38,12 @@ class Entry{
 	private $NewEntry;
 	private $PermissionSet;
 	private $LastChange;
-	private $Content;
 	private $Remind;
 	private $RemindClose;
 	private $RemindFromDate;
 	private $RemindLastDate;
 	private $RemindUserGroup;
+	private $Content;
 	private $RemindResponsiblePerson;
 	private $RemindUserID;
 	private $RemindContactID;
@@ -179,7 +178,7 @@ class Entry{
 					$this->registry->getObject('db')->setFilter('Type',30);
 					$this->registry->getObject('db')->setFilter('Multimedia','');
 					$this->registry->getObject('db')->setFilter('Archived',0);
-					$this->isFiles = $this->registry->getObject('db')->findFirst();
+					$this->isFile = $this->registry->getObject('db')->findFirst();
 
 					$this->registry->getObject('db')->initQuery('dmsentry');
 					$this->registry->getObject('db')->setFilter('Parent',$this->EntryNo);
@@ -199,7 +198,7 @@ class Entry{
 				if ($this->registry->getObject('db')->findFirst())
 				{
 					$entryParent = $this->registry->getObject('db')->getResult();
-					$this->parentID = $entryParent['ID'];
+					$this->Parent = $entryParent['ID'];
 				}
 			}
 		}
@@ -215,7 +214,7 @@ class Entry{
 		return $this->activeEntry;
 	}
 	
-	public function getData()
+	public function getData( $onlyCulons = false )
 	{
 		$data = array();
 		foreach( $this as $field => $fdata )
@@ -224,6 +223,23 @@ class Entry{
 			{
 				$data[ $field ] = $fdata;
 			}
+		}
+		if ($onlyCulons)
+		{
+			unset($data['activeEntry']);
+			unset($data['linkToFile']);
+			unset($data['breads']);
+			unset($data['isHeader']);
+			unset($data['isFooter']);
+			unset($data['isFolder']);
+			unset($data['isFile']);
+			unset($data['isBlock']);
+			unset($data['isNote']);
+			unset($data['isAudio']);
+			unset($data['isVideo']);
+			unset($data['isImage']);
+			unset($data['jetoAudio']);
+			unset($data['jeToVideo']);
 		}
 		return $data;
 	}
@@ -239,7 +255,6 @@ class Entry{
 	{
 		$this->EntryNo = 0;
 		$this->ID = '';
-		$this->parentID = '';
 		$this->Level = 0;
 		$this->Parent = 0;
 		$this->Type = 0;
@@ -250,17 +265,17 @@ class Entry{
 		$this->Path = '';
 		$this->FileExtension = '';
 		$this->Url = '';
-		$this->ModifyDateTime = null;
-		$this->CreateDate = null;
-		$this->Archived = FALSE;
-		$this->NewEntry = FALSE;
-		$this->PermissionSet = '';
-		$this->LastChange = null;
+		$this->ModifyDateTime = date("Y-m-d H:i:s");
+		$this->CreateDate = date("Y-m-d H:i:s");
+		$this->Archived = 0;
+		$this->NewEntry = 1;
+		$this->PermissionSet = 0;
+		$this->LastChange = date("Y-m-d H:i:s");
 		$this->Content = '';
 		$this->Remind = 0;
 		$this->RemindClose = 0;
-		$this->RemindFromDate = null;
-		$this->RemindLastDate = null;
+		$this->RemindFromDate = date("Y-m-d H:i:s");
+		$this->RemindLastDate = date("Y-m-d H:i:s");
 		$this->RemindUserGroup = 0;
 		$this->RemindResponsiblePerson = '';
 		$this->RemindUserID = '';

@@ -125,6 +125,8 @@ switch ($perSet) {
 		break;
 }
 $adminBarMenuItem = $isAdmin ? "<li><a href='index.php?page=admin'>Administrace</a></li>" : '';
+$adminBarMenuItem .= $isAdmin ? "<li><a href='index.php?page=admin/log'>Log</a></li>" : '';
+
 $registry->getObject('template')->getPage()->addTag( 'adminBarMenuItem', $adminBarMenuItem );
 $registry->getObject('template')->getPage()->addTag( 'contactBarMenuItem', $contactBarMenuItem );
 $registry->getObject('template')->getPage()->addTag( 'calendarBarMenuItem', $calendarBarMenuItem );

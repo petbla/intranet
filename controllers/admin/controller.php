@@ -76,6 +76,12 @@ class Admincontroller {
 							$this->modifyUser($ID);
 							return;
 						}
+					case 'log':
+						if ( $this->registry->getObject('authenticate')->isAdmin())
+						{
+							$this->showLog();
+							return;
+						}
 				}
 			}
 			else
@@ -123,6 +129,45 @@ class Admincontroller {
 		}
 		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'admin-users.tpl.php', 'footer.tpl.php');		
 	}
+
+	private function showLog()
+	{
+		global $config;
+        $pref = $config['dbPrefix'];
+
+		$sql = "SELECT * ".
+		       "FROM ".$pref."log ".
+		       "ORDER BY EntryNo DESC";
+		$this->listResult($sql, '', 'LogList', 'log-list.tpl.php');		
+	}
+
+	private function listResult( $sql, $pageLink , $SQLDataElement, $template )
+	{
+		global $config;
+
+		// Stránkování
+		$cacheFull = $this->registry->getObject('db')->cacheQuery( $sql );
+		$records = $this->registry->getObject('db')->numRowsFromCache( $cacheFull );
+		$pageCount = (int) ($records / $config['maxVisibleItem']);
+		$pageCount = ($records > $pageCount * $config['maxVisibleItem']) ? $pageCount + 1 : $pageCount;  
+		$pageNo = ( isset($_GET['p'])) ? $_GET['p'] : 1;
+		$pageNo = ($pageNo > $pageCount) ? $pageCount : $pageNo;
+		$pageNo = ($pageNo < 1) ? 1 : $pageNo;
+		$fromItem = (($pageNo - 1) * $config['maxVisibleItem']);    
+		$navigate = $this->registry->getObject('template')->NavigateElement( $pageNo, $pageCount ); 
+		$this->registry->getObject('template')->getPage()->addTag( 'navigate_menu', $navigate );
+		$sql .= " LIMIT $fromItem," . $config['maxVisibleItem']; 
+		$cache = $this->registry->getObject('db')->cacheQuery( $sql );
+		if (!$this->registry->getObject('db')->isEmpty( $cache )){
+			$this->registry->getObject('template')->getPage()->addTag( $SQLDataElement, array( 'SQL', $cache ) );
+			$this->registry->getObject('template')->getPage()->addTag( 'pageLink', $pageLink );
+			$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', $template, 'footer.tpl.php');			
+		}
+		else
+		{
+			$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page-notfound.tpl.php', 'footer.tpl.php');			
+		}
+    }	
 
 	private function newUser()
 	{

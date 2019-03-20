@@ -180,7 +180,7 @@ class file {
     // Insert NEW Block to folder
     $data = array();
     $this->model->initNew();
-    $data = $this->model->getData();
+    $data = $this->model->getData( true );
 
     $data['ID'] = $this->registry->getObject('fce')->GUID();
     $data['Level'] = $item['Level'] + 1;
@@ -190,7 +190,6 @@ class file {
     $data['LineNo'] = $this->getNextLineNo($data['Parent']);
     $data['Name'] = $this->registry->getObject('db')->sanitizeData($fullName);
     $data['Title'] = $this->registry->getObject('db')->sanitizeData($name); 
-    $data['PermissionSet'] = 1;
     $data['Url'] = '';
     $this->registry->getObject('db')->insertRecords( 'DmsEntry', $data );
     $this->registry->getObject('db')->findFirst();
