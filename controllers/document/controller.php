@@ -572,6 +572,7 @@ class Documentcontroller{
 		if ($fileName != '')	
 		{
 			switch ($changetype) {
+				case 'Changed':
 				case 'Created':
 					$fileName = iconv("utf-8","windows-1250",$fileName);
 					$EntryNo = $this->registry->getObject('file')->findItem($fileName);
@@ -583,9 +584,6 @@ class Documentcontroller{
 					$data['Archived'] = 1;
 					$this->registry->getObject('log')->addMessage("FileSystem: Odstranění souboru $fileName",'dmsentry','');
 					$this->registry->getObject('db')->updateRecords('dmsentry',$data,$condition);			
-					break;
-				case 'Changed':
-					# code...
 					break;
 			}
 		}
