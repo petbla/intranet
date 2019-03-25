@@ -2,6 +2,9 @@
 <div id="editwindowheader{ID}" class="editwindowheader">{lbl_msg_EditContact}</div>
     <form action="index.php?page=contact/save/{ID}" method="post">
         <fieldset>
+            <button type="submit" name="save" value="Zapsat">{lbl_Save}</button>
+            <button name="back_id" value="zpět" back_id="{ID}">{lbl_Cancel}</button>
+            <hr>
             <label for="newFirstName">
                 <span>{lbl_First_name}</span>
                 <input type="text" class="editInLine" name="newFirstName" inputFirstName_id="{ID}" autofocus>

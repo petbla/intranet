@@ -25,5 +25,5 @@
     <p>
         <a id="cosumentLink" href="{Name}" target="_blank">{lbl_View}</a>
     </p>
-    <pre class="content">{Content}</pre>
+    <pre class="content"><code>{Content}</code></pre>
 </div>

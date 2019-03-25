@@ -97,3 +97,21 @@ function importContactCSV() {
         console.log('Import');
     }
 }
+
+function isValidFileExtension(extension) {
+    var ext = [
+        'doc',
+        'docx',
+        'pdf',
+        'xls',
+        'xlsx',
+        'txt',
+        'html',
+        'txt',
+        'csv',
+        'jpg',
+        'bmp',
+        'png'
+    ];
+    return (ext.indexOf(extension) >= 0)
+}

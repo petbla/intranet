@@ -419,8 +419,19 @@ if(a_type){
         switch (entry.getAttribute('data-dms-entrytype')) {
             case '30':
                 // File
-                entry.href = entry.getAttribute('data-dms-server') + entry.getAttribute('data-dms-name');
-                entry.target = '_blank';
+                var extension,id;
+                extension = entry.getAttribute('data-dms-extension');
+                if (isValidFileExtension(extension))
+                {
+                    entry.href = entry.getAttribute('data-dms-server') + entry.getAttribute('data-dms-name');
+                    entry.target = '_blank';
+                }
+                else
+                {
+                    id = entry.getAttribute('a_id');
+                    entry.href = 'index.php?page=document/list/' + id;
+                    entry.target = '';
+                }
                 break;
             case '35':
                 // Note

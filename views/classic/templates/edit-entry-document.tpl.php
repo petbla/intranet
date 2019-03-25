@@ -23,9 +23,12 @@
     
     <form action="index.php?page=document/savecontent/{ID}" method="post">
         <fieldset>
+            <input type="submit" value="{lbl_Save}">
+            <hr>
             <label for="content"></label>
             <textarea name="content" id="content" cols="120" rows="30">{Content}</textarea>
-            <input type="submit" value="submit">
+            <hr>
+            <input type="submit" value="{lbl_Save}">
         </fieldset>
     </form>
 </div>
