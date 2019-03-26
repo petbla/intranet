@@ -30,29 +30,11 @@ class file {
     global $config;
     
     ini_set('max_execution_time', 600);
-    $this->registry->getObject('db')->initQuery('DmsEntry','EntryNo,ID,Name,Type');
-    $this->registry->getObject('db')->setCondition('Archived = false AND Type IN (20,30)');
-    if( $this->registry->getObject('db')->findSet())
-    {
-      $data = $this->registry->getObject('db')->getResult();
-      $counter = 0;
-      foreach ($data as $key => $entry) {
-        $ID = $entry['ID'];
-        $counter += 1;
-        $item = $this->getItem($entry['Name']);
-        if(! $item['Exist'])
-        {
-          $changes['Archived'] = 1;
-          $changes['LastChange'] = date("Y-m-d H:i:s");
-          $condition = "ID = '$ID'";
-          $item = $this->getItem($entry['Name']);         
-					$this->registry->getObject('log')->addMessage("Zobrazení a aktualizace dokumentu",'contact',$ID);
-          $this->registry->getObject('db')->updateRecords('DmsEntry',$changes,$condition);
-        }        
-      }
-    }
+    
+    //deaktiveUnvalidEntries();
 
     $directories[]  = $this->root; 
+
     
     $paret = 0;
     $level = 0;
@@ -81,6 +63,30 @@ class file {
     } 
   } 
 
+  function deaktiveUnvalidEntries()
+  {
+    $this->registry->getObject('db')->initQuery('DmsEntry','EntryNo,ID,Name,Type');
+    $this->registry->getObject('db')->setCondition('Archived = false AND Type IN (20,30)');
+    if( $this->registry->getObject('db')->findSet())
+    {
+      $data = $this->registry->getObject('db')->getResult();
+      $counter = 0;
+      foreach ($data as $key => $entry) {
+        $ID = $entry['ID'];
+        $counter += 1;
+        $item = $this->getItem($entry['Name']);
+        if(! $item['Exist'])
+        {
+          $changes['Archived'] = 1;
+          $changes['LastChange'] = date("Y-m-d H:i:s");
+          $condition = "ID = '$ID'";
+          $item = $this->getItem($entry['Name']);         
+					$this->registry->getObject('log')->addMessage("Zobrazení a aktualizace dokumentu",'contact',$ID);
+          $this->registry->getObject('db')->updateRecords('DmsEntry',$changes,$condition);
+        }        
+      }
+    }
+  }
 
 	/**
    * Funkce pro vyhledání položky (soubor/složka) v databázi a pokud neexistuje, tak dojde k založení včetně všech 
@@ -89,7 +95,7 @@ class file {
 	 * @param string $fullItemPath
 	 * @return bool $EntryNo  
 	 */
-  public function findItem( $winFullItemPath )
+  public function findItem( $winFullItemPath , $isDir = false )
   {
     $fullItemPath = iconv("windows-1250","utf-8",$winFullItemPath);
     $name  = $this->registry->getObject('fce')->ConvertToDirectoryPathName( $fullItemPath,false );    
@@ -98,7 +104,7 @@ class file {
     {
       return 0;
     }
-    $item = $this->getItem($name);
+    $item = $this->getItem($name, $isDir);
     if(! $item['Exist'])
     {
       return 0;
@@ -233,7 +239,7 @@ class file {
     return $lineNo;
   }
 
-  public function getItem( $name )
+  public function getItem( $name , $isDir = false)
   {
     global $config;
     $root = str_replace('http:','',$this->root);
@@ -256,9 +262,12 @@ class file {
 
     $item['FullName'] =  $root.$item['Name'];
 
-    if(!is_file($item['FullName']) && !is_dir($item['FullName']))
+    if (!$isDir)
     {
-      return $item;
+      if(!is_file($item['FullName']) && !is_dir($item['FullName']))
+      {
+        return $item;
+      }
     }
 
 
@@ -280,7 +289,7 @@ class file {
     $item['Exist'] = in_array(strtoupper($item['Item']),$parentItems);
 
     $item['Level'] = substr_count($item['Name'],DIRECTORY_SEPARATOR);
-    if (is_dir($item['WinFullName'])) 
+    if ($isDir || (is_dir($item['WinFullName']))) 
     { 
       $item['Type'] = 20;
     } 

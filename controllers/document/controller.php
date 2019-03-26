@@ -569,13 +569,15 @@ class Documentcontroller{
 	{
 		$changetype = isset($_POST['changetype']) ? $_POST['changetype'] : '';
 		$fileName = isset($_POST['name']) ? $_POST['name'] : '';
+		$isDir = isset($_POST['isdirectory']) ? $_POST['isdirectory'] : false;
+		$isDir = $isDir == 'True' ? true : false;
 		if ($fileName != '')	
 		{
 			switch ($changetype) {
 				case 'Changed':
 				case 'Created':
 					$fileName = iconv("utf-8","windows-1250",$fileName);
-					$EntryNo = $this->registry->getObject('file')->findItem($fileName);
+					$EntryNo = $this->registry->getObject('file')->findItem($fileName, $isDir);
 					$this->registry->getObject('log')->addMessage("FileSystem: Nový soubor EntrNo: $EntryNo",'dmsentry','');
 					break;
 				case 'Deleted':
