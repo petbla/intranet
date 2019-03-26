@@ -102,6 +102,7 @@ function isValidFileExtension(extension) {
     var ext = [
         'doc',
         'docx',
+        'odt',
         'pdf',
         'xls',
         'xlsx',

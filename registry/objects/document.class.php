@@ -122,7 +122,7 @@ class document {
             $entryNo = $entry['EntryNo'];
             if (isset($entryNo) != null)
             {
-                $parentPath = $config['fileserver'];
+                $parentPath = $config['fileroot'];
                 $parentID = '';
                 $this->registry->getObject('db')->initQuery('dmsentry');
                 $this->registry->getObject('db')->setFilter('EntryNo',$entryNo);
@@ -132,6 +132,7 @@ class document {
                     $parentPath .=  $data['Name'];
                     $parentID = $data['ID'];
                 }
+                $parentPath = $this->registry->getObject('fce')->ConvertToSharePathName( $parentPath );
                 $this->registry->getObject('template')->getPage()->addTag('parentfoldername', $parentPath );
                 $this->registry->getObject('template')->getPage()->addTag('parentID', $parentID );            
             }

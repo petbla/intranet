@@ -14,6 +14,7 @@
 </div>
 {pageTitle}
 {folders}
+{addFiles}
 <div id="pagecounter" class="bottom">
 {navigate_menu}
 </div>

@@ -8,10 +8,11 @@
  */
 
 class file {
+
   public function __construct( $registry ) 
   {
     global $config;
-    $root = $config['fileserver'];
+    $root = $config['fileroot'];
 
     $this->registry = $registry;
     $root  = $this->registry->getObject('fce')->ConvertToDirectoryPathName( $root );
@@ -31,7 +32,7 @@ class file {
     
     ini_set('max_execution_time', 600);
     
-    //deaktiveUnvalidEntries();
+    $this->deaktiveUnvalidEntries();
 
     $directories[]  = $this->root; 
 
@@ -105,10 +106,7 @@ class file {
       return 0;
     }
     $item = $this->getItem($name, $isDir);
-    if(! $item['Exist'])
-    {
-      return 0;
-    }
+    
     $this->registry->getObject('db')->initQuery('DmsEntry','EntryNo,Name');
     $sanitizename = $this->registry->getObject('db')->sanitizeData($name);
     $this->registry->getObject('db')->setCondition( 'Name="'.$sanitizename.'" AND Archived=0' );
@@ -149,6 +147,7 @@ class file {
     $this->registry->getObject('db')->insertRecords( 'DmsEntry', $data );
     $this->registry->getObject('db')->findFirst();
     $entry = $this->registry->getObject('db')->getResult();
+
     return $entry['EntryNo'];
   }
 

@@ -25,7 +25,7 @@
         {remindIcon}        
       </td>
       <td class="">
-        <a href="" a_id="{ID}" a_type="entry" data-dms-url="{Url}" data-dms-name="{Name}" data-dms-extension="{FileExtension}" data-dms-server="{cfg_webserver}" data-dms-entrytype="{Type}" onclick="wsLogDocumentView('{ID}');" class="">
+        <a href="" a_id="{ID}" a_type="entry" data-dms-url="{Url}" data-dms-name="{Name}" data-dms-extension="{FileExtension}" data-dms-server="{cfg_webroot}" data-dms-entrytype="{Type}" onclick="wsLogDocumentView('{ID}');" class="">
             {Title}
         </a>
         {editcard}

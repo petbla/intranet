@@ -146,7 +146,7 @@ class Documentcontroller{
 	private function slideshow( $ID )
 	{
 		global $config;
-		$root = $config['webserver'];
+		$webroot = $config['webroot'];
 
 		require_once( FRAMEWORK_PATH . 'models/entry/model.php');
 		$this->model = new Entry( $this->registry, $ID );
@@ -167,10 +167,10 @@ class Documentcontroller{
 						$i++;
 						$ID = $image['ID'];
 						$data[] = array('index' => $i);
-						$link = $root.$image['Name'];
-						$link = str_replace(DIRECTORY_SEPARATOR,'/', $link); 
+						$imagepath = $webroot.$image['Name'];
+						$imagepath = str_replace(DIRECTORY_SEPARATOR,'/', $imagepath); 
 
-						$img[] = array('imagepath' => $link, 'Title' => $image['Title']);
+						$img[] = array('imagepath' => $imagepath, 'Title' => $image['Title']);
 					}
 					$CacheId = $this->registry->getObject('db')->cacheData($img);
 					$this->registry->getObject('template')->getPage()->addTag( 'ImageList', array('DATA', $CacheId));
@@ -494,13 +494,14 @@ class Documentcontroller{
 				}
 				if($action == 'addFolder')
 				{
-					$fullName  = $this->registry->getObject('fce')->ConvertToSharePathName( $fullName );
-					$fullName  = $this->registry->getObject('fce')->ConvertToDirectoryPathName( $fullName );
-					$fullName .= $_POST['fld_name'];
+					$fileFullPath = $this->registry->getObject('fce')->ConvertToSharePathName( $fullName );
+					$fileFullPath .= $_POST['fld_name'];
+					$fullName  = $this->registry->getObject('fce')->ConvertToDirectoryPathName( $fileFullPath );
+					$fileFullPath = iconv("utf-8","windows-1250",$fileFullPath);
 					$fullName = iconv("utf-8","windows-1250",$fullName);
 					if(!file_exists($fullName))
 					{
-						if(mkdir($fullName, 0755, true))
+						if(mkdir($fileFullPath, 0755, true))
 						{
 							// create succes
 							$EntryNo = $this->registry->getObject('file')->findItem($fullName);

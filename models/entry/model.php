@@ -51,7 +51,6 @@ class Entry{
 	private $Private;
 
 	private $activeEntry;
-	private $linkToFile;
 	private $breads;
 	private $isHeader;
 	private $isFooter;
@@ -69,7 +68,6 @@ class Entry{
 	{
 		global $config;
         $pref = $config['dbPrefix'];
-		$root = $config['fileserver'];
 
 		$this->registry = $registry;
 		$this->activeEntry = FALSE;
@@ -126,10 +124,6 @@ class Entry{
 								
 				$this->activeEntry = true;
 				
-				$link = str_replace(DIRECTORY_SEPARATOR,'/', $data['Name']);  //iconv("windows-1250","utf-8",
-				$link = $root.$link;
-				$this->linkToFile = $link;
-		
 				$this->breads = $this->getBreads();
 
 				if(($this->Type == 20) || ($this->Type == 25))
@@ -227,7 +221,6 @@ class Entry{
 		if ($onlyCulons)
 		{
 			unset($data['activeEntry']);
-			unset($data['linkToFile']);
 			unset($data['breads']);
 			unset($data['isHeader']);
 			unset($data['isFooter']);
@@ -243,14 +236,7 @@ class Entry{
 		}
 		return $data;
 	}
-	public function getlinkToFile()
-	{
-		if ($this->isValid())
-		{
-			return $this->linkToFile;
-		}
-		return null;
-	}
+
 	public function initNew()
 	{
 		$this->EntryNo = 0;
@@ -284,7 +270,6 @@ class Entry{
 		$this->Private = 0;
 
 		$this->activeEntry = FALSE;
-		$this->linkToFile = '';
 		$this->breads = '';
 		$this->isHeader = FALSE;
 		$this->isFooter = FALSE;
