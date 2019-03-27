@@ -549,7 +549,6 @@ class Documentcontroller{
 		if(isset($_FILES["fileToUpload"]) && isset($_POST['path']) && isset($_POST["submit_x"]) && isset($_POST['ID']) ) {
 			$ID = $_POST['ID'];
 			$path = $_POST['path'];
-			$path .= ($path[strlen($path)-1] != DIRECTORY_SEPARATOR) ? DIRECTORY_SEPARATOR : '';
 			$files = $_FILES['fileToUpload'];
 			if(!empty($files))
 			{

@@ -81,7 +81,6 @@ class file {
           $changes['Archived'] = 1;
           $changes['LastChange'] = date("Y-m-d H:i:s");
           $condition = "ID = '$ID'";
-          $item = $this->getItem($entry['Name']);         
 					$this->registry->getObject('log')->addMessage("Zobrazení a aktualizace dokumentu",'contact',$ID);
           $this->registry->getObject('db')->updateRecords('DmsEntry',$changes,$condition);
         }        
@@ -99,7 +98,7 @@ class file {
   public function findItem( $winFullItemPath , $isDir = false )
   {
     $fullItemPath = iconv("windows-1250","utf-8",$winFullItemPath);
-    $name  = $this->registry->getObject('fce')->ConvertToDirectoryPathName( $fullItemPath,false );    
+    $name  = $this->registry->getObject('fce')->ConvertToDirectoryPathName( $fullItemPath,false );    // formát Xxxxx\Ddddd\Aaaaa
     $name = str_replace(str_replace('http:','',$this->root),'',$name);
     if ($name === '')
     {
@@ -263,9 +262,9 @@ class file {
 
     if (!$isDir)
     {
-      if(!is_file($item['FullName']) && !is_dir($item['FullName']))
+      if(!is_file($item['FullName']))
       {
-        return $item;
+        $isDir = true;
       }
     }
 

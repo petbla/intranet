@@ -348,6 +348,6 @@ class UsefulFunction {
     }
     return($path);
  }
-  
+
 }
 ?>
