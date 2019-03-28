@@ -3,8 +3,9 @@
     <tr>
       <th>&nbsp;</th>
       <th>{lbl_Name}</th>
-      <th>{lbl_ModifyDate}</th>
+      <th>{lbl_RemindState}</th>
       <th>{lbl_RemindToDate}</th>
+      <th>{lbl_ModifyDate}</th>
       <th></th>
     </tr>
     {addFiles}
@@ -19,8 +20,9 @@
         <a href="" a_id="{ID}" a_type="entry" data-dms-url="{Url}" data-dms-name="{Name}" data-dms-extension="{FileExtension}" data-dms-server="{cfg_webroot}" data-dms-entrytype="{Type}" onclick="wsLogDocumentView('{ID}');">{Title}</a>
         {editcard}
       </td>
-      <td>{ModifyDateTime}</td>
+      <td>{RemindState_{RemindState}}</td>
       <td>{RemindLastDate}</td>
+      <td>{ModifyDateTime}</td>
       <td>.{FileExtension}</td>
   	</tr>
     <!-- END DocumentItems -->

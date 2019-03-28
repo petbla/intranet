@@ -49,6 +49,9 @@ class document {
         // Show icons
         $this->addIcons();
 
+        // Add RemindState Caption
+        $this->addRemindState();
+        
         // Breds navigation
         if ($entry !== null)
             $breads = $showBreads ? $entry['breads'] : '';
@@ -147,6 +150,10 @@ class document {
         $this->registry->getObject('template')->getPage()->addTag( 'filePath', $filePath );
         $this->registry->getObject('template')->dataToTags( $entry, '' );
         $this->registry->getObject('template')->addTemplateBit('editcard', 'list-entry-editcard.tpl.php');
+        
+        // Add RemindState Caption
+        $this->addRemindState();
+
         $this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'view-entry-document.tpl.php', 'footer.tpl.php');
     }
 
@@ -213,5 +220,18 @@ class document {
         $this->registry->getObject('template')->getPage()->addTag( 'icon25', $icon25 );
         $this->registry->getObject('template')->getPage()->addTag( 'icon35', $icon35 );
     }    
+
+    public function addRemindState()
+    {
+        global $caption;
+        
+        $this->registry->getObject('template')->getPage()->addTag( 'RemindState_', '' );
+        $this->registry->getObject('template')->getPage()->addTag( 'RemindState_00_new', $caption['RemindState00'] );
+        $this->registry->getObject('template')->getPage()->addTag( 'RemindState_10_process', $caption['RemindState10'] );
+        $this->registry->getObject('template')->getPage()->addTag( 'RemindState_20_wait', $caption['RemindState20'] );
+        $this->registry->getObject('template')->getPage()->addTag( 'RemindState_30_aprowed', $caption['RemindState30'] );
+        $this->registry->getObject('template')->getPage()->addTag( 'RemindState_40_storno', $caption['RemindState40'] );
+        $this->registry->getObject('template')->getPage()->addTag( 'RemindState_50_finish', $caption['RemindState50'] );
+    }
 }
 ?>

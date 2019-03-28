@@ -108,6 +108,7 @@ function isValidFileExtension(extension) {
         'xlsx',
         'txt',
         'html',
+        'msg',
         'txt',
         'csv',
         'jpg',

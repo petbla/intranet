@@ -440,14 +440,21 @@ class Documentcontroller{
 		$this->model = new Entry( $this->registry, $ID );
 		if( ($this->perSet > 0) AND $this->model->isValid() )
 		{
-			if(isset($_POST['content']))
-			{
-				// Update
-				$changes['Content'] = $_POST['content'];
-				$condition = "ID = '$ID'";
-				$this->registry->getObject('log')->addMessage("Aktualizace obsahu dokumentu",'dmsentry',$ID);
-				$this->registry->getObject('db')->updateRecords('dmsentry',$changes, $condition);
-			}
+			// Update
+			$changes['Content'] = isset($_POST['Content']) ? $_POST['Content'] : '';
+			$changes['Title'] = isset($_POST['Title']) ? $_POST['Title'] : '';
+			$changes['Url'] = isset($_POST['Url']) ? $_POST['Url'] : '';
+			if(isset($_POST['Remind'] ))
+				$changes['Remind'] = ($_POST['Remind'] !== null) ? ($_POST['Remind'] === '') ? '0' : '1' : '0';
+			if(isset($_POST['RemindFromDate'] ))
+				$changes['RemindFromDate'] = ($_POST['RemindFromDate'] !== '') ? $_POST['RemindFromDate'] : 'NULL';
+			if(isset($_POST['RemindLastDate'] ))
+				$changes['RemindLastDate'] = ($_POST['RemindLastDate'] !== '') ? $_POST['RemindLastDate'] : 'NULL';
+			$changes['RemindResponsiblePerson'] = isset($_POST['RemindResponsiblePerson']) ? $_POST['RemindResponsiblePerson'] : '';
+			$changes['RemindState'] = isset($_POST['RemindState']) ? $_POST['RemindState'] : '';
+			$condition = "ID = '$ID'";
+			$this->registry->getObject('log')->addMessage("Aktualizace obsahu dokumentu",'dmsentry',$ID);
+			$this->registry->getObject('db')->updateRecords('dmsentry',$changes, $condition);
 		}
 		$this->listDocuments($ID);
 	}	
@@ -534,7 +541,7 @@ class Documentcontroller{
 						{
 							$parentEntry = $this->model->getData();
 							$ID = $this->registry->getObject('file')->newNote( $parentEntry );
-							$this->listDocuments($parentID);
+							$this->editContentDocument($ID);
 							return;
 						}				
 					}
@@ -648,20 +655,13 @@ class Documentcontroller{
 		if( ($this->perSet > 0) AND $this->model->isValid() )
 		{
 			$entry = $this->model->getData();
-			if($entry['Type'] != 35)
-			{
-				$message = 'Odstranit lze pouze poznámky.';
-			}
-			else
-			{
-				$condition = "ID = '$ID'";
-				$data['Archived'] = 1;
-				$this->registry->getObject('log')->addMessage("Výmaz poznámky",'dmsentry',$ID);
-				$this->registry->getObject('db')->updateRecords('dmsentry',$data,$condition);			
-					
-				$this->listDocuments($entry['Parent']);
-				return;
-			}
+			$condition = "ID = '$ID'";
+			$data['Archived'] = 1;
+			$this->registry->getObject('log')->addMessage("Výmaz poznámky",'dmsentry',$ID);
+			$this->registry->getObject('db')->updateRecords('dmsentry',$data,$condition);			
+				
+			$this->listDocuments($entry['Parent']);
+			return;
 		}				
 		$this->error($message);
 	}

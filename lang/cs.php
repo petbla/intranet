@@ -98,7 +98,15 @@ $caption['Remind'] =         'Připomenutí';
 $caption['RemindFromDate'] = 'Připomenout';
 $caption['RemindToDate'] =   'Termín splnění';
 $caption['RemindRespPers'] = 'Zodpovídá';
+
 $caption['RemindState'] =    'Stav';
+$caption['RemindState00'] = '';
+$caption['RemindState10'] = 'Rozpracováno';
+$caption['RemindState20'] = 'Čeká na schválení';
+$caption['RemindState30'] = 'Schváleno';
+$caption['RemindState40'] = 'Zrušeno';
+$caption['RemindState50'] = 'Dokončeno';
+
 $caption['Todos'] =          'Úkoly';
 $caption['Terms'] =          'Termíny';
 $caption['RemindClosed'] =   'Vyřízeno';
