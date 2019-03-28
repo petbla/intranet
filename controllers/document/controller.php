@@ -561,8 +561,12 @@ class Documentcontroller{
 				{
 					$target_file = $path . basename($file["name"]);
 					$target_file = $this->registry->getObject('file')->Convert2SystemCodePage($target_file);
-					move_uploaded_file($file['tmp_name'],$target_file);
-					$EntryNo = $this->registry->getObject('file')->findItem($target_file);
+					try {
+						move_uploaded_file($file['tmp_name'],$target_file);
+						$EntryNo = $this->registry->getObject('file')->findItem($target_file);
+					} catch (Exception $e) {
+						$this->error('Soubor ' + $file["name"] + ' se nepodařilo načíst. Chyba: ' + $e->getMessage());
+					}
 				}
 			}	
 		}
