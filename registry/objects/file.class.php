@@ -51,7 +51,7 @@ class file {
             continue; 
           };
           $fullItemPath = $dir.$file;
-          $winFullItemPath = iconv("utf-8","windows-1250",$fullItemPath);
+          $winFullItemPath = $this->Convert2SystemCodePage($fullItemPath);
           $entryNo = $this->findItem($winFullItemPath);
           if(is_dir($fullItemPath))
           { 
@@ -97,7 +97,7 @@ class file {
 	 */
   public function findItem( $winFullItemPath , $isDir = false )
   {
-    $fullItemPath = iconv("windows-1250","utf-8",$winFullItemPath);
+    $fullItemPath = $this->Convert2CoreCodePage($winFullItemPath);
     $name  = $this->registry->getObject('fce')->ConvertToDirectoryPathName( $fullItemPath,false );    // formát Xxxxx\Ddddd\Aaaaa
     $name = str_replace(str_replace('http:','',$this->root),'',$name);
     if ($name === '')
@@ -259,7 +259,7 @@ class file {
     $item['Name'] = $this->registry->getObject('fce')->ConvertToDirectoryPathName( $name,false );    
 
     $item['FullName'] =  $root.$item['Name'];
-    $item['WinFullName'] =  iconv("utf-8","windows-1250",$item['FullName']);
+    $item['WinFullName'] =  $this->Convert2SystemCodePage($item['FullName']);
 
     if (!$isDir)
     {
@@ -277,18 +277,9 @@ class file {
       array_pop($arr);
       $item['Parent'] = implode(DIRECTORY_SEPARATOR,$arr);
     }
-    $item['WinItem'] =  iconv("utf-8","windows-1250",$item['Item']);
-    $item['WinParent'] =  iconv("utf-8","windows-1250",$item['Parent']);
-    
-    
-    /*$parentItems = scandir($root.$item['WinParent']);
-    for ($i=0; $i < count($parentItems); $i++) { 
-      $parentItems[$i] = strtoupper($parentItems[$i]);
-    }
-    $item['Exist'] = in_array(strtoupper($item['Item']),$parentItems);
-    */
+    $item['WinItem'] =  $this->Convert2SystemCodePage($item['Item']);
+    $item['WinParent'] =  $this->Convert2SystemCodePage($item['Parent']);
     $item['Exist'] = (is_dir($item['WinFullName']) || is_file($item['WinFullName']));
-
 
     $item['Level'] = substr_count($item['Name'],DIRECTORY_SEPARATOR);
     if ($isDir || (is_dir($item['WinFullName']))) 
@@ -351,6 +342,23 @@ class file {
     {
       return ('');
     }
-    
+  }
+
+  public function Convert2SystemCodePage( $sourceText )
+  {
+    global $config;
+
+    if ($config['coreEncoding'] == $config['systemEncoding'])
+      return($sourceText);
+    return(iconv($config['coreEncoding'],$config['systemEncoding'],$sourceText));
+  }
+
+  public function Convert2CoreCodePage( $sourceText )
+  {
+    global $config;
+
+    if ($config['coreEncoding'] == $config['systemEncoding'])
+      return($sourceText);
+    return(iconv($config['systemEncoding'],$config['coreEncoding'],$sourceText));
   }
 }

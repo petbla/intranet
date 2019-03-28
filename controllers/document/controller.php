@@ -497,16 +497,20 @@ class Documentcontroller{
 					$fileFullPath = $this->registry->getObject('fce')->ConvertToSharePathName( $fullName );
 					$fileFullPath .= $_POST['fld_name'];
 					$fullName  = $this->registry->getObject('fce')->ConvertToDirectoryPathName( $fileFullPath , false);
-					$fileFullPath = iconv("utf-8","windows-1250",$fileFullPath);
-					$fullName = iconv("utf-8","windows-1250",$fullName);
+					$fileFullPath = $this->registry->getObject('file')->Convert2SystemCodePage($fileFullPath);
+					$fullName = $this->registry->getObject('file')->Convert2SystemCodePage($fullName);
 					if(!file_exists($fullName))
 					{
-						if(mkdir($fileFullPath, 0755, true))
-						{
-							// create succes
-							$EntryNo = $this->registry->getObject('file')->findItem($fullName);
-							$ID = $this->registry->getObject('file')->getIdByEntryNo($EntryNo);
-							$this->listDocuments($ID);
+						try {
+							if(mkdir($fileFullPath, 0755, true))
+							{
+								// create succes
+								$EntryNo = $this->registry->getObject('file')->findItem($fullName);
+								$ID = $this->registry->getObject('file')->getIdByEntryNo($EntryNo);
+								$this->listDocuments($ID);
+							}
+						} catch (Exception $e) {
+							$this->error('Složka nebyla vytvořena. Chyba: ' + $e->getMessage());
 						}
 						return;
 					}
@@ -556,7 +560,7 @@ class Documentcontroller{
 				foreach($files as $file)
 				{
 					$target_file = $path . basename($file["name"]);
-					$target_file = iconv("utf-8","windows-1250",$target_file);
+					$target_file = $this->registry->getObject('file')->Convert2SystemCodePage($target_file);
 					move_uploaded_file($file['tmp_name'],$target_file);
 					$EntryNo = $this->registry->getObject('file')->findItem($target_file);
 				}
@@ -576,7 +580,7 @@ class Documentcontroller{
 			switch ($changetype) {
 				case 'Changed':
 				case 'Created':
-					$fileName = iconv("utf-8","windows-1250",$fileName);
+					$fileName = $this->registry->getObject('file')->Convert2SystemCodePage($fileName);
 					$EntryNo = $this->registry->getObject('file')->findItem($fileName, $isDir);
 					$this->registry->getObject('log')->addMessage("FileSystem: Nový soubor EntrNo: $EntryNo",'dmsentry','');
 					break;

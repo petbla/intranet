@@ -483,7 +483,7 @@ class pdfdocument extends FPDF
   {
     if ($this->GetY() > 270)
     {
-      $this->HeaderInvoice();
+      $this->HeaderInvoice(0);
       return true; 
     }
     return false;
