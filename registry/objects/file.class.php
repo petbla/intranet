@@ -32,7 +32,7 @@ class file {
     
     ini_set('max_execution_time', 600);
     
-    $this->deaktiveUnvalidEntries();
+    //$this->deaktiveUnvalidEntries();
 
     $directories[]  = $this->root; 
 
@@ -67,7 +67,7 @@ class file {
   function deaktiveUnvalidEntries()
   {
     $this->registry->getObject('db')->initQuery('DmsEntry','EntryNo,ID,Name,Type');
-    $this->registry->getObject('db')->setCondition('Archived = false AND Type IN (20,30)');
+    $this->registry->getObject('db')->setCondition('Archived = 0 AND Type IN (20,30)');
     if( $this->registry->getObject('db')->findSet())
     {
       $data = $this->registry->getObject('db')->getResult();
@@ -259,10 +259,11 @@ class file {
     $item['Name'] = $this->registry->getObject('fce')->ConvertToDirectoryPathName( $name,false );    
 
     $item['FullName'] =  $root.$item['Name'];
+    $item['WinFullName'] =  iconv("utf-8","windows-1250",$item['FullName']);
 
     if (!$isDir)
     {
-      if(!is_file($item['FullName']))
+      if(!is_file($item['WinFullName']))
       {
         $isDir = true;
       }
@@ -276,15 +277,18 @@ class file {
       array_pop($arr);
       $item['Parent'] = implode(DIRECTORY_SEPARATOR,$arr);
     }
-    $item['WinFullName'] =  iconv("utf-8","windows-1250",$item['FullName']);
     $item['WinItem'] =  iconv("utf-8","windows-1250",$item['Item']);
     $item['WinParent'] =  iconv("utf-8","windows-1250",$item['Parent']);
     
-    $parentItems = scandir($root.$item['WinParent']);
+    
+    /*$parentItems = scandir($root.$item['WinParent']);
     for ($i=0; $i < count($parentItems); $i++) { 
       $parentItems[$i] = strtoupper($parentItems[$i]);
     }
     $item['Exist'] = in_array(strtoupper($item['Item']),$parentItems);
+    */
+    $item['Exist'] = (is_dir($item['WinFullName']) || is_file($item['WinFullName']));
+
 
     $item['Level'] = substr_count($item['Name'],DIRECTORY_SEPARATOR);
     if ($isDir || (is_dir($item['WinFullName']))) 

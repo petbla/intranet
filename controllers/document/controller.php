@@ -496,7 +496,7 @@ class Documentcontroller{
 				{
 					$fileFullPath = $this->registry->getObject('fce')->ConvertToSharePathName( $fullName );
 					$fileFullPath .= $_POST['fld_name'];
-					$fullName  = $this->registry->getObject('fce')->ConvertToDirectoryPathName( $fileFullPath );
+					$fullName  = $this->registry->getObject('fce')->ConvertToDirectoryPathName( $fileFullPath , false);
 					$fileFullPath = iconv("utf-8","windows-1250",$fileFullPath);
 					$fullName = iconv("utf-8","windows-1250",$fullName);
 					if(!file_exists($fullName))
