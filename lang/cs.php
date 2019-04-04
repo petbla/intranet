@@ -78,6 +78,7 @@ $caption['Files'] =          'Soubory';
 $caption['Add_file'] =       'Přidat soubor';
 $caption['Date'] =           'Datum';
 $caption['Title'] =          'Titulek';
+$caption['FileExtension'] =  'Typ souboru';
 $caption['Description'] =    'Popis';
 $caption['Name'] =           'Název';
 $caption['Status'] =         'Stav';

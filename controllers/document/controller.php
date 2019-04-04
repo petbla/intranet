@@ -202,6 +202,12 @@ class Documentcontroller{
 			}
 			$this->registry->setLevel($entry['Level']);
 			$this->registry->setEntryNo($entry['EntryNo']);		
+
+			// Synchronizace složky
+			if($entry['Type'] == 20)
+			{
+				$this->registry->getObject('file')->synchoroDirectory($entry);
+			}
 		}
 		// Folders
 		$sql = "SELECT ID,Title,Name,Type,Parent,ModifyDateTime FROM ".$this->prefDb."DmsEntry ".

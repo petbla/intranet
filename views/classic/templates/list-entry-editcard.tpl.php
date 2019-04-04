@@ -6,6 +6,10 @@
             <span>{lbl_Title}</span>
             <input type="text" class="editInLine" name="newTitle" inputTitle_id="{ID}">
             </label>
+            <label for="newFileExt">
+            <span>{lbl_FileExtension}</span>
+            <input type="text" class="editInLine" name="newFileExt" inputTitle_id="{ID}">
+            </label>
             <label for="newUrl">
             <span>Url</span>
             <input type="text" class="editInLine" name="newUrl" inputUrl_id="{ID}">

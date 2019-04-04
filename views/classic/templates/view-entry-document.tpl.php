@@ -39,7 +39,7 @@
         </tr>
     </table>
     <div id="actionpanel">
-        <img src="views/classic/images/icon/modify.png" dmsEntryType="{Type}" alt="{lbl_edit}" id="{ID}" dmsClassName="item" onclick="wsLogContactView('{ID}');" />
+        <img src="views/classic/images/icon/modify.png" dmsEntryType="{Type}" alt="{lbl_edit}" id="{ID}" dmsClassName="item" onclick="wsLogContactView('{ID}','{cfg_siteurl}');" />
         <a href="index.php?page=document/editcontent/{ID}"><img src="views/classic/images/icon/edit.png" alt="OBSAH" title="{lbl_msg_ModifyContentDoc}"></a>
         <br />
         {editcard}

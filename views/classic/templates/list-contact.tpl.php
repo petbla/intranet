@@ -52,7 +52,7 @@
                 {editIcon}
             </td>
             <td class="col_fullname">
-                <a href="index.php?page=contact/view/{ID}" onclick="wsLogContactView('{ID}');">
+                <a href="index.php?page=contact/view/{ID}" onclick="wsLogContactView('{ID}','{cfg_siteurl}');">
                     {FullName}
                 </a>
                 {editcard}                

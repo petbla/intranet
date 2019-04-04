@@ -32,7 +32,7 @@ class file {
     
     ini_set('max_execution_time', 600);
     
-    //$this->deaktiveUnvalidEntries();
+    $this->deaktiveUnvalidEntries();
 
     $directories[]  = $this->root; 
 
@@ -64,10 +64,41 @@ class file {
     } 
   } 
 
-  function deaktiveUnvalidEntries()
+  function synchoroDirectory($entry)
+  {
+    $dir = $this->root . $entry['Name'];
+    $dir  = $this->registry->getObject('fce')->ConvertToSharePathName( $dir,false);
+    if ($handle = opendir($dir)) { 
+      while (false !== ($file = readdir($handle))) 
+      { 
+        if ($file == '.' |0| $file == '..') 
+        { 
+          continue; 
+        };
+        $fullItemPath = $dir.$file;
+        $name  = $this->registry->getObject('fce')->ConvertToDirectoryPathName( $fullItemPath,false );   
+        $name = str_replace(str_replace('http:','',$this->root),'',$name);      
+
+        $this->registry->getObject('db')->initQuery('DmsEntry','ID');
+        $sanitizename = $this->registry->getObject('db')->sanitizeData($name);
+        $this->registry->getObject('db')->setCondition( 'Name="'.$sanitizename.'" AND Archived=0' );
+        if($this->registry->getObject('db')->findFirst() == false)
+        {
+          $winFullItemPath = $this->Convert2SystemCodePage($fullItemPath);
+          $entryNo = $this->findItem($winFullItemPath);
+        }    
+      }
+      closedir($handle); 
+      $this->deaktiveUnvalidEntries($entry['EntryNo']);
+    } 
+}
+
+  function deaktiveUnvalidEntries($Parent = null)
   {
     $this->registry->getObject('db')->initQuery('DmsEntry','EntryNo,ID,Name,Type');
     $this->registry->getObject('db')->setCondition('Archived = 0 AND Type IN (20,30)');
+    if (isset($Parent))
+      $this->registry->getObject('db')->setFilter('Parent',$Parent);
     if( $this->registry->getObject('db')->findSet())
     {
       $data = $this->registry->getObject('db')->getResult();
@@ -106,12 +137,22 @@ class file {
     }
     $item = $this->getItem($name, $isDir);
     
-    $this->registry->getObject('db')->initQuery('DmsEntry','EntryNo,Name');
+    $this->registry->getObject('db')->initQuery('DmsEntry','EntryNo,ID,Name,Title,FileExtension');
     $sanitizename = $this->registry->getObject('db')->sanitizeData($name);
     $this->registry->getObject('db')->setCondition( 'Name="'.$sanitizename.'" AND Archived=0' );
     if( $this->registry->getObject('db')->findFirst())
     {
        $entry = $this->registry->getObject('db')->getResult();
+       $ext = pathinfo($item['WinFullName'],PATHINFO_EXTENSION);
+       if(($entry['FileExtension'] != $ext) && (strlen($ext) <= 10))
+       {
+         $ID = $entry['ID'];
+         $changes = array();
+         $changes['FileExtension'] = $ext;
+         $condition = "ID = '$ID'";
+         $this->registry->getObject('log')->addMessage("Doplnění přípony souboru",'dmsentry',$ID);
+         $this->registry->getObject('db')->updateRecords('dmsentry',$changes, $condition);
+       };
        return $entry['EntryNo'];
     }
     

@@ -52,10 +52,10 @@ function ConfirnDelete(){
     }
 }
 
-function wsLogContactView(ID) {
+function wsLogContactView(ID,siteurl) {
     const Http = new XMLHttpRequest();
     var url;
-    url= 'http://localhost/intranet/index.php?page=contact/WS/logView/' + ID;
+    url= siteurl + 'index.php?page=contact/WS/logView/' + ID;
     Http.open("GET", url);
     Http.send();
     Http.onreadystatechange=(e)=>{
@@ -63,10 +63,10 @@ function wsLogContactView(ID) {
     }
 }
 
-function wsLogDocumentView(ID) {
+function wsLogDocumentView(ID,siteurl) {
     const Http = new XMLHttpRequest();
     var url;
-    url = 'http://localhost/intranet/index.php?page=document/WS/logView/' + ID;
+    url = siteurl + 'index.php?page=document/WS/logView/' + ID;
     Http.open("GET", url);
     Http.send();
     Http.onreadystatechange = (e) => {
@@ -74,17 +74,17 @@ function wsLogDocumentView(ID) {
     };
 }
 
-function wsSetRemindEntry(ID, BaseUrl) {
+function wsSetRemindEntry(ID,siteurl,BaseUrl) {
     const Http = new XMLHttpRequest();
     var url, result;
-    url = 'http://localhost/intranet/index.php?page=document/WS/setRemind/' + ID;
+    url = siteurl + 'index.php?page=document/WS/setRemind/' + ID;
     Http.open("GET", url);
     Http.send();
     Http.onreadystatechange = (e) => {
         result = Http.responseText;
         if(result == 'OK'){
             console.log('url: ',window.location);
-            window.location = 'http://localhost/intranet/index.php?page=/' + BaseUrl;
+            window.location = siteurl + 'index.php?page=/' + BaseUrl;
         }       
     };
 }
