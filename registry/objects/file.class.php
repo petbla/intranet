@@ -145,7 +145,7 @@ class file {
        $entry = $this->registry->getObject('db')->getResult();
        $ext = pathinfo($item['WinFullName'],PATHINFO_EXTENSION);
        $multimedia = $this->getMultimediaType($ext);       
-       if((($entry['FileExtension'] != $ext) || ($entry['Multimedia'] != $multimedia) && (strlen($ext) <= 10)))
+       if((($entry['FileExtension'] != $ext) || ($entry['Multimedia'] != $multimedia)) && (strlen($ext) <= 10))
        {
          $ID = $entry['ID'];
          $changes = array();
