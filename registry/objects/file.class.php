@@ -137,18 +137,20 @@ class file {
     }
     $item = $this->getItem($name, $isDir);
     
-    $this->registry->getObject('db')->initQuery('DmsEntry','EntryNo,ID,Name,Title,FileExtension');
+    $this->registry->getObject('db')->initQuery('DmsEntry','EntryNo,ID,Name,Title,FileExtension,Multimedia');
     $sanitizename = $this->registry->getObject('db')->sanitizeData($name);
     $this->registry->getObject('db')->setCondition( 'Name="'.$sanitizename.'" AND Archived=0' );
     if( $this->registry->getObject('db')->findFirst())
     {
        $entry = $this->registry->getObject('db')->getResult();
        $ext = pathinfo($item['WinFullName'],PATHINFO_EXTENSION);
-       if(($entry['FileExtension'] != $ext) && (strlen($ext) <= 10))
+       $multimedia = $this->getMultimediaType($ext);       
+       if((($entry['FileExtension'] != $ext) || ($entry['Multimedia'] != $multimedia) && (strlen($ext) <= 10)))
        {
          $ID = $entry['ID'];
          $changes = array();
          $changes['FileExtension'] = $ext;
+         $changes['Multimedia'] = $multimedia;
          $condition = "ID = '$ID'";
          $this->registry->getObject('log')->addMessage("Doplnění přípony souboru",'dmsentry',$ID);
          $this->registry->getObject('db')->updateRecords('dmsentry',$changes, $condition);
@@ -170,20 +172,7 @@ class file {
     $data['ModifyDateTime'] = date("Y-m-d H:i:s", filemtime($item['WinFullName'])); // datum a čas změny
     $data['PermissionSet'] = 1;
     $data['Url'] = '';
-    switch (strtolower($data['FileExtension'])) {
-      case 'bmp':
-      case 'jpg':
-      case 'gif':
-      case 'png':
-          $data['Multimedia'] = 'image';
-          break;
-      case 'mp3':
-          $data['Multimedia'] = 'audio';
-          break;
-      case 'mp4':
-          $data['Multimedia'] = 'video';
-          break;
-    }
+    $data['Multimedia'] = $this->getMultimediaType(strtolower($data['FileExtension']));
     $this->registry->getObject('db')->insertRecords( 'DmsEntry', $data );
     $this->registry->getObject('db')->findFirst();
     $entry = $this->registry->getObject('db')->getResult();
@@ -401,5 +390,21 @@ class file {
     if ($config['coreEncoding'] == $config['systemEncoding'])
       return($sourceText);
     return(iconv($config['systemEncoding'],$config['coreEncoding'],$sourceText));
+  }
+
+  function getMultimediaType($FileExt)
+  {
+    switch ($FileExt) {
+      case 'bmp':
+      case 'jpg':
+      case 'gif':
+      case 'png':
+          return 'image';
+      case 'mp3':
+          return 'audio';
+      case 'mp4':
+          return 'video';
+    }
+    return '';
   }
 }
