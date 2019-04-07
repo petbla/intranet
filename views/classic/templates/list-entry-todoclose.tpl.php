@@ -30,7 +30,7 @@
         </a>
         {editcard}
       </td>
-      <td class="">{RemindState}</td>
+      <td class="">{RemindState_{RemindState}}</td>
       <td class="">{RemindResponsiblePerson}</td>
       <td class="">{RemindLastDate}</td>
   	</tr>

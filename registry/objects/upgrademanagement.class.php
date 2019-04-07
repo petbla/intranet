@@ -202,6 +202,23 @@ class upgrademanagement {
             // upgrade to 2.03
             $this->upgrade_013('2.03');
         }
+        if ($this->version === '2.03') 
+        {
+            // upgrade to 2.04
+            $this->upgrade_014('2.04');
+        }
+    }
+
+    private function upgrade_014($upVer)
+    {
+		global $config;
+        $pref = $config['dbPrefix'];
+
+        // upgrade table 'dmsentry'
+        $sql = "ALTER TABLE ".$pref."dmsentry".
+                " CHANGE `Url` `Url` VARCHAR(250) CHARACTER SET utf8 COLLATE utf8_czech_ci NOT NULL DEFAULT ''";        
+        $this->registry->getObject('db')->executeQuery( $sql );        
+        $this->setNewVersion($upVer);
     }
 
     private function upgrade_013($upVer)

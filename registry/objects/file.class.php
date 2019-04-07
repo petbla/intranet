@@ -213,7 +213,7 @@ class file {
 
     // Insert NEW Block to folder
     $data = array();
-    $this->model->initNew();
+    $this->model = new Entry( $this->registry, '' );
     $data = $this->model->getData( true );
 
     $data['ID'] = $this->registry->getObject('fce')->GUID();
@@ -242,7 +242,7 @@ class file {
 		$data['Type'] = 35;
 		$data['LineNo'] = $this->getNextLineNo($data['Parent']);
 		$data['Title'] = 'Nová poznámka'; 
-		$data['Name'] = $data['Path'].DIRECTORY_SEPARATOR.$data['ID'];
+		$data['Name'] = $this->registry->getObject('db')->sanitizeData($data['Path'].DIRECTORY_SEPARATOR.$data['ID']);
 		$data['PermissionSet'] = $parentEntry['PermissionSet'];
     $data['Url'] = '';
 		$this->registry->getObject('db')->insertRecords( 'DmsEntry', $data );
