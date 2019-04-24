@@ -1,10 +1,4 @@
-<div id="searchForm">
-    <form action="index.php?page=document/search">
-        <label for="search">{lbl_Search}</label>
-        <input type="text" name="searchDocument" id="search" placeholder="{lbl_PlaceText}">
-        <input type="image" src="views/classic/images/icon/search.png" value="{lbl_Searching}" id="submit">
-    </form>
-</div>
+{search}
 <div id="pagecounter">
 {navigate_menu}
 </div>
@@ -25,14 +19,14 @@
         {editIcon}
         {remindIcon}        
       </td>
-      <td class="term{term}">
+      <td class="term{term} column">
         <a href="" a_id="{ID}" a_type="entry" data-dms-url="{Url}" data-dms-name="{Name}" data-dms-extension="{FileExtension}" data-dms-server="{cfg_webroot}" data-dms-entrytype="{Type}" onclick="wsLogDocumentView('{ID},'{cfg_siteurl}');" class="term{term}">
             {Title}
         </a>
         {editcard}
       </td>
-      <td class="term{term}">{RemindState_{RemindState}}</td>
-      <td class="term{term}">{RemindResponsiblePerson}</td>
+      <td class="term{term} column">{RemindState_{RemindState}}</td>
+      <td class="term{term} column">{RemindResponsiblePerson}</td>
       <td class="term{term}">{RemindLastDate}</td>
       <td class="term{term}">{termDays}</td>
   	</tr>

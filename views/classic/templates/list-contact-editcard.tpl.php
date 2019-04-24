@@ -35,7 +35,7 @@
             </label>
             <label for="newWeb">
                 <span>WWW</span>
-                <input type="text" class="editInLine" name="newWeb" inputEmail_id="{ID}">
+                <input type="text" class="editInLine" name="newWeb" inputWeb_id="{ID}">
             </label>
             <label for="newAddress">
                 <span>{lbl_Address}</span>
@@ -67,7 +67,7 @@
             <input type="hidden" name="Company" value="{Company}" oldCompany_id="{ID}">
             <input type="hidden" name="Phone" value="{Phone}" oldPhone_id="{ID}">
             <input type="hidden" name="Email" value="{Email}" oldEmail_id="{ID}">
-            <input type="hidden" name="Web" value="{Web}" oldEmail_id="{ID}">
+            <input type="hidden" name="Web" value="{Web}" oldWeb_id="{ID}">
             <input type="hidden" name="Address" value="{Address}" oldAddress_id="{ID}">
             <input type="hidden" name="Note" value="{Note}" oldNote_id="{ID}">
             <input type="hidden" name="sqlrequest" value="{sqlrequest}" oldNote_id="{ID}">

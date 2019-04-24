@@ -1,14 +1,39 @@
-<div id="searchForm">
-    <form action="index.php?page=document/search">
-        <label for="search">{lbl_Search}</label>
-        <input type="text" name="searchDocument" id="search" placeholder="{lbl_PlaceText}">
-        <input type="image" src="views/classic/images/icon/search.png" value="{lbl_Searching}" id="submit">
-    </form>
-</div>
+{search}
 <div id="pagecounter">
 {navigate_menu}
 </div>
-{documents}
+<div id="DocumentItems">
+  <table class="ContentEntryType{Type}">
+    <tr>
+      <th>&nbsp;</th>
+      <th>{lbl_Name}</th>
+      <th>{lbl_RemindState}</th>
+      <th>{lbl_RemindToDate}</th>
+      <th>{lbl_ModifyDate}</th>
+      <th></th>
+    </tr>
+    {addFiles}
+    <!-- START DocumentItems -->
+    <tr>
+      <td class="col_action">
+        {icon{Type}{FileExtension}}
+        {editIcon}
+        {remindIcon}        
+      </td>
+      <td>
+        <a href="" a_id="{ID}" a_type="entry" data-dms-url="{Url}" data-dms-name="{Name}" data-dms-extension="{FileExtension}" data-dms-server="{cfg_webroot}" data-dms-entrytype="{Type}" onclick="wsLogDocumentView('{ID},'{cfg_siteurl}');">{Title}</a>
+        {editcard}
+        <br>
+        <small style="color:black;">{Path}</small>
+      </td>
+      <td>{RemindState_{RemindState}}</td>
+      <td>{RemindLastDate}</td>
+      <td>{ModifyDateTime}</td>
+      <td>.{FileExtension}</td>
+  	</tr>
+    <!-- END DocumentItems -->
+  </table>
+</div>
 <div id="pagecounter" class="bottom">
 {navigate_menu}
 </div>

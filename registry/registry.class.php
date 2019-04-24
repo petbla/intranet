@@ -148,15 +148,22 @@ class Registry {
 		$urldata = (isset($_REQUEST['page'])) ? $_REQUEST['page'] : '' ;
 		if (!$urldata)
 		{
-			if (isset($_REQUEST['searchDocument']))
+			if (isset($_REQUEST['search']))
 			{
-				$urldata = $_REQUEST['searchDocument'];
-				$urldata = "document/search/$urldata"; 
-			} 
-			elseif (isset($_REQUEST['searchContact']))
-			{
-				$urldata = $_REQUEST['searchContact'];
-				$urldata = "contact/search/$urldata"; 
+				if (isset($_REQUEST['searchcontact_x']))
+				{
+					$urldata = $_REQUEST['search'];
+					$urldata = "general/searchContact/$urldata"; 
+				}
+				elseif (isset($_REQUEST['searchitem_x']))
+				{
+					$urldata = $_REQUEST['search'];
+					$urldata = "general/searchItem/$urldata"; 
+				}
+				else
+				{					
+					$urldata = '';
+				}
 			} 
 			else
 			{

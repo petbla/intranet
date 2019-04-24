@@ -74,6 +74,7 @@ $registry->getObject('template')->getPage()->addTag('UserName',$registry->getObj
 $activeControllers = array();
 $activeControllers[] = 'document';
 $activeControllers[] = 'contact';
+$activeControllers[] = 'general';
 $activeControllers[] = 'admin';
 $currentController = $registry->getURLBit( 0 );  // controller
 

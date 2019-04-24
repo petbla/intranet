@@ -351,6 +351,10 @@ if(contacts){
             inputValue = document.querySelector( '[inputEmail_id="' + e.target.id + '"]' );
             inputValue.value = oldValue.value;
    
+            oldValue = document.querySelector( '[oldWeb_id="' + e.target.id + '"]' );
+            inputValue = document.querySelector( '[inputWeb_id="' + e.target.id + '"]' );
+            inputValue.value = oldValue.value;
+   
             oldValue = document.querySelector( '[oldAddress_id="' + e.target.id + '"]' );
             inputValue = document.querySelector( '[inputAddress_id="' + e.target.id + '"]' );
             inputValue.value = oldValue.value;

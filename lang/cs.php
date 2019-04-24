@@ -155,6 +155,8 @@ $caption['Export'] =         'Export';
 $caption['Error'] =          'Chyba';
 $caption['Days'] =           'Dní';
 $caption['State'] =          'Stav';
+$caption['SearchDoc'] =      'Najít dokument';
+$caption['SearchCont'] =     'Najít kontakt';
 
 
 /**

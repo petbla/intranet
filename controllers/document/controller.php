@@ -225,7 +225,7 @@ class Documentcontroller{
 				  	"FROM ".$this->prefDb."DmsEntry ".
 				  	"WHERE Archived = 0 AND parent=".$entry['EntryNo']." AND Type IN (10,30,35,40) ".
 				  	"AND PermissionSet <= $this->perSet ".
-				  	"ORDER BY Remind+RemindClose DESC,Type,Title ";
+				  	"ORDER BY Remind DESC,Type,Title ";
 		$showBreads = true;
 		$pageTitle = '';
 		$template = '';

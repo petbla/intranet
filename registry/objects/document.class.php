@@ -59,6 +59,9 @@ class document {
             $breads = $showBreads;
         $this->registry->getObject('template')->getPage()->addTag( 'breads', $breads );
 
+        // Search BOX
+        $this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
+
         // Show Folders
         if ($showFolder)
         {

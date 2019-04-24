@@ -500,6 +500,9 @@ class Contactcontroller {
 				$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'list-contact-empty.tpl.php', 'footer.tpl.php');			
 			}
 			$this->registry->getObject('template')->getPage()->addTag( 'sqlrequest', '' );
+			
+			// Search BOX
+			$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
 		}
         else
         {

@@ -314,6 +314,10 @@ div#DocumentItems td a.term1, div#DocumentItems td.term1{
   color: yellow; 
   background-color: crimson;
 }
+div#DocumentItems td.column{
+  padding-left: 5px;
+  padding-right: 5px;
+}
 
 div#ContactItems td{
   font-family: Arial, sans-serif, Calibri; 
