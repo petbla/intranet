@@ -1,5 +1,9 @@
 <?php
-
+/**
+ * @author  Petr Blažek
+ * @version 2.0
+ * @date    26.04.2019
+ */
 class Generalcontroller {
 
 	private $registry;
@@ -52,17 +56,43 @@ class Generalcontroller {
 		}
 	}
 
+    /**
+     * Zobrazení chybové stránky, pokud dokument nebyl nalezem 
+     * @return void
+     */
 	private function notFound()
 	{
+		// Logování
+		$this->registry->getObject('log')->addMessage("Pokus o zobrazení neznámého obsahu",'dmsentry','');
+		// Sestavení
 		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'invalid-page.tpl.php', 'footer.tpl.php');
 	}
+
+    /**
+     * Zobrazení chybové stránky s uživatelským textem
+	 * @param String $message = text zobrazen jako chyba
+     * @return void
+     */
 	private function error( $message )
 	{
-		$this->registry->getObject('log')->addMessage("Chyba: $message",'','');
-		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page.tpl.php', 'footer.tpl.php');
+		// Logování
+		$this->registry->getObject('log')->addMessage("Chyba: $message",'contact','');
+		// Nastavení parametrů
 		$this->registry->getObject('template')->getPage()->addTag('message',$message);
+		// Sestavení
+		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page.tpl.php', 'footer.tpl.php');
 	}
 
+	/**
+	 * Zobrazení požadovaného seznamu dokumentů, které současně 
+	 * zajistí zobrazení stránkování s možností výběru stránek a listování
+	 * @param String $sql = sestavený kompletní SQL dotaz
+	 * @param String $pageLink
+	 * @param Boolean $isHeader
+	 * @param Boolean $isFooter 
+	 * @param String $template
+	 * @return void
+	 */
 	private function listContactResult( $sql, $pageLink , $isHeader, $isFooter, $template = 'list-contact.tpl.php')
 	{
 		global $config, $caption;
@@ -74,7 +104,6 @@ class Generalcontroller {
 
 		if($perSet > 0)
 		{
-
 			// Stránkování
 			$cacheFull = $this->registry->getObject('db')->cacheQuery( $sql );
 			$records = $this->registry->getObject('db')->numRowsFromCache( $cacheFull );
@@ -151,10 +180,17 @@ class Generalcontroller {
 		$pageLink = '';
 
 		$this->registry->getObject('template')->getPage()->addTag( 'sqlrequest', $searchText );
+		// Logování
 		$this->registry->getObject('log')->addMessage("Zobrazení vyhledaných kontaktů `$searchText`",'Contact','');
+		// Zobrazení seznamu
 		$this->listContactResult($sql, $pageLink, $isHeader, $isFooter );
 	}	
 
+    /**
+     * Zobrazení seznamu vyhledaných položek dle hledaného řetězce
+	 * @param String $searchText = maska hledaných položek
+	 * @return void
+     */
 	private function searchDocuments( $searchText )
 	{
 		global $config, $caption;
@@ -182,7 +218,9 @@ class Generalcontroller {
 		$pageTitle = '<h3>'.$caption['Archive'].'</h3>';
 		$template = 'list-entry-resultsearch.tpl.php';
 		$this->registry->getObject('template')->getPage()->addTag( 'sqlrequest', $searchText );
+		// Logování
 		$this->registry->getObject('log')->addMessage('Zobrazení seznamu souborů a složek','DmsEntry','');
+		// Zobrazení seznamu
 		$this->registry->getObject('document')->listDocuments($entry,$showFolder,$sql,$showBreads,$pageTitle,$template);
 	}	
 

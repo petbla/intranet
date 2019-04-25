@@ -1,5 +1,9 @@
 <?php
-
+/**
+ * @author  Petr Blažek
+ * @version 2.0
+ * @date    26.04.2019
+ */
 class Admincontroller {
 
 	private $registry;
@@ -98,6 +102,11 @@ class Admincontroller {
 		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page.tpl.php', 'footer.tpl.php');
 	}
 
+	/**
+	 * Akce volaná z webové stránky,
+	 * která spustí synchronizaci celé struktury DMS.
+	 * @return void
+	 */
 	private function updateDmsStore()
 	{
 		global $caption, $config;
@@ -107,6 +116,10 @@ class Admincontroller {
 		$this->registry->getObject('template')->getPage()->addTag('message',$caption['msg_updateFinished']);
 	}
 
+	/**
+	 * Zobrazení seznamu uživatelů
+	 * @return void
+	 */
 	private function listUsers()
 	{
 		global $config;
@@ -130,6 +143,10 @@ class Admincontroller {
 		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'admin-users.tpl.php', 'footer.tpl.php');		
 	}
 
+	/**
+	 * Zobrazení všech položek logu
+	 * @return void
+	 */
 	private function showLog()
 	{
 		global $config;
@@ -138,9 +155,19 @@ class Admincontroller {
 		$sql = "SELECT * ".
 		       "FROM ".$pref."log ".
 		       "ORDER BY EntryNo DESC";
+		// Zobrazení seznamu
 		$this->listResult($sql, '', 'LogList', 'log-list.tpl.php');		
 	}
 
+	/**
+	 * Zobrazení požadovaního seznamu které současně 
+	 * zajistí zobrazení stránkování s možností výběru stránek a listování v nich
+	 * @param String $sql = sestavený kompletní SQL dotaz
+	 * @param String $pageLink
+	 * @param String $SQLDataElement
+	 * @param String $template
+	 * @return void
+	 */
 	private function listResult( $sql, $pageLink , $SQLDataElement, $template )
 	{
 		global $config;
@@ -169,6 +196,10 @@ class Admincontroller {
 		}
     }	
 
+	/**
+	 * Zobrazení stránky s webovým formulářem pro založení nového uživatele
+	 * @return void
+	 */
 	private function newUser()
 	{
 		global $config;
@@ -180,6 +211,10 @@ class Admincontroller {
 		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'admin-users-new.tpl.php', 'footer.tpl.php');		
 	}
 
+	/**
+	 * Akce volaná z webového formuláře jako založení nového uživatele do databáze
+	 * @return void
+	 */
 	private function addUser()
 	{
 		global $caption;
@@ -222,6 +257,13 @@ class Admincontroller {
 		$this->registry->getObject('template')->getPage()->addTag('message',$message);
 	}
 
+	/**
+	 * Akce volaná z webové stránky (např. jako OnClick)
+	 * pro odstranění (=deaktivace) uživatele.
+	 * Po provedneí akce se zobrazí seznam uživatelů
+	 * @param String $ID = ID uživatele
+	 * @return void
+	 */
 	private function deleteUser( $ID )
 	{
 		global $config, $caption;
@@ -245,6 +287,10 @@ class Admincontroller {
 		}
 	}
 
+	/**
+	 * Interní funkce pro generování tabulky úrovní oprávnění
+	 * @return void
+	 */
 	private function createPermissionSetTable()
 	{
 		$data = array('Level'=>'0','Name'=>'veřejnost');

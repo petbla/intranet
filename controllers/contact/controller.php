@@ -1,5 +1,9 @@
 <?php
-
+/**
+ * @author  Petr Blažek
+ * @version 2.0
+ * @date    26.04.2019
+ */
 class Contactcontroller {
 
 	private $registry;
@@ -19,8 +23,9 @@ class Contactcontroller {
 			if($perSet == 0)
 			{
 				$this->registry->getObject('log')->addMessage($caption['msg_unauthorized'],'contact','');
-				$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page.tpl.php', 'footer.tpl.php');
 				$this->registry->getObject('template')->getPage()->addTag('message',$caption['msg_unauthorized']);
+				// Sestavení
+				$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page.tpl.php', 'footer.tpl.php');
 				return;
 			}
 
@@ -76,12 +81,6 @@ class Contactcontroller {
 						else
 							$this->error($caption['Error'].' - '.$caption['msg_unauthorized']);
 						break;
-					case 'search':
-						$searchText = isset($urlBits[2]) ? $urlBits[2] : '';
-						if ($searchText){
-							$this->searchContacts($searchText);
-						}
-						break;
 					case 'WS':
 						switch ($urlBits[2]) {
 							case 'logView':
@@ -99,18 +98,38 @@ class Contactcontroller {
 		}
 	}
 
+    /**
+     * Zobrazení chybové stránky, pokud kontakt nebyl nalezem 
+     * @return void
+     */
 	private function notFound()
 	{
-		//TOTO: doplnit šablonu
+		// Logování
+		$this->registry->getObject('log')->addMessage("Pokus o zobrazení neznámého kontaktu",'dmsentry','');
+		// Sestavení
 		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'invalid-contact.tpl.php', 'footer.tpl.php');
 	}
+
+    /**
+     * Zobrazení chybové stránky s uživatelským textem
+	 * @param String $message = text zobrazen jako chyba
+     * @return void
+     */
 	private function error( $message )
 	{
+		// Logování
 		$this->registry->getObject('log')->addMessage("Chyba: $message",'contact','');
-		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page.tpl.php', 'footer.tpl.php');
+		// Nastavení parametrů
 		$this->registry->getObject('template')->getPage()->addTag('message',$message);
+		// Sestavení
+		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page.tpl.php', 'footer.tpl.php');
 	}
 
+	/**
+	 * Zobrazení kontaktu jako karty
+	 * @param String $ID = ID kontaktu
+	 * @return void
+	 */
 	private function viewContact( $ID )
 	{
 		global $config, $caption;
@@ -128,11 +147,17 @@ class Contactcontroller {
 		}
 		else
 		{
-			// File Not Found
 			$this->notFound();
 		}
 	}	
 
+	/**
+	 * Akce vyvolaná z webového formuláře, která načte CSV soubor 
+	 * ze kterého se pokusí provést import nových kontaktů. Jako CSV sobor
+	 * je očekávám přesně definovaný obsah a požadí sloupců (viz níže)
+	 * Po dokončení se zobrazí seznam kontaktů
+	 * @return void
+	 */
 	private function importCsv()
 	{
 		if(isset($_FILES["fileToUpload"]) ) {
@@ -167,10 +192,7 @@ class Contactcontroller {
 					$idValidCsv = true;
 				}
 			}
-			if (! $idValidCsv){
-				return;
-			}
-			if ($lineno > 1){
+			if (($idValidCsv) && ($lineno > 1)){
 				$ID = $this->registry->getObject('fce')->GUID();
 				$data['ID'] = $ID;
 				$data['FirstName'] = $this->registry->getObject('db')->sanitizeData($Row[0]);
@@ -221,8 +243,16 @@ class Contactcontroller {
 				}
 			}
 		}
+		$this->listContacts();
 	}
 
+	/**
+	 * Akce vyvolaná z webového formuláře, která odstraní kontakt, a to tak
+	 * že nastavení hodotu pole "Close = 1"
+	 * Po dokončení se zobrazí seznam kontaktů
+	 * @param String $ID = ID kontaktu pro odstranění
+	 * @return void
+	 */
 	private function deleteContact( $ID )
 	{
 		global $config, $caption;
@@ -240,6 +270,11 @@ class Contactcontroller {
 		$this->listContacts();
 	}
 
+	/**
+	 * Zobrazení stránky s editací karty kontaktu
+	 * @param String $ID = ID kontaktu pro editaci
+	 * @return void
+	 */
 	private function editContact( $ID )
 	{
 		global $config, $caption;
@@ -254,18 +289,23 @@ class Contactcontroller {
 				$this->registry->getObject('template')->getPage()->addTag( $property, $value );
 			}
 			$groupList = $this->model->getGroupList();
-			$this->registry->getObject('log')->addMessage("Editace kontaktu ".$contact['FullName'],'contact',$ID);
 			$cache = $this->registry->getObject('db')->cacheQuery("SELECT * FROM ".$pref."contactgroup");
 			$this->registry->getObject('template')->getPage()->addTag( 'GroupList', array('SQL' , $cache) );
+			// Logování
+			$this->registry->getObject('log')->addMessage("Editace kontaktu ".$contact['FullName'],'contact',$ID);
+			// Sestavení
 			$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'edit-contact.tpl.php', 'footer.tpl.php');
 		}
 		else
 		{
-			// File Not Found
 			$this->notFound();
 		}
 	}	
 
+	/**
+	 * Založení nového kontaktu, které zobrazí stránku s editací karty nového kontaktu
+	 * @return void
+	 */
 	private function addContact( )
 	{
 		global $config, $caption;
@@ -279,11 +319,20 @@ class Contactcontroller {
 		}
 		$groupList = $this->model->getGroupList();
 		$cache = $this->registry->getObject('db')->cacheQuery("SELECT * FROM ".$pref."contactgroup");
-		$this->registry->getObject('log')->addMessage("Nový kontaktu ".$contact['FullName'],'contact',$contact['ID']);
 		$this->registry->getObject('template')->getPage()->addTag( 'GroupList', array('SQL' , $cache) );
+		// Logování
+		$this->registry->getObject('log')->addMessage("Nový kontaktu ".$contact['FullName'],'contact',$contact['ID']);
+		// Sestavení
 		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'edit-contact.tpl.php', 'footer.tpl.php');
 	}	
 
+	/**
+	 * Akce vyvolaná webovým formulářem - Editace karty kontaktu,
+	 * která zajistí uložení modifikovaných hodnot
+	 * Po provední akce uložení/storno se zobrazí seznam kontaktů
+	 * @param String $ID = ID editovaného kontaktu
+	 * @return void
+	 */
 	private function saveContact( $ID )
 	{
 		global $config, $caption;
@@ -402,8 +451,6 @@ class Contactcontroller {
 					}
 
 					$data['FullName'] = $this->makeFullName($data);
-				
-
 					$condition = "ID = '$ID'";
 					$this->registry->getObject('log')->addMessage("Aktualizace kontaktu",'contact',$ID);
 					$this->registry->getObject('db')->updateRecords('contact',$data,$condition);
@@ -425,6 +472,10 @@ class Contactcontroller {
 		}
 	}	
 
+    /**
+     * Zobrazení seznamu všech aktivních kontaktů
+     * @return void
+     */
 	private function listContacts()
 	{
 		global $config;
@@ -438,9 +489,50 @@ class Contactcontroller {
 		$isHeader = true;
 		$isFooter = true;
 		$pageLink = '';
+		// Zobrazení seznamu
 		$this->listResult($sql, $pageLink, $isHeader, $isFooter );
 	}
 
+    /**
+     * Zobrazení seznamu vyhledaných kontaktů
+	 * @param String $searchText
+	 * @return void
+     */
+	private function searchContacts( $searchText )
+	{
+		global $config, $caption;
+        $pref = $config['dbPrefix'];
+
+        $perSet = $this->registry->getObject('authenticate')->getPermissionSet();
+
+		$searchText = htmlspecialchars($searchText);
+		$searchText = str_replace('*','',$searchText);
+		$sql = "SELECT c.ID, c.FullName, c.FirstName, c.LastName, c.Title, c.Function, c.Company, ".
+						"c.Email, c.Phone, c.Web, c.Note, c.Address, c.Close, c.Note, c.ContactGroups ".
+				"FROM ".$pref."Contact c ".
+				"WHERE Close = 0 AND MATCH(FullName,Function,Company,Address,Note,Phone,Email,ContactGroups) AGAINST ('*$searchText*' IN BOOLEAN MODE) ".
+				"ORDER BY FullName";
+		$isHeader = true;
+		$isFooter = true;
+		$pageLink = '';
+
+		$this->registry->getObject('template')->getPage()->addTag( 'sqlrequest', $searchText );
+		// Logování
+		$this->registry->getObject('log')->addMessage("Zobrazení vyhledaných kontaktů `$searchText`",'Contact','');
+		// Zobrazení seznamu
+		$this->listResult($sql, $pageLink, $isHeader, $isFooter );
+	}	
+
+	/**
+	 * Zobrazení požadovaného seznamu kontaktů, které současně 
+	 * zajistí zobrazení stránkování s možností výběru stránek a listování
+	 * @param String $sql = sestavený kompletní SQL dotaz
+	 * @param String $pageLink
+	 * @param Boolean $isHeader
+	 * @param Boolean $isFooter 
+	 * @param String $template
+	 * @return void
+	 */
 	private function listResult( $sql, $pageLink , $isHeader, $isFooter, $template = 'list-contact.tpl.php')
 	{
 		global $config, $caption;
@@ -452,7 +544,6 @@ class Contactcontroller {
 
 		if($perSet > 0)
 		{
-
 			// Stránkování
 			$cacheFull = $this->registry->getObject('db')->cacheQuery( $sql );
 			$records = $this->registry->getObject('db')->numRowsFromCache( $cacheFull );
@@ -510,29 +601,14 @@ class Contactcontroller {
         }
     }	
 
-	private function searchContacts( $searchText )
-	{
-		global $config, $caption;
-        $pref = $config['dbPrefix'];
-
-        $perSet = $this->registry->getObject('authenticate')->getPermissionSet();
-
-		$searchText = htmlspecialchars($searchText);
-		$searchText = str_replace('*','',$searchText);
-		$sql = "SELECT c.ID, c.FullName, c.FirstName, c.LastName, c.Title, c.Function, c.Company, ".
-						"c.Email, c.Phone, c.Web, c.Note, c.Address, c.Close, c.Note, c.ContactGroups ".
-				"FROM ".$pref."Contact c ".
-				"WHERE Close = 0 AND MATCH(FullName,Function,Company,Address,Note,Phone,Email,ContactGroups) AGAINST ('*$searchText*' IN BOOLEAN MODE) ".
-				"ORDER BY FullName";
-		$isHeader = true;
-		$isFooter = true;
-		$pageLink = '';
-
-		$this->registry->getObject('template')->getPage()->addTag( 'sqlrequest', $searchText );
-		$this->registry->getObject('log')->addMessage("Zobrazení vyhledaných kontaktů `$searchText`",'Contact','');
-		$this->listResult($sql, $pageLink, $isHeader, $isFooter );
-	}	
-
+	/**
+	 * Lokální funkce pro sestavení jednotného tvaru jména kontaktu
+	 * ve tvaru [Příjmení][Jméno][Titul]
+	 * 			nebo
+	 *          [Společnost]
+	 * @param Array $data
+	 * @return String $FullName
+	 */
 	private function makeFullName ($data)
 	{
 		$FullName = '';
@@ -551,6 +627,11 @@ class Contactcontroller {
 		return($FullName);
 	}
 
+  	/**
+     * Webová služba - Logování akce prohlížení kontaktů
+     * @param String $ID = ID kontaktu
+     * @return void;
+     */
 	private function wsLogContactView( $ID )
 	{
 		require_once( FRAMEWORK_PATH . 'models/contact/model.php');

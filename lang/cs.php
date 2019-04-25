@@ -169,6 +169,7 @@ $caption['msg_PageNotFound'] =     'Stránka nenalezena';
 $caption['msg_error404'] =         'Stránku, o který máte zájem, se nám bohužel nepodařilo najít. Vraťte se prosím zpět na úvodní stránku a zkuste to znovu.';
 $caption['msg_docNotfound'] =      'Dokument nenalezen.';
 $caption['msg_folderNotCreated'] = 'Složka nebyla založena.';
+$caption['msg_blockNotCreated'] =  'Blok nebyl založen.';
 $caption['msg_folderExists'] =     'Složka zadaného názvu již existuje.';
 $caption['msg_blockExist'] =       'Blok zadaného názvu již existuje.';
 $caption['msg_contactNotfound'] =  'Kontakt nenalezen.';
