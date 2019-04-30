@@ -320,9 +320,9 @@ class template {
     if ( isset($_GET["page"]) )
       $urlPath = $_GET["page"];
     else{
-      if ( isset($_GET["searchDocument"]) ){
-        $urlPath = $_GET["searchDocument"];
-        $element = 'searchDocument';
+      if ( isset($_GET["search"]) ){
+        $urlPath = $_GET["search"];
+        $element = 'search';
       }
       else
         $urlPath = '';            
