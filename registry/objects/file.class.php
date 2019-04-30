@@ -11,12 +11,7 @@ class file {
 
   public function __construct( $registry ) 
   {
-    global $config;
-    $root = $config['fileroot'];
-
     $this->registry = $registry;
-    $root  = $this->registry->getObject('fce')->ConvertToDirectoryPathName( $root );
-    $this->root = $root;
   }
   /**
    * Funkce pro aktualizaci databáze, tj. založení složek a jijich podsložek a souborů 
@@ -34,7 +29,7 @@ class file {
     
     $this->deaktiveUnvalidEntries();
 
-    $directories[]  = $this->root; 
+    $directories[]  = $this->getRoot(); 
 
     
     $paret = 0;
@@ -66,7 +61,7 @@ class file {
 
   function synchoroDirectory($entry)
   {
-    $dir = $this->root . $entry['Name'];
+    $dir = $this->getRoot() . $entry['Name'];
     $dir  = $this->registry->getObject('fce')->ConvertToSharePathName( $dir,false);
     if ($handle = opendir($dir)) { 
       while (false !== ($file = readdir($handle))) 
@@ -77,7 +72,7 @@ class file {
         };
         $fullItemPath = $dir.$file;
         $name  = $this->registry->getObject('fce')->ConvertToDirectoryPathName( $fullItemPath,false );   
-        $name = str_replace(str_replace('http:','',$this->root),'',$name);      
+        $name = str_replace(str_replace('http:','',$this->getRoot()),'',$name);      
 
         $this->registry->getObject('db')->initQuery('DmsEntry','ID');
         $sanitizename = $this->registry->getObject('db')->sanitizeData($name);
@@ -130,7 +125,7 @@ class file {
   {
     $fullItemPath = $this->Convert2CoreCodePage($winFullItemPath);
     $name  = $this->registry->getObject('fce')->ConvertToDirectoryPathName( $fullItemPath,false );    // formát Xxxxx\Ddddd\Aaaaa
-    $name = str_replace(str_replace('http:','',$this->root),'',$name);
+    $name = str_replace(str_replace('http:','',$this->getRoot()),'',$name);
     if ($name === '')
     {
       return 0;
@@ -190,7 +185,7 @@ class file {
   public function addBlock( $fullParent,$name )
   {
     $fullParent  = $this->registry->getObject('fce')->ConvertToDirectoryPathName( $fullParent,false );    
-    $parentPath = str_replace($this->root,'',$fullParent);
+    $parentPath = str_replace($this->getRoot(),'',$fullParent);
     $parentID = $this->getIdByName($parentPath);
 
     $fullName = $parentPath !== '' ? $parentPath.DIRECTORY_SEPARATOR.$name : $name;
@@ -270,7 +265,7 @@ class file {
   public function getItem( $name , $isDir = false)
   {
     global $config;
-    $root = str_replace('http:','',$this->root);
+    $root = str_replace('http:','',$this->getRoot());
 
     $item = array();
     $item['FullName'] = '';
@@ -406,5 +401,18 @@ class file {
           return 'video';
     }
     return '';
+  }
+  
+  /**
+   * Funkce vrací root složku dle nastavení z tabulky source
+   * @return String $root
+   */
+  private function getRoot()
+  {
+    global $config;
+    $root = $config['fileroot'];
+
+    $root  = $this->registry->getObject('fce')->ConvertToDirectoryPathName( $root );
+    return $root;
   }
 }

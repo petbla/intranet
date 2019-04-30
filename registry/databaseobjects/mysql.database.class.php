@@ -63,7 +63,10 @@ class mysqldatabase {
    /** 
     * Konstruktor databázového objektu 
     */ 
-    public function __construct() { }
+    public function __construct( $registry ) 
+    { 
+      $this->registry = $registry;
+    }
     
    /** 
     * Vytvoří nové spojení s databází
@@ -196,10 +199,11 @@ class mysqldatabase {
      * @param String podmínka
      * @return bool 
      */
-    public function updateRecords( $table, $changes, $condition )
+    public function updateRecords( $table, $changes, $condition, $withPrefix = true)
     {
       global $config;
-      $table = $config['dbPrefix'].$table;
+      if ($withPrefix)
+        $table = $config['dbPrefix'].$table;
 
     	$update = "UPDATE " . $table . " SET ";
     	foreach( $changes as $field => $value )
@@ -229,10 +233,11 @@ class mysqldatabase {
      * @param array pole dat sloupec => hodnota 
      * @return bool 
      */
-    public function insertRecords( $table, $data )
+    public function insertRecords( $table, $data, $withPrefix = true )
     {
       global $config;
-      $table = $config['dbPrefix'].$table;
+      if ($withPrefix)
+        $table = $config['dbPrefix'].$table;
 
     	// setup some variables for fields and values
     	$fields = "";
@@ -262,7 +267,7 @@ class mysqldatabase {
      * @param String fieldList
      * @return void 
      */
-    public function initQuery( $tableName, $fieldList = '*' )
+    public function initQuery( $tableName, $fieldList = '*', $withPrefix = true )
     {
       global $config;
       global $config;
@@ -284,7 +289,8 @@ class mysqldatabase {
       {
         return;
       }
-      $tableName = $config['dbPrefix'].$tableName;
+      if ($withPrefix)
+        $tableName = $config['dbPrefix'].$tableName;
 
       $this->queryTableName = $tableName;
       $this->queryFieldList = $fieldList;
@@ -322,13 +328,13 @@ class mysqldatabase {
       }
       switch (true) {
         case is_int($value):
-          $this->queryCondition .= "$key = $value";
+          $this->queryCondition .= "`$key` = $value";
           break;
         case is_double($value):
-          $this->queryCondition .= "$key = $value";
+          $this->queryCondition .= "`$key` = $value";
           break;
         default:
-          $this->queryCondition .= "$key = '$value'";
+          $this->queryCondition .= "`$key` = '$value'";
           break;
       }     
     }    
@@ -582,5 +588,97 @@ class mysqldatabase {
     		$connection->close();
     	}
     }
+
+    /**
+     * Kontrola a aktualizace definice projektů (DMS nastavení)
+     * @return void
+     */
+    public function CheckPortal()
+    {
+      global $config;
+
+      $this->initQuery('source', '*', false);
+      $this->setFilter('DbPrefix',$config['dbPrefix']);
+      if($this->isEmpty())
+      {
+        $data = array();
+        $data['Webroot'] = $config['webroot'];
+        $data['Fileroot'] = $config['fileroot'];
+        $data['DbPrefix'] = $config['dbPrefix'];
+        $data['Name'] = $config['compName'];
+        $data['Address'] = $config['compAddress'];
+        $data['City'] = $config['compCity'];
+        $data['Zip'] = $config['compZip'];
+        $data['ICO'] = $config['compICO'];
+        $this->insertRecords('source',$data, false);        
+      }
+      
+    }
+
+    /**
+     * Nastavení výchozího DMS zdroje z nastavení
+     * @param Integer $EntryNo = číslo položky portálu, kde 0=výchozí
+     * @return void
+     */
+    public function SetPortal( $EntryNo = 0 )
+    {
+      global $config;
+
+      $this->initQuery('source', '*', false);
+      if ($EntryNo > 0)
+      {
+        $this->setFilter('EntryNo',$EntryNo);
+      }
+      else
+      {
+        $this->setFilter('Default',1);
+      }
+      if($this->findFirst())
+      {
+        $source = $this->getResult();
+        $sql = "UPDATE `source` SET `Default` = '0'";
+        $this->executeQuery( $sql );
+      }
+      else
+      {
+        $this->initQuery('source', '*', false);
+        $this->setFilter('DbPrefix',$config['dbPrefix']);
+        $this->findFirst();
+        $source = $this->getResult();
+      }  
+      $EntryNo = $source['EntryNo'];
+      $changes =  array();
+      $changes['Default'] = 1;
+			$condition = "EntryNo = $EntryNo";
+			$this->updateRecords('source',$changes, $condition, false);
+     
+      $config['webroot'] = $source['Webroot'];
+      $config['fileroot'] = $source['Fileroot'];
+      $config['dbPrefix'] = $source['DbPrefix'];
+      $config['compName'] = $source['Name'];
+      $config['compAddress'] = $source['Address'];
+      $config['compCity'] = $source['City'];
+      $config['compZip'] = $source['Zip'];
+      $config['compICO'] = $source['ICO'];
+      $this->registry->getObject('template')->dataToTags( $config, 'cfg_' );
+      
+    }
+
+    /**
+     * Nastavení výchozího DMS zdroje z nastavení
+     * @return Integer $Counter = počet záznamů DMS portálů
+     */
+    public function GetPortalCount()
+    {
+      global $config;
+
+      $this->initQuery('source', '*', false);
+      if($this->findFirst())
+      {
+        $Counter = $this->numRows();
+      }
+      return $Counter;
+    }
+
 }
 ?>

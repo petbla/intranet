@@ -9,24 +9,21 @@
 class login
 {
   private $log;
-  private $prefDb = '';
-    
+   
   /*
    *  Class constructor 
    *     
    */
   public function __construct( $registry )
   { 
-    global $config;
     $this->registry = $registry;
-    $this->prefDb = $config['dbPrefix'];
   }
                                                     
   public function addMessage( $message, $table = '', $ID = '' )
   {
     if($table !== '')
     {
-      $table = $this->prefDb.$table;
+      $table = $this->getPrefixDb().$table;
     }
     $this->init();
     $this->log['Description'] = $this->registry->getObject('db')->sanitizeData( $message );
@@ -56,5 +53,17 @@ class login
   {
     $this->registry->getObject('db')->insertRecords( 'log', $this->log );    
   }
+
+  /**
+   * Funkce vrací root složku dle nastavení z tabulky source
+   * @return String $prefDb
+   */
+  private function getPrefixDb()
+  {
+    global $config;   
+    $prefDb = $config['dbPrefix'];
+    return $prefDb;
+  }
+
 }
 ?>

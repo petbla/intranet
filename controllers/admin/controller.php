@@ -86,6 +86,20 @@ class Admincontroller {
 							$this->showLog();
 							return;
 						}
+					case 'portalList':
+						if ( $this->registry->getObject('authenticate')->isAdmin())
+						{
+							$this->portalList();
+							return;
+						}
+					case 'setPortal':
+						if ( $this->registry->getObject('authenticate')->isAdmin())
+						{
+							if( isset( $urlBits[2] ) ){
+								$this->setPortal($urlBits[2]);
+							}								
+							return;
+						}
 				}
 			}
 			else
@@ -307,6 +321,36 @@ class Admincontroller {
 		$this->registry->getObject('db')->insertRecords('permissionset',$data);
 		$data = array('Level'=>'9','Name'=>'administrátor');
 		$this->registry->getObject('db')->insertRecords('permissionset',$data);
+	}
+
+	/**
+	 * Zobrazení seznamu portálů jako menu pro výběr
+	 * @return void
+	 */
+	private function portalList()
+	{
+		$sql = "SELECT * FROM source";
+		$cache = $this->registry->getObject('db')->cacheQuery( $sql );
+		if (!$this->registry->getObject('db')->isEmpty( $cache ))
+		{
+			$this->registry->getObject('template')->getPage()->addTag( 'PortalItems', array( 'SQL', $cache ) );   
+			$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'portal-list.tpl.php', 'footer.tpl.php');
+		}
+		else
+		{
+			$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page-notfound.tpl.php', 'footer.tpl.php');
+		}
+	}
+
+	/**
+	 * Nastavení portálu dle výběru
+	 * @param Integer $EntryNo = číslo pložky portálu
+	 * @return void
+	 */
+	private function setPortal( $EntryNo )
+	{
+		$this->registry->getObject('db')->setPortal( $EntryNo );
+		$this->portalList();
 	}
 }
 ?>

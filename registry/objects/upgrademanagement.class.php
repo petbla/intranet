@@ -207,6 +207,100 @@ class upgrademanagement {
             // upgrade to 2.04
             $this->upgrade_014('2.04');
         }
+        if ($this->version === '2.04') 
+        {
+            // upgrade to 2.05
+            $this->upgrade_015('2.05');
+        }
+        if ($this->version === '2.05') 
+        {
+            // upgrade to 2.06
+            $this->upgrade_016('2.06');
+        }
+        if ($this->version === '2.06') 
+        {
+            // upgrade to 2.07
+            $this->upgrade_017('2.07');
+        }
+        if ($this->version === '2.07') 
+        {
+            // upgrade to 2.08
+            $this->upgrade_018('2.08');
+        }
+        if ($this->version === '2.08') 
+        {
+            // upgrade to 2.09
+            $this->upgrade_019('2.09');
+        }
+    }
+
+    private function upgrade_019($upVer)
+    {
+        $sql = "SELECT * FROM information_schema.columns WHERE table_schema = 'intranet' AND TABLE_NAME = 'Source' AND COLUMN_NAME = 'Default'";
+        $cache = $this->registry->getObject('db')->cacheQuery( $sql );
+        if ($this->registry->getObject('db')->IsEmpty( $cache ))
+        {
+            // upgrade table 'Source'
+            $sql = "ALTER TABLE source".
+                    " ADD `Default` tinyint(1) NULL DEFAULT 0";
+            $this->registry->getObject('db')->executeQuery( $sql );
+        }
+        $this->setNewVersion($upVer);
+    }
+
+    private function upgrade_018($upVer)
+    {
+        $sql = "SELECT * FROM information_schema.columns WHERE table_schema = 'intranet' AND TABLE_NAME = 'Source' AND COLUMN_NAME = 'City'";
+        $cache = $this->registry->getObject('db')->cacheQuery( $sql );
+        if ($this->registry->getObject('db')->IsEmpty( $cache ))
+        {
+            // upgrade table 'Source'
+            $sql = "ALTER TABLE source".
+                    " ADD `City` varchar(100) COLLATE utf8_czech_ci DEFAULT ''".
+                    ", ADD `Zip` varchar(10) COLLATE utf8_czech_ci DEFAULT ''".
+                    ", ADD `ICO` varchar(30) COLLATE utf8_czech_ci DEFAULT ''";
+            $this->registry->getObject('db')->executeQuery( $sql );
+        }
+        $this->setNewVersion($upVer);
+    }
+
+    private function upgrade_017($upVer)
+    {
+        $this->setNewVersion($upVer);
+    }
+
+    private function upgrade_016($upVer)
+    {
+        $sql = "SELECT * FROM information_schema.columns WHERE table_schema = 'intranet' AND TABLE_NAME = 'Source' AND COLUMN_NAME = 'Address'";
+        $cache = $this->registry->getObject('db')->cacheQuery( $sql );
+        if ($this->registry->getObject('db')->IsEmpty( $cache ))
+        {
+            // upgrade table 'Source'
+            $sql = "ALTER TABLE source".
+                    " ADD `Address` varchar(100) COLLATE utf8_czech_ci DEFAULT ''";
+            $this->registry->getObject('db')->executeQuery( $sql );
+        }
+        $this->setNewVersion($upVer);
+    }
+
+    private function upgrade_015($upVer)
+    {
+        $sql = "SELECT * FROM information_schema.tables WHERE table_schema = 'intranet' AND TABLE_NAME = 'Source'";
+        $cache = $this->registry->getObject('db')->cacheQuery( $sql );
+        if ($this->registry->getObject('db')->IsEmpty( $cache ))
+        {
+            // new table 'source'
+            $sql = "CREATE TABLE IF NOT EXISTS `source` (
+                `EntryNo` int(11) NOT NULL AUTO_INCREMENT,
+                `Webroot` varchar(200) COLLATE utf8_czech_ci DEFAULT '',
+                `Fileroot` varchar(200) COLLATE utf8_czech_ci DEFAULT '',
+                `DbPrefix` varchar(20) COLLATE utf8_czech_ci DEFAULT '',
+                `Name` varchar(100) COLLATE utf8_czech_ci DEFAULT '',
+                PRIMARY KEY (`EntryNo`)
+                ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci";
+            $this->registry->getObject('db')->executeQuery( $sql );
+        }
+        $this->setNewVersion($upVer);
     }
 
     private function upgrade_014($upVer)

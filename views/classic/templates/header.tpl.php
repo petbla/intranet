@@ -19,7 +19,7 @@
         <span class="version">Verze {Version}</span>
       </p>
       <img src="views/classic/images/logo.png" border="0" alt="" title="{cfg_compName}">
-      <h1>{cfg_compName}</h1>
+      <h1>{compName}</h1>
       <h2>{lbl_DmsLabel}</h2>
       <nav>
         <ul>
@@ -31,6 +31,7 @@
           {contactBarMenuItem}
           {calendarBarMenuItem}
           {adminBarMenuItem}
+          {portalBarMenuItem}
         </ul>
       </nav>
     </header>
