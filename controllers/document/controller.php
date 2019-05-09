@@ -835,10 +835,11 @@ class Documentcontroller{
 				if(($Row[0] === 'Název 1') &&
 				   ($Row[1] === 'Název 2') &&
 				   ($Row[2] === 'Text') &&
-				   ($Row[3] === 'Připomenutí') &&
-				   ($Row[4] === 'Datum připomenutí') &&
-				   ($Row[5] === 'Termín splnění') &&
-				   ($Row[6] === 'Odpovídá'))
+				   ($Row[3] === 'Popis') &&
+				   ($Row[4] === 'Připomenutí') &&
+				   ($Row[5] === 'Datum připomenutí') &&
+				   ($Row[6] === 'Termín splnění') &&
+				   ($Row[7] === 'Odpovídá'))
 				{
 					$idValidCsv = true;
 				}
@@ -855,13 +856,15 @@ class Documentcontroller{
 				{
 					$Name .= ($Name !== '') ? (' - '.$Text) : $Text;
 				}
-				$Remind = $this->registry->getObject('db')->sanitizeData($Row[3]);				
-				$RemindFromDate = $this->registry->getObject('db')->sanitizeData($Row[4]);
-				$RemindLastDate = $this->registry->getObject('db')->sanitizeData($Row[5]);
-				$RemindResponsiblePerson = $this->registry->getObject('db')->sanitizeData($Row[6]);
+				$Content = $this->registry->getObject('db')->sanitizeData($Row[3]);				
+				$Remind = $this->registry->getObject('db')->sanitizeData($Row[4]);				
+				$RemindFromDate = $this->registry->getObject('db')->sanitizeData($Row[5]);
+				$RemindLastDate = $this->registry->getObject('db')->sanitizeData($Row[6]);
+				$RemindResponsiblePerson = $this->registry->getObject('db')->sanitizeData($Row[7]);
 
 				$entry = array();
 				$entry['Title'] = $Name; 
+				$entry['Content'] = $Content; 
 				$entry['Remind'] = (strtolower($Remind) == 'ano') ? 1 : 0; 
 				
 				if($RemindFromDate !== ''){
