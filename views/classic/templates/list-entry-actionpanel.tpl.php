@@ -13,7 +13,7 @@
                 <img src="views/classic/images/nav/import.png" alt="{lbl_Import}" title="{lbl_Import}" onclick="importNoteCSV('{parentID}');">
                 &nbsp;
                 {lbl_NoteTemplateImp}
-                <a href="files/Poznamky.xlsx"><img src="views/classic/images/nav/export.png" alt="{lbl_Export}" title="{lbl_Export}"></a>
+                <a href="files/Poznamky.xlsx"><img src="views/classic/images/nav/export.png" alt="{lbl_Export}" title="{lbl_Export}"></a>                
                 <input type="hidden" name="parentID" value="{parentID}">
                 <input type="hidden" name="root" value="{parentfoldername}">
             </li>
