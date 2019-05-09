@@ -244,6 +244,24 @@ class file {
 		return $data['ID'];
 	}
 
+  public function addNote ( $data, $parentID )
+	{
+    $parentEntry = $this->getEntryById($parentID);
+
+    // Insert Note
+		$data['ID'] = $this->registry->getObject('fce')->GUID();
+		$data['Level'] = $parentEntry['Level'] + 1;
+		$data['Parent'] = $parentEntry['EntryNo'];
+		$data['Path'] = $this->registry->getObject('db')->sanitizeData($parentEntry['Name']);
+		$data['Type'] = 35;
+		$data['LineNo'] = $this->getNextLineNo($data['Parent']);
+		$data['Name'] = $this->registry->getObject('db')->sanitizeData($data['Path'].DIRECTORY_SEPARATOR.$data['ID']);
+		$data['PermissionSet'] = $parentEntry['PermissionSet'];
+    $data['Url'] = '';
+		$this->registry->getObject('db')->insertRecords( 'DmsEntry', $data );
+		return $data['ID'];
+	}
+
   private function getNextLineNo ($Parent)
   {
     $this->registry->getObject('db')->initQuery('DmsEntry','EntryNo,LineNo');
@@ -366,6 +384,21 @@ class file {
     else
     {
       return ('');
+    }
+  }
+
+  public function getEntryById( $ID )
+  {
+    $this->registry->getObject('db')->initQuery('DmsEntry','');
+    $this->registry->getObject('db')->setCondition("ID='$ID'");
+    if( $this->registry->getObject('db')->findFirst())
+    {
+      $entry = $this->registry->getObject('db')->getResult();
+      return $entry;
+    }
+    else
+    {
+      return null;
     }
   }
 

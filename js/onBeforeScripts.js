@@ -94,7 +94,20 @@ function importContactCSV() {
     form = document.querySelector('#formImportContactCSV');
     if(form){
         form.style.display = "";
-        console.log('Import');
+    }
+}
+
+function importNoteCSV( parentID ) {
+    var form,e;
+    form = document.querySelector('#formImportNoteCSV');
+    if(form){
+        form.style.display = "";
+        e = document.querySelector('#formFileToUploadNote');
+        if(e){
+            e.action = e.action + parentID;
+        }
+        console.log(e.action);
+        console.log(parentID);
     }
 }
 
@@ -117,3 +130,9 @@ function isValidFileExtension(extension) {
     ];
     return (ext.indexOf(extension) >= 0)
 }
+
+function openFolder( folderpath )
+{
+    var myshell = new ActiveXObject("WScript.shell");
+    myshell.run(folderpath, 1, true); 
+} 

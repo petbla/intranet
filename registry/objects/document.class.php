@@ -213,7 +213,8 @@ class document {
             $this->registry->getObject('template')->getPage()->addTag( "icon30$ext", $icon );
         }
         
-        $icon20 = "<img src='views/classic/images/icon/folder.png' />";
+        $path = '"c:\temp"';
+        $icon20 = "<img src='views/classic/images/icon/folder.png' ondblclick='openFolder($path);'/>";
         $icon30 = "<img src='views/classic/images/icon/file.png' />";
         $icon25 = "<img src='views/classic/images/icon/block.png' />";
         $icon35 = "<img src='views/classic/images/icon/note.png' />";

@@ -231,6 +231,10 @@ if(items){
             inputValue = document.querySelector( '[inputRemindLastDate_id="' + e.target.id + '"]' );
             inputValue.value = oldValue.value;
             
+            oldValue = document.querySelector( '[oldRemindState_id="' + e.target.id + '"]' );
+            inputValue = document.querySelector( '[inputRemindState_id="' + e.target.id + '"]' );
+            inputValue.value = oldValue.value;
+            
             username = document.querySelector( '#UserName' );
             oldValue = document.querySelector( '[oldRemindResponsiblePerson_id="' + e.target.id + '"]' );
             inputValue = document.querySelector( '[inputRemindResponsiblePerson_id="' + e.target.id + '"]' );

@@ -165,6 +165,16 @@ class Registry {
 					$urldata = '';
 				}
 			} 
+			elseif (isset($_REQUEST['searchitem']))
+			{
+				$urldata = $_REQUEST['searchitem'];
+				$urldata = "general/searchItem/$urldata"; 
+			}
+			elseif (isset($_REQUEST['searchcontact']))
+			{
+				$urldata = $_REQUEST['searchcontact'];
+				$urldata = "general/searchContact/$urldata"; 
+			}
 			else
 			{
 				$urldata = '';

@@ -346,6 +346,13 @@ class UsefulFunction {
         $path .= DIRECTORY_SEPARATOR;
       }
     }
+    else
+    {
+      if ($path[strlen($path)-1] == DIRECTORY_SEPARATOR)
+      {
+        $path = substr($path,0,strlen($path) - 1);
+      }
+    }
     return($path);
  }
 

@@ -322,8 +322,24 @@ class template {
     else{
       if ( isset($_GET["search"]) ){
         $urlPath = $_GET["search"];
-        $element = 'search';
+        if ( isset($_GET["searchitem_x"]) ){
+          $element = 'searchitem';
+        }
+        else
+        {
+          $element = 'searchcontact';
+        }
       }
+			elseif (isset($_GET['searchitem']))
+			{
+				$urlPath = $_GET["searchitem"];
+				$element = 'searchitem';
+			}
+			elseif (isset($_GET['searchcontact']))
+			{
+				$urlPath = $_GET["searchcontact"];
+				$element = 'searchcontact';
+			}
       else
         $urlPath = '';            
     }

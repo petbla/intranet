@@ -90,6 +90,16 @@ class Documentcontroller{
 						$ID = isset($urlBits[2]) ? $urlBits[2] : '';
 						$this->slideshow($ID);
 						break;
+					case 'importCsv':
+						if($this->perSet >= 5) // změna pouze pro Starosta(5), Adninistrátor(9)
+						{
+							$ID = isset($urlBits[2]) ? $urlBits[2] : '';
+							$this->importCsv( $ID );
+							$this->listDocuments($ID);
+						}
+						else
+							$this->error($caption['Error'].' - '.$caption['msg_unauthorized']);
+						break;
 					case 'WS':
 						// Je voláno jako XMLHttpRequest (function.js) a pouze loguje zobrazené položky
 						switch ($urlBits[2]) {
@@ -451,6 +461,7 @@ class Documentcontroller{
 				$newRemind = ($_POST['newRemind'] !== null) ? ($_POST['newRemind'] === '') ? '0' : '1' : '0';
 				$newRemindFromDate = ($_POST['newRemindFromDate'] !== '') ? $_POST['newRemindFromDate'] : 'NULL';
 				$newRemindLastDate = ($_POST['newRemindLastDate'] !== '') ? $_POST['newRemindLastDate'] : 'NULL';
+				$newRemindState = ($_POST['newRemindState'] !== '') ? $_POST['newRemindState'] : 'NULL';
 				$newRemindResponsiblePerson = ($_POST['newRemindResponsiblePerson'] !== '') ? $_POST['newRemindResponsiblePerson'] : '';
 				if ($newTitle)
 				{
@@ -465,6 +476,7 @@ class Documentcontroller{
 					$changes['RemindFromDate'] = $newRemindFromDate;
 					$changes['RemindLastDate'] = $newRemindLastDate;
 					$changes['RemindResponsiblePerson'] = $newRemindResponsiblePerson;
+					$changes['RemindState'] = $newRemindState;
 					$condition = "ID = '$ID'";
 					$this->registry->getObject('log')->addMessage("Zobrazení a aktualizace dokumentu",'dmsentry',$ID);
 					$this->registry->getObject('db')->updateRecords('dmsentry',$changes, $condition);
@@ -790,5 +802,85 @@ class Documentcontroller{
 		}
 		return 'Error';
 	}	
+
+	/**
+	 * Akce vyvolaná z webového formuláře, která načte CSV soubor 
+	 * ze kterého se pokusí provést import nových poznámek. Jako CSV soubor
+	 * je očekávám přesně definovaný obsah a požadí sloupců (viz níže)
+	 * Po dokončení se zobrazí seznam poznámek
+	 * @return void
+	 */
+	private function importCsv( $parentID )
+	{
+		if(isset($_FILES["fileToUpload"]) ) {
+			$file = $_FILES['fileToUpload'];
+			if(!empty($file))
+			{
+				$target_file = 'tmp/' . basename($file["name"]);
+				move_uploaded_file($file['tmp_name'],$target_file);
+			}	
+		}
+
+		// If you need to parse XLS files, include php-excel-reader
+		require_once( FRAMEWORK_PATH . 'vendor/spreadsheet-reader/php-excel-reader/excel_reader2.php');
+		require_once( FRAMEWORK_PATH . 'vendor/spreadsheet-reader/SpreadsheetReader.php');
+	
+		$Reader = new SpreadsheetReader($target_file);
+		$idValidCsv = false;
+		$lineno = 0;
+		foreach ($Reader as $Row)
+		{
+			$lineno++;
+			if ($lineno == 1){
+				if(($Row[0] === 'Název 1') &&
+				   ($Row[1] === 'Název 2') &&
+				   ($Row[2] === 'Text') &&
+				   ($Row[3] === 'Připomenutí') &&
+				   ($Row[4] === 'Datum připomenutí') &&
+				   ($Row[5] === 'Termín splnění') &&
+				   ($Row[6] === 'Odpovídá'))
+				{
+					$idValidCsv = true;
+				}
+			}
+			if (($idValidCsv) && ($lineno > 1)){
+				$Name = $this->registry->getObject('db')->sanitizeData($Row[0]);
+				$Name2 = $this->registry->getObject('db')->sanitizeData($Row[1]);
+				$Text = $this->registry->getObject('db')->sanitizeData($Row[2]);
+				if($Name2 != '')
+				{
+					$Name .= ($Name !== '') ? (' '.$Name2) : $Name2;
+				}
+				if($Text !== '')
+				{
+					$Name .= ($Name !== '') ? (' - '.$Text) : $Text;
+				}
+				$Remind = $this->registry->getObject('db')->sanitizeData($Row[3]);				
+				$RemindFromDate = $this->registry->getObject('db')->sanitizeData($Row[4]);
+				$RemindLastDate = $this->registry->getObject('db')->sanitizeData($Row[5]);
+				$RemindResponsiblePerson = $this->registry->getObject('db')->sanitizeData($Row[6]);
+
+				$entry = array();
+				$entry['Title'] = $Name; 
+				$entry['Remind'] = (strtolower($Remind) == 'ano') ? 1 : 0; 
+				
+				if($RemindFromDate !== ''){
+					$RemindFromDate = DateTime::createFromFormat('m-d-y', $RemindFromDate);
+					$entry['RemindFromDate'] = $RemindFromDate->format('Y-m-d H:i:s');
+				}
+				if($RemindLastDate !== ''){
+					$RemindLastDate = DateTime::createFromFormat('m-d-y', $RemindLastDate);
+					$entry['RemindLastDate'] = $RemindLastDate->format('Y-m-d H:i:s');
+				}
+				$entry['RemindResponsiblePerson'] = $RemindResponsiblePerson;
+				
+				if($entry['Title'] !== '')
+					$this->registry->getObject('file')->addNote($entry,$parentID);
+
+			}
+		}
+		$this->listDocuments( $parentID );
+	}
+
 }
 ?>

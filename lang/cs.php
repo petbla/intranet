@@ -150,7 +150,9 @@ $caption['folderBlocName'] = 'Název složky/bloku';
 $caption['PlaceText'] =      'Zadejte text...';
 $caption['View'] =           'Náhled';
 $caption['Import'] =         'Import';
+$caption['ImportNote'] =     'Import poznámek';
 $caption['ContTemplateImp'] ='Šablona pro import';
+$caption['NoteTemplateImp'] ='Šablona pro import poznámek';
 $caption['Export'] =         'Export';
 $caption['Error'] =          'Chyba';
 $caption['Days'] =           'Dní';
@@ -180,5 +182,6 @@ $caption['msg_DeleteDocument'] =   'Akce pro odstranění poznámky BEZ OBSAHU. 
 $caption['msg_ModifyContentDoc'] = 'Editace obsahu položky (poznámky)';
 $caption['msg_SetRemind'] =        'Označení položky jako vyřízené.';
 $caption['ImmportContactsCsv'] =   'Import kontaktů z Excelu (CSV)';
+$caption['ImportNotesCsv'] =       'Import poznámek z Excelu (CSV)';
 
 ?>

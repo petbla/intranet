@@ -55,10 +55,10 @@
             <input type="hidden" name="Title" value="{Title}" oldTitle_id="{ID}">
             <input type="hidden" name="Url" value="{Url}" oldUrl_id="{ID}">
             <input type="hidden" name="Remind" value="{Remind}" oldRemind_id="{ID}">
+            <input type="hidden" name="RemindClose" value="{RemindClose}" oldRemindClose_id="{ID}">
             <input type="hidden" name="RemindFromDate" value="{RemindFromDate}" oldRemindFromDate_id="{ID}">
             <input type="hidden" name="RemindLastDate" value="{RemindLastDate}" oldRemindLastDate_id="{ID}">
             <input type="hidden" name="RemindResponsiblePerson" value="{RemindResponsiblePerson}" oldRemindResponsiblePerson_id="{ID}">
-            <input type="hidden" name="RemindClose" value="{RemindClose}" oldRemindClose_id="{ID}">
             <input type="hidden" name="RemindState" value="{RemindState}" oldRemindState_id="{ID}">
         </fieldset>
         </form>
