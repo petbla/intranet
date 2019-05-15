@@ -117,6 +117,17 @@ class document {
             $this->registry->getObject('template')->getPage()->addTag( 'editcard', '' );
             $this->registry->getObject('template')->getPage()->addTag( 'editIcon', '' );
         }
+        
+        $mediaplayer = '';
+        switch (true) {
+            case $entry['isAudio']:
+                $this->registry->getObject('template')->addTemplateBit('mediaplayer', 'list-entry-mediaplayer-audio.tpl.php');
+                break;
+            default:
+                $this->registry->getObject('template')->getPage()->addTag( 'mediaplayer', '' );
+                break;
+        }
+
         $BaseUrl = $this->registry->getURLPath();
         $this->registry->getObject('template')->getPage()->addTag( 'BaseUrl', $BaseUrl );
         $this->registry->getObject('template')->addTemplateBit('remindIcon','list-entry-remindicon.tpl.php');

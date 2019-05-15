@@ -115,6 +115,8 @@ function isValidFileExtension(extension) {
     var ext = [
         'doc',
         'docx',
+        'ppt',
+        'pptx',
         'odt',
         'pdf',
         'xls',
@@ -126,7 +128,8 @@ function isValidFileExtension(extension) {
         'csv',
         'jpg',
         'bmp',
-        'png'
+        'png',
+        'mp3'
     ];
     return (ext.indexOf(extension) >= 0)
 }

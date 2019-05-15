@@ -123,6 +123,32 @@ function formatEmailTo (email)
     return(newemail);
 }
 
+function getApplication (extension)
+{
+    /**
+     * HELP
+     * https://docs.microsoft.com/en-us/office/client-developer/office-uri-schemes#sectionSection9
+     */
+    var app = '';
+    switch (extension) {
+        case 'xls':
+        case 'xlsx':
+        case 'csv':
+            app = "ms-excel:ofe|u|";
+            break;
+        case 'doc':
+        case 'docx':
+        case 'rtf':
+            app = "ms-word:ofe|u|";
+            break;
+        case 'ppt':
+        case 'pptx':
+            app = "ms-powerpoint:ofv|u|";
+            break;
+    }
+    return app;
+}
+
 if ((fileExtension) && ('innerText' in fileExtension)) {
     switch (fileExtension.innerText) {
         case 'pdf':
@@ -431,13 +457,18 @@ if(a_type){
                 extension = entry.getAttribute('data-dms-extension');
                 if (isValidFileExtension(extension))
                 {
-                    entry.href = entry.getAttribute('data-dms-server') + entry.getAttribute('data-dms-name');
-                    entry.target = '_blank';
+                    var $url, $app;
+                    $url = entry.getAttribute('data-dms-server') + entry.getAttribute('data-dms-name');
+                    $app = getApplication(extension);
+                    entry.href = $app + $url;
+                    entry.target = '';
+                    if($app == '')
+                        entry.target = '_blank';
                 }
                 else
                 {
                     id = entry.getAttribute('a_id');
-                    entry.href = 'index.php?page=document/list/' + id;
+                    entry.href = 'index.php?page=document/view/' + id;
                     entry.target = '';
                 }
                 break;

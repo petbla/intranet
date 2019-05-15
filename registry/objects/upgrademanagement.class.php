@@ -421,6 +421,8 @@ class upgrademanagement {
                     $entries[] = $entry;
                     break;
                 case 'mp3':
+                case 'wav':
+                case 'mid':
                     $entry['Multimedia'] = 'audio';
                     $entries[] = $entry;
                     break;
@@ -509,6 +511,8 @@ class upgrademanagement {
                     $entries[] = $entry;
                     break;
                 case 'mp3':
+                case 'wav':
+                case 'mid':
                     $entry['Multimedia'] = 'audio';
                     $entries[] = $entry;
                     break;

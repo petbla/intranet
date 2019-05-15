@@ -429,6 +429,8 @@ class file {
       case 'png':
           return 'image';
       case 'mp3':
+      case 'wav':
+      case 'mid':
           return 'audio';
       case 'mp4':
           return 'video';
