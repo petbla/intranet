@@ -48,6 +48,7 @@ $caption['home_page']      = 'Úvodní strana';
  * Column's Titel
  */
 $caption['SingUp'] =         'Přihlášení';
+$caption['Logged'] =         'Přihlášen: ';
 $caption['SingOff'] =        'Odhlásit';
 $caption['Password'] =       'Heslo';
 $caption['searchLabel'] =    'Najít';
@@ -58,6 +59,7 @@ $caption['Last_name'] =      'Příjmení';
 $caption['FirstLast_name'] = 'Jméno a příjmení';
 $caption['First_last_name'] ='Celé jméno';
 $caption['User_name'] =      'Jméno uživatele';
+$caption['BirthDate'] =      'Datum narození';
 $caption['NewUser'] =        'Nový uživatel';
 $caption['NewContact'] =     'Nový kontakt';
 $caption['Function'] =       'Funkce';

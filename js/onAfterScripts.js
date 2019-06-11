@@ -365,6 +365,10 @@ if(contacts){
             inputValue = document.querySelector( '[inputTitle_id="' + e.target.id + '"]' );
             inputValue.value = oldValue.value;
    
+            oldValue = document.querySelector( '[oldBirthDate_id="' + e.target.id + '"]' );
+            inputValue = document.querySelector( '[inputBirthDate_id="' + e.target.id + '"]' );
+            inputValue.value = oldValue.value;
+   
             oldValue = document.querySelector( '[oldFunction_id="' + e.target.id + '"]' );
             inputValue = document.querySelector( '[inputFunction_id="' + e.target.id + '"]' );
             inputValue.value = oldValue.value;

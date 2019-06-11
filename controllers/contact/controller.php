@@ -386,6 +386,13 @@ class Contactcontroller {
 							$data['Title'] = $_POST['newTitle'];
 						}
 					}
+					if(isset($_POST['newBirthDate']))
+					{
+						if($contact['BirthDate'] !== $_POST['newBirthDate'])
+						{
+							$data['BirthDate'] = $_POST['newBirthDate'];
+						}
+					}
 					if(isset($_POST['newFunction']))
 					{
 						if($contact['Function'] !== $_POST['newFunction'])
@@ -482,7 +489,7 @@ class Contactcontroller {
         $pref = $config['dbPrefix'];
 		
 		$sql = "SELECT c.ID, c.FullName, c.FirstName, c.LastName, c.Title, c.Function, c.Company, ".
-						"c.Email, c.Phone, c.Web, c.Note, c.Address, c.Close, c.Note, c.ContactGroups ".
+						"c.Email, c.Phone, c.Web, c.Note, c.Address, c.Close, c.Note, c.ContactGroups, c.BirthDate ".
 					"FROM ".$pref."Contact c ".
 					"WHERE  Close=0 ".
 					"ORDER BY c.FullName ";
@@ -508,7 +515,7 @@ class Contactcontroller {
 		$searchText = htmlspecialchars($searchText);
 		$searchText = str_replace('*','',$searchText);
 		$sql = "SELECT c.ID, c.FullName, c.FirstName, c.LastName, c.Title, c.Function, c.Company, ".
-						"c.Email, c.Phone, c.Web, c.Note, c.Address, c.Close, c.Note, c.ContactGroups ".
+						"c.Email, c.Phone, c.Web, c.Note, c.Address, c.Close, c.Note, c.ContactGroups, c.BirthDate ".
 				"FROM ".$pref."Contact c ".
 				"WHERE Close = 0 AND MATCH(FullName,Function,Company,Address,Note,Phone,Email,ContactGroups) AGAINST ('*$searchText*' IN BOOLEAN MODE) ".
 				"ORDER BY FullName";

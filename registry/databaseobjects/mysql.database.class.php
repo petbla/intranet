@@ -649,6 +649,8 @@ class mysqldatabase {
       $EntryNo = $source['EntryNo'];
       $changes =  array();
       $changes['Default'] = 1;
+      if ($source['Version'] == '')
+        $changes['Version'] = $this->registry->getObject('upgrade')->getVersion();
 			$condition = "EntryNo = $EntryNo";
 			$this->updateRecords('source',$changes, $condition, false);
      
@@ -660,8 +662,9 @@ class mysqldatabase {
       $config['compCity'] = $source['City'];
       $config['compZip'] = $source['Zip'];
       $config['compICO'] = $source['ICO'];
+      $config['sourceVersion'] = $source['Version'];
+      $config['sourceEntryNo'] = $source['EntryNo'];
       $this->registry->getObject('template')->dataToTags( $config, 'cfg_' );
-      
     }
 
     /**

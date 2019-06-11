@@ -14,9 +14,16 @@
   <body>    
     <header id="page_header">
       <p>
-        {dateText}<br/>
-        <span id="UserName">{UserName}</span><br/>
-        <span class="version">Verze {Version}</span>
+        {dateText}
+        <br/>
+        -------------------------------------------------
+        <br/>
+        <a href="http://www.ikal.cz/" id="ikal-jmena">kalendář jmen</a>
+        <script type="text/javascript" src="https://www.ikal.cz/widget/kalendar-jmen.js.php"></script>
+        <script type="text/javascript">
+          iKAL_JMENA.init('ctext: 337AB7, htext: 14, showcount: 3');
+          iKAL_JMENA.show();
+        </script>
       </p>
       <img src="views/classic/images/logo.png" border="0" alt="" title="{cfg_compName}">
       <h1>{compName}</h1>

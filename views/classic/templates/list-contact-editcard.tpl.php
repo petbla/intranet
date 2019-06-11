@@ -17,6 +17,10 @@
                 <span>{lbl_Title}</span>
                 <input type="text" class="editInLine" name="newTitle" inputTitle_id="{ID}">
             </label>
+            <label for="newBirthDate">
+                <span>{lbl_BirthDate}</span>
+                <input type="date" class="editInLine" name="newBirthDate" inputBirthDate_id="{ID}">
+            </label>
             <label for="newFunction">
                 <span>{lbl_Function}</span>
                 <input type="text" class="editInLine" name="newFunction" inputFunction_id="{ID}">
@@ -63,6 +67,7 @@
             <input type="hidden" name="FirstName" value="{FirstName}" oldFirstName_id="{ID}">
             <input type="hidden" name="LastName" value="{LastName}" oldLastName_id="{ID}">
             <input type="hidden" name="Title" value="{Title}" oldTitle_id="{ID}">
+            <input type="hidden" name="BirthDate" value="{BirthDate}" oldBirthDate_id="{ID}">
             <input type="hidden" name="Function" value="{Function}" oldFunction_id="{ID}">
             <input type="hidden" name="Company" value="{Company}" oldCompany_id="{ID}">
             <input type="hidden" name="Phone" value="{Phone}" oldPhone_id="{ID}">

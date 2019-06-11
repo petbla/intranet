@@ -232,6 +232,38 @@ class upgrademanagement {
             // upgrade to 2.09
             $this->upgrade_019('2.09');
         }
+        if ($this->version === '2.09') 
+        {
+            // upgrade to 2.10
+            $this->setNewVersion('2.10');
+        }
+        if ($this->version === '2.10') 
+        {
+            // upgrade to 2.11
+            $this->upgrade_020('2.11');
+        }
+    }
+
+    private function upgrade_020($upVer)
+    {
+		global $config;
+        $pref = $config['dbPrefix'];
+
+        $sql = "SELECT * FROM information_schema.columns WHERE table_schema = 'intranet' AND TABLE_NAME = 'Source' AND COLUMN_NAME = 'Version'";
+        $cache = $this->registry->getObject('db')->cacheQuery( $sql );
+        if ($this->registry->getObject('db')->IsEmpty( $cache ))
+        {
+            // upgrade table 'Source'
+            $sql = "ALTER TABLE source".
+                    " ADD `Version` varchar(20) DEFAULT ''";
+            $this->registry->getObject('db')->executeQuery( $sql );
+        }
+
+        // upgrade table 'contact'
+        $sql = "ALTER TABLE ".$pref."contact".
+                " ADD `BirthDate` date NULL DEFAULT NULL";
+        $this->registry->getObject('db')->executeQuery( $sql );        
+        $this->setNewVersion($upVer);
     }
 
     private function upgrade_019($upVer)
@@ -587,7 +619,7 @@ class upgrademanagement {
                 $setup = $this->registry->getObject('db')->getResult();
             }
             $this->PK = $setup['PrimaryKey'];
-            $this->version = $setup['Version'];
+            $this->version = $config['sourceVersion'];
             $this->newInit = false;
         }
         else
@@ -599,13 +631,13 @@ class upgrademanagement {
 
     private function setNewVersion( $ver )
     {
+        global $config;
+
+        $EntryNo = $config['sourceEntryNo'];
+        $changes =  array();
         $changes['Version'] = $ver;
-        $condition = 'PrimaryKey = ' . $this->PK;
-        if ($this->version >= 1.3)
-        {
-            $this->registry->getObject('log')->addMessage("Aktualizace nastavení",'setup',$ver);
-        }
-        $this->registry->getObject('db')->updateRecords( 'setup', $changes, $condition); 
+        $condition = "EntryNo = $EntryNo";
+        $this->registry->getObject('db')->updateRecords('source',$changes, $condition, false);
         $this->version = $ver;
     }
 

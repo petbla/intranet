@@ -34,9 +34,9 @@ if( isset($_COOKIE["maxVisibleItem"]) ){
 $registry->getObject('db')->newConnection($config['db_host'], $config['db_user'], $config['db_pass'], $config['db_name']);
 
 // Check database Update
-$registry->getObject('upgrade')->checkUpgrade();
 $registry->getObject('db')->CheckPortal();
 $registry->getObject('db')->SetPortal(0);
+$registry->getObject('upgrade')->checkUpgrade();
 
 // zkontroluj data požadavku POST pro uživatele snažící se přihlásit a data relace 
 // pro uživatele, kteří jsou přihlášení
