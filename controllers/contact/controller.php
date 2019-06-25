@@ -386,7 +386,7 @@ class Contactcontroller {
 							$data['Title'] = $_POST['newTitle'];
 						}
 					}
-					if(isset($_POST['newBirthDate']))
+					if((isset($_POST['newBirthDate'])) && ($_POST['newBirthDate'] !== ''))
 					{
 						if($contact['BirthDate'] !== $_POST['newBirthDate'])
 						{
