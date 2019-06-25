@@ -23,6 +23,7 @@ class Contact{
 	private $Address;
 	private $Close;
 	private $ContactGroups;
+	private $BirthDate;
 	private $Groups = array();
 	private $active = false;
 	
@@ -36,7 +37,7 @@ class Contact{
 		if( $id != '' )
 		{
 			$sql = "SELECT c.ID, c.FullName, c.FirstName, c.LastName, c.Title, c.Function, c.Company, ".
-							"c.Email, c.Phone, c.Web, c.Note, c.Address, c.Close, c.ContactGroups ".
+							"c.Email, c.Phone, c.Web, c.Note, c.Address, c.Close, c.ContactGroups, c.BirthDate ".
                 		"FROM ".$pref."Contact c ".
                 		"WHERE  ID='$id'";
 
@@ -58,6 +59,7 @@ class Contact{
 				$this->Address = $data['Address'];
 				$this->Close = $data['Close'];
 				$this->ContactGroups = $data['ContactGroups'];
+				$this->BirthDate = $data['BirthDate'];
 				$this->active = ($data['Close'] == "0") ? true : false;
 			}
 		}
@@ -80,6 +82,7 @@ class Contact{
 			$this->active = true;
 			$this->ContactGroups = '';
 			$this->Groups = null;
+			$this->BirthDate = null;
 		}
 
 		// List of all groups
