@@ -21,7 +21,7 @@
         <input type="image" src="views/classic/images/nav/upload.png" name="submit" id="submitImport">
     </form>
 </div>
-<div id="ContactItems">
+<div id="ListItems">
     <table>
         <tr>
             <th>{lbl_FirstLast_name}</th>

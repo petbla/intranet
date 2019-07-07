@@ -1,17 +1,26 @@
 {search}
 <div id="actionpanel">
-    &nbsp;
-    {lbl_NewContact}
-    <img src="views/classic/images/nav/addContact.png" alt="{lbl_New}" title="{lbl_NewContact}" onclick="addNewContact();">
-    &nbsp;
-    {lbl_Groups}
-    <img src="views/classic/images/nav/groups.png" alt="{lbl_Groups}" title="{lbl_Groups}">
-    &nbsp;
-    {lbl_Import}
-    <img src="views/classic/images/nav/import.png" alt="{lbl_Import}" title="{lbl_Import}" onclick="importContactCSV();">
-    &nbsp;
-    {lbl_ContTemplateImp}
-    <a href="files/Kontakty.xlsx"><img src="views/classic/images/nav/export.png" alt="{lbl_Export}" title="{lbl_Export}"></a>
+    <table>
+        <tr>
+            <td>
+                <img src="views/classic/images/nav/addContact.png" alt="{lbl_New}" title="{lbl_NewContact}" onclick="addNewContact();">
+                <br>
+                {lbl_NewContact}
+            </td><td>
+                <img src="views/classic/images/nav/groups.png" alt="{lbl_Groups}" title="{lbl_Groups}">
+                <br>
+                {lbl_Groups}
+            </td><td>
+                <img src="views/classic/images/nav/import.png" alt="{lbl_Import}" title="{lbl_Import}" onclick="importContactCSV();">
+                <br>
+                {lbl_Import}
+            </td><td>
+                <a href="files/Kontakty.xlsx"><img src="views/classic/images/nav/export.png" alt="{lbl_Export}" title="{lbl_Export}"></a>
+                <br>
+                {lbl_ContTemplateImp}
+            </td>
+        </tr>
+    </table>
 </div>
 <div style="display: none;" id="formImportContactCSV">
     <form action="index.php?page=contact/importCsv" method="POST" enctype="multipart/form-data">
@@ -25,7 +34,7 @@
 {navigate_menu}
 </div>
 {pageTitle}
-<div id="ContactItems">
+<div id="ListItems">
     <table>
         <tr>
             <th style="width:100px;">..........</th>      

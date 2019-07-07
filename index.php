@@ -29,6 +29,10 @@ if( isset($_COOKIE["maxVisibleItem"]) ){
 }else
   $config['maxVisibleItem'] = 30;  
 
+if( isset($_COOKIE["HideHandledNote"]) ){
+  $config['HideHandledNote'] = $_COOKIE["HideHandledNote"];
+}
+
 
 // Connect to database
 $registry->getObject('db')->newConnection($config['db_host'], $config['db_user'], $config['db_pass'], $config['db_name']);
@@ -76,6 +80,7 @@ $registry->getObject('template')->getPage()->addTag('UserName',$registry->getObj
 $activeControllers = array();
 $activeControllers[] = 'document';
 $activeControllers[] = 'contact';
+$activeControllers[] = 'agenda';
 $activeControllers[] = 'general';
 $activeControllers[] = 'admin';
 $currentController = $registry->getURLBit( 0 );  // controller

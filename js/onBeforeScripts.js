@@ -139,3 +139,34 @@ function openFolder( folderpath )
     var myshell = new ActiveXObject("WScript.shell");
     myshell.run(folderpath, 1, true); 
 } 
+
+function getCookie(name) {
+    var value = "; " + document.cookie;
+    var parts = value.split("; " + name + "=");
+    if (parts.length == 2) return parts.pop().split(";").shift();
+}
+
+function setCookie(cname, cvalue, exdays) {
+    var d = new Date();
+    d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+    var expires = "expires="+d.toUTCString();
+    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+
+function setHideHandled()
+{
+    var cname, cvalue;
+    var d = new Date();
+    d.setTime(d.getTime() + (1 * 24 * 60 * 60 * 1000));
+    var expires = "expires="+d.toUTCString();
+
+    cname = "HideHandledNote";
+    cvalue = getCookie(cname);
+
+    if(cvalue === "checked"){
+        document.cookie = "HideHandledNote=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    }else{
+        document.cookie = cname + "=checked; " + expires + "; path=/";    
+    }
+    window.location.reload();
+}

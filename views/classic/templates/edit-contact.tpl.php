@@ -1,6 +1,6 @@
-<div id="contact">
+<div id="editcard">
     <form action="index.php?page=contact/save/{ID}"  method="post">
-        <ul class="contact-card">
+        <ul class="edit-card">
             <li>
                 <label class="title">{lbl_First_name}</label>
                 <input type="text" class="value" name="FirstName" value="{FirstName}"/>

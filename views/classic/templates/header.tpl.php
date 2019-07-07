@@ -33,6 +33,7 @@
           <li><a href="index.php?page=document/listTodo">{lbl_Todos}</a></li>
           <li><a href="index.php?page=document/listTodoClose">{lbl_RemindClosed}</a></li>
           <li><a href="index.php?page=document/list">{lbl_Documents}</a></li>
+          <li><a href="index.php?page=agenda/type/list">{lbl_Agenda}</a></li>
           {newsBarMenuItem}
           {archiveBarMenuItem}
           {contactBarMenuItem}

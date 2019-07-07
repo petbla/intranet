@@ -90,6 +90,7 @@ $caption['Users'] =          'Uživatelé';
 $caption['Synchronize'] =    'Synchronizace';
 $caption['Document'] =       'Dokument';
 $caption['Documents'] =      'Dokumenty';
+$caption['Agenda'] =         'Evidence';
 $caption['Created'] =        'Vytvořeno';
 $caption['Modified'] =       'Změněno';
 $caption['News'] =           'Novinky';
@@ -101,6 +102,8 @@ $caption['Remind'] =         'Připomenutí';
 $caption['RemindFromDate'] = 'Připomenout';
 $caption['RemindToDate'] =   'Termín splnění';
 $caption['RemindRespPers'] = 'Zodpovídá';
+$caption['NoSeries'] =       'Číselná řada';
+$caption['LastNo'] =         'Poslední číslo';
 
 $caption['RemindState'] =    'Stav';
 $caption['RemindState00'] = '';
@@ -113,6 +116,13 @@ $caption['RemindState50'] = 'Dokončeno';
 $caption['Todos'] =          'Úkoly';
 $caption['Terms'] =          'Termíny';
 $caption['RemindClosed'] =   'Vyřízeno';
+
+
+/**
+ * Column Descriptions
+ */
+$caption['EditAgendType'] =    'Editace typu agendy';
+$caption['NewAgendType'] =     'Založit nový typu agendy';
 
 /**
  * Action's Title
@@ -161,6 +171,7 @@ $caption['Days'] =           'Dní';
 $caption['State'] =          'Stav';
 $caption['SearchDoc'] =      'Najít dokument';
 $caption['SearchCont'] =     'Najít kontakt';
+$caption['hidehandled'] =    'Skrýt vyřízené';
 
 
 /**

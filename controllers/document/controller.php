@@ -222,6 +222,8 @@ class Documentcontroller{
      */
 	private function listDocuments( $ID )
 	{
+		global $config;
+
 		require_once( FRAMEWORK_PATH . 'models/entry/model.php');
 		$this->model = new Entry( $this->registry, $ID );
 		$entry = $this->model->getData();
@@ -251,12 +253,19 @@ class Documentcontroller{
 			$this->registry->getObject('template')->getPage()->addTag( 'FolderItems', array( 'SQL', $cache ) );			
 		}
 		// Zobrazení dokumentů
+		
+		if($config['HideHandledNote'] == "checked")
+			$HideRemindClose = "AND RemindClose = 0 ";
+		else
+			$HideRemindClose = "";
+
 		$sql = "SELECT ID,Title,Name,Type,Url,Parent,ModifyDateTime,LOWER(FileExtension) as FileExtension ".
 					",IF(Remind=0,'0','1') as Remind,IF(RemindClose=0,'0','1') as RemindClose,RemindFromDate,RemindLastDate".
 					",Content,RemindResponsiblePerson,RemindUserID,RemindContactID,RemindState ".	
 				  	"FROM ".$this->prefDb."DmsEntry ".
 				  	"WHERE Archived = 0 AND parent=".$entry['EntryNo']." AND Type IN (10,30,35,40) ".
-				  	"AND PermissionSet <= $this->perSet ".
+					"AND PermissionSet <= $this->perSet ".
+					$HideRemindClose.
 				  	"ORDER BY Remind DESC,Type,Title DESC ";
 		$showBreads = true;
 		$pageTitle = '';
@@ -332,13 +341,13 @@ class Documentcontroller{
 		$this->registry->setLevel(0);
 		$this->registry->setEntryNo(0);
 		$showFolder = false;
-    	$sql = "SELECT ID,Title,Name,Type,Url,Parent,ModifyDateTime,LOWER(FileExtension) as FileExtension ".
-				",IF(Remind=0,'0','1') as Remind,IF(RemindClose=0,'0','1') as RemindClose,RemindFromDate,RemindLastDate".
-				",Content,RemindResponsiblePerson,RemindUserID,RemindContactID,RemindState ".	
+    	$sql = "SELECT EntryNo, ID,Title,Name,Type,Url,Parent,ModifyDateTime,LOWER(FileExtension) as FileExtension ".
+					",IF(Remind=0,'0','1') as Remind,IF(RemindClose=0,'0','1') as RemindClose,RemindFromDate,RemindLastDate".
+					",Content,RemindResponsiblePerson,RemindUserID,RemindContactID,RemindState ".	
 				"FROM ".$this->prefDb."DmsEntry ".
-			   	"WHERE Archived = 0 AND NewEntry = 1 AND Type = 30  ".
-			   	"AND PermissionSet <= $this->perSet ".
-			   	"ORDER BY Level,Parent,Type,Title" ;
+			   	"WHERE Archived = 0  ".
+					"AND PermissionSet <= $this->perSet ".
+				"ORDER BY EntryNo DESC ";
 		$showBreads = false;
 		$pageTitle = '<h3>'.$caption['NewDocument'].'</h3>';
 		$template = '';

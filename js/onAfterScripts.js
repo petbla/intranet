@@ -1,5 +1,8 @@
 'use strict';
 
+// ----------------------------------------------------------------------------------------
+// Init variables
+// ----------------------------------------------------------------------------------------
 var documentLink;
 var fileTitle, fileExtension;
 var linkTitle;
@@ -18,7 +21,14 @@ var mouseFromX,mouseFromY;
 var activeForm;
 var sqlrequest;
 var a_type;
+var arrGroup = null;
+var grouplistnewcontact;
+var fld_handled;
 
+
+// ----------------------------------------------------------------------------------------
+// Set variables
+// ----------------------------------------------------------------------------------------
 documentLink = document.querySelector('#cosumentLink');
 fileTitle = document.querySelector('#FileTitle');
 fileExtension = document.querySelector('#FileExtension');
@@ -36,6 +46,21 @@ contacts = document.querySelectorAll('[dmsClassName="contact"]');
 entriesType35 = document.querySelectorAll('a[entrytype="35"]');
 sqlrequest = document.querySelector('#sqlrequest');
 a_type = document.querySelectorAll('[a_type="entry"]');
+fld_handled = document.querySelector('#fld_handled');
+grouplistnewcontact = document.querySelector( '[id="grouplistnewcontact"]' );
+
+
+// ----------------------------------------------------------------------------------------
+// Functions
+// ----------------------------------------------------------------------------------------
+function tags2Html( arr ){
+    var newval='';
+    arr.forEach(str => {
+        str = "<span class='tags-item'>" + str + "</span>";
+        newval += str;
+    });
+    return newval;
+}
 
 function validatePassword () {
     if (password.value != password_confirm.value) {
@@ -44,12 +69,6 @@ function validatePassword () {
     else
     {
         password_confirm.setCustomValidity('');
-    }
-}
-
-if (pagecounter != null){
-    if (pagecounter.innerText == ""){
-        pagecounter.style.display = 'none';
     }
 }
 
@@ -149,6 +168,65 @@ function getApplication (extension)
     return app;
 }
 
+function dragElement(elmnt) {
+    var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    var ID;
+    ID = elmnt.getAttribute('form_id');
+    if (document.getElementById(elmnt.id + "header" + ID)) {
+        // if present, the header is where you move the DIV from:
+        document.getElementById(elmnt.id + "header" + ID).onmousedown = dragMouseDown;
+    } else {
+        // otherwise, move the DIV from anywhere inside the DIV: 
+        elmnt.onmousedown = dragMouseDown;
+    }
+
+    function dragMouseDown(e) {
+        e = e || window.event;
+        e.preventDefault();
+        // get the mouse cursor position at startup:
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        // call a function whenever the cursor moves:
+        document.onmousemove = elementDrag;
+    }
+
+    function closeDragElement() {
+        // stop moving when mouse button is released:
+        document.onmouseup = null;
+        document.onmousemove = null;
+    }
+
+    function elementDrag(e) {
+        e = e || window.event;
+        e.preventDefault();
+        // calculate the new cursor position:
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        // set the element's new position:
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+    }
+}
+
+function getCookie(name) {
+    var value = "; " + document.cookie;
+    var parts = value.split("; " + name + "=");
+    if (parts.length == 2) return parts.pop().split(";").shift();
+}
+
+
+// ----------------------------------------------------------------------------------------
+// Code
+// ----------------------------------------------------------------------------------------
+if (pagecounter != null){
+    if (pagecounter.innerText == ""){
+        pagecounter.style.display = 'none';
+    }
+}
+
 if ((fileExtension) && ('innerText' in fileExtension)) {
     switch (fileExtension.innerText) {
         case 'pdf':
@@ -174,8 +252,6 @@ if ((fileExtension) && ('innerText' in fileExtension)) {
         documentLink.innerText = linkTitle;
     }   
 }
-
-
 
 if (password) {
     password.onchange = validatePassword;
@@ -402,8 +478,6 @@ if(contacts){
     })   
 }
 
-var grouplistnewcontact;
-grouplistnewcontact = document.querySelector( '[id="grouplistnewcontact"]' );
 if (grouplistnewcontact !== null){
     grouplistnewcontact.onchange = function  (ee) {
         var tag,arrGroup; 
@@ -498,8 +572,6 @@ if(a_type){
     })
 }
 
-var arrGroup = null;
-
 if(tags){
     for (let i = 0; i < tags.length; i++) {
         var e;
@@ -518,16 +590,6 @@ if(deleteEntryType20){
         e.style.display = "none";
     }
 }
-
-function tags2Html( arr ){
-    var newval='';
-    arr.forEach(str => {
-        str = "<span class='tags-item'>" + str + "</span>";
-        newval += str;
-    });
-    return newval;
-}
-
 
 if(grouplist){
     grouplist.onchange = function  (e2) {
@@ -558,46 +620,9 @@ if(grouplist){
 };
 
 
-function dragElement(elmnt) {
-    var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-    var ID;
-    ID = elmnt.getAttribute('form_id');
-    if (document.getElementById(elmnt.id + "header" + ID)) {
-        // if present, the header is where you move the DIV from:
-        document.getElementById(elmnt.id + "header" + ID).onmousedown = dragMouseDown;
-    } else {
-        // otherwise, move the DIV from anywhere inside the DIV: 
-        elmnt.onmousedown = dragMouseDown;
-    }
-
-    function dragMouseDown(e) {
-        e = e || window.event;
-        e.preventDefault();
-        // get the mouse cursor position at startup:
-        pos3 = e.clientX;
-        pos4 = e.clientY;
-        document.onmouseup = closeDragElement;
-        // call a function whenever the cursor moves:
-        document.onmousemove = elementDrag;
-    }
-
-    function closeDragElement() {
-        // stop moving when mouse button is released:
-        document.onmouseup = null;
-        document.onmousemove = null;
-    }
-
-    function elementDrag(e) {
-        e = e || window.event;
-        e.preventDefault();
-        // calculate the new cursor position:
-        pos1 = pos3 - e.clientX;
-        pos2 = pos4 - e.clientY;
-        pos3 = e.clientX;
-        pos4 = e.clientY;
-        // set the element's new position:
-        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
-        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
-    }
+if(fld_handled){
+    var name;
+    name = "HideHandledNote";
+    fld_handled.checked = getCookie(name);
 }
 

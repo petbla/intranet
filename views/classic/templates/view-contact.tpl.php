@@ -1,5 +1,5 @@
 {search}
-<div id="contact">
+<div id="editcard">
     <address>
         <table>
             <tr>

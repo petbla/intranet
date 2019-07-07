@@ -242,6 +242,43 @@ class upgrademanagement {
             // upgrade to 2.11
             $this->upgrade_020('2.11');
         }
+        if ($this->version === '2.11') 
+        {
+            // upgrade to 2.12
+            $this->upgrade_021('2.12');
+        }
+    }
+
+    private function upgrade_021($upVer)
+    {
+		global $config;
+        $pref = $config['dbPrefix'];
+        
+        // new table agenda
+        $sql = "CREATE TABLE IF NOT EXISTS `".$pref."agenda` (
+            `ID` varchar(36) COLLATE utf8_czech_ci DEFAULT '00000000-0000-0000-0000-000000000000',
+            `TypeID` int(11) NOT NULL DEFAULT 0,
+            `DocumentNo` varchar(20) DEFAULT '',
+            `Description` varchar(250) COLLATE utf8_czech_ci DEFAULT '',
+            `CreateDate` datetime NULL,
+            `ExecuteDate` datetime NULL,
+            `EntryID` int(11) NOT NULL DEFAULT 0,
+            PRIMARY KEY (`TypeID`, `DocumentNo`),
+            KEY `ID` (`ID`)
+            ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci";
+        $this->registry->getObject('db')->executeQuery( $sql );
+
+        // new table agendatype
+        $sql = "CREATE TABLE IF NOT EXISTS `".$pref."agendatype` (
+            `TypeID` INT(11) NOT NULL AUTO_INCREMENT,
+            `Name` varchar(250) COLLATE utf8_czech_ci DEFAULT '',
+            `NoSeries` varchar(20) DEFAULT '',
+            `LastNo` varchar(20) DEFAULT '',
+            PRIMARY KEY (`TypeID`)
+            ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci";
+        $this->registry->getObject('db')->executeQuery( $sql );
+
+        $this->setNewVersion($upVer);
     }
 
     private function upgrade_020($upVer)

@@ -319,15 +319,15 @@ div#DocumentItems td.column{
   padding-right: 5px;
 }
 
-div#ContactItems td{
+div#ListItems td{
   font-family: Arial, sans-serif, Calibri; 
-  font-size: 12px;
+  font-size: 18px;
   font-weight:normal;
   text-decoration: none;
-  padding: 4px 0;
+  padding: 6px 0;
   color: black;  
 }
-div#ContactItems td.col_fullname{
+div#ListItems td.col_fullname{
   padding-left: 10px;
 }
 div#FolderItems ul li{
@@ -592,7 +592,7 @@ div#users .form-style-user label{
 div#actionpanel{
   color: #808080;
   font-size: 12px;
-  margin: 10px 0;
+  margin: 10px auto;
   padding: 4px;
   border: 1px solid black;
   background-color: #ffc;
@@ -601,23 +601,36 @@ div#actionpanel input, div#actionpanel img{
   vertical-align: middle;
   cursor: pointer;
 }
+div#actionpanel tr{
+  color: #808080;
+  font-size: 14px;
+  background-color: #ffc;
+}
+div#actionpanel td{
+  padding: 4px;
+  text-align: center;
+  border: 1px solid black;
+}
+div#actionpanel td.alignleft{
+  text-align: left;
+}
 
-div#contact table{ 
+div#editcard table{ 
   width: 40%; 
   border-collapse: collapse;
   font-size: 14px; 
 } 
-div#contact  td{ 
+div#editcard  td{ 
   padding: 10px;
   border: none;
   font-family: arial;
 }
-div#contact  td.label{ 
+div#editcard  td.label{ 
   background-color: #fff;
   width: 30%; 
   font-size: 13px;
 }
-div#contact  td.value{ 
+div#editcard  td.value{ 
   padding-left: 10px;
   font-weight: bold;
 }
@@ -701,33 +714,33 @@ div#editwindow .required{
 
 /* Contact CARD */
 
-.contact-card {
+.edit-card {
 	margin:20px auto;
 	max-width: 400px;
 	padding: 20px 12px 10px 20px;
   font: 13px "Lucida Sans Unicode", "Lucida Grande", sans-serif;
   background-color: #ffc;
 }
-.contact-card li {
+.edit-card li {
 	padding: 10px;
 	display: block;
 	list-style: none;
 	margin: 10px 0 0 0;
 }
-.contact-card label{
+.edit-card label{
 	margin:0 0 3px 0;
 	padding:0px;
 	display:block;
 	font-weight: bold;
 }
-.contact-card input[type=text], 
-.contact-card input[type=date],
-.contact-card input[type=datetime],
-.contact-card input[type=number],
-.contact-card input[type=search],
-.contact-card input[type=time],
-.contact-card input[type=url],
-.contact-card input[type=email],
+.edit-card input[type=text], 
+.edit-card input[type=date],
+.edit-card input[type=datetime],
+.edit-card input[type=number],
+.edit-card input[type=search],
+.edit-card input[type=time],
+.edit-card input[type=url],
+.edit-card input[type=email],
 textarea, 
 select{
 	box-sizing: border-box;
@@ -743,43 +756,43 @@ select{
 	-o-transition: all 0.30s ease-in-out;
 	outline: none;	
 }
-.contact-card input[type=text]:focus, 
-.contact-card input[type=date]:focus,
-.contact-card input[type=datetime]:focus,
-.contact-card input[type=number]:focus,
-.contact-card input[type=search]:focus,
-.contact-card input[type=time]:focus,
-.contact-card input[type=url]:focus,
-.contact-card input[type=email]:focus,
-.contact-card textarea:focus, 
-.contact-card select:focus{
+.edit-card input[type=text]:focus, 
+.edit-card input[type=date]:focus,
+.edit-card input[type=datetime]:focus,
+.edit-card input[type=number]:focus,
+.edit-card input[type=search]:focus,
+.edit-card input[type=time]:focus,
+.edit-card input[type=url]:focus,
+.edit-card input[type=email]:focus,
+.edit-card textarea:focus, 
+.edit-card select:focus{
 	-moz-box-shadow: 0 0 8px #88D5E9;
 	-webkit-box-shadow: 0 0 8px #88D5E9;
 	box-shadow: 0 0 8px #88D5E9;
 	border: 1px solid #88D5E9;
 }
-.contact-card .value{
+.edit-card .value{
 	width: 100%;
 }
-.contact-card .field-select{
+.edit-card .field-select{
 	width: 100%;
 }
-.contact-card .field-textarea{
+.edit-card .field-textarea{
 	height: 100px;
 }
-.contact-card input[type=submit], .contact-card input[type=button]{
+.edit-card input[type=submit], .edit-card input[type=button]{
 	background: #4B99AD;
 	padding: 8px 15px 8px 15px;
 	border: none;
 	color: #fff;
 }
-.contact-card input[type=submit]:hover, .contact-card input[type=button]:hover{
+.edit-card input[type=submit]:hover, .edit-card input[type=button]:hover{
 	background: #4691A4;
 	box-shadow:none;
 	-moz-box-shadow:none;
 	-webkit-box-shadow:none;
 }
-.contact-card .required{
+.edit-card .required{
 	color:red;
 }
 .col_function,
