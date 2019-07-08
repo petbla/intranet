@@ -1,15 +1,4 @@
 {search}
-<div id="actionpanel">
-    <table>
-        <tr>
-            <td>
-                <img src="views/classic/images/nav/addNew.png" alt="{lbl_New}" title="{lbl_NewAgendType}">
-                <br>
-                {lbl_New}
-            </td>
-        </tr>
-    </table>
-</div>
 <div id="pagecounter"></div>
 {pageTitle}
 {navigate_menu}

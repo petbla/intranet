@@ -29,11 +29,13 @@
                     <br>
                     <label for="fld_handled">{lbl_hidehandled}</label>
                 </td>
+                <td>
+                    {slideshow}      
+                </td>
             </tr>
         </table>
         <input type="hidden" name="parentID" value="{parentID}">
         <input type="hidden" name="root" value="{parentfoldername}">
     </form>      
-    {slideshow}      
 </div>
 

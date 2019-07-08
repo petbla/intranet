@@ -35,8 +35,12 @@ class Agendacontroller{
 				$ID = '';
 				switch ($urlBits[1]) {
 					case 'list':
-						$ID = isset($urlBits[2]) ? $urlBits[2] : '';
-						$this->listAgenda($ID);
+						$TypeID = isset($urlBits[2]) ? $urlBits[2] : '';
+						$this->listAgenda($TypeID);
+						break;
+					case 'add':
+						$TypeID = isset($urlBits[2]) ? $urlBits[2] : '';
+						$this->addAgenda($TypeID);
 						break;
 					case 'type':
 						$action = isset($urlBits[2]) ? $urlBits[2] : '';
@@ -50,11 +54,19 @@ class Agendacontroller{
 								break;
 							case 'modify':
 								$TypeID = isset($urlBits[3]) ? $urlBits[3] : '';
-								$this->modifyAgendaType( $TypeID );
+								if($TypeID !== ''){
+									$this->modifyAgendaType( $TypeID );
+								}else{
+									$this->pageNotFound();
+								}
 								break;
 							case 'delete':
 								$TypeID = isset($urlBits[3]) ? $urlBits[3] : '';
-								$this->deleteAgendaType( $TypeID );
+								if($TypeID !== ''){
+									$this->deleteAgendaType( $TypeID );
+								}else{
+									$this->pageNotFound();
+								}
 								break;
 							default:
 								$this->pageNotFound();
@@ -106,13 +118,48 @@ class Agendacontroller{
 
     /**
      * Zobrazení položek agendy
-	 * @param String $ID = ID agendy
+	 * @param String $TypeID = ID agendy
      * @return void
      */
-	private function listAgenda( $ID )
+	private function listAgenda( $TypeID )
 	{
-		$this->error('TODO: listAgenda');
-    }
+		global $caption;		
+		$sql = "SELECT * ".
+					 "FROM ".$this->prefDb."agenda ".
+					 "WHERE TypeID = $TypeID ";
+
+		$this->registry->getObject('db')->initQuery('agendatype');
+		$this->registry->getObject('db')->setFilter('TypeID',$TypeID);
+		if ($this->registry->getObject('db')->findFirst())
+		{
+			$agendatype = $this->registry->getObject('db')->getResult();
+		}else{
+			$this->pageNotFound();
+			return;
+		}
+	 
+		// Zobrazení výsledku
+		$templateList = 'list-agenda.tpl.php';
+		$templateCard = 'edit-agenda.tpl.php';
+		$cache = $this->listResult( $sql );
+		if($this->registry->getObject('db')->isEmpty( $cache )){
+			$this->registry->getObject('template')->getPage()->addTag( 'ID', '' );				
+			$this->registry->getObject('template')->getPage()->addTag( 'DocumentNo', '' );				
+			$this->registry->getObject('template')->getPage()->addTag( 'Description', '' );				
+			$this->registry->getObject('template')->getPage()->addTag( 'CreateDate', '' );				
+			$this->registry->getObject('template')->getPage()->addTag( 'ExecuteDate', '' );				
+		}else{
+			$this->registry->getObject('template')->getPage()->addTag( 'AgendaList', array( 'SQL', $cache ) );
+		}
+		$this->registry->getObject('template')->getPage()->addTag( 'TypeID', $TypeID );				
+		$this->registry->getObject('template')->getPage()->addTag( 'pageTitle', $agendatype['Name'] );				
+		$this->registry->getObject('template')->getPage()->addTag( 'EditDocumentNo', '' );				
+		$this->registry->getObject('template')->getPage()->addTag( 'EditDescription', '' );				
+		$this->registry->getObject('template')->getPage()->addTag( 'EditCreateDate', '' );				
+		$this->registry->getObject('template')->getPage()->addTag( 'EditExecuteDate', '' );				
+		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', $templateList, 'footer.tpl.php');			
+		$this->registry->getObject('template')->addTemplateBit('editcard', $templateCard);
+	}
 
     /**
      * Zobrazení seznam typů agend
@@ -122,11 +169,45 @@ class Agendacontroller{
 	{
 		global $caption;		
     	$sql = "SELECT * FROM ".$this->prefDb."agendatype ";
-		$pageTitle = '<h3>'.$caption['Agenda'].'</h3>';
-		$template = '';
+		
 		// Zobrazení výsledku
-		$this->listResult( $sql, '', 'list-agenda-type.tpl.php' );	
+		$templateList = 'list-agenda-type.tpl.php';
+		$templateCard = 'edit-agenda-type.tpl.php';
+		$cache = $this->listResult( $sql );
+		if($this->registry->getObject('db')->isEmpty( $cache )){
+			$this->registry->getObject('template')->getPage()->addTag( 'TypeID', '' );				
+			$this->registry->getObject('template')->getPage()->addTag( 'Name', '' );				
+			$this->registry->getObject('template')->getPage()->addTag( 'NoSeries', '' );				
+			$this->registry->getObject('template')->getPage()->addTag( 'LastNo', '' );				
+			$this->registry->getObject('template')->getPage()->addTag( 'editcard', '' );				
+		}else{
+			$this->registry->getObject('template')->getPage()->addTag( 'AgendaTypeList', array( 'SQL', $cache ) );
+		}
+		$this->registry->getObject('template')->getPage()->addTag( 'pageTitle', '' );				
+		$this->registry->getObject('template')->getPage()->addTag( 'EditName', '' );
+		$this->registry->getObject('template')->getPage()->addTag( 'EditNoSeries', '' );
+		$this->registry->getObject('template')->getPage()->addTag( 'EditTypeID', '' );
+		$this->registry->getObject('template')->getPage()->addTag( 'pageTitle', '' );
+		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', $templateList, 'footer.tpl.php');			
+		$this->registry->getObject('template')->addTemplateBit('editcard', $templateCard);
 	}
+
+	/**
+	 * Založení nového typu dokumentu
+	 * @return void
+	 */
+	private function addAgenda( $TypeID )
+	{
+		global $config, $caption;
+
+		$this->error('TODO: addAgenda');
+		return;
+		
+		require_once( FRAMEWORK_PATH . 'models/agenda/model.php');
+		$this->model = new Agenda( $this->registry, '' );
+
+		$this->listAgenda( $TypeID );
+	}	
 
 	/**
 	 * Založení nového typu dokumentu
@@ -143,9 +224,49 @@ class Agendacontroller{
 		$data['Name'] = isset($_POST['Name']) ? $_POST['Name'] : '';
 		$data['NoSeries'] = isset($_POST['NoSeries']) ? $_POST['NoSeries'] : '';
 		$data['TypeID'] = isset($_POST['TypeID']) ? $_POST['TypeID'] : '';
-		$this->model->newAgendaType( $data );
+		$this->newAgendaType( $data );
 		$this->listAgendaType();
 	}	
+
+    /**
+     * Globální funkce pro založení nového typu agendy
+     * @param $data - pole nového záznamu
+     * @return boolean $success - výsledek založení nového záznamu
+     */
+    function newAgendaType( $data )
+    {
+		global $config;
+        $pref = $config['dbPrefix'];
+
+        $Name = isset($data['Name']) ? $data['Name'] : '';
+        if (($Name == '') && ($data['TypeID'] == ''))
+            return false;   
+        
+        $this->registry->getObject('db')->initQuery('agendatype');
+        $this->registry->getObject('db')->setFilter('TypeID',$data['TypeID']);
+        if (($data['TypeID'] !== "") && ($this->registry->getObject('db')->findFirst())){
+            $TypeID = $data['TypeID'];
+            
+            // Update
+            $changes = array();
+            $changes['Name'] = $data['Name'];
+            if(!($this->isAgendaTypeUsed( $TypeID )))
+                $changes['NoSeries'] = $data['NoSeries'];
+            $condition = "TypeID = '$TypeID'";
+            $this->registry->getObject('db')->updateRecords('agendatype',$changes, $condition);
+    
+        }else{
+            // Insert New
+            unset($data['TypeID']);
+            $this->registry->getObject('db')->initQuery('agendatype');
+            $this->registry->getObject('db')->setFilter('NoSeries',$data['NoSeries']);
+            if($this->registry->getObject('db')->isEmpty()){
+                $this->registry->getObject('db')->insertRecords('agendatype',$data);
+                return true;
+            }
+            return false;
+        }
+    }
 	
 	/**
 	 * Editace typu agendy
@@ -175,10 +296,31 @@ class Agendacontroller{
 	 */
 	private function deleteAgendaType( $TypeID )
 	{
-		$this->error('TODO: deleteAgendaType');
+		$condition = "TypeID = ".$TypeID;
+		$this->registry->getObject('db')->deleteRecords( 'agendatype', $condition, 1); 
+		$this->listAgendaType();
 	}
 
-	private function listResult( $sql, $pageLink, $template)
+    /**
+     * Test, zda byla již číselná řada použita
+     * @param int $TypeID - ID číselné řady agendy
+     * @return boolean - info, zda byla číselná řada použita 
+     */
+    function isAgendaTypeUsed( $TypeID ) 
+    {
+        $this->registry->getObject('db')->initQuery('agenda');
+        $this->registry->getObject('db')->setFilter('TypeID',$TypeID);
+        if($this->registry->getObject('db')->isEmpty())
+            return false;
+        return true;
+    }
+
+	/**
+	 * SQL dotaz přeskládán do listu položek v $cache
+	 * @param string $sql - SELECT dotaz
+	 * @return int $cache - index výsledku dotazu
+	 */
+	private function listResult( $sql )
 	{
 		global $config, $caption;
         $pref = $config['dbPrefix'];
@@ -199,24 +341,11 @@ class Agendacontroller{
 			$this->registry->getObject('template')->getPage()->addTag( 'navigate_menu', $navigate );
 			$sql .= " LIMIT $fromItem," . $config['maxVisibleItem']; 
 			$cache = $this->registry->getObject('db')->cacheQuery( $sql );
-			if (!$this->registry->getObject('db')->isEmpty( $cache )){
-				$this->registry->getObject('template')->getPage()->addTag( 'AgendaTypeList', array( 'SQL', $cache ) );
-				$this->registry->getObject('template')->getPage()->addTag( 'pageLink', $pageLink );
-			}else{
-				$this->registry->getObject('template')->getPage()->addTag( 'Name', '' );				
-				$this->registry->getObject('template')->getPage()->addTag( 'NoSeries', '' );				
-				$this->registry->getObject('template')->getPage()->addTag( 'LastNo', '' );				
-				$this->registry->getObject('template')->getPage()->addTag( 'editcard', '' );				
-			}
-			$this->registry->getObject('template')->getPage()->addTag( 'EditName', '' );
-			$this->registry->getObject('template')->getPage()->addTag( 'EditNoSeries', '' );
-			$this->registry->getObject('template')->getPage()->addTag( 'EditTypeID', '' );
-			$this->registry->getObject('template')->getPage()->addTag( 'pageTitle', '' );
-			$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', $template, 'footer.tpl.php');			
-			$this->registry->getObject('template')->addTemplateBit('editcard', 'edit-agenda-type.tpl.php');
 
 			// Search BOX
 			$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
+
+			return ( $cache );
 		}
         else
         {

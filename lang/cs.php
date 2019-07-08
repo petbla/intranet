@@ -90,6 +90,7 @@ $caption['Users'] =          'Uživatelé';
 $caption['Synchronize'] =    'Synchronizace';
 $caption['Document'] =       'Dokument';
 $caption['Documents'] =      'Dokumenty';
+$caption['DocumentNo'] =     'Číslo jednací';
 $caption['Agenda'] =         'Evidence';
 $caption['Created'] =        'Vytvořeno';
 $caption['Modified'] =       'Změněno';
@@ -104,6 +105,8 @@ $caption['RemindToDate'] =   'Termín splnění';
 $caption['RemindRespPers'] = 'Zodpovídá';
 $caption['NoSeries'] =       'Číselná řada';
 $caption['LastNo'] =         'Poslední číslo';
+$caption['CreateDate'] =     'Datum vytvoření';
+$caption['ExecuteDate'] =    'Datum vyřízení';
 
 $caption['RemindState'] =    'Stav';
 $caption['RemindState00'] = '';
@@ -172,6 +175,7 @@ $caption['State'] =          'Stav';
 $caption['SearchDoc'] =      'Najít dokument';
 $caption['SearchCont'] =     'Najít kontakt';
 $caption['hidehandled'] =    'Skrýt vyřízené';
+$caption['NewAgenda'] =      'Vytvořit nový dokument evidence';
 
 
 /**
