@@ -167,6 +167,9 @@ class document {
         
         // Add RemindState Caption
         $this->addRemindState();
+        
+		// Search BOX
+		$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
 
         $this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'view-entry-document.tpl.php', 'footer.tpl.php');
     }

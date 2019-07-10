@@ -23,16 +23,14 @@ class Generalcontroller {
 			if($perSet == 0)
 			{
 				$this->registry->getObject('log')->addMessage($caption['msg_unauthorized'],'contact','');
+				// Search BOX
+				$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
 				$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page.tpl.php', 'footer.tpl.php');
 				$this->registry->getObject('template')->getPage()->addTag('message',$caption['msg_unauthorized']);
 				return;
 			}
 
-			if( !isset( $urlBits[1] ) )
-			{		
-		        $this->notFound();
-			}
-			else
+			if( isset( $urlBits[1] ) )
 			{
 				switch( $urlBits[1] )
 				{				
@@ -40,19 +38,19 @@ class Generalcontroller {
 						$searchText = isset($urlBits[2]) ? $urlBits[2] : '';
 						if ($searchText){
 							$this->searchContacts($searchText);
+							return;
 						}
 						break;
 					case 'searchItem':
 						$searchText = isset($urlBits[2]) ? $urlBits[2] : '';
 						if ($searchText){
 							$this->searchDocuments($searchText);
+							return;
 						}
 						break;
-					default:				
-						$this->notFound();
-						break;		
 				}
 			}
+			$this->notFound();
 		}
 	}
 
@@ -64,6 +62,8 @@ class Generalcontroller {
 	{
 		// Logování
 		$this->registry->getObject('log')->addMessage("Pokus o zobrazení neznámého obsahu",'dmsentry','');
+		// Search BOX
+		$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
 		// Sestavení
 		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'invalid-page.tpl.php', 'footer.tpl.php');
 	}
@@ -79,6 +79,8 @@ class Generalcontroller {
 		$this->registry->getObject('log')->addMessage("Chyba: $message",'contact','');
 		// Nastavení parametrů
 		$this->registry->getObject('template')->getPage()->addTag('message',$message);
+		// Search BOX
+		$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
 		// Sestavení
 		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page.tpl.php', 'footer.tpl.php');
 	}

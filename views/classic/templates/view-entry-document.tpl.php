@@ -1,3 +1,4 @@
+{search}
 <div id="breads">
 {breads}
 </div>

@@ -3,9 +3,7 @@
     <table>
         <tr>
             <td>
-                <a href="index.php?page=agenda/add/{TypeID}">
-                    <img src="views/classic/images/nav/addNew.png" alt="{lbl_NewAgenda}" title="{lbl_NewAgenda}">
-                </a>
+                <a href="index.php?page=agenda/add/{TypeID}"><img src="views/classic/images/nav/addNew.png" alt="{lbl_NewAgenda}" title="{lbl_NewAgenda}"></a>
                 <br>
                 {lbl_NewAgenda}
             </td>

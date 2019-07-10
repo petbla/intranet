@@ -24,6 +24,8 @@ class Contactcontroller {
 			{
 				$this->registry->getObject('log')->addMessage($caption['msg_unauthorized'],'contact','');
 				$this->registry->getObject('template')->getPage()->addTag('message',$caption['msg_unauthorized']);
+				// Search BOX
+				$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
 				// Sestavení
 				$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page.tpl.php', 'footer.tpl.php');
 				return;
@@ -106,6 +108,8 @@ class Contactcontroller {
 	{
 		// Logování
 		$this->registry->getObject('log')->addMessage("Pokus o zobrazení neznámého kontaktu",'dmsentry','');
+		// Search BOX
+		$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
 		// Sestavení
 		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'invalid-contact.tpl.php', 'footer.tpl.php');
 	}
@@ -121,6 +125,8 @@ class Contactcontroller {
 		$this->registry->getObject('log')->addMessage("Chyba: $message",'contact','');
 		// Nastavení parametrů
 		$this->registry->getObject('template')->getPage()->addTag('message',$message);
+		// Search BOX
+		$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
 		// Sestavení
 		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page.tpl.php', 'footer.tpl.php');
 	}
@@ -143,6 +149,8 @@ class Contactcontroller {
 				$this->registry->getObject('template')->getPage()->addTag( $property, $value );
 			}
 			$this->registry->getObject('log')->addMessage("Zobrazení kontaktu ".$contact['FullName'],'contact',$ID);
+			// Search BOX
+			$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
 			$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'view-contact.tpl.php', 'footer.tpl.php');
 		}
 		else

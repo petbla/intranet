@@ -97,6 +97,8 @@ class Agendacontroller{
 	{
 		// Logování
 		$this->registry->getObject('log')->addMessage("Pokus o zobrazení neznámé agendy",'agenda','');
+		// Search BOX
+		$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
 		// Sestavení
 		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page-notfound.tpl.php', 'footer.tpl.php');
 	}
@@ -112,6 +114,8 @@ class Agendacontroller{
 		$this->registry->getObject('log')->addMessage("Chyba: $message",'agenda','');
 		// Nastavení parametrů
 		$this->registry->getObject('template')->getPage()->addTag('message',$message);
+		// Search BOX
+		$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
 		// Sestavení stránky
 		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page.tpl.php', 'footer.tpl.php');
 	}
@@ -200,12 +204,9 @@ class Agendacontroller{
 	{
 		global $config, $caption;
 
-		$this->error('TODO: addAgenda');
-		return;
-		
 		require_once( FRAMEWORK_PATH . 'models/agenda/model.php');
 		$this->model = new Agenda( $this->registry, '' );
-
+		$this->model->initNew( $TypeID );
 		$this->listAgenda( $TypeID );
 	}	
 

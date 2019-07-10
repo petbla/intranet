@@ -256,13 +256,13 @@ class upgrademanagement {
         
         // new table agenda
         $sql = "CREATE TABLE IF NOT EXISTS `".$pref."agenda` (
-            `ID` varchar(36) COLLATE utf8_czech_ci DEFAULT '00000000-0000-0000-0000-000000000000',
+            `ID` varchar(36) DEFAULT '00000000-0000-0000-0000-000000000000',
             `TypeID` int(11) NOT NULL DEFAULT 0,
             `DocumentNo` varchar(20) DEFAULT '',
             `Description` varchar(250) COLLATE utf8_czech_ci DEFAULT '',
             `CreateDate` datetime NULL,
             `ExecuteDate` datetime NULL,
-            `EntryID` int(11) NOT NULL DEFAULT 0,
+            `EntryID` varchar(36) DEFAULT '00000000-0000-0000-0000-000000000000',
             PRIMARY KEY (`TypeID`, `DocumentNo`),
             KEY `ID` (`ID`)
             ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci";

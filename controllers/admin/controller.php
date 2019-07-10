@@ -113,6 +113,8 @@ class Admincontroller {
 		}
 		$message = $caption['msg_unauthorized'];
 		$this->registry->getObject('template')->getPage()->addTag('message',$message);
+		// Search BOX
+		$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
 		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page.tpl.php', 'footer.tpl.php');
 	}
 
@@ -126,6 +128,8 @@ class Admincontroller {
 		global $caption, $config;
 	    $this->urlBits = $this->registry->getURLBits();
 		$files = $this->registry->getObject('file')->synchroRoot();
+		// Search BOX
+		$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
 		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page.tpl.php', 'footer.tpl.php');
 		$this->registry->getObject('template')->getPage()->addTag('message',$caption['msg_updateFinished']);
 	}
@@ -208,6 +212,8 @@ class Admincontroller {
 		{
 			$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page-notfound.tpl.php', 'footer.tpl.php');			
 		}
+		// Search BOX
+		$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
     }	
 
 	/**
@@ -267,6 +273,8 @@ class Admincontroller {
 
 			}
 		}
+		// Search BOX
+		$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
 		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page.tpl.php', 'footer.tpl.php');
 		$this->registry->getObject('template')->getPage()->addTag('message',$message);
 	}
@@ -288,6 +296,8 @@ class Admincontroller {
 		if ($UserID == $ID)
 		{
 			$message = 'Nelze odstranit Sám Sebe - aktuálně přihlášeného uživatele.';
+			// Search BOX
+			$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
 			$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page.tpl.php', 'footer.tpl.php');
 			$this->registry->getObject('template')->getPage()->addTag('message',$message);
 			}
@@ -340,6 +350,8 @@ class Admincontroller {
 		{
 			$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page-notfound.tpl.php', 'footer.tpl.php');
 		}
+		// Search BOX
+		$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
 	}
 
 	/**

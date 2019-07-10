@@ -247,7 +247,11 @@ class mysqldatabase {
   		foreach ($data as $f => $v)
   		{
   			$fields  .= "`$f`,";
-  			$values .= ( is_numeric( $v ) && ( intval( $v ) == $v ) ) ? $v."," : "'$v',";
+        if( $v === null){
+          $values .= 'NULL,';
+        }else{
+          $values .= ( is_numeric( $v ) && ( intval( $v ) == $v ) ) ? $v."," : "'$v',";
+        }
   		}
   		
   		// odstranění koncového znaku „,“ 

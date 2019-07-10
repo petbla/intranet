@@ -71,6 +71,7 @@ class Agenda{
         $data['CreateDate'] = $this->CreateDate;
         $data['ExecuteDate'] = $this->ExecuteDate;
         $data['EntryID'] = $this->EntryID;
+        return $data;
     }
 
     /**
@@ -96,7 +97,7 @@ class Agenda{
      * @param $TypeID - kód typu agendy pro určení masky číselné řady
      * @return boolean $success - výsledek založení nového záznamu
      */
-    private function initNew( $TypeID )
+    function initNew( $TypeID )
     {
 		global $config;
         $pref = $config['dbPrefix'];
@@ -115,8 +116,8 @@ class Agenda{
         {
             $data = $this->registry->getObject('db')->getRows();
             $this->TypeName = $data['Name'];
-            $this->NoSeries = 'NoSeries';
-            $this->LastNo = 'LastNo';       
+            $this->NoSeries = $data['NoSeries'];
+            $this->LastNo = $data['LastNo'];       
         }else{
             $this->initEmpty();
             return false;
@@ -125,15 +126,15 @@ class Agenda{
         // Get new Document No
         $this->DocumentNo = $this->getNextDocumentNo();
 
+        // Save record to database
+        $data = $this->initSQLRecord();
+        $this->registry->getObject('db')->insertRecords('agenda',$data);
+
         // Update LastNo in agendatype
         $changes = array();
         $changes['LastNo'] = $this->DocumentNo;
         $condition = "TypeID = '$TypeID'";
         $this->registry->getObject('db')->updateRecords('agendatype',$changes, $condition);
-
-        // Save record to database
-        $data = $this->initSQLRecord();
-        $this->registry->getObject('db')->insertRecords('agenda',$data);
 
         return true;
     }
@@ -158,7 +159,7 @@ class Agenda{
             // Inkrementace posledního čísla
             $DocumentNo = $this->LastNo;       
         }
-        var_dump(++$DocumentNo);
+        ++$DocumentNo;
         return $DocumentNo;
     }
 }

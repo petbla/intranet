@@ -149,6 +149,8 @@ class Documentcontroller{
 		$this->registry->getObject('log')->addMessage("Chyba: $message",'dmsentry','');
 		// Nastavení parametrů
 		$this->registry->getObject('template')->getPage()->addTag('message',$message);
+		// Search BOX
+		$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
 		// Sestavení stránky
 		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page.tpl.php', 'footer.tpl.php');
 	}
@@ -254,6 +256,9 @@ class Documentcontroller{
 		}
 		// Zobrazení dokumentů
 		
+		if(!isset($config['HideHandledNote'])){
+			$config['HideHandledNote'] = "";
+		};
 		if($config['HideHandledNote'] == "checked")
 			$HideRemindClose = "AND RemindClose = 0 ";
 		else
