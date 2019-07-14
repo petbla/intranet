@@ -264,14 +264,16 @@ class Documentcontroller{
 		else
 			$HideRemindClose = "";
 
-		$sql = "SELECT ID,Title,Name,Type,Url,Parent,ModifyDateTime,LOWER(FileExtension) as FileExtension ".
-					",IF(Remind=0,'0','1') as Remind,IF(RemindClose=0,'0','1') as RemindClose,RemindFromDate,RemindLastDate".
-					",Content,RemindResponsiblePerson,RemindUserID,RemindContactID,RemindState ".	
-				  	"FROM ".$this->prefDb."DmsEntry ".
-				  	"WHERE Archived = 0 AND parent=".$entry['EntryNo']." AND Type IN (10,30,35,40) ".
-					"AND PermissionSet <= $this->perSet ".
-					$HideRemindClose.
-				  	"ORDER BY Remind DESC,Type,Title DESC ";
+		$sql = "SELECT e.ID,e.Title,e.Name,e.Type,e.Url,e.Parent,e.ModifyDateTime,LOWER(e.FileExtension) as FileExtension ".
+						",IF(e.Remind=0,'0','1') as Remind,IF(e.RemindClose=0,'0','1') as RemindClose,e.RemindFromDate,e.RemindLastDate".
+						",e.Content,e.RemindResponsiblePerson,e.RemindUserID,e.RemindContactID,e.RemindState ".	
+						",a.DocumentNo, a.ExecuteDate ".
+					"FROM ".$this->prefDb."DmsEntry as e ".
+				  	"LEFT JOIN ".$this->prefDb."agenda as a ON e.ID = a.EntryID ".
+				  	"WHERE e.Archived = 0 AND e.parent=".$entry['EntryNo']." AND e.Type IN (10,30,35,40) ".
+						"AND e.PermissionSet <= $this->perSet ".
+						$HideRemindClose.
+				  	"ORDER BY e.Remind DESC,e.Type,e.Title DESC ";
 		$showBreads = true;
 		$pageTitle = '';
 		$template = '';
@@ -523,7 +525,10 @@ class Documentcontroller{
 		$this->model = new Entry( $this->registry, $ID );
 		if( ($this->perSet > 0) AND $this->model->isValid() )
 		{
+			$entry = $this->model->getData();
+
 			// Update
+			$DocumentNo = isset($_POST['NewDocumentNo']) ? $_POST['NewDocumentNo'] : 'NONE';
 			$changes['Content'] = isset($_POST['Content']) ? $_POST['Content'] : '';
 			$changes['Title'] = isset($_POST['Title']) ? $_POST['Title'] : '';
 			$changes['Url'] = isset($_POST['Url']) ? $_POST['Url'] : '';
@@ -538,6 +543,25 @@ class Documentcontroller{
 			$condition = "ID = '$ID'";
 			$this->registry->getObject('log')->addMessage("Aktualizace obsahu dokumentu",'dmsentry',$ID);
 			$this->registry->getObject('db')->updateRecords('dmsentry',$changes, $condition);
+
+			// Číslo jednací
+			if($DocumentNo !== 'NONE'){
+				$changes = array();
+				$changes['EntryID']	= $ID;
+
+				$this->registry->getObject('db')->initQuery('agenda');
+				$this->registry->getObject('db')->setFilter('ID',$DocumentNo);
+				if ($this->registry->getObject('db')->findFirst())
+				{
+					$agenda = $this->registry->getObject('db')->getResult();				
+					if($agenda['Description'] == '')
+						$changes['Description'] = $entry['Title'];
+				}
+				
+				$condition = "ID = '$DocumentNo'";
+				$this->registry->getObject('db')->updateRecords('agenda',$changes, $condition);
+			};
+
 		}
 		$this->listDocuments($ID);
 	}	

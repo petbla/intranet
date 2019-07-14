@@ -20,7 +20,8 @@ var entriesType35;
 var mouseFromX,mouseFromY;
 var activeForm;
 var sqlrequest;
-var a_type;
+var a_entry;
+var a_agenda;
 var arrGroup = null;
 var grouplistnewcontact;
 var fld_handled;
@@ -45,7 +46,8 @@ items = document.querySelectorAll('[dmsClassName="item"]');
 contacts = document.querySelectorAll('[dmsClassName="contact"]');
 entriesType35 = document.querySelectorAll('a[entrytype="35"]');
 sqlrequest = document.querySelector('#sqlrequest');
-a_type = document.querySelectorAll('[a_type="entry"]');
+a_entry = document.querySelectorAll('[a_type="entry"]');
+a_agenda = document.querySelectorAll('[a_type="agenda"]');
 fld_handled = document.querySelector('#fld_handled');
 grouplistnewcontact = document.querySelector( '[id="grouplistnewcontact"]' );
 
@@ -526,8 +528,8 @@ formatElementClass('phone');
 formatElementClass('email');
 
 
-if(a_type){
-    a_type.forEach( function (entry) {
+if(a_entry){
+    a_entry.forEach( function (entry) {
         switch (entry.getAttribute('data-dms-entrytype')) {
             case '30':
                 // File
@@ -571,6 +573,23 @@ if(a_type){
         }
     })
 }
+
+if(a_agenda){
+    a_agenda.forEach( function (agenda) {
+        var entryid,title,link,web,entryname;
+        entryid = agenda.getAttribute('data-agenda-entryid');
+        web = agenda.getAttribute('data-dms-server');
+        entryname = agenda.getAttribute('data-agenda-entryname');
+        console.log(web + entryname);
+        if(entryid !== ''){
+            title = agenda.innerHTML;
+            link = "<a href='" + web + entryname + "'>" + title + "</a>";
+            agenda.innerHTML = link;
+            agenda.setAttribute('class','col_link');
+        }
+    })
+}
+
 
 if(tags){
     for (let i = 0; i < tags.length; i++) {

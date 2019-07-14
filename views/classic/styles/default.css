@@ -330,6 +330,11 @@ div#ListItems td{
 div#ListItems td.col_fullname{
   padding-left: 10px;
 }
+div#ListItems td.col_link {
+  text-decoration: underline;
+  color: #0000ff;
+}
+
 div#FolderItems ul li{
   width: 30%;
   float: left;

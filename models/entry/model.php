@@ -1,4 +1,6 @@
 <?php
+use phpDocumentor\Reflection\Types\Null_;
+
 /*
  * Class DMS Entry
  * 
@@ -49,6 +51,11 @@ class Entry{
 	private $RemindContactID;
 	private $RemindState;
 	private $Private;
+
+	private $ADocumentNo;
+	private $ADescription;
+	private $ACreateDate;
+	private $AExecuteDate;
 
 	private $activeEntry;
 	private $breads;
@@ -194,6 +201,17 @@ class Entry{
 					$entryParent = $this->registry->getObject('db')->getResult();
 					$this->Parent = $entryParent['ID'];
 				}
+
+				$this->registry->getObject('db')->initQuery('agenda');
+				$this->registry->getObject('db')->setFilter('EntryID',$this->ID );
+				if ($this->registry->getObject('db')->findFirst())
+				{
+					$agenda = $this->registry->getObject('db')->getResult();
+					$this->ADocumentNo = $agenda['DocumentNo'];
+					$this->ADescription = $agenda['Description'];
+					$this->ACreateDate = $agenda['CreateDate'];
+					$this->AExecuteDate = $agenda['ExecuteDate'];
+				}
 			}
 		}
 		else
@@ -280,6 +298,12 @@ class Entry{
 		$this->isAudio = FALSE;
 		$this->isVideo = FALSE;
 		$this->isImage = FALSE;
+
+		$this->ADocumentNo = '';
+		$this->ADescription = '';
+		$this->ACreateDate = Null;
+		$this->AExecuteDate = null;
+
 	}
 
 	private function getBreads ()

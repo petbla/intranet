@@ -128,9 +128,10 @@ class Agendacontroller{
 	private function listAgenda( $TypeID )
 	{
 		global $caption;		
-		$sql = "SELECT * ".
-					 "FROM ".$this->prefDb."agenda ".
-					 "WHERE TypeID = $TypeID ";
+		$sql = "SELECT a.ID,a.TypeID,a.DocumentNo,a.Description,a.EntryID,a.CreateDate,a.ExecuteDate,e.Name ".
+					 "FROM ".$this->prefDb."agenda as a ".
+					 "LEFT JOIN ".$this->prefDb."dmsentry as e ON a.EntryID = e.ID ".
+					 "WHERE a.TypeID = $TypeID ";
 
 		$this->registry->getObject('db')->initQuery('agendatype');
 		$this->registry->getObject('db')->setFilter('TypeID',$TypeID);

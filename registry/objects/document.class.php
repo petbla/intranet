@@ -176,11 +176,25 @@ class document {
 
 	public function editDocument( $entry, $filePath)
 	{
+		global $config;
+        $pref = $config['dbPrefix'];
         $breads = $entry['breads'];
 
         $this->registry->getObject('template')->getPage()->addTag( 'breads', $breads );
         $this->registry->getObject('template')->getPage()->addTag( 'filePath', $filePath );
         $this->registry->getObject('template')->dataToTags( $entry, '' );
+        if($entry['ADocumentNo'] != ""){
+            $this->registry->getObject('template')->getPage()->addTag( 'SelectedDocumentNo', $entry['ADocumentNo'] );
+        }else{
+            $sql = "SELECT ID as AID, DocumentNo, Description FROM ".$pref."agenda ".
+                    "WHERE `EntryID` = '' ".
+                    "ORDER BY TypeID,DocumentNo";
+
+            $cache = $this->registry->getObject('db')->cacheQuery( $sql );
+            $this->registry->getObject('template')->getPage()->addTag( 'documentList', array( 'SQL', $cache ) );
+
+            $this->registry->getObject('template')->addTemplateBit('SelectedDocumentNo', 'edit-entry-document-documentsList.tpl.php');
+        }
         $this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'edit-entry-document.tpl.php', 'footer.tpl.php');
     }
 

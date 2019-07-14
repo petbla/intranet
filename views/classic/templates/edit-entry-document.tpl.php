@@ -64,6 +64,11 @@
                             inputValue.selected = 'selected';            
                         }
                     </script>
+                </tr><tr>
+                    <td>{lbl_DocumentNo}</td>
+                    <td>
+                        {SelectedDocumentNo}
+                    </td>
                 </tr>
             </table>
             <br>

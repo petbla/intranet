@@ -28,7 +28,7 @@
                 <a href="index.php?page=agenda/modify/{TypeID}"><img src="views/classic/images/icon/modify.png" alt="{lbl_edit}" id="{TypeID}" /></a>
                 <a href="index.php?page=agenda/delete/{TypeID}"><img src="views/classic/images/icon/delete.png" alt="{lbl_delete}" id="{TypeID}" onclick="return ConfirnDelete();"/></a>
             </td>
-            <td class="col_text">{DocumentNo}</td>
+            <td class="col_text" a_type="agenda" data-agenda-entryid="{EntryID}" data-dms-server="{cfg_webroot}" data-agenda-entryname="{Name}">{DocumentNo}</td>
             <td class="col_text">{Description}</td>
             <td class="col_text">{CreateDate}</td>
             <td class="col_text">{ExecuteDate}</td>
