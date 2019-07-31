@@ -251,6 +251,10 @@ class Entry{
 			unset($data['isImage']);
 			unset($data['jetoAudio']);
 			unset($data['jeToVideo']);
+			unset($data['ADocumentNo']);
+			unset($data['ADescription']);
+			unset($data['ACreateDate']);
+			unset($data['AExecuteDate']);
 		}
 		return $data;
 	}
