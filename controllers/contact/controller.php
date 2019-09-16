@@ -195,7 +195,9 @@ class Contactcontroller {
 				   ($Row[4] === 'Společnost') &&
 				   ($Row[5] === 'Telefon') &&
 				   ($Row[6] === 'Email') &&
-				   ($Row[7] === 'Adresa'))
+				   ($Row[7] === 'Adresa') &&
+				   ($Row[8] === 'Web') &&
+				   ($Row[9] === 'Poznámka'))
 				{
 					$idValidCsv = true;
 				}
@@ -211,6 +213,8 @@ class Contactcontroller {
 				$data['Email'] = $Row[6];
 				$data['Phone'] = str_replace(' ','',$Row[5]);
 				$data['Address'] = $this->registry->getObject('db')->sanitizeData($Row[7]);
+				$data['Web'] = $this->registry->getObject('db')->sanitizeData($Row[8]);
+				$data['Note'] = $this->registry->getObject('db')->sanitizeData($Row[9]);
 				$data['Close'] = '0';
 				if(($data['FirstName'] !== '') && ($data['LastName'] === ''))
 				{
