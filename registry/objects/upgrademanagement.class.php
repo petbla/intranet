@@ -273,7 +273,7 @@ class upgrademanagement {
                 $ID = $rec['ID'];
                 $DocumentNo = $rec['DocumentNo'];        // SML-2019-0005
                 $delka = strlen($DocumentNo);            // 13
-                $changes['NoSeries'] = substr($DocumentNo,0,$delka - 4).'0000';
+                $changes['NoSeries'] = substr($DocumentNo,0,$delka - 3).'000';
                 $condition = "ID = '$ID'";
                 $this->registry->getObject('db')->updateRecords('agenda',$changes, $condition);
             }

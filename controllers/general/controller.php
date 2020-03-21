@@ -175,7 +175,8 @@ class Generalcontroller {
 		$sql = "SELECT c.ID, c.FullName, c.FirstName, c.LastName, c.Title, c.Function, c.Company, ".
 						"c.Email, c.Phone, c.Web, c.Note, c.Address, c.Close, c.Note, c.ContactGroups ".
 				"FROM ".$pref."Contact c ".
-				"WHERE Close = 0 AND MATCH(FullName,Function,Company,Address,Note,Phone,Email,ContactGroups) AGAINST ('*$searchText*' IN BOOLEAN MODE) ".
+				"WHERE Close = 0 ".
+				"AND MATCH(FullName,Function,Company,Address,Note,Phone,Email,ContactGroups) AGAINST ('*".$searchText."*' IN BOOLEAN MODE) ".
 				"ORDER BY FullName";
 		$isHeader = true;
 		$isFooter = true;

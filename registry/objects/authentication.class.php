@@ -83,39 +83,44 @@ class authentication {
     {
       if( isset( $_SESSION['int_auth_session_uid'] ) && ( $_SESSION['int_auth_session_uid'] <> '' ))
       {
+        // Poslední aktivní přihlášení
         return ($this->sessionAuthenticate( $_SESSION['int_auth_session_uid'] ));
       }
       elseif( isset(  $_POST['log_auth_user'] ) &&  $_POST['log_auth_user'] != '' && 
               isset( $_POST['log_auth_pass'] ) && $_POST['log_auth_pass'] != '' && 
               isset(  $_POST['login'] ))
       {
-        // TODO:Výchozí přihlášení
+        // Přihlášení z dialogu
         $name = $_POST['log_auth_user'];
         $psw = $_POST['log_auth_pass'];
+      }
+      else
+      {
+        // Přihlášení Univerzál
         if(getenv('COMPUTERNAME') == 'PETBLANB')
           $name = 'petr';
         else
-        $name = 'dms';
+          $name = 'dms';
         $psw = '1234';
-        $this->registry->getObject('db')->initQuery('user');
-        $this->registry->getObject('db')->setFilter('Name',$name);
-        if ($this->registry->getObject('db')->findFirst())
+      }
+      $this->registry->getObject('db')->initQuery('user');
+      $this->registry->getObject('db')->setFilter('Name',$name);
+      if ($this->registry->getObject('db')->findFirst())
+      {
+        $data = $this->registry->getObject('db')->getResult();
+        $psw = md5($psw);
+        if ($psw == $data['Password'])
         {
-          $data = $this->registry->getObject('db')->getResult();
-          $psw = md5($psw);
-          if ($psw == $data['Password'])
-          {
-            // Login succest
-            $this->loggedIn = true;
-            $this->userID = $data['ID'];
-            $this->permissionSet = $data['PermissionSet'];
-            $this->admin = ($this->permissionSet == 9) ? true : false;
-            $this->name = $data['Name'];
-            $this->fullname = $data['FullName'];
-            $username = $this->name;
-            $_SESSION['int_auth_session_uid'] = $data['ID']; 
-            return true;
-          }
+          // Login succest
+          $this->loggedIn = true;
+          $this->userID = $data['ID'];
+          $this->permissionSet = $data['PermissionSet'];
+          $this->admin = ($this->permissionSet == 9) ? true : false;
+          $this->name = $data['Name'];
+          $this->fullname = $data['FullName'];
+          $username = $this->name;
+          $_SESSION['int_auth_session_uid'] = $data['ID']; 
+          return true;
         }
       }
     }

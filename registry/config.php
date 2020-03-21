@@ -16,7 +16,7 @@ require_once('_private/config.php');
  */ 
 $config['skin']             = 'classic';
 $config['metakeywords']		= '';
-$config['Copyright']        = '&copy; DMS 2019';
+$config['Copyright']        = '&copy; DMS 2020';
 
 $registry->storeSetting('lang','cs');
 require_once('lang/'.$registry->getSetting('lang').'.php');
