@@ -44,9 +44,16 @@ function setValue(attName,attValue,keyWord,value){
             break;
     }
 }
-function ConfirnDelete(){
+function ConfirmDelete(){
     var opt;
     opt = confirm("Skutečně chete odstranit položku?");
+    if (opt === false){
+        return false;
+    }
+}
+function ConfirmUnlink(){
+    var opt;
+    opt = confirm("Skutečně chete odstranit propojení evidence na dokument (zrušení čísla jednacího)?");
     if (opt === false){
         return false;
     }

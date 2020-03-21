@@ -70,6 +70,7 @@ class Agenda{
         $data['Description'] = $this->Description;
         $data['CreateDate'] = $this->CreateDate;
         $data['ExecuteDate'] = $this->ExecuteDate;
+        $data['NoSeries'] = $this->NoSeries;
         $data['EntryID'] = $this->EntryID;
         return $data;
     }
@@ -107,24 +108,22 @@ class Agenda{
         $this->TypeID = $TypeID;
         $this->CreateDate = date("Y-m-d H:i:s");
 
-        $sql = "SELECT * ".
-                    "FROM ".$pref."agendatype ".
-                    "WHERE  TypeID='$TypeID' ";
-
-        $this->registry->getObject('db')->executeQuery( $sql );
-        if( $this->registry->getObject('db')->numRows() == 1 )
+        // Najít agendatype
+        $this->registry->getObject('db')->initQuery('agendatype');
+        $this->registry->getObject('db')->setFilter('TypeID',$TypeID);
+        if ($this->registry->getObject('db')->findFirst())
         {
-            $data = $this->registry->getObject('db')->getRows();
-            $this->TypeName = $data['Name'];
-            $this->NoSeries = $data['NoSeries'];
-            $this->LastNo = $data['LastNo'];       
+            $agendatype = $this->registry->getObject('db')->getResult();				
         }else{
             $this->initEmpty();
             return false;
         }
+        $this->TypeName = $agendatype['Name'];
+        $this->NoSeries = $agendatype['NoSeries'];
+        $this->LastNo = $agendatype['LastNo'];       
 
         // Get new Document No
-        $this->DocumentNo = $this->getNextDocumentNo();
+        $this->DocumentNo = $this->getNextDocumentNo($agendatype['NoSeries']);
 
         // Save record to database
         $data = $this->initSQLRecord();
@@ -144,20 +143,22 @@ class Agenda{
      * Generování dalšího čísla dle číselné řady
      * @return string $DocumentNo
      */
-    private function getNextDocumentNo()
+    private function getNextDocumentNo( $NoSeries )
     {
-        if($this->LastNo == '')
+        $this->registry->getObject('db')->initQuery('agenda');
+        $this->registry->getObject('db')->setFilter('NoSeries',$NoSeries);
+        $this->registry->getObject('db')->setOrderBy('DocumentNo');
+        if ($this->registry->getObject('db')->findLast())
         {
-            // Založení prvního čísla
+            $agenda = $this->registry->getObject('db')->getResult();
+            $DocumentNo = $agenda['DocumentNo'];
+        }else{
             if ($this->NoSeries == '')
             {
                 $DocumentNo  = '0';
             }else{
                 $DocumentNo = $this->NoSeries;
             }            
-        }else{
-            // Inkrementace posledního čísla
-            $DocumentNo = $this->LastNo;       
         }
         ++$DocumentNo;
         return $DocumentNo;

@@ -89,8 +89,14 @@ class authentication {
               isset( $_POST['log_auth_pass'] ) && $_POST['log_auth_pass'] != '' && 
               isset(  $_POST['login'] ))
       {
+        // TODO:Výchozí přihlášení
         $name = $_POST['log_auth_user'];
         $psw = $_POST['log_auth_pass'];
+        if(getenv('COMPUTERNAME') == 'PETBLANB')
+          $name = 'petr';
+        else
+        $name = 'dms';
+        $psw = '1234';
         $this->registry->getObject('db')->initQuery('user');
         $this->registry->getObject('db')->setFilter('Name',$name);
         if ($this->registry->getObject('db')->findFirst())

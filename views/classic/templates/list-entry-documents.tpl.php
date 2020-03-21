@@ -3,6 +3,7 @@
     <tr>
       <th>&nbsp;</th>
       <th>{lbl_Name}</th>
+      <th>{lbl_DocumentNo}</th>
       <th>{lbl_RemindState}</th>
       <th>{lbl_RemindToDate}</th>
       <th>{lbl_ModifyDate}</th>
@@ -21,6 +22,7 @@
         {mediaplayer}
         {editcard}
       </td>
+      <td>{DocumentNo}</td>
       <td>{RemindState_{RemindState}}</td>
       <td>{RemindLastDate}</td>
       <td>{ModifyDateTime}</td>

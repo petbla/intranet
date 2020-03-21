@@ -22,6 +22,9 @@ var activeForm;
 var sqlrequest;
 var a_entry;
 var a_agenda;
+var a_agendaPDF;
+var a_agendaUnlink;
+var a_agendaSourceFolder;
 var arrGroup = null;
 var grouplistnewcontact;
 var fld_handled;
@@ -48,6 +51,9 @@ entriesType35 = document.querySelectorAll('a[entrytype="35"]');
 sqlrequest = document.querySelector('#sqlrequest');
 a_entry = document.querySelectorAll('[a_type="entry"]');
 a_agenda = document.querySelectorAll('[a_type="agenda"]');
+a_agendaPDF = document.querySelectorAll('[a_type="agendaPDF"]');
+a_agendaUnlink = document.querySelectorAll('[a_type="agendaUnlink"]');
+a_agendaSourceFolder = document.querySelectorAll('[a_type="agendaSourceFolder"]');
 fld_handled = document.querySelector('#fld_handled');
 grouplistnewcontact = document.querySelector( '[id="grouplistnewcontact"]' );
 
@@ -577,15 +583,84 @@ if(a_entry){
 if(a_agenda){
     a_agenda.forEach( function (agenda) {
         var entryid,title,link,web,entryname;
+        var fileextension,entryname2,isChange;
         entryid = agenda.getAttribute('data-agenda-entryid');
         web = agenda.getAttribute('data-dms-server');
         entryname = agenda.getAttribute('data-agenda-entryname');
-        console.log(web + entryname);
         if(entryid !== ''){
             title = agenda.innerHTML;
-            link = "<a href='" + web + entryname + "'>" + title + "</a>";
+            fileextension = entryname.split('.').pop();
+            if (fileextension.toLowerCase() == 'pdf'){
+                // Check to change to doc,docx,xls,xlsx
+                if(!isChange){
+                    entryname2 = entryname.replace('.' + fileextension,'.doc');
+                    isChange = doesFileExist(web + entryname2);
+                }
+                if(!isChange){
+                    entryname2 = entryname.replace('.' + fileextension,'.docx');
+                    isChange = doesFileExist(web + entryname2);
+                }
+                if(!isChange){
+                    entryname2 = entryname.replace('.' + fileextension,'.xls');
+                    isChange = doesFileExist(web + entryname2);
+                }
+                if(!isChange){
+                    entryname2 = entryname.replace('.' + fileextension,'.xlsx');
+                    isChange = doesFileExist(web + entryname2);
+                }
+                if(isChange)
+                    entryname = entryname2;
+            }
+            link = "<a href='" + web + entryname + "'  target='_blank'>" + title + "</a>";
+            console.log(link);
             agenda.innerHTML = link;
             agenda.setAttribute('class','col_link');
+        }
+    })
+}
+if(a_agendaPDF){
+    a_agendaPDF.forEach( function (agenda) {
+        var entryid,href,web,entryname;
+        var fileextension,isPDF;
+        entryid = agenda.getAttribute('data-agenda-entryid');
+        web = agenda.getAttribute('data-dms-server');
+        entryname = agenda.getAttribute('data-agenda-entryname');
+        if(entryid !== ''){
+            isPDF = false;           
+            fileextension = entryname.split('.').pop();
+            if (fileextension.toLowerCase() != 'pdf'){
+                entryname = entryname.replace('.' + fileextension,'.pdf');
+            }
+            href = web + entryname;
+            isPDF = doesFileExist(href);
+            if (isPDF){
+                agenda.href = href;
+                agenda.innerHTML = "<img src='views/classic/images/icon/pdf.png' />";
+            }
+        }
+    })
+}
+
+if(a_agendaSourceFolder){
+    a_agendaSourceFolder.forEach( function (agenda) {
+        var entryid,href,web,entryname;
+        entryid = agenda.getAttribute('data-agenda-entryid');
+        web = agenda.getAttribute('data-dms-server');
+        entryname = agenda.getAttribute('data-agenda-entryname');
+        agenda.innerHTML = "X";
+        if(entryid !== ''){
+            agenda.href = 'index.php?page=document/list/' + entryid;
+            agenda.innerHTML = "<img src='views/classic/images/icon/folder.png' />";
+        };
+    })
+}
+
+if(a_agendaUnlink){
+    a_agendaUnlink.forEach( function (agenda) {
+        var entryid;
+        entryid = agenda.getAttribute('data-agenda-entryid');
+        if(entryid == ''){
+            agenda.innerHTML = '';
         }
     })
 }
@@ -645,3 +720,14 @@ if(fld_handled){
     fld_handled.checked = getCookie(name);
 }
 
+function doesFileExist(urlToFile) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('HEAD', urlToFile, false);
+    xhr.send();
+     
+    if (xhr.status == "404") {
+        return false;
+    } else {
+        return true;
+    }
+}

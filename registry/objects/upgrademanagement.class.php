@@ -247,8 +247,40 @@ class upgrademanagement {
             // upgrade to 2.12
             $this->upgrade_021('2.12');
         }
+        if ($this->version === '2.12') 
+        {
+            // upgrade to 2.13
+            $this->upgrade_022('2.13');
+        }
     }
 
+    private function upgrade_022($upVer)
+    {
+		global $config;
+        $pref = $config['dbPrefix'];
+
+        // upgrade table 'agenda'
+        $sql = "ALTER TABLE ".$pref."agenda".
+                " ADD `NoSeries` varchar(20) DEFAULT ''";
+        $this->registry->getObject('db')->executeQuery( $sql );
+
+        // Update
+        $this->registry->getObject('db')->initQuery('agenda');
+		if ($this->registry->getObject('db')->findSet())
+		{
+		    $agenda = $this->registry->getObject('db')->getResult();
+			foreach ($agenda as $rec) {
+                $ID = $rec['ID'];
+                $DocumentNo = $rec['DocumentNo'];        // SML-2019-0005
+                $delka = strlen($DocumentNo);            // 13
+                $changes['NoSeries'] = substr($DocumentNo,0,$delka - 4).'0000';
+                $condition = "ID = '$ID'";
+                $this->registry->getObject('db')->updateRecords('agenda',$changes, $condition);
+            }
+        }
+        $this->setNewVersion($upVer);
+    }
+    
     private function upgrade_021($upVer)
     {
 		global $config;

@@ -42,6 +42,14 @@ class Agendacontroller{
 						$TypeID = isset($urlBits[2]) ? $urlBits[2] : '';
 						$this->addAgenda($TypeID);
 						break;
+					case 'modify':
+						$ID = isset($urlBits[2]) ? $urlBits[2] : '';
+						//TODO $this->modifyAgenda($ID);
+						break;
+					case 'unlink':
+						$ID = isset($urlBits[2]) ? $urlBits[2] : '';
+						$this->unlinkAgenda($ID);
+						break;
 					case 'type':
 						$action = isset($urlBits[2]) ? $urlBits[2] : '';
 						switch ($action) {
@@ -131,7 +139,8 @@ class Agendacontroller{
 		$sql = "SELECT a.ID,a.TypeID,a.DocumentNo,a.Description,a.EntryID,a.CreateDate,a.ExecuteDate,e.Name ".
 					 "FROM ".$this->prefDb."agenda as a ".
 					 "LEFT JOIN ".$this->prefDb."dmsentry as e ON a.EntryID = e.ID ".
-					 "WHERE a.TypeID = $TypeID ";
+					 "WHERE a.TypeID = $TypeID ".
+					 "ORDER BY a.DocumentNo DESC ";
 
 		$this->registry->getObject('db')->initQuery('agendatype');
 		$this->registry->getObject('db')->setFilter('TypeID',$TypeID);
@@ -164,6 +173,30 @@ class Agendacontroller{
 		$this->registry->getObject('template')->getPage()->addTag( 'EditExecuteDate', '' );				
 		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', $templateList, 'footer.tpl.php');			
 		$this->registry->getObject('template')->addTemplateBit('editcard', $templateCard);
+	}
+
+	/**
+	 * Odstranení odkazu agendy na dokument (číslo jednací)
+	 * @param string $ID = ID agendy
+	 */
+	private function unlinkAgenda($ID)
+	{
+		$this->registry->getObject('db')->initQuery('agenda');
+		$this->registry->getObject('db')->setFilter('ID',$ID);
+		if ($this->registry->getObject('db')->findFirst())
+		{
+			$agenda = $this->registry->getObject('db')->getResult();
+			$TypeID = $agenda['TypeID'];
+			$changes =  array();
+			$changes['Description'] = '';
+			$changes['EntryID'] = '';
+			$condition = "ID = '$ID'";
+			$this->registry->getObject('db')->updateRecords('agenda',$changes, $condition);
+			$this->listAgenda($TypeID);
+		}else{
+			$this->pageNotFound();
+			return;
+		}
 	}
 
     /**
@@ -252,8 +285,7 @@ class Agendacontroller{
             // Update
             $changes = array();
             $changes['Name'] = $data['Name'];
-            if(!($this->isAgendaTypeUsed( $TypeID )))
-                $changes['NoSeries'] = $data['NoSeries'];
+            $changes['NoSeries'] = $data['NoSeries'];
             $condition = "TypeID = '$TypeID'";
             $this->registry->getObject('db')->updateRecords('agendatype',$changes, $condition);
     
@@ -305,13 +337,13 @@ class Agendacontroller{
 
     /**
      * Test, zda byla již číselná řada použita
-     * @param int $TypeID - ID číselné řady agendy
+     * @param int $NoSeries - Maska číselné řady agendy
      * @return boolean - info, zda byla číselná řada použita 
      */
-    function isAgendaTypeUsed( $TypeID ) 
+    function isAgendaTypeUsed( $NoSeries ) 
     {
         $this->registry->getObject('db')->initQuery('agenda');
-        $this->registry->getObject('db')->setFilter('TypeID',$TypeID);
+        $this->registry->getObject('db')->setFilter('NoSeries',$NoSeries);
         if($this->registry->getObject('db')->isEmpty())
             return false;
         return true;

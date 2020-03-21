@@ -14,7 +14,7 @@
         <tr>      
             <td class="col_action">
                 <a href="index.php?page=agenda/type/modify/{TypeID}"><img src="views/classic/images/icon/modify.png" alt="{lbl_edit}" id="{TypeID}" /></a>
-                <a href="index.php?page=agenda/type/delete/{TypeID}"><img src="views/classic/images/icon/delete.png" alt="{lbl_delete}" id="{TypeID}" onclick="return ConfirnDelete();"/></a>
+                <a href="index.php?page=agenda/type/delete/{TypeID}"><img src="views/classic/images/icon/delete.png" alt="{lbl_delete}" id="{TypeID}" onclick="return ConfirmDelete();"/></a>
             </td>
             <td class="col_text">
                 <a href="index.php?page=agenda/list/{TypeID}">{Name}</a>
