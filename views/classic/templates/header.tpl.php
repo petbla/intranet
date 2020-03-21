@@ -5,6 +5,7 @@
     <title>{cfg_sitename}</title>
     <link rel="stylesheet" type="text/css" href="views/classic/styles/default.css"> 
     <link rel="stylesheet" type="text/css" href="views/classic/styles/slideshow.css"> 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script> 
     <script type="text/javascript" src="js/onBeforeScripts.js"></script>
     <style>
       .mySlides {display:none}

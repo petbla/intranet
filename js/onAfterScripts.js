@@ -612,7 +612,6 @@ if(a_agenda){
                     entryname = entryname2;
             }
             link = "<a href='" + web + entryname + "'  target='_blank'>" + title + "</a>";
-            console.log(link);
             agenda.innerHTML = link;
             agenda.setAttribute('class','col_link');
         }
@@ -722,10 +721,12 @@ if(fld_handled){
 
 function doesFileExist(urlToFile) {
     var xhr = new XMLHttpRequest();
-    xhr.open('HEAD', urlToFile, false);
-    xhr.send();
-     
-    if (xhr.status == "404") {
+    var response = $.ajax({
+        url: urlToFile,
+        type: 'HEAD',
+        async: false
+    }).status;
+    if (response != "200") {
         return false;
     } else {
         return true;
