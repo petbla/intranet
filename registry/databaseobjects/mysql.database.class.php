@@ -599,7 +599,8 @@ class mysqldatabase {
      */
     public function CheckPortal()
     {
-      global $config;
+      global $config, $deb;
+
 
       $this->initQuery('source', '*', false);
       $this->setFilter('DbPrefix',$config['dbPrefix']);

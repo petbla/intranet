@@ -5,7 +5,7 @@
     <title>{cfg_sitename}</title>
     <link rel="stylesheet" type="text/css" href="views/classic/styles/default.css"> 
     <link rel="stylesheet" type="text/css" href="views/classic/styles/slideshow.css"> 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script> 
+    <script type="text/javascript" src="js/jquery.min.js"></script>
     <script type="text/javascript" src="js/onBeforeScripts.js"></script>
     <style>
       .mySlides {display:none}
@@ -18,6 +18,8 @@
         {dateText}
         <br/>
         -------------------------------------------------
+        <!--
+        // TODO: Tento kód zpomalil systém
         <br/>
         <a href="http://www.ikal.cz/" id="ikal-jmena">kalendář jmen</a>
         <script type="text/javascript" src="https://www.ikal.cz/widget/kalendar-jmen.js.php"></script>
@@ -25,6 +27,7 @@
           iKAL_JMENA.init('ctext: 337AB7, htext: 14, showcount: 3');
           iKAL_JMENA.show();
         </script>
+        -->
       </p>
       <img src="views/classic/images/logo.png" border="0" alt="" title="{cfg_compName}">
       <h1>{compName}</h1>

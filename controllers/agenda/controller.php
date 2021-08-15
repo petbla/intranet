@@ -135,7 +135,7 @@ class Agendacontroller{
      */
 	private function listAgenda( $TypeID )
 	{
-		global $caption;		
+		global $caption, $deb;		
 		$sql = "SELECT a.ID,a.TypeID,a.DocumentNo,a.Description,a.EntryID,a.CreateDate,a.ExecuteDate,e.Name ".
 					 "FROM ".$this->prefDb."agenda as a ".
 					 "LEFT JOIN ".$this->prefDb."dmsentry as e ON a.EntryID = e.ID ".
@@ -173,6 +173,7 @@ class Agendacontroller{
 		$this->registry->getObject('template')->getPage()->addTag( 'EditExecuteDate', '' );				
 		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', $templateList, 'footer.tpl.php');			
 		$this->registry->getObject('template')->addTemplateBit('editcard', $templateCard);
+
 	}
 
 	/**
@@ -205,7 +206,7 @@ class Agendacontroller{
      */
 	private function listAgendaType( )
 	{
-		global $caption;		
+		global $caption,$deb;		
     	$sql = "SELECT * FROM ".$this->prefDb."agendatype ";
 		
 		// Zobrazení výsledku
@@ -228,6 +229,7 @@ class Agendacontroller{
 		$this->registry->getObject('template')->getPage()->addTag( 'pageTitle', '' );
 		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', $templateList, 'footer.tpl.php');			
 		$this->registry->getObject('template')->addTemplateBit('editcard', $templateCard);
+		$deb->info('After List Agenda Type');
 	}
 
 	/**
