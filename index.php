@@ -18,16 +18,9 @@ define( "FRAMEWORK_PATH", dirname( __FILE__ ) ."/" );
 
 // Debug
 require_once('debug/classDebug.php');
-if (file_exists("mu.exe"))
-  $deb = new debug('error',FRAMEWORK_PATH . 'debug/logFile.txt');  // info,trace,error
-else
-  $deb = new debug('info',FRAMEWORK_PATH . 'debug/logFile.txt');  // info,trace,error
+$deb = new debug('',FRAMEWORK_PATH . 'debug/logFile.txt');  // '',info,trace,error
 
-// true - aktivace debugeru
-// false - deaktivace logu
-$deb->active(false);
-
-$deb->info('Start');
+$deb->trace('Start');
 
 // Load registry and config
 require_once('registry/registry.class.php');
@@ -35,7 +28,7 @@ $registry = Registry::singleton();
 require_once('registry/config.php');
 $registry->getURLData();
 
-$deb->info('getURLData');
+$deb->trace('getURLData');
 
 
 // Set Cookies
@@ -48,19 +41,19 @@ if( isset($_COOKIE["HideHandledNote"]) ){
   $config['HideHandledNote'] = $_COOKIE["HideHandledNote"];
 }
 
-$deb->info('Set Cookies');
+$deb->trace('Set Cookies');
 
 // Connect to database
 $registry->getObject('db')->newConnection($config['db_host'], $config['db_user'], $config['db_pass'], $config['db_name']);
 
-$deb->info('Connect to database');
+$deb->trace('Connect to database');
 
 // Check database Update
 $registry->getObject('db')->CheckPortal();
 $registry->getObject('db')->SetPortal(0);
 $registry->getObject('upgrade')->checkUpgrade();
 
-$deb->info('Check update');
+$deb->trace('Check update');
 
 // zkontroluj data požadavku POST pro uživatele snažící se přihlásit a data relace 
 // pro uživatele, kteří jsou přihlášení
@@ -92,7 +85,7 @@ if (($registry->getObject('authenticate')->isLoggedIn()) || ($registry->getObjec
   $registry->getObject('template')->addTemplateBit('loginform','login.tpl.php');
 }
 
-$deb->info('Logged');
+$deb->trace('Logged');
 
 $registry->getObject('template')->getPage()->addTag('Version',$registry->getObject('upgrade')->getVersion());
 $registry->getObject('template')->getPage()->addTag('UserName',$registry->getObject('authenticate')->getUserName());
@@ -107,7 +100,7 @@ $activeControllers[] = 'general';
 $activeControllers[] = 'admin';
 $currentController = $registry->getURLBit( 0 );  // controller
 
-$deb->info('Check active controllers');
+$deb->trace('Check active controllers');
 
 if( in_array( $currentController, $activeControllers ) )
 {
@@ -128,12 +121,12 @@ else
 $dateText = $caption['TodayIs'].' ' . $registry->getObject('fce')->Date2FullText();
 $registry->getObject('template')->getPage()->addTag( 'dateText', $dateText );
 
-$deb->info('Get Today');
+$deb->trace('Get Today');
 
 // Category Menu
 $registry->getObject('document')->createCategoryMenu();
 
-$deb->info('Category Menu');
+$deb->trace('Category Menu');
 
 // Barmenu 
 $perSet = $registry->getObject('authenticate')->getPermissionSet();
@@ -165,7 +158,7 @@ $adminBarMenuItem = $isAdmin ? "<li><a href='index.php?page=admin'>Administrace<
 $adminBarMenuItem .= $isAdmin ? "<li><a href='index.php?page=admin/log'>Log</a></li>" : '';
 $portalBarMenuItem = $PortalCounter ? "<li><a href='index.php?page=admin/portalList'>Portál</a></li>" : '';
 
-$deb->info('Bar Menu');
+$deb->trace('Bar Menu');
 
 $registry->getObject('template')->getPage()->addTag( 'adminBarMenuItem', $adminBarMenuItem );
 $registry->getObject('template')->getPage()->addTag( 'contactBarMenuItem', $contactBarMenuItem );
@@ -175,14 +168,14 @@ $registry->getObject('template')->getPage()->addTag( 'newsBarMenuItem', $newsBar
 $registry->getObject('template')->getPage()->addTag( 'portalBarMenuItem', $portalBarMenuItem );
 $registry->getObject('template')->getPage()->addTag('compName',$config['compName']);
 
-$deb->info('Add tag to MENU');
+$deb->trace('Add tag to MENU');
 
 // vše analyzuj a zobraz výsledek
 $registry->getObject('template')->parseOutput();
 
 print $registry->getObject('template')->getPage()->getContent();
 
-$deb->info('After PRINT');
+$deb->trace('After PRINT');
 
 exit();
 
