@@ -1,5 +1,8 @@
 FileServer/*
 vendor/*
 tmp/*
+pear/*
+MySql/*
+.vscode/*
 _private/*
 _private/config.php
