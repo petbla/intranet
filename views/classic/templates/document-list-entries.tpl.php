@@ -20,7 +20,6 @@
       <td>
         <a href="" a_id="{ID}" a_type="entry" data-dms-url="{Url}" data-dms-name="{Name}" data-dms-extension="{FileExtension}" data-dms-server="{cfg_webroot}" data-dms-entrytype="{Type}" onclick="wsLogDocumentView('{ID}','{cfg_siteurl}');">{Title}</a>
         {mediaplayer}
-        {editcard}
       </td>
       <td>{DocumentNo}</td>
       <td>{RemindState_{RemindState}}</td>
@@ -28,6 +27,16 @@
       <td>{ModifyDateTime}</td>
       <td>.{FileExtension}</td>
   	</tr>
+    <tr></tr>
+    <tr>
+      <td></td>
+      <td colspan="6">
+        <div id="{editcardID}" style="display:none;">
+          <span class="action" onclick="document.getElementById('{editcardID}').style.display = 'none';" style="margin:20px 10px;">{lbl_Close}</span>
+          {editcard}
+        </div>
+      </td>
+    </tr>
     <!-- END DocumentItems -->
   </table>
 </div>

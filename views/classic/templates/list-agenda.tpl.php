@@ -1,4 +1,3 @@
-{search}
 <div id="actionpanel">
     <table>
         <tr>

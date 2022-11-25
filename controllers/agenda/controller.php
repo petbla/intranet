@@ -135,7 +135,7 @@ class Agendacontroller{
      */
 	private function listAgenda( $TypeID )
 	{
-		global $caption;		
+		global $caption, $deb;		
 		$sql = "SELECT a.ID,a.TypeID,a.DocumentNo,a.Description,a.EntryID,a.CreateDate,a.ExecuteDate,e.Name ".
 					 "FROM ".$this->prefDb."agenda as a ".
 					 "LEFT JOIN ".$this->prefDb."dmsentry as e ON a.EntryID = e.ID ".
@@ -154,7 +154,7 @@ class Agendacontroller{
 	 
 		// Zobrazení výsledku
 		$templateList = 'list-agenda.tpl.php';
-		$templateCard = 'edit-agenda.tpl.php';
+		$templateCard = 'agenda-edit.tpl.php';
 		$cache = $this->listResult( $sql );
 		if($this->registry->getObject('db')->isEmpty( $cache )){
 			$this->registry->getObject('template')->getPage()->addTag( 'ID', '' );				
@@ -173,6 +173,7 @@ class Agendacontroller{
 		$this->registry->getObject('template')->getPage()->addTag( 'EditExecuteDate', '' );				
 		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', $templateList, 'footer.tpl.php');			
 		$this->registry->getObject('template')->addTemplateBit('editcard', $templateCard);
+
 	}
 
 	/**
@@ -205,12 +206,12 @@ class Agendacontroller{
      */
 	private function listAgendaType( )
 	{
-		global $caption;		
+		global $caption,$deb;		
     	$sql = "SELECT * FROM ".$this->prefDb."agendatype ";
-		
+
 		// Zobrazení výsledku
 		$templateList = 'list-agenda-type.tpl.php';
-		$templateCard = 'edit-agenda-type.tpl.php';
+		$templateCard = 'agenda-type-edit.tpl.php';
 		$cache = $this->listResult( $sql );
 		if($this->registry->getObject('db')->isEmpty( $cache )){
 			$this->registry->getObject('template')->getPage()->addTag( 'TypeID', '' );				
@@ -317,7 +318,7 @@ class Agendacontroller{
 			$this->registry->getObject('template')->getPage()->addTag( 'EditName', $agendaType['Name'] );				
 			$this->registry->getObject('template')->getPage()->addTag( 'EditNoSeries', $agendaType['NoSeries'] );				
 			$this->registry->getObject('template')->getPage()->addTag( 'EditTypeID', $agendaType['TypeID'] );				
-			$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'edit-agenda-type.tpl.php', 'footer.tpl.php');			
+			$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'agenda-type-edit.tpl.php', 'footer.tpl.php');			
 		}else{
 			$this->pageNotFound();
 		}
@@ -362,6 +363,7 @@ class Agendacontroller{
 
 		if($perSet > 0)
 		{
+			
 			// Stránkování
 			$cacheFull = $this->registry->getObject('db')->cacheQuery( $sql );
 			$records = $this->registry->getObject('db')->numRowsFromCache( $cacheFull );

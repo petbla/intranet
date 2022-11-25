@@ -17,7 +17,7 @@ class Documentcontroller{
 	 */
 	public function __construct( Registry $registry, $directCall )
 	{
-		global $config, $caption;
+		global $config, $caption, $deb;
 		$this->registry = $registry;
 		$this->perSet = $this->registry->getObject('authenticate')->getPermissionSet();
         $this->prefDb = $config['dbPrefix'];
@@ -25,6 +25,7 @@ class Documentcontroller{
 		if( $directCall == true )
 		{
 			$urlBits = $this->registry->getURLBits();     
+			
 			if($this->perSet == 10)
 			{
 				$this->error($caption['msg_unauthorized']);
@@ -574,11 +575,12 @@ class Documentcontroller{
      */
 	private function addFolder()
 	{
-		global $caption;
-		
+		global $caption, $deb;
+
+
 		if(! $this->registry->getObject('authenticate')->isAdmin())
 		{
-			$message = $caption['new_user_failed'];
+			$message = $caption['msg_unauthorized'];
 		}
 		else
 		{
@@ -822,11 +824,14 @@ class Documentcontroller{
      */
 	private function wsSetRemindEntry( $ID )
 	{
+		global $deb;
 		require_once( FRAMEWORK_PATH . 'models/entry/model.php');
 		$this->model = new Entry( $this->registry, $ID );
+
 		if( $this->model->isValid() )
 		{
 			$entry = $this->model->getData();
+	
 			if ($entry['Remind'] == '1')
 			{
 				$changes['Remind'] = '0';

@@ -8,6 +8,7 @@ class Admincontroller {
 
 	private $registry;
 	private $urlBits;
+	private $pageMessage;
 	
 	public function __construct( Registry $registry, $directCall )
 	{
@@ -54,12 +55,6 @@ class Admincontroller {
 						if ( $this->registry->getObject('authenticate')->isAdmin())
 						{
 							$this->listUsers();
-							return;
-						}
-					case 'newuser':
-						if ( $this->registry->getObject('authenticate')->isAdmin())
-						{
-							$this->newUser();
 							return;
 						}
 					case 'adduser':
@@ -141,11 +136,15 @@ class Admincontroller {
 	private function listUsers()
 	{
 		global $config;
-        $pref = $config['dbPrefix'];
+		$pref = $config['dbPrefix'];
 
+		// Message
+		$this->registry->getObject('template')->getPage()->AddTag('message',$this->pageMessage);
+
+		// List users
 		$sql = "SELECT u.ID, u.Name, u.FullName, u.PermissionSet, p.Name as Role, u.Close ".
 		       "FROM ".$pref."user u, ".$pref."permissionset p ".
-		       "WHERE u.PermissionSet = p.Level";
+		       "WHERE u.PermissionSet = p.Level and u.Close = 0";
 		$cache = $this->registry->getObject('db')->cacheQuery( $sql );
 		if (!$this->registry->getObject('db')->isEmpty( $cache ))
 		{
@@ -158,6 +157,11 @@ class Admincontroller {
 			$this->registry->getObject('template')->getPage()->AddTag('FullName','');
 			$this->registry->getObject('template')->getPage()->AddTag('PermissionSet','');
 		}
+
+		// Form add user
+		$sql = "SELECT * FROM ".$pref."permissionset";
+		$cache = $this->registry->getObject('db')->cacheQuery( $sql );
+		$this->registry->getObject('template')->getPage()->addTag( 'PermissionSet', array( 'SQL', $cache ) ); 
 		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'admin-users.tpl.php', 'footer.tpl.php');		
 	}
 
@@ -173,62 +177,9 @@ class Admincontroller {
 		$sql = "SELECT * ".
 		       "FROM ".$pref."log ".
 		       "ORDER BY EntryNo DESC";
-		// Zobrazení seznamu
-		$this->listResult($sql, '', 'LogList', 'log-list.tpl.php');		
-	}
-
-	/**
-	 * Zobrazení požadovaního seznamu které současně 
-	 * zajistí zobrazení stránkování s možností výběru stránek a listování v nich
-	 * @param String $sql = sestavený kompletní SQL dotaz
-	 * @param String $pageLink
-	 * @param String $SQLDataElement
-	 * @param String $template
-	 * @return void
-	 */
-	private function listResult( $sql, $pageLink , $SQLDataElement, $template )
-	{
-		global $config;
-
-		// Stránkování
-		$cacheFull = $this->registry->getObject('db')->cacheQuery( $sql );
-		$records = $this->registry->getObject('db')->numRowsFromCache( $cacheFull );
-		$pageCount = (int) ($records / $config['maxVisibleItem']);
-		$pageCount = ($records > $pageCount * $config['maxVisibleItem']) ? $pageCount + 1 : $pageCount;  
-		$pageNo = ( isset($_GET['p'])) ? $_GET['p'] : 1;
-		$pageNo = ($pageNo > $pageCount) ? $pageCount : $pageNo;
-		$pageNo = ($pageNo < 1) ? 1 : $pageNo;
-		$fromItem = (($pageNo - 1) * $config['maxVisibleItem']);    
-		$navigate = $this->registry->getObject('template')->NavigateElement( $pageNo, $pageCount ); 
-		$this->registry->getObject('template')->getPage()->addTag( 'navigate_menu', $navigate );
-		$sql .= " LIMIT $fromItem," . $config['maxVisibleItem']; 
-		$cache = $this->registry->getObject('db')->cacheQuery( $sql );
-		if (!$this->registry->getObject('db')->isEmpty( $cache )){
-			$this->registry->getObject('template')->getPage()->addTag( $SQLDataElement, array( 'SQL', $cache ) );
-			$this->registry->getObject('template')->getPage()->addTag( 'pageLink', $pageLink );
-			$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', $template, 'footer.tpl.php');			
-		}
-		else
-		{
-			$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page-notfound.tpl.php', 'footer.tpl.php');			
-		}
-		// Search BOX
-		$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
-    }	
-
-	/**
-	 * Zobrazení stránky s webovým formulářem pro založení nového uživatele
-	 * @return void
-	 */
-	private function newUser()
-	{
-		global $config;
-		$pref = $config['dbPrefix'];
 		
-		$sql = "SELECT * FROM ".$pref."permissionset";
-		$cache = $this->registry->getObject('db')->cacheQuery( $sql );
-		$this->registry->getObject('template')->getPage()->addTag( 'PermissionSet', array( 'SQL', $cache ) ); 
-		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'admin-users-new.tpl.php', 'footer.tpl.php');		
+		// Zobrazení výsledku
+		$this->registry->getObject('db')->showResult( $sql, 'LogList', 'log-list.tpl.php');
 	}
 
 	/**
@@ -273,10 +224,7 @@ class Admincontroller {
 
 			}
 		}
-		// Search BOX
-		$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
-		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page.tpl.php', 'footer.tpl.php');
-		$this->registry->getObject('template')->getPage()->addTag('message',$message);
+		$this->listUsers();
 	}
 
 	/**
@@ -290,25 +238,41 @@ class Admincontroller {
 	{
 		global $config, $caption;
         $pref = $config['dbPrefix'];
+		$this->pageMessage = '';
 
 		$UserID = $this->registry->getObject('authenticate')->getUserID();
 		$userName = $this->registry->getObject('authenticate')->getUserName();
-		if ($UserID == $ID)
-		{
-			$message = 'Nelze odstranit Sám Sebe - aktuálně přihlášeného uživatele.';
-			// Search BOX
-			$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
-			$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page.tpl.php', 'footer.tpl.php');
-			$this->registry->getObject('template')->getPage()->addTag('message',$message);
-			}
-		else
+
+		switch (true) {
+			case ($UserID == $ID):
+				$this->pageMessage = 'Nelze odstranit aktuálně přihlášeného uživatele.';		
+				break;
+			case $this->isUserUsed($ID):
+				$this->pageMessage = 'Uživatel se již přihlásil, nelze jej odstranit.';
+				break;
+		};
+	
+		
+		if ($this->pageMessage == "")
 		{
 			$condition = "ID = '$ID'";
 			$data['Close'] = 1;
-			$this->registry->getObject('log')->addMessage("Uzavření uživatele",'user',$ID);
+			$this->registry->getObject('log')->addMessage("Uzavření uživatele ID = $ID",'user',$ID);
 			$this->registry->getObject('db')->updateRecords('user',$data,$condition);			
-			$this->listUsers();
 		}
+		$this->listUsers();
+	}
+
+	/**
+	 * Kontrola, zde byl již použit LOGIN uživatele
+	 * @param	$UserID
+	 * @return	$isUsed - false/true
+	 */
+	function isUserUsed( $UserID )
+	{
+		$this->registry->getObject('db')->initQuery('log');
+		$this->registry->getObject('db')->setFilter('UserID',$UserID);
+		return ($this->registry->getObject('db')->findFirst());
 	}
 
 	/**

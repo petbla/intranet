@@ -338,6 +338,8 @@ class UsefulFunction {
 
   public function ConvertToDirectoryPathName( $path, $addLast = true )
   {
+    if($path == "")
+      return("");
     $path = str_replace('\\',DIRECTORY_SEPARATOR,$path);
     $path = str_replace('/',DIRECTORY_SEPARATOR,$path);
     if ($addLast == true){

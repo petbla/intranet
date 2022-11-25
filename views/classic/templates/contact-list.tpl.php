@@ -1,9 +1,8 @@
-{search}
 <div id="actionpanel">
     <table>
         <tr>
             <td>
-                <img src="views/classic/images/nav/addContact.png" alt="{lbl_New}" title="{lbl_NewContact}" onclick="addNewContact();">
+                <img src="views/classic/images/nav/addContact.png" alt="{lbl_New}" title="{lbl_NewContact}" onclick="document.getElementById('{newcardID}').style.display = 'block';">
                 <br>
                 {lbl_NewContact}
             </td><td>
@@ -30,11 +29,15 @@
         <input type="image" src="views/classic/images/nav/upload.png" name="submit" id="submitImport">
     </form>
 </div>
+<div id="{newcardID}" style="display:none;">
+    {newcard}                
+</div>
+
 <div id="pagecounter">
 {navigate_menu}
 </div>
 {pageTitle}
-<div id="ListItems">
+<div id="DocumentItems">
     <table>
         <tr>
             <th style="width:100px;">..........</th>      
@@ -48,17 +51,26 @@
             <th>{lbl_Label}</th>
             <th></th>
         </tr>
-        {editcard}                
+        <tr>
+            <td></td>
+            <td colspan="8" >
+                <form action="index.php?page=general/searchcontact">
+                    <input type="text" name="searchContact" id="search" placeholder="{lbl_PlaceText}">
+                </form>
+            </td>
+        </tr>
         <!-- START ContactList -->
         <tr>        
             <td class="col_action">
-                {editIcon}
+                <img src="views/classic/images/icon/modify.png" onclick="document.getElementById('{editcardID}').style.display = 'block';" alt="{lbl_edit}" id="{ID}" dmsClassName="{dmsClassName}"/>
+                <a href="index.php?page={deleteLink}/{ID}">
+                    <img src="views/classic/images/icon/delete.png" alt="{lbl_delete}" id="{ID}" onclick="return ConfirmDelete();"/>
+                </a>
             </td>
             <td class="col_fullname">
-                <a href="index.php?page=contact/view/{ID}" onclick="wsLogContactView('{ID}','{cfg_siteurl}');">
+                <a href="" onclick="document.getElementById('{viewcardID}').style.display = 'block'; this.href = 'javascript:void(0)';">
                     {FullName}
                 </a>
-                {editcard}                
             </td>
             <td class="col_company">{Address}</td>
             <td class="col_company">{Company}</td>
@@ -68,6 +80,19 @@
             <td class="col_note">{Note}</td>
             <td class="tags">
                 {ContactGroups}
+            </td>
+        </tr>
+        <tr style="display:none;"></tr>        
+        <tr>
+            <td colspan = "9" >
+            <div id="{viewcardID}" style="display:none;" onclick="this.style.display = 'none';">
+                <span class="action" onclick="document.getElementById('{viewcardID}').style.display = 'none';" style="margin:20px 10px;">{lbl_Close}</span>
+                {viewcard}
+            </div>
+            <div id="{editcardID}" style="display:none;">
+                <span class="action" onclick="document.getElementById('{editcardID}').style.display = 'none';" style="margin:20px 10px;">{lbl_Close}</span>
+                {editcard}
+            </div>
             </td>
         </tr>
         <!-- END ContactList -->

@@ -17,33 +17,50 @@ class document {
         $this->registry = $registry;
     }
     
-    //public function listDocuments( $sql, $entryNo, $pageLink , $isHeader, $isFolder, $isFiles, $isFooter, $breads, $template = 'list-entry.tpl.php')
+    //public function listDocuments( $sql, $entryNo, $pageLink , $isHeader, $isFolder, $isFiles, $isFooter, $breads, $template = 'document-list.tpl.php')
     public function listDocuments( $entry, $showFolder, $sql, $showBreads, $pageTitle, $template )
 	{
 		global $config, $caption;
+        $pref = $config['dbPrefix'];
+		require_once( FRAMEWORK_PATH . 'models/entry/model.php');
         
-        $template = ($template === '' ? 'list-entry.tpl.php' : $template);
+        $template = ($template === '' ? 'document-list.tpl.php' : $template);
         $perSet = $this->registry->getObject('authenticate')->getPermissionSet();
 
-        // Stránkování
-        $cacheFull = $this->registry->getObject('db')->cacheQuery( $sql );
-        $records = $this->registry->getObject('db')->numRowsFromCache( $cacheFull );
-        $pageCount = (int) ($records / $config['maxVisibleItem']);
-        $pageCount = ($records > $pageCount * $config['maxVisibleItem']) ? $pageCount + 1 : $pageCount;  
-        $pageNo = ( isset($_GET['p'])) ? $_GET['p'] : 1;
-        $pageNo = ($pageNo > $pageCount) ? $pageCount : $pageNo;
-        $pageNo = ($pageNo < 1) ? 1 : $pageNo;
-        $fromItem = (($pageNo - 1) * $config['maxVisibleItem']);    
-        $navigate = $this->registry->getObject('template')->NavigateElement( $pageNo, $pageCount ); 
-        $this->registry->getObject('template')->getPage()->addTag( 'navigate_menu', $navigate );
-        $sql .= " LIMIT $fromItem," . $config['maxVisibleItem']; 
-        $cache = $this->registry->getObject('db')->cacheQuery( $sql );
-        $isEntries = ($this->registry->getObject('db')->isEmpty( $cache )) ? false : true;
-        if($isEntries)
-        {
-            $this->registry->getObject('template')->getPage()->addTag( 'DocumentItems', array( 'SQL', $cache ) );
-        }
+		// Group records by Page
+		$sql = $this->registry->getObject('db')->getSqlByPage( $sql );
+
+		// Save SQL result to $cache (array type) AND modify record
+		$cache = $this->registry->getObject('db')->cacheQuery( $sql );
+		if (!$this->registry->getObject('db')->isEmpty( $cache ))
+		{
+			while( $rec = $this->registry->getObject('db')->resultsFromCache( $cache ) )
+			{			
+                $this->model = new Entry( $this->registry, $rec['ID'] );
+                $entry = $this->model->getData();
+                        
+                $rec['editcardID'] = 'editdocument'.$rec['ID'];
+                $rec['ADocumentNo'] = $entry['ADocumentNo'];
+
+                        // Select Free Agenda Document No.
+                $sql = "SELECT ID as AID, DocumentNo, Description FROM ".$pref."agenda ".
+                    "WHERE `EntryID` = '' ".
+                    "ORDER BY TypeID,DocumentNo";
+                $cache2 = $this->registry->getObject('db')->cacheQuery( $sql );
+                    $this->registry->getObject('template')->getPage()->addTag( 'documentList', array( 'SQL', $cache2 ) );
+
+            
+                $result[] = $rec;
+		    }			
+            $isEntries = true;
+            $cache = $this->registry->getObject('db')->cacheData( $result );
+            $this->registry->getObject('template')->getPage()->addTag( 'DocumentItems', array( 'DATA', $cache ) );
+            
+		}else{
+            $isEntries = false;
+        }                
         
+
         $this->registry->getObject('template')->getPage()->addTag( 'pageTitle', $pageTitle );
         //
         // Show icons
@@ -65,7 +82,7 @@ class document {
         // Show Folders
         if ($showFolder)
         {
-            $this->registry->getObject('template')->addTemplateBit('folders', 'list-entry-folders.tpl.php');
+            $this->registry->getObject('template')->addTemplateBit('folders', 'document-list-folders.tpl.php');
         }
         else
         {
@@ -75,11 +92,11 @@ class document {
         // Show result of SQL request
         if ($isEntries)
         {
-            $this->registry->getObject('template')->addTemplateBit('documents', 'list-entry-documents.tpl.php');
+            $this->registry->getObject('template')->addTemplateBit('documents', 'document-list-entries.tpl.php');
         }
         else
         {
-            $this->registry->getObject('template')->addTemplateBit('documents', 'list-entry-addfiles.tpl.php');
+            $this->registry->getObject('template')->addTemplateBit('documents', 'document-list-addfiles.tpl.php');
             if (!$showFolder){
                 $this->registry->getObject('template')->getPage()->addTag( 'message', '' );
                 $template = 'list-entry-nodocuments.tpl.php';
@@ -89,26 +106,27 @@ class document {
         
         if ($perSet > 0)
         {
-            $this->registry->getObject('template')->addTemplateBit('actionpanel', 'list-entry-actionpanel.tpl.php');
+            $this->registry->getObject('template')->addTemplateBit('actionpanel', 'document-list-actions.tpl.php');
             if($template == 'list-entry-resultsearch.tpl.php')
             {
                 $this->registry->getObject('template')->getPage()->addTag( 'addFiles', '' );
             }
             else
             {
-                $this->registry->getObject('template')->addTemplateBit('addFiles', 'list-entry-addfiles.tpl.php');
+                $this->registry->getObject('template')->addTemplateBit('addFiles', 'document-list-addfiles.tpl.php');
             };
-            $this->registry->getObject('template')->addTemplateBit('editcard', 'list-entry-editcard.tpl.php');
-            $this->registry->getObject('template')->addTemplateBit('editIcon', 'list-entry-editicon.tpl.php');
+            $this->registry->getObject('template')->addTemplateBit('editcard', 'document-entry-editcard.tpl.php');
+            $this->registry->getObject('template')->addTemplateBit('editIcon', 'document-list-actionicons.tpl.php');
             $this->registry->getObject('template')->getPage()->addTag( 'dmsClassName', 'item' );
             if(($entry !== null) && ($entry['Type'] == 20))
-                $this->registry->getObject('template')->addTemplateBit('addFolder', 'list-entry-actionpanel-addFolder.tpl.php');
+                $this->registry->getObject('template')->addTemplateBit('addFolder', 'document-list-addFolder.tpl.php');
             else
                 $this->registry->getObject('template')->getPage()->addTag( 'addFolder', '' );
             if(($entry !== null) && ($entry['isImage'] == true))
-                $this->registry->getObject('template')->addTemplateBit('slideshow', 'list-entry-actionpanel-slideshow.tpl.php');
+                $this->registry->getObject('template')->addTemplateBit('slideshow', 'document-list-slideshow.tpl.php');
             else
                 $this->registry->getObject('template')->getPage()->addTag( 'slideshow', '' );
+            $this->registry->getObject('template')->addTemplateBit('SelectedDocumentNo', 'document-edit-selectADocumentNo.tpl.php');        
         }
         else
         {
@@ -163,7 +181,7 @@ class document {
         $this->registry->getObject('template')->getPage()->addTag( 'breads', $breads );
         $this->registry->getObject('template')->getPage()->addTag( 'filePath', $filePath );
         $this->registry->getObject('template')->dataToTags( $entry, '' );
-        $this->registry->getObject('template')->addTemplateBit('editcard', 'list-entry-editcard.tpl.php');
+        $this->registry->getObject('template')->addTemplateBit('editcard', 'document-entry-editcard.tpl.php');
         
         // Add RemindState Caption
         $this->addRemindState();
@@ -171,7 +189,7 @@ class document {
 		// Search BOX
 		$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
 
-        $this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'view-entry-document.tpl.php', 'footer.tpl.php');
+        $this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'document-entry-view.tpl.php', 'footer.tpl.php');
     }
 
 	public function editDocument( $entry, $filePath)
@@ -191,9 +209,9 @@ class document {
                     "ORDER BY TypeID,DocumentNo";
 
             $cache = $this->registry->getObject('db')->cacheQuery( $sql );
+            $this->registry->getObject('template')->addTemplateBit('SelectedDocumentNo', 'document-edit-selectADocumentNo.tpl.php');
             $this->registry->getObject('template')->getPage()->addTag( 'documentList', array( 'SQL', $cache ) );
 
-            $this->registry->getObject('template')->addTemplateBit('SelectedDocumentNo', 'edit-entry-document-documentsList.tpl.php');
         }
         $this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'edit-entry-document.tpl.php', 'footer.tpl.php');
     }

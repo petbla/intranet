@@ -1,4 +1,3 @@
-{search}
 <div id="breads">
 {breads}
 </div>
@@ -11,12 +10,19 @@
         <input type="image" src="views/classic/images/nav/upload.png" name="submit" id="submitImport">
     </form>
 </div>
-<div id="pagecounter">
-{navigate_menu}
-</div>
 {pageTitle}
 {folders}
 {documents}
 <div id="pagecounter" class="bottom">
 {navigate_menu}
 </div>
+
+<script type="text/javascript">
+    function showDocumentCard(editcardID,SelectedADocumentNo,ADocumentNo){
+
+        document.getElementById(editcardID).style.display = 'block';
+        if (ADocumentNo != ''){
+            document.getElementById(SelectedADocumentNo).style.display = 'none';
+        };
+    }
+</script>

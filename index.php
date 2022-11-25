@@ -16,6 +16,17 @@ session_start();
 define( "FRAMEWORK_PATH", dirname( __FILE__ ) ."/" );
 
 
+// Debug
+require_once('debug/classDebug.php');
+if (file_exists("mu.exe"))
+  $deb = new debug('error',FRAMEWORK_PATH . 'debug/logFile.txt');  // info,trace,error
+else
+  $deb = new debug('info',FRAMEWORK_PATH . 'debug/logFile.txt');  // info,trace,error
+
+// true - aktivace debugeru
+// false - deaktivace logu
+$deb->active(true);
+
 // Load registry and config
 require_once('registry/registry.class.php');
 $registry = Registry::singleton();
@@ -33,7 +44,6 @@ if( isset($_COOKIE["HideHandledNote"]) ){
   $config['HideHandledNote'] = $_COOKIE["HideHandledNote"];
 }
 
-
 // Connect to database
 $registry->getObject('db')->newConnection($config['db_host'], $config['db_user'], $config['db_pass'], $config['db_name']);
 
@@ -49,7 +59,6 @@ $registry->getObject('authenticate')->checkForAuthentication();
 
 // vyplnění objektu stránky ze šablony
 $registry->getObject('template')->buildFromTemplates('header.tpl.php', 'main.tpl.php', 'footer.tpl.php');
-
 $registry->getObject('template')->addTemplateBit('categories', 'categorymenu.tpl.php');
 
 
@@ -60,18 +69,20 @@ if (($registry->getObject('authenticate')->isLoggedIn()) || ($registry->getObjec
   {
 	if ($registry->getURLBit( 0 ) == 'logout'){
 		$registry->getObject('authenticate')->logout();
-		$registry->getObject('template')->addTemplateBit('loginform',  'login.tpl.php');
+		$registry->getObject('template')->addTemplateBit('logininfo',  'login.tpl.php');
 	}else{
-		$registry->getObject('template')->addTemplateBit('loginform', 'logout.tpl.php');
+		$registry->getObject('template')->addTemplateBit('logininfo', 'logout.tpl.php');
 	}
   }
   else
   {
-	$registry->getObject('template')->getPage()->addTag('loginform','');
-  }
-}else{
-  $registry->getObject('template')->addTemplateBit('loginform','login.tpl.php');
+	$registry->getObject('template')->getPage()->addTag('logininfo','');
 }
+}else{
+  $registry->getObject('template')->addTemplateBit('logininfo','login.tpl.php');
+}
+$registry->getObject('template')->addTemplateBit('loginform','login-form.tpl.php');
+
 $registry->getObject('template')->getPage()->addTag('Version',$registry->getObject('upgrade')->getVersion());
 $registry->getObject('template')->getPage()->addTag('UserName',$registry->getObject('authenticate')->getUserName());
 
@@ -81,6 +92,7 @@ $activeControllers = array();
 $activeControllers[] = 'document';
 $activeControllers[] = 'contact';
 $activeControllers[] = 'agenda';
+$activeControllers[] = 'zob';
 $activeControllers[] = 'general';
 $activeControllers[] = 'admin';
 $currentController = $registry->getURLBit( 0 );  // controller
@@ -143,7 +155,6 @@ $registry->getObject('template')->getPage()->addTag( 'calendarBarMenuItem', $cal
 $registry->getObject('template')->getPage()->addTag( 'archiveBarMenuItem', $archiveBarMenuItem );
 $registry->getObject('template')->getPage()->addTag( 'newsBarMenuItem', $newsBarMenuItem );
 $registry->getObject('template')->getPage()->addTag( 'portalBarMenuItem', $portalBarMenuItem );
-
 $registry->getObject('template')->getPage()->addTag('compName',$config['compName']);
 
 // vše analyzuj a zobraz výsledek

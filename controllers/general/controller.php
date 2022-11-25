@@ -14,6 +14,9 @@ class Generalcontroller {
 		global $caption;
 
 		$this->registry = $registry;
+		require_once( FRAMEWORK_PATH . 'models/entry/model.php');
+		require_once( FRAMEWORK_PATH . 'models/contact/model.php');
+		
 		$perSet = $this->registry->getObject('authenticate')->getPermissionSet();
 
 		if( $directCall == true )
@@ -34,17 +37,31 @@ class Generalcontroller {
 			{
 				switch( $urlBits[1] )
 				{				
-					case 'searchContact':
+					case 'searchGlobal':
 						$searchText = isset($urlBits[2]) ? $urlBits[2] : '';
 						if ($searchText){
-							$this->searchContacts($searchText);
+							$this->searchGlobal($searchText);
 							return;
 						}
 						break;
-					case 'searchItem':
+					case 'searchContact':
 						$searchText = isset($urlBits[2]) ? $urlBits[2] : '';
 						if ($searchText){
-							$this->searchDocuments($searchText);
+							$this->searchGlobal($searchText,'contact');
+							return;
+						}
+						break;
+					case 'searchDocument':
+						$searchText = isset($urlBits[2]) ? $urlBits[2] : '';
+						if ($searchText){
+							$this->searchGlobal($searchText,'dmsentry');
+							return;
+						}
+						break;
+					case 'searchAgenda':
+						$searchText = isset($urlBits[2]) ? $urlBits[2] : '';
+						if ($searchText){
+							$this->searchGlobal($searchText,'agenda');
 							return;
 						}
 						break;
@@ -85,147 +102,238 @@ class Generalcontroller {
 		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page.tpl.php', 'footer.tpl.php');
 	}
 
-	/**
-	 * Zobrazení požadovaného seznamu dokumentů, které současně 
-	 * zajistí zobrazení stránkování s možností výběru stránek a listování
-	 * @param String $sql = sestavený kompletní SQL dotaz
-	 * @param String $pageLink
-	 * @param Boolean $isHeader
-	 * @param Boolean $isFooter 
-	 * @param String $template
-	 * @return void
-	 */
-	private function listContactResult( $sql, $pageLink , $isHeader, $isFooter, $template = 'list-contact.tpl.php')
-	{
-		global $config, $caption;
-        $pref = $config['dbPrefix'];
-        
-		require_once( FRAMEWORK_PATH . 'models/contact/model.php');
-		$this->model = new Contact( $this->registry, '' );
-        $perSet = $this->registry->getObject('authenticate')->getPermissionSet();
-
-		if($perSet > 0)
-		{
-			// Stránkování
-			$cacheFull = $this->registry->getObject('db')->cacheQuery( $sql );
-			$records = $this->registry->getObject('db')->numRowsFromCache( $cacheFull );
-			$pageCount = (int) ($records / $config['maxVisibleItem']);
-			$pageCount = ($records > $pageCount * $config['maxVisibleItem']) ? $pageCount + 1 : $pageCount;  
-			$pageNo = ( isset($_GET['p'])) ? $_GET['p'] : 1;
-			$pageNo = ($pageNo > $pageCount) ? $pageCount : $pageNo;
-			$pageNo = ($pageNo < 1) ? 1 : $pageNo;
-			$fromItem = (($pageNo - 1) * $config['maxVisibleItem']);    
-			$navigate = $this->registry->getObject('template')->NavigateElement( $pageNo, $pageCount ); 
-			$this->registry->getObject('template')->getPage()->addTag( 'navigate_menu', $navigate );
-			$sql .= " LIMIT $fromItem," . $config['maxVisibleItem']; 
-			$cache = $this->registry->getObject('db')->cacheQuery( $sql );
-			if (!$this->registry->getObject('db')->isEmpty( $cache )){
-				$this->registry->getObject('template')->getPage()->addTag( 'ContactList', array( 'SQL', $cache ) );
-				$this->registry->getObject('template')->getPage()->addTag( 'pageLink', $pageLink );
-				$this->registry->getObject('template')->getPage()->addTag( 'pageTitle', '' );
-
-				$this->registry->getObject('template')->addTemplateBit('editcard', 'list-contact-editcard.tpl.php');
-				$this->registry->getObject('template')->addTemplateBit('editIcon', 'list-contact-editicon.tpl.php');
-				$this->registry->getObject('template')->getPage()->addTag( 'dmsClassName', 'contact' );
-				$this->registry->getObject('template')->getPage()->addTag( 'ID', 'newcontact' );
-				$this->registry->getObject('template')->getPage()->addTag( 'Address', '' );
-				$this->registry->getObject('template')->getPage()->addTag( 'Note', '' );
-				$this->registry->getObject('template')->getPage()->addTag( 'ContactGroups', '' );
-	
-				$cache2 = $this->registry->getObject('db')->cacheQuery("SELECT * FROM ".$pref."contactgroup");
-				$this->registry->getObject('template')->getPage()->addTag( 'GroupList', array('SQL' , $cache2) );
-					
-				$this->registry->getObject('log')->addMessage("Zobrazení seznamu kontaktů",'Contact','');
-				$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', $template, 'footer.tpl.php');			
-			}
-			else
-			{
-				$this->registry->getObject('template')->addTemplateBit('editcard', 'list-contact-editcard.tpl.php');
-				$this->registry->getObject('template')->getPage()->addTag( 'dmsClassName', 'contact' );
-				$this->registry->getObject('template')->getPage()->addTag( 'ID', 'newcontact' );
-				$this->registry->getObject('template')->getPage()->addTag( 'Address', '' );
-				$this->registry->getObject('template')->getPage()->addTag( 'Note', '' );
-				$this->registry->getObject('template')->getPage()->addTag( 'ContactGroups', '' );
-				
-				$cache2 = $this->registry->getObject('db')->cacheQuery("SELECT * FROM ".$pref."contactgroup");
-				$this->registry->getObject('template')->getPage()->addTag( 'GroupList', array('SQL' , $cache2) );
-				
-				$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'list-contact-empty.tpl.php', 'footer.tpl.php');			
-			}
-			$this->registry->getObject('template')->getPage()->addTag( 'sqlrequest', '' );
-
-			// Search BOX
-			$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
-
-		}
-        else
-        {
-			$this->error($caption['msg_unauthorized']);
-        }
-    }	
-
-	private function searchContacts( $searchText )
-	{
-		global $config, $caption;
-        $pref = $config['dbPrefix'];
-        $perSet = $this->registry->getObject('authenticate')->getPermissionSet();
-
-		$searchText = htmlspecialchars($searchText);
-		$searchText = str_replace('*','',$searchText);
-		$sql = "SELECT c.ID, c.FullName, c.FirstName, c.LastName, c.Title, c.Function, c.Company, ".
-						"c.Email, c.Phone, c.Web, c.Note, c.Address, c.Close, c.Note, c.ContactGroups ".
-				"FROM ".$pref."Contact c ".
-				"WHERE Close = 0 ".
-				"AND MATCH(FullName,Function,Company,Address,Note,Phone,Email,ContactGroups) AGAINST ('*".$searchText."*' IN BOOLEAN MODE) ".
-				"ORDER BY FullName";
-		$isHeader = true;
-		$isFooter = true;
-		$pageLink = '';
-
-		$this->registry->getObject('template')->getPage()->addTag( 'sqlrequest', $searchText );
-		// Logování
-		$this->registry->getObject('log')->addMessage("Zobrazení vyhledaných kontaktů `$searchText`",'Contact','');
-		// Zobrazení seznamu
-		$this->listContactResult($sql, $pageLink, $isHeader, $isFooter );
-	}	
-
     /**
      * Zobrazení seznamu vyhledaných položek dle hledaného řetězce
+	 * Vyhledání je ve vše relevantních tabulkách
+	 *   - Agenda   : Description, DocumentNo
+	 *   - Contact  : FullName, Function, Company, Address, Note, Phone, Email, ContactGroups
+	 *   - Dmsentry : Title, Content
+ 	 * 	   	 20 - Folder 	obal (10,30,35,40) .... fyzický (soubory) i virtuální obsah
+ 	 * 	 	 25 - Block		obal (10,35,40)    .... virtuální obsah
+	 * 		 30 - File		položka            .... fyzický soubor
+	 * 		 35 - Note		položka            .... virtuální, jako odkaz, text, poznámka
+
 	 * @param String $searchText = maska hledaných položek
 	 * @return void
      */
-	private function searchDocuments( $searchText )
+	function searchGlobal( $searchText , $table = '')
 	{
 		global $config, $caption;
         $pref = $config['dbPrefix'];
         $perSet = $this->registry->getObject('authenticate')->getPermissionSet();
 
-		require_once( FRAMEWORK_PATH . 'models/entry/model.php');
-		$this->model = new Entry( $this->registry,'' );
-		$entry = $this->model->getData();
-		$this->registry->setLevel(0);
-		$this->registry->setEntryNo(0);
-		$showFolder = false;
+		$this->initSearch();
+
 		$searchText = htmlspecialchars($searchText);
 		$searchText = str_replace('*','',$searchText);
-		$sql = "SELECT ID,Title,Name,Type,Url,Parent,ModifyDateTime,LOWER(FileExtension) as FileExtension ".
-					",IF(Remind=0,'0','1') as Remind,IF(RemindClose=0,'0','1') as RemindClose,RemindFromDate,RemindLastDate".
-					",Content,RemindResponsiblePerson,RemindUserID,RemindContactID,RemindState,Path ".	
-					"FROM ".$pref."DmsEntry ".
+		
+		$batchID = $this->nextBatchID();
+		$createDate = $this->registry->getObject('core')->now();
+		$url = "general/view/";
+
+		// Search in dmsentry	
+		if (($table == '') || ($table == 'dmsentry')){
+			$sql = "INSERT INTO ".$pref."resultsearch (BatchID,CreateDate,Type,Description,ID) ".
+					"SELECT $batchID as BatchID, '$createDate' as CreateDate, ".
+						"CASE WHEN Type=20 THEN 'Folder' WHEN Type=25 THEN 'Block' WHEN Type=30 THEN 'File'WHEN Type=35 THEN 'Note' ELSE Type END as Type, ".
+						"Title as Description ,ID ".
+					"FROM ".$pref."dmsentry ".
 					"WHERE Archived = 0 AND Type IN (20,25,30,35) ".
-					//"AND MATCH(Title) AGAINST ('*".$searchText."*' IN BOOLEAN MODE) ".
-					"AND Title like '%".$searchText."%' ".
-					"AND PermissionSet <= $perSet ".
-					"ORDER BY Remind DESC,Title ";
-		$showBreads = false;
-		$pageTitle = '<h3>'.$caption['Archive'].'</h3>';
-		$template = 'list-entry-resultsearch.tpl.php';
-		$this->registry->getObject('template')->getPage()->addTag( 'sqlrequest', $searchText );
-		// Logování
-		$this->registry->getObject('log')->addMessage('Zobrazení seznamu souborů a složek','DmsEntry','');
-		// Zobrazení seznamu
-		$this->registry->getObject('document')->listDocuments($entry,$showFolder,$sql,$showBreads,$pageTitle,$template);
+						"AND ((Title like '%$searchText%') OR (Content like '%$searchText%')) ".
+						"AND PermissionSet <= $perSet ";
+			$this->registry->getObject('db')->executeQuery($sql);
+		}
+
+		// Search in agenda
+		if (($table == '') || ($table == 'agenda')){
+				$sql = "INSERT INTO ".$pref."resultsearch (BatchID,CreateDate,Type,Description,ID) ".
+					"SELECT $batchID as BatchID, '$createDate' as CreateDate, ".
+						"'Agenda' as Type, CONCAT (DocumentNo,' ', Description) as Description,ID ".
+					"FROM ".$pref."agenda ".
+					"WHERE (DocumentNo like '%$searchText%') OR (Description like '%$searchText%')";
+			$this->registry->getObject('db')->executeQuery($sql);
+		}
+
+		// Search in contact
+		if (($table == '') || ($table == 'contact')){
+			$sql = "INSERT INTO ".$pref."resultsearch (BatchID,CreateDate,Type,Description,ID) ".
+					"SELECT $batchID as BatchID, '$createDate' as CreateDate, ".
+						"'Contact' as Type, CONCAT (FullName,', Tel.:',Phone,', Email:',Email) as Description ,ID ".
+					"FROM ".$pref."contact ".
+					"WHERE (Close = 0) ".
+						"AND (".
+							"(FullName like '%$searchText%') OR ".
+							"(`Function` like '%$searchText%') OR ".
+							"(Company like '%$searchText%') OR ".
+							"(Address like '%$searchText%') OR ".
+							"(Note like '%$searchText%') OR ".
+							"(Phone like '%$searchText%') OR ".
+							"(Email like '%$searchText%') OR ".
+							"(ContactGroups like '%$searchText%'))";
+			$this->registry->getObject('db')->executeQuery($sql);
+		}
+
+		// Set order key
+		$sql = "SELECT * FROM ".$pref."resultsearch WHERE BatchID like $batchID ORDER BY Type,Description";
+
+		// Group records by Page
+		$sql = $this->registry->getObject('db')->getSqlByPage( $sql );
+
+		// Save SQL result to $cache (array type) AND modify record
+		$cache = $this->registry->getObject('db')->cacheQuery( $sql );
+		if (!$this->registry->getObject('db')->isEmpty( $cache ))
+		{
+			while( $rec = $this->registry->getObject('db')->resultsFromCache( $cache ) )
+			{
+				// New fields
+				$rec['Url'] = '';
+				$rec['Target'] = '';
+				$rec['cardID'] = '';
+				$rec['card'] = '';
+
+				switch ($rec['Type']) {
+					case 'Folder':
+						$rec['Url'] = 'index.php?page=document/list/' . $rec['ID'];
+						$rec['deleteLink'] = "entry/deleteFolder";
+						break;
+					case 'Block':
+						$rec['Url'] = 'index.php?page=document/list/' . $rec['ID'];
+						break;
+					case 'File':
+						$model = new Entry( $this->registry, $rec['ID'] );
+						$entry = $model->getData();
+						if( $model->isValid() )
+						{
+							if ($entry['FileExtension'] <> ''){
+								$app = $this->getApplication($entry['FileExtension']);
+								$rec['Url'] = $app.$config['webroot'].$entry['Name'];
+								if ($app == '')
+									$rec['Target'] = '_blank';
+							}else{
+								$rec['Url'] = 'index.php?page=document/list/' . $rec['ID'];
+							}
+						};
+						$rec['viewcardID'] = '';
+						$rec['editcardID'] = 'editentry'.$rec['ID'];
+						$rec['deleteLink'] = "entry/deleteFile";
+
+						$this->registry->getObject('template')->getPage()->addTag('viewcard','');
+						$this->registry->getObject('template')->addTemplateBit('editcard', 'document-entry-editcard.tpl.php');
+						break;
+					case 'Note':
+						$rec['Url'] = 'index.php?page=document/list/' . $rec['ID'];
+						break;
+					case 'Agenda':
+						$rec['Url'] = 'Poznámka';
+						break;
+					case 'Contact':
+						$model = new Contact( $this->registry, $rec['ID'] );
+						$contact = $model->getData();
+						$rec['Title'] = ($contact['Title'] <> "")? $contact['Title'].'&nbsp;' : '';
+						$rec['FirstName'] = $contact['FirstName'];
+						$rec['LastName'] = $contact['LastName'];
+						$rec['Function'] = $contact['Function'];
+						$rec['Company'] = $contact['Company'];
+						$rec['Address'] = $contact['Address'];
+						$rec['Note'] = $contact['Note'];
+						$rec['Phone'] = $contact['Phone'];
+						$rec['Email'] = $contact['Email'];
+						$rec['Web'] = $contact['Web'];
+						$rec['ContactGroups'] = $contact['ContactGroups'];
+
+						$rec['viewcardID'] = 'viewcontact'.$rec['ID'];
+						$rec['editcardID'] = 'editcontact'.$rec['ID'];
+						$rec['deleteLink'] = "contact/delete";
+
+						$this->registry->getObject('template')->addTemplateBit('viewcard', 'contact-view.tpl.php');
+						$this->registry->getObject('template')->addTemplateBit('editcard', 'contact-edit.tpl.php');
+						break;
+					
+					default:
+						# code...
+						break;
+				}
+				
+				$result[] = $rec;
+		    }			
+		}else{
+			$message = 'Nenalezeno';
+			$this->registry->getObject('template')->getPage()->addTag('message',$message);
+			$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
+			$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page.tpl.php', 'footer.tpl.php');
+			return;
+		}	
+		$cache = $this->registry->getObject('db')->cacheData( $result );
+	
+		// Build page 
+		$this->registry->getObject('template')->getPage()->addTag( 'searchText', $searchText );
+		$this->registry->getObject('template')->getPage()->addTag( 'ResultItems', array( 'DATA', $cache ) );
+		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'search-list-result.tpl.php', 'footer.tpl.php');						
+		
+		// Search BOX
+		$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
+		  
 	}	
+
+	/**
+	 * Vrací následující číslo dávky
+	 * @retur new BatchID
+	 */
+	private function nextBatchID()
+	{
+		global $config;
+		$prefix = $config['dbPrefix'];
+
+		$sql = "SELECT MAX(BatchID) as BatchID FROM ".$prefix."resultsearch";
+		$this->registry->getObject('db')->executeQuery($sql);
+
+		if( $this->registry->getObject('db')->numRows() == 1 )
+		{
+			$data = $this->registry->getObject('db')->getRows();
+			return ($data['BatchID'] + 1);
+		}
+		return 1;
+	}
+
+	/**
+	 * Výmaz expirovaných záznamů v tabulce výsledků hledání
+	 */
+	private function initSearch()
+	{
+		global $config;
+		$prefix = $config['dbPrefix'];
+		$ExpirateDate = date_create('-1 hour')->format('Y-m-d H:i:s'); 
+
+		$condition = "CreateDate < '$ExpirateDate'";
+		$this->registry->getObject('db')->deleteRecords( 'resultsearch', $condition); 
+
+	}
+
+	private function getApplication($extension)
+	{
+		/**
+		 * HELP
+		 * https://docs.microsoft.com/en-us/office/client-developer/office-uri-schemes#sectionSection9
+		 */
+		$app = '';
+		switch ($extension) {
+			case 'xls':
+			case 'xlsx':
+			case 'csv':
+				$app = "ms-excel:ofe|u|";
+				break;
+			case 'doc':
+			case 'docx':
+			case 'rtf':
+				$app = "ms-word:ofe|u|";
+				break;
+			case 'ppt':
+			case 'pptx':
+				$app = "ms-powerpoint:ofv|u|";
+				break;
+		}
+		return $app;
+	}
 
 }
 ?>

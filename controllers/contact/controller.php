@@ -42,15 +42,11 @@ class Contactcontroller {
 					case 'list':
 						$this->listContacts();
 						break;
-					case 'view':
-						$ID = isset( $urlBits[2] ) ? $urlBits[2] : '';
-						$this->viewContact($ID);
-						break;
 					case 'edit':
 						$ID = isset( $urlBits[2] ) ? $urlBits[2] : '';
 						if($perSet < 5) // změna pouze pro Starosta(5), Adninistrátor(9)
 						{
-							$this->viewContact($ID);
+							$this->error($caption['msg_unauthorized']);
 							break;
 						}
 						$this->editContact($ID);
@@ -64,7 +60,7 @@ class Contactcontroller {
 						}
 						$this->deleteContact($ID);
 						break;
-					case 'new':
+					case '':
 						$this->addContact();
 						break;
 					case 'save':
@@ -130,34 +126,6 @@ class Contactcontroller {
 		// Sestavení
 		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page.tpl.php', 'footer.tpl.php');
 	}
-
-	/**
-	 * Zobrazení kontaktu jako karty
-	 * @param String $ID = ID kontaktu
-	 * @return void
-	 */
-	private function viewContact( $ID )
-	{
-		global $config, $caption;
-        
-		require_once( FRAMEWORK_PATH . 'models/contact/model.php');
-		$this->model = new Contact( $this->registry, $ID );
-		if( $this->model->isActive() )
-		{
-			$contact = $this->model->getData();
-			foreach ($contact as $property => $value) {
-				$this->registry->getObject('template')->getPage()->addTag( $property, $value );
-			}
-			$this->registry->getObject('log')->addMessage("Zobrazení kontaktu ".$contact['FullName'],'contact',$ID);
-			// Search BOX
-			$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
-			$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'view-contact.tpl.php', 'footer.tpl.php');
-		}
-		else
-		{
-			$this->notFound();
-		}
-	}	
 
 	/**
 	 * Akce vyvolaná z webového formuláře, která načte CSV soubor 
@@ -270,6 +238,8 @@ class Contactcontroller {
 		global $config, $caption;
         $pref = $config['dbPrefix'];
 
+		$post = $_POST;
+
 		require_once( FRAMEWORK_PATH . 'models/contact/model.php');
 		$this->model = new Contact( $this->registry, $ID );
 		if( $this->model->isActive() )
@@ -306,7 +276,7 @@ class Contactcontroller {
 			// Logování
 			$this->registry->getObject('log')->addMessage("Editace kontaktu ".$contact['FullName'],'contact',$ID);
 			// Sestavení
-			$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'edit-contact.tpl.php', 'footer.tpl.php');
+			$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'contact-edit.tpl.php', 'footer.tpl.php');
 		}
 		else
 		{
@@ -335,7 +305,7 @@ class Contactcontroller {
 		// Logování
 		$this->registry->getObject('log')->addMessage("Nový kontaktu ".$contact['FullName'],'contact',$contact['ID']);
 		// Sestavení
-		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'edit-contact.tpl.php', 'footer.tpl.php');
+		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'contact-edit.tpl.php', 'footer.tpl.php');
 	}	
 
 	/**
@@ -354,9 +324,11 @@ class Contactcontroller {
 		}
 		else 
 		{
+			$post = $_POST;
+
 			$ID = isset($_POST['ID']) ? $_POST['ID'] : null;
 
-			if(($ID === '') || ($ID == 'newcontact'))
+			if(($ID === '') || ($ID == 'contact'))
 			{
 				$ID = $this->registry->getObject('fce')->GUID();
 				$data['ID'] = $ID;
@@ -377,74 +349,76 @@ class Contactcontroller {
 					$data['Title'] = $contact['Title'];
 					$data['Company'] = $contact['Company'];
 
-					if(isset($_POST['newFirstName'])) 
+					$post = $_POST;
+
+					if(isset($_POST['FirstName'])) 
 					{
-						if($contact['FirstName'] !== $_POST['newFirstName'])
+						if($contact['FirstName'] !== $_POST['FirstName'])
 						{
-							$data['FirstName'] = $_POST['newFirstName'];
+							$data['FirstName'] = $_POST['FirstName'];
 						}
 					}
-					if(isset($_POST['newLastName']))
+					if(isset($_POST['LastName']))
 					{
-						if($contact['LastName'] !== $_POST['newLastName'])
+						if($contact['LastName'] !== $_POST['LastName'])
 						{
-							$data['LastName'] = $_POST['newLastName'];
+							$data['LastName'] = $_POST['LastName'];
 						}
 					}
-					if(isset($_POST['newTitle']))
+					if(isset($_POST['Title']))
 					{
-						if($contact['Title'] !== $_POST['newTitle'])
+						if($contact['Title'] !== $_POST['Title'])
 						{
-							$data['Title'] = $_POST['newTitle'];
+							$data['Title'] = $_POST['Title'];
 						}
 					}
-					if((isset($_POST['newBirthDate'])) && ($_POST['newBirthDate'] !== ''))
+					if((isset($_POST['BirthDate'])) && ($_POST['BirthDate'] !== ''))
 					{
-						if($contact['BirthDate'] !== $_POST['newBirthDate'])
+						if($contact['BirthDate'] !== $_POST['BirthDate'])
 						{
-							$data['BirthDate'] = $_POST['newBirthDate'];
+							$data['BirthDate'] = $_POST['BirthDate'];
 						}
 					}
-					if(isset($_POST['newFunction']))
+					if(isset($_POST['Function']))
 					{
-						if($contact['Function'] !== $_POST['newFunction'])
+						if($contact['Function'] !== $_POST['Function'])
 						{
-							$data['Function'] = $_POST['newFunction'];
+							$data['Function'] = $_POST['Function'];
 						}
 					}
-					if(isset($_POST['newCompany']))
+					if(isset($_POST['Company']))
 					{
-						if($contact['Company'] !== $_POST['newCompany'])
+						if($contact['Company'] !== $_POST['Company'])
 						{
-							$data['Company'] = $_POST['newCompany'];
+							$data['Company'] = $_POST['Company'];
 						}
 					}
-					if(isset($_POST['newEmail']))
+					if(isset($_POST['Email']))
 					{
-						if($contact['Email'] !== $_POST['newEmail'])
+						if($contact['Email'] !== $_POST['Email'])
 						{
-							$data['Email'] = $_POST['newEmail'];
+							$data['Email'] = $_POST['Email'];
 						}
 					}
-					if(isset($_POST['newPhone']))
+					if(isset($_POST['Phone']))
 					{
-						if($contact['Phone'] !== $_POST['newPhone'])
+						if($contact['Phone'] !== $_POST['Phone'])
 						{
-							$data['Phone'] = str_replace(' ','',$_POST['newPhone']);
+							$data['Phone'] = str_replace(' ','',$_POST['Phone']);
 						}
 					}
-					if(isset($_POST['newWeb']))
+					if(isset($_POST['Web']))
 					{
-						if($contact['Web'] !== $_POST['newWeb'])
+						if($contact['Web'] !== $_POST['Web'])
 						{
-							$data['Web'] = $_POST['newWeb'];
+							$data['Web'] = $_POST['Web'];
 						}
 					}
-					if(isset($_POST['newNote']))
+					if(isset($_POST['Note']))
 					{
-						if($contact['Note'] !== $_POST['newNote'])
+						if($contact['Note'] !== $_POST['Note'])
 						{
-							$data['Note'] = $_POST['newNote'];
+							$data['Note'] = $_POST['Note'];
 						}
 					}
 					if(isset($_POST['ContactGroups']))
@@ -454,11 +428,11 @@ class Contactcontroller {
 							$data['ContactGroups'] = $_POST['ContactGroups'];
 						}
 					}
-					if(isset($_POST['newAddress']))
+					if(isset($_POST['Address']))
 					{
-						if($contact['Address'] !== $_POST['newAddress'])
+						if($contact['Address'] !== $_POST['Address'])
 						{
-							$data['Address'] = $_POST['newAddress'];
+							$data['Address'] = $_POST['Address'];
 						}
 					}
 					if(isset($_POST['Close']))
@@ -474,13 +448,13 @@ class Contactcontroller {
 					$this->registry->getObject('log')->addMessage("Aktualizace kontaktu",'contact',$ID);
 					$this->registry->getObject('db')->updateRecords('contact',$data,$condition);
 				}
-				$searchText = isset($_POST['sqlrequest']) ? $_POST['sqlrequest'] : '';
-				if($searchText !== '')
-				{
-					$this->searchContacts($searchText);
-				}
-				else
-				{
+				
+				$searchText = isset($_POST['searchText'])? $_POST['searchText'] : '';
+				if ($searchText != '{searchText}'){
+					require_once( FRAMEWORK_PATH . 'controllers/general/controller.php');
+					$general = new Generalcontroller( $this->registry, true );
+					$general->searchGlobal($searchText,'contact');
+				}else{
 					$this->listContacts();
 				}
 			}
@@ -495,10 +469,11 @@ class Contactcontroller {
      * Zobrazení seznamu všech aktivních kontaktů
      * @return void
      */
-	private function listContacts()
+	private function listContacts($template = 'contact-list.tpl.php')
 	{
-		global $config;
+		global $config, $caption;
         $pref = $config['dbPrefix'];
+		require_once( FRAMEWORK_PATH . 'models/contact/model.php');
 		
 		$sql = "SELECT c.ID, c.FullName, c.FirstName, c.LastName, c.Title, c.Function, c.Company, ".
 						"c.Email, c.Phone, c.Web, c.Note, c.Address, c.Close, c.Note, c.ContactGroups, c.BirthDate ".
@@ -508,108 +483,83 @@ class Contactcontroller {
 		$isHeader = true;
 		$isFooter = true;
 		$pageLink = '';
+
 		// Zobrazení seznamu
-		$this->listResult($sql, $pageLink, $isHeader, $isFooter );
-	}
-
-    /**
-     * Zobrazení seznamu vyhledaných kontaktů
-	 * @param String $searchText
-	 * @return void
-     */
-	private function searchContacts( $searchText )
-	{
-		global $config, $caption;
-        $pref = $config['dbPrefix'];
-
-        $perSet = $this->registry->getObject('authenticate')->getPermissionSet();
-
-		$searchText = htmlspecialchars($searchText);
-		$searchText = str_replace('*','',$searchText);
-		$sql = "SELECT c.ID, c.FullName, c.FirstName, c.LastName, c.Title, c.Function, c.Company, ".
-						"c.Email, c.Phone, c.Web, c.Note, c.Address, c.Close, c.Note, c.ContactGroups, c.BirthDate ".
-				"FROM ".$pref."Contact c ".
-				"WHERE Close = 0 AND MATCH(FullName,Function,Company,Address,Note,Phone,Email,ContactGroups) AGAINST ('*$searchText*' IN BOOLEAN MODE) ".
-				"ORDER BY FullName";
-		$isHeader = true;
-		$isFooter = true;
-		$pageLink = '';
-
-		$this->registry->getObject('template')->getPage()->addTag( 'sqlrequest', $searchText );
-		// Logování
-		$this->registry->getObject('log')->addMessage("Zobrazení vyhledaných kontaktů `$searchText`",'Contact','');
-		// Zobrazení seznamu
-		$this->listResult($sql, $pageLink, $isHeader, $isFooter );
-	}	
-
-	/**
-	 * Zobrazení požadovaného seznamu kontaktů, které současně 
-	 * zajistí zobrazení stránkování s možností výběru stránek a listování
-	 * @param String $sql = sestavený kompletní SQL dotaz
-	 * @param String $pageLink
-	 * @param Boolean $isHeader
-	 * @param Boolean $isFooter 
-	 * @param String $template
-	 * @return void
-	 */
-	private function listResult( $sql, $pageLink , $isHeader, $isFooter, $template = 'list-contact.tpl.php')
-	{
-		global $config, $caption;
-        $pref = $config['dbPrefix'];
         
-		require_once( FRAMEWORK_PATH . 'models/contact/model.php');
 		$this->model = new Contact( $this->registry, '' );
         $perSet = $this->registry->getObject('authenticate')->getPermissionSet();
 
 		if($perSet > 0)
 		{
-			// Stránkování
-			$cacheFull = $this->registry->getObject('db')->cacheQuery( $sql );
-			$records = $this->registry->getObject('db')->numRowsFromCache( $cacheFull );
-			$pageCount = (int) ($records / $config['maxVisibleItem']);
-			$pageCount = ($records > $pageCount * $config['maxVisibleItem']) ? $pageCount + 1 : $pageCount;  
-			$pageNo = ( isset($_GET['p'])) ? $_GET['p'] : 1;
-			$pageNo = ($pageNo > $pageCount) ? $pageCount : $pageNo;
-			$pageNo = ($pageNo < 1) ? 1 : $pageNo;
-			$fromItem = (($pageNo - 1) * $config['maxVisibleItem']);    
-			$navigate = $this->registry->getObject('template')->NavigateElement( $pageNo, $pageCount ); 
-			$this->registry->getObject('template')->getPage()->addTag( 'navigate_menu', $navigate );
-			$sql .= " LIMIT $fromItem," . $config['maxVisibleItem']; 
+			// Group records by Page
+			$sql = $this->registry->getObject('db')->getSqlByPage( $sql );
+			// Save SQL result to $cache (array type) AND modify record
 			$cache = $this->registry->getObject('db')->cacheQuery( $sql );
-			if (!$this->registry->getObject('db')->isEmpty( $cache )){
-				$this->registry->getObject('template')->getPage()->addTag( 'ContactList', array( 'SQL', $cache ) );
-				$this->registry->getObject('template')->getPage()->addTag( 'pageLink', $pageLink );
-				$this->registry->getObject('template')->getPage()->addTag( 'pageTitle', '' );
-
-				$this->registry->getObject('template')->addTemplateBit('editcard', 'list-contact-editcard.tpl.php');
-				$this->registry->getObject('template')->addTemplateBit('editIcon', 'list-contact-editicon.tpl.php');
-				$this->registry->getObject('template')->getPage()->addTag( 'dmsClassName', 'contact' );
-				$this->registry->getObject('template')->getPage()->addTag( 'ID', 'newcontact' );
-				$this->registry->getObject('template')->getPage()->addTag( 'Address', '' );
-				$this->registry->getObject('template')->getPage()->addTag( 'Note', '' );
-				$this->registry->getObject('template')->getPage()->addTag( 'ContactGroups', '' );
-	
-				$cache2 = $this->registry->getObject('db')->cacheQuery("SELECT * FROM ".$pref."contactgroup");
-				$this->registry->getObject('template')->getPage()->addTag( 'GroupList', array('SQL' , $cache2) );
-					
-				$this->registry->getObject('log')->addMessage("Zobrazení seznamu kontaktů",'Contact','');
-				$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', $template, 'footer.tpl.php');			
-			}
-			else
+			
+			$result = null;
+			if (!$this->registry->getObject('db')->isEmpty( $cache ))
 			{
-				$this->registry->getObject('template')->addTemplateBit('editcard', 'list-contact-editcard.tpl.php');
-				$this->registry->getObject('template')->getPage()->addTag( 'dmsClassName', 'contact' );
-				$this->registry->getObject('template')->getPage()->addTag( 'ID', 'newcontact' );
-				$this->registry->getObject('template')->getPage()->addTag( 'Address', '' );
-				$this->registry->getObject('template')->getPage()->addTag( 'Note', '' );
-				$this->registry->getObject('template')->getPage()->addTag( 'ContactGroups', '' );
+				while( $rec = $this->registry->getObject('db')->resultsFromCache( $cache ) )
+				{
+					$model = new Contact( $this->registry, $rec['ID'] );
+					$contact = $model->getData();
+					$rec['Title'] = ($contact['Title'] <> "")? $contact['Title'].'&nbsp;' : '';
+					$rec['FirstName'] = $contact['FirstName'];
+					$rec['LastName'] = $contact['LastName'];
+					$rec['Function'] = $contact['Function'];
+					$rec['Company'] = $contact['Company'];
+					$rec['Address'] = $contact['Address'];
+					$rec['Note'] = $contact['Note'];
+					$rec['Phone'] = $contact['Phone'];
+					$rec['Email'] = $contact['Email'];
+					$rec['Web'] = $contact['Web'];
+					$rec['ContactGroups'] = $contact['ContactGroups'];
+					$rec['dmsClassName'] = 'contact';
 				
-				$cache2 = $this->registry->getObject('db')->cacheQuery("SELECT * FROM ".$pref."contactgroup");
-				$this->registry->getObject('template')->getPage()->addTag( 'GroupList', array('SQL' , $cache2) );
+					$rec['viewcardID'] = 'view'.$rec['ID'];					
+					$rec['editcardID'] = 'edit'.$rec['ID'];					
+					$rec['deleteLink'] = "contact/delete";
+
+					$result[] = $rec;
+				}
+			}else{
+				$this->notFound();
+				return;
+			};
+			$cache = $this->registry->getObject('db')->cacheData( $result );
+	
+			// Build page 		
+			$this->registry->getObject('template')->getPage()->addTag( 'ContactList', array( 'DATA', $cache ) );
+			$this->registry->getObject('template')->getPage()->addTag( 'pageLink', $pageLink );
+			$this->registry->getObject('template')->getPage()->addTag( 'pageTitle', '' );
+
+			// Onclick forms
+			$this->registry->getObject('template')->addTemplateBit('viewcard', 'contact-view.tpl.php');
+			$this->registry->getObject('template')->addTemplateBit('editcard', 'contact-edit.tpl.php');
+			$this->registry->getObject('template')->addTemplateBit('newcard', 'contact-edit.tpl.php');
+			
+			// For new contact
+			$this->registry->getObject('template')->getPage()->addTag( 'ID', 'contact' );			
+			$this->registry->getObject('template')->getPage()->addTag( 'Title', '' );
+			$this->registry->getObject('template')->getPage()->addTag( 'FirstName', '' );
+			$this->registry->getObject('template')->getPage()->addTag( 'LastName', '' );
+			$this->registry->getObject('template')->getPage()->addTag( 'Function', '' );
+			$this->registry->getObject('template')->getPage()->addTag( 'Company', '' );
+			$this->registry->getObject('template')->getPage()->addTag( '', '' );
+			$this->registry->getObject('template')->getPage()->addTag( 'Address', '' );
+			$this->registry->getObject('template')->getPage()->addTag( 'Web', '' );
+			$this->registry->getObject('template')->getPage()->addTag( 'Phone', '' );
+			$this->registry->getObject('template')->getPage()->addTag( 'Email', '' );
+			$this->registry->getObject('template')->getPage()->addTag( 'Note', '' );
+			$this->registry->getObject('template')->getPage()->addTag( 'ContactGroups', '' );
+
+			$cache2 = $this->registry->getObject('db')->cacheQuery("SELECT * FROM ".$pref."contactgroup");
+			$this->registry->getObject('template')->getPage()->addTag( 'GroupList', array('SQL' , $cache2) );
 				
-				$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'list-contact-empty.tpl.php', 'footer.tpl.php');			
-			}
+			$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', $template, 'footer.tpl.php');			
+
 			$this->registry->getObject('template')->getPage()->addTag( 'sqlrequest', '' );
+			$this->registry->getObject('log')->addMessage("Zobrazení seznamu kontaktů",'Contact','');
 			
 			// Search BOX
 			$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');

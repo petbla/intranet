@@ -8,12 +8,12 @@ use phpDocumentor\Reflection\Types\Null_;
  * @version 1.0
  * @date    18.11.2018
  * 
- * Type: 10 - Header		položka      	   .... položka jako text v záhlaví (první část na stránce)
+ * Type: 10 - Header	položka      	   .... položka jako text v záhlaví (první část na stránce)
  * 	   	 20 - Folder 	obal (10,30,35,40) .... fyzický (soubory) i virtuální obsah
  * 	 	 25 - Block		obal (10,35,40)    .... virtuální obsah
  * 		 30 - File		položka            .... fyzický soubor
  * 		 35 - Note		položka            .... virtuální, jako odkaz, text, poznámka
- * 		 40 - Footer     položka			   .... položka jako text v zápatí (poslední část na stránce)
+ * 		 40 - Footer    položka			   .... položka jako text v zápatí (poslední část na stránce)
  *
  * Multimedia: 	image
  * 				audio

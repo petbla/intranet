@@ -1,4 +1,3 @@
-{search}
 <div id="pagecounter">
 {navigate_menu}
 </div>

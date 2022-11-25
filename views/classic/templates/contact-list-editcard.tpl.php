@@ -1,5 +1,5 @@
 <div id="editwindow" form_id="{ID}" style="display: none;">
-<div id="editwindowheader{ID}" class="editwindowheader">{lbl_msg_EditContact}</div>
+    <div id="editwindowheader{ID}" class="editwindowheader">{lbl_msg_EditContact}</div>
     <form action="index.php?page=contact/save/{ID}" method="post">
         <fieldset>
             <button type="submit" name="save" value="Zapsat">{lbl_Save}</button>
@@ -50,7 +50,7 @@
                 <textarea class="editInLine" name="newNote" inputNote_id="{ID}" rows="10">{Note}</textarea>
             </label>
             <label for="grouplist">{lbl_Groups}</label>
-                <select name="grouplist" id="grouplist{ID}">
+                <select name="grouplist" id="grouplist">
                     <option value="" selected>{lbl_choiceAction}</option>
                     <!-- START GroupList -->
                     <option value="{Code}">{Code} - {Name}</option>

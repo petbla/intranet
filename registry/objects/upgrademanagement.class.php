@@ -252,6 +252,50 @@ class upgrademanagement {
             // upgrade to 2.13
             $this->upgrade_022('2.13');
         }
+        if ($this->version === '2.13') 
+        {
+            // upgrade to 2.20
+            $this->upgrade_220('2.20');
+        }
+        if ($this->version === '2.20') 
+        {
+            // upgrade to 2.21
+            $this->upgrade_221('2.21');
+        }
+    }
+
+    private function upgrade_221($upVer)
+    {
+		global $config;
+        $pref = $config['dbPrefix'];
+
+        // upgrade table 'resultsearch'
+        $sql = "ALTER TABLE ".$pref."resultsearch".
+            " ADD `ID` varchar(36) COLLATE utf8_czech_ci DEFAULT '00000000-0000-0000-0000-000000000000'";
+        $this->registry->getObject('db')->executeQuery( $sql );
+
+        $this->setNewVersion($upVer);
+    }
+
+    private function upgrade_220($upVer)
+    {
+		global $config;
+        $pref = $config['dbPrefix'];
+
+        // new table 'resultsearch'
+        $sql = "CREATE TABLE IF NOT EXISTS `".$pref."resultsearch` (
+            `EntryNo` int(11) NOT NULL AUTO_INCREMENT,
+            `BatchID` int(11) NOT NULL DEFAULT 0,
+            `CreateDate` datetime NULL,
+            `Type` varchar(30) DEFAULT '',
+            `Description` varchar(250) COLLATE utf8_czech_ci DEFAULT '',
+            `Url` varchar(250) DEFAULT '',
+            PRIMARY KEY (`EntryNo`),
+            KEY `Type` (`Type`,`Description`)
+            ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci";
+        $this->registry->getObject('db')->executeQuery( $sql );
+
+        $this->setNewVersion($upVer);
     }
 
     private function upgrade_022($upVer)

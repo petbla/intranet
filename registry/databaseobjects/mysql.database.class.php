@@ -182,7 +182,7 @@ class mysqldatabase {
      * @param int počet řádků, které se mají odstranit 
      * @return void
      */
-    public function deleteRecords( $table, $condition, $limit )
+    public function deleteRecords( $table, $condition, $limit = '' )
     {
       global $config;
       $table = $config['dbPrefix'].$table;
@@ -392,7 +392,7 @@ class mysqldatabase {
      * @param void
      * @return boolean
      */
-    public function findSet( )
+    public function findSet( $sql = '' )
     {
       if ($this->isCacheQuery === true){
         return false;
@@ -599,7 +599,8 @@ class mysqldatabase {
      */
     public function CheckPortal()
     {
-      global $config;
+      global $config, $deb;
+
 
       $this->initQuery('source', '*', false);
       $this->setFilter('DbPrefix',$config['dbPrefix']);
@@ -687,5 +688,56 @@ class mysqldatabase {
       return $Counter;
     }
 
+    /**
+     * Vrací SQL dotaz s limitem na aktuální Page
+     * @param $sql - full SQL 
+     * @return $sql - limited SQL
+     */
+    public function getSqlByPage( $sql )
+    {
+      global $config;
+      
+      // Stránkování
+      $cacheFull = $this->registry->getObject('db')->cacheQuery( $sql );
+      $records = $this->registry->getObject('db')->numRowsFromCache( $cacheFull );
+      $pageCount = (int) ($records / $config['maxVisibleItem']);
+      $pageCount = ($records > $pageCount * $config['maxVisibleItem']) ? $pageCount + 1 : $pageCount;  
+      $pageNo = ( isset($_GET['p'])) ? $_GET['p'] : 1;
+      $pageNo = ($pageNo > $pageCount) ? $pageCount : $pageNo;
+      $pageNo = ($pageNo < 1) ? 1 : $pageNo;
+      $fromItem = (($pageNo - 1) * $config['maxVisibleItem']);    
+      $sql .= " LIMIT $fromItem," . $config['maxVisibleItem']; 
+
+      // Apply to template
+      $navigate = $this->registry->getObject('template')->NavigateElement( $pageNo, $pageCount ); 
+      $this->registry->getObject('template')->getPage()->addTag( 'navigate_menu', $navigate );
+
+      return $sql;
+    }
+
+    /**
+     * Zobrazení výsledku DOTAZU s nastavení stránkování
+     */
+    public function showResult( $sql, $dataTagName, $resultTemplateName, $searchTemplate = 'search.tpl.php')
+		{
+      global $config;
+     
+      $sql = $this->getSqlByPage( $sql );
+      $cache = $this->registry->getObject('db')->cacheQuery( $sql );
+
+      if ($this->registry->getObject('db')->isEmpty( $cache )){
+        $message = 'Nenalezeno';
+        $this->registry->getObject('template')->getPage()->addTag('message',$message);
+        $this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
+        $this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page.tpl.php', 'footer.tpl.php');
+          }
+      else
+      {
+        $this->registry->getObject('template')->getPage()->addTag( $dataTagName, array( 'SQL', $cache ) );
+        $this->registry->getObject('template')->buildFromTemplates('header.tpl.php', $resultTemplateName, 'footer.tpl.php');						
+      }
+      // Search BOX
+      $this->registry->getObject('template')->addTemplateBit('search', $searchTemplate);
+    }
 }
 ?>
