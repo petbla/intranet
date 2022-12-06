@@ -2,7 +2,7 @@
     <table>
         <tr>
             <td>
-                <img src="views/classic/images/nav/addContact.png" alt="{lbl_New}" title="{lbl_NewContact}" onclick="document.getElementById('{newcardID}').style.display = 'block';">
+                <img src="views/classic/images/nav/addContact.png" alt="{lbl_New}" title="{lbl_NewContact}" onclick="document.getElementById('newcardID').style.display = 'block';">
                 <br>
                 {lbl_NewContact}
             </td><td>
@@ -29,15 +29,17 @@
         <input type="image" src="views/classic/images/nav/upload.png" name="submit" id="submitImport">
     </form>
 </div>
-<div id="{newcardID}" style="display:none;">
-    {newcard}                
-</div>
 
 <div id="pagecounter">
 {navigate_menu}
 </div>
 {pageTitle}
 <div id="DocumentItems">
+    <div id="newcardID" style="display:none;">
+        <span class="action_close" onclick="document.getElementById('newcardID').style.display = 'none';">{lbl_Close}</span>
+        <br><br>
+        {newcardContact}                
+    </div>
     <table>
         <tr>
             <th style="width:100px;">..........</th>      
@@ -62,13 +64,13 @@
         <!-- START ContactList -->
         <tr>        
             <td class="col_action">
-                <img src="views/classic/images/icon/modify.png" onclick="document.getElementById('{editcardID}').style.display = 'block';" alt="{lbl_edit}" id="{ID}" dmsClassName="{dmsClassName}"/>
+                <img src="views/classic/images/icon/modify.png" alt="{lbl_edit}" id="{ID}" dmsClassName="{dmsClassName}"/>
                 <a href="index.php?page={deleteLink}/{ID}">
                     <img src="views/classic/images/icon/delete.png" alt="{lbl_delete}" id="{ID}" onclick="return ConfirmDelete();"/>
                 </a>
             </td>
             <td class="col_fullname">
-                <a href="" onclick="document.getElementById('{viewcardID}').style.display = 'block'; this.href = 'javascript:void(0)';">
+                <a href="" onclick="document.getElementById('{viewContactCardID}').style.display = 'block'; this.href = 'javascript:void(0)';">
                     {FullName}
                 </a>
             </td>
@@ -85,13 +87,15 @@
         <tr style="display:none;"></tr>        
         <tr>
             <td colspan = "9" >
-            <div id="{viewcardID}" style="display:none;" onclick="this.style.display = 'none';">
-                <span class="action" onclick="document.getElementById('{viewcardID}').style.display = 'none';" style="margin:20px 10px;">{lbl_Close}</span>
-                {viewcard}
+            <div id="{viewContactCardID}" style="display:none;" onclick="this.style.display = 'none';">
+                <span class="action_close" onclick="document.getElementById('{viewContactCardID}').style.display = 'none';">{lbl_Close}</span>
+                <br>
+                {viewcardContact}
             </div>
-            <div id="{editcardID}" style="display:none;">
-                <span class="action" onclick="document.getElementById('{editcardID}').style.display = 'none';" style="margin:20px 10px;">{lbl_Close}</span>
-                {editcard}
+            <div id="{editContactCardID}" style="display:none;">
+                <span class="action_close" onclick="document.getElementById('{editContactCardID}').style.display = 'none';">{lbl_Close}</span>
+                <br>
+                {editcardContact}
             </div>
             </td>
         </tr>

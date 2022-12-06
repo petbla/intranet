@@ -36,7 +36,7 @@
                     </td>
                 <td>
                     <input type="hidden" name="TypeID" value="{EditTypeID}">    
-                    <input type="submit" name="submitEditCard" class="action" value="{lbl_Save}">
+                    <input type="submit" name="submitEditCard" class="action_button" value="{lbl_Save}">
                 </td>
             </tr>
         </table>

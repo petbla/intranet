@@ -274,6 +274,11 @@ div#breads a:hover{
 div#insertDocument{
   text-align: left;
 }
+div#newcardID{
+  margin: 10px auto;
+  font-family: Century-gothic, Calibri, Arial, sans-serif; 
+  font-size: 18px;
+}
 
 div#DocumentItems{
   margin: 10px auto;
@@ -431,12 +436,27 @@ div#pagecounter a span strong{
   vertical-align: middle;
 } 
 
+span.action_close, .action_button{
+  margin: 0;
+  padding: 0 10px;
+  border: 1px solid black;
+  background-color: #07cf8c;
+  font-size: 16px;
+  font-weight: bold;
+  color: black;
+  text-decoration: none;
+  border-radius: 3px;
+}
+.action_close:hover{
+  cursor: pointer;
+}
+
 .action{
   border: 1px solid #808080;
   background-color: #dadada;
   color: #808080;
-  margin: 2px 0px;
-  padding: 5px;
+  margin: 20px;
+  padding: 2px;
   text-decoration: none;
   border-radius: 3px;
 }
@@ -680,35 +700,51 @@ div#editwindow .required{
 	font-weight:normal;
 }
 
-/* Contact CARD */
+/* Form  - CARD */
 
 div#DocumentItems table.edit-card{
-	margin: 5px;
+	margin: 0;
 	padding: 0;
 	width: 100%;
   font: 13px "Lucida Sans Unicode", "Lucida Grande", sans-serif;
   border: 1px solid black;
   border-collapse: collapse;
+  background-color: #2196F3;
 } 
+div#DocumentItems table.edit-card tr{ 
+  padding: 0;
+  margin: 0;
+}
 div#DocumentItems table.edit-card td, div#DocumentItems table.edit-card td a{ 
-  padding: 10px;
+  padding: 2px 10px;
   border: none;
   vertical-align: top;
-  font: 16px "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+  font: 20px "Lucida Sans Unicode", "Lucida Grande", sans-serif;
   color: #000;
 }
 div#DocumentItems table.edit-card td{ 
   border: 1px solid white;
 }
 
-div#DocumentItems table.edit-card  td.label{ 
-  width: 50px; 
-}
-div#DocumentItems table.edit-card  td.value, div#DocumentItems table.edit-card  td.value a{ 
-  max-width: 300px;
-  padding-left: 10px;
+div#DocumentItems table.edit-card label.title{
+  font-size: 12px;
   font-weight: bold;
 }
+div#DocumentItems table.edit-card span.action,
+div#DocumentItems table.edit-card input.action,
+div#DocumentItems table.edit-card td.label{ 
+  font-size: 14px;
+  font-weight: bold;
+}
+div#DocumentItems table.edit-card input.value,
+div#DocumentItems table.edit-card textarea.value,
+div#DocumentItems table.edit-card option.value,
+div#DocumentItems table.edit-card span.value,
+div#DocumentItems table.edit-card td.value{ 
+  padding: 2px;
+  font-size: 12px;
+}
+
 div#DocumentItems td.value a.col_email{
   width: 300px;
 }
@@ -729,6 +765,11 @@ div#DocumentItems td.value a.col_email{
 .col_fileext{
   width: 50px;
 }
+.col_filename{
+  width: 600px;
+}
+
+
 .col_fullname,
 .col_name,
 .col_company,
@@ -738,6 +779,12 @@ div#DocumentItems td.value a.col_email{
 }
 .col_address{
   width: 370px;
+}
+.col_documentno{
+  font-size: 14px;
+  font-weight: bold;
+  color:#808080;
+  width: 200px;
 }
 .col_action{
   width: 100px;
@@ -754,6 +801,11 @@ div#DocumentItems td.value a.col_email{
 .col_fullname a:hover{
   text-decoration: underline;
   color: #0000ff;
+}
+.col_date{
+  font-size: 12px;
+  font-weight: bold;
+  color:#808080;
 }
 .col_note{
   width: 700px;

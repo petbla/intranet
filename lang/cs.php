@@ -98,7 +98,8 @@ $caption['Modified'] =       'Změněno';
 $caption['News'] =           'Novinky';
 $caption['Archive'] =        'Archív';
 $caption['Contacts'] =       'Kontakty';
-$caption['Label'] =          'Štítek (skupina)';
+$caption['Label'] =          'Skupina';
+$caption['ChoiceGroup'] =    'Nastavení skupiny';
 $caption['choiceAction'] =   '--vybrat--';
 $caption['Remind'] =         'Připomenutí';
 $caption['RemindFromDate'] = 'Připomenout';
@@ -109,6 +110,7 @@ $caption['LastNo'] =         'Poslední číslo';
 $caption['CreateDate'] =     'Datum vytvoření';
 $caption['ExecuteDate'] =    'Datum vyřízení';
 $caption['Close'] =          'Zavřít';
+$caption['CloseCard'] =      'Uzavřít kartu';
 
 $caption['RemindState'] =    'Stav';
 $caption['RemindState00'] = '';

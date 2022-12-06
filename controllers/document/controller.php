@@ -61,10 +61,6 @@ class Documentcontroller{
 						$ID = isset($urlBits[2]) ? $urlBits[2] : '';
 						$this->viewDocument($ID);
 						break;
-					case 'editcontent':
-						$ID = isset($urlBits[2]) ? $urlBits[2] : '';
-						$this->editContentDocument($ID);
-						break;
 					case 'addFiles':
 						$this->addFiles();
 						break;
@@ -419,28 +415,6 @@ class Documentcontroller{
 		}
 	}	
 
-    /**
-     * Zobrazení obsahu položky typu soubor, poznámka s možnotí editace obsahu
-	 * @param String $ID = ID položky, která se bude editovat
-	 * @return void
-     */
-	private function editContentDocument( $ID )
-	{
-		require_once( FRAMEWORK_PATH . 'models/entry/model.php');
-		$this->model = new Entry( $this->registry, $ID );
-		if( $this->model->isValid() )
-		{
-			$entry = $this->model->getData();
-			// Logování
-			$this->registry->getObject('log')->addMessage("Zobrazení s editací obsahu".$entry['Name'],'DmsEntry',$ID);
-			// Zobrazení editace položky
-			$this->registry->getObject('document')->editDocument($entry,'');
-		}
-		else
-		{
-			$this->documentNotFound();
-		}
-	}	
 
     /**
      * Akce vyvolaná webovým formulářem, která uloží editované hodnoty položky a nastavuje připomenutí
@@ -462,6 +436,8 @@ class Documentcontroller{
 		{
 			$entry = $this->model->getData();
 			
+			$post = $_POST;
+			
 			if(isset($_POST['stornoRemind']))
 			{
 				$changes['Remind'] = '0';
@@ -470,46 +446,93 @@ class Documentcontroller{
 				$this->registry->getObject('log')->addMessage("Zobrazení a aktualizace dokumentu",'dmsentry',$ID);
 				$this->registry->getObject('db')->updateRecords('dmsentry',$changes, $condition);
 				$ID = $entry['Parent'];
-		}
+			}
 			elseif(isset($_POST['save']))
 			{
-				$newTitle = ($_POST['newTitle'] !== null) ? $_POST['newTitle'] : '';
-				$newUrl = ($_POST['newUrl'] !== null) ? $_POST['newUrl'] : '';
-				$newRemind = ($_POST['newRemind'] !== null) ? ($_POST['newRemind'] === '') ? '0' : '1' : '0';
-				$newRemindFromDate = ($_POST['newRemindFromDate'] !== '') ? $_POST['newRemindFromDate'] : 'NULL';
-				$newRemindLastDate = ($_POST['newRemindLastDate'] !== '') ? $_POST['newRemindLastDate'] : 'NULL';
-				$newRemindState = ($_POST['newRemindState'] !== '') ? $_POST['newRemindState'] : 'NULL';
-				$newRemindResponsiblePerson = ($_POST['newRemindResponsiblePerson'] !== '') ? $_POST['newRemindResponsiblePerson'] : '';
-				if ($newTitle)
+
+				$Title = isset($_POST['Title']) ? $_POST['Title'] : '';
+				$Url = isset($_POST['Url'] ) ? $_POST['Url'] : '';
+				$Content = isset($_POST['Content']) ? $_POST['Content'] : '';
+				
+				$Remind = (isset($_POST['Remind'])) ? ($_POST['Remind'] === '') ? '0' : '1' : '0';
+				$RemindClose = (isset($_POST['RemindClose'])) ? ($_POST['RemindClose'] === '') ? '0' : '1' : '0';
+
+				$RemindFromDate = isset($_POST['RemindFromDate']) ? ($_POST['RemindFromDate'] === '' ? 'NULL' : $_POST['RemindFromDate']): 'NULL';
+				$RemindLastDate = isset($_POST['RemindLastDate'] ) ? ($_POST['RemindLastDate'] === '' ? 'NULL' : $_POST['RemindFromDate']) : 'NULL';
+				$RemindState = isset($_POST['RemindState']) ? $_POST['RemindState'] : 'NULL';
+				$RemindResponsiblePerson = isset($_POST['RemindResponsiblePerson']) ? $_POST['RemindResponsiblePerson'] : '';
+				if ($Title)
 				{
-					$newTitle = $this->registry->getObject('db')->sanitizeData($newTitle);
+					$Title = $this->registry->getObject('db')->sanitizeData($Title);
 					
 					// Update
-					$changes['Title'] = $newTitle;
-					$changes['Url'] = $newUrl;
-					$changes['Remind'] = $newRemind;
-					if($newRemind == '1')
-						$changes['RemindClose'] = '0';
-					$changes['RemindFromDate'] = $newRemindFromDate;
-					$changes['RemindLastDate'] = $newRemindLastDate;
-					$changes['RemindResponsiblePerson'] = $newRemindResponsiblePerson;
-					$changes['RemindState'] = $newRemindState;
+					$changes['Title'] = $Title;
+					$changes['Url'] = $Url;
+					$changes['Content'] = $Content;
+					$changes['Remind'] = $Remind;
+					$changes['RemindClose'] = $RemindClose;
+					if ($changes['RemindClose'] == '1'){
+						$changes['Remind'] = '0';
+					}else{
+						if($Remind == '1')
+							$changes['RemindClose'] = '0';
+						if ($RemindFromDate != ''){
+							$changes['RemindFromDate'] = $RemindFromDate;
+							$changes['Remind'] = '1';
+						}
+						if ($RemindLastDate != '')
+							$changes['RemindLastDate'] = $RemindLastDate;
+					}
+					$changes['RemindResponsiblePerson'] = $RemindResponsiblePerson;
+					$changes['RemindState'] = $RemindState;
 					$condition = "ID = '$ID'";
 					$this->registry->getObject('log')->addMessage("Zobrazení a aktualizace dokumentu",'dmsentry',$ID);
 					$this->registry->getObject('db')->updateRecords('dmsentry',$changes, $condition);
-				}
-				$ID = $entry['Parent'];
+
+					// Číslo jednací
+					$DocumentNo = isset($_POST['NewDocumentNo']) ? $_POST['NewDocumentNo'] : 'NONE';
+					if($DocumentNo !== 'NONE'){
+						$changes = array();
+						$changes['EntryID']	= $ID;
+
+						$this->registry->getObject('db')->initQuery('agenda');
+						$this->registry->getObject('db')->setFilter('ID',$DocumentNo);
+						if ($this->registry->getObject('db')->findFirst())
+						{
+							$agenda = $this->registry->getObject('db')->getResult();				
+							if($agenda['Description'] == '')
+								$changes['Description'] = $entry['Title'];
+						}
+						
+						$condition = "ID = '$DocumentNo'";
+						$this->registry->getObject('db')->updateRecords('agenda',$changes, $condition);
+					};
+
+					$searchText = isset($_POST['searchText'])? $_POST['searchText'] : '';
+					$searchType = isset($_POST['searchType'])? ($_POST['searchType'] == 'general' ? '' : 'dmsentry') : 'dmsentry';
+					if ($searchText != '{searchText}'){
+						require_once( FRAMEWORK_PATH . 'controllers/general/controller.php');
+						$general = new Generalcontroller( $this->registry, true );
+						$general->searchGlobal($searchText, $searchType);
+					}else{
+						$this->listDocuments($ID);
+					}
+				}else{
+					$ID = $entry['Parent'];
+					$this->listDocuments($ID);
+				}				
 			}
 			elseif(isset($_POST['back']))			
 			{
 				$ID = $entry['Parent'];
+				$this->listDocuments($ID);
 			}
 		}
 		else
 		{
-			$ID = '';
+			$this->documentNotFound();
 		}
-		$this->listDocuments($ID);
+		
 	}	
 
     /**

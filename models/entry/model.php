@@ -27,6 +27,7 @@ class Entry{
 	private $Level;
 	private $Parent;
 	private $Type;
+	private $DocumentType;
 	private $Multimedia;
 	private $LineNo;
 	private $Title;
@@ -212,6 +213,29 @@ class Entry{
 					$this->ACreateDate = $agenda['CreateDate'];
 					$this->AExecuteDate = $agenda['ExecuteDate'];
 				}
+				switch ($this->Type) {
+					case 10:
+						$this->DocumentType = 'Header';
+						break;
+					case 20:
+						$this->DocumentType = 'Folder';
+						break;
+					case 25:
+						$this->DocumentType = 'Block';
+						break;
+					case 30:
+						$this->DocumentType = 'File';
+						break;
+					case 35:
+						$this->DocumentType = 'Note';
+						break;
+					case 40:
+						$this->DocumentType = 'Footer';
+						break;
+					default:
+						$this->DocumentType = 'unknown';
+						break;
+				}
 			}
 		}
 		else
@@ -226,7 +250,7 @@ class Entry{
 		return $this->activeEntry;
 	}
 	
-	public function getData( $onlyCulons = false )
+	public function getData( $onlyCuloms = false )
 	{
 		$data = array();
 		foreach( $this as $field => $fdata )
@@ -236,7 +260,7 @@ class Entry{
 				$data[ $field ] = $fdata;
 			}
 		}
-		if ($onlyCulons)
+		if ($onlyCuloms)
 		{
 			unset($data['activeEntry']);
 			unset($data['breads']);

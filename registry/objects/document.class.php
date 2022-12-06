@@ -39,15 +39,22 @@ class document {
                 $this->model = new Entry( $this->registry, $rec['ID'] );
                 $entry = $this->model->getData();
                         
-                $rec['editcardID'] = 'editdocument'.$rec['ID'];
                 $rec['ADocumentNo'] = $entry['ADocumentNo'];
+                $rec['CreateDate'] = $entry['CreateDate'];
 
-                        // Select Free Agenda Document No.
+                $rec['dmsClassName'] = 'item';
+                
+                $rec['DocumentType'] = $entry['DocumentType'];
+
+                $rec['viewFileCardID'] = 'viewFileCard'.$rec['ID'];					
+                $rec['editFileCardID'] = 'editFileCard'.$rec['ID'];					
+
+                // Select Free Agenda Document No.
                 $sql = "SELECT ID as AID, DocumentNo, Description FROM ".$pref."agenda ".
                     "WHERE `EntryID` = '' ".
                     "ORDER BY TypeID,DocumentNo";
                 $cache2 = $this->registry->getObject('db')->cacheQuery( $sql );
-                    $this->registry->getObject('template')->getPage()->addTag( 'documentList', array( 'SQL', $cache2 ) );
+                $this->registry->getObject('template')->getPage()->addTag( 'documentList', array( 'SQL', $cache2 ) );
 
             
                 $result[] = $rec;
@@ -92,7 +99,7 @@ class document {
         // Show result of SQL request
         if ($isEntries)
         {
-            $this->registry->getObject('template')->addTemplateBit('documents', 'document-list-entries.tpl.php');
+            $this->registry->getObject('template')->addTemplateBit('documents', 'document-list-files.tpl.php');
         }
         else
         {
@@ -115,9 +122,8 @@ class document {
             {
                 $this->registry->getObject('template')->addTemplateBit('addFiles', 'document-list-addfiles.tpl.php');
             };
-            $this->registry->getObject('template')->addTemplateBit('editcard', 'document-entry-editcard.tpl.php');
+            $this->registry->getObject('template')->addTemplateBit('editcardFile', 'document-entry-editcard.tpl.php');
             $this->registry->getObject('template')->addTemplateBit('editIcon', 'document-list-actionicons.tpl.php');
-            $this->registry->getObject('template')->getPage()->addTag( 'dmsClassName', 'item' );
             if(($entry !== null) && ($entry['Type'] == 20))
                 $this->registry->getObject('template')->addTemplateBit('addFolder', 'document-list-addFolder.tpl.php');
             else
@@ -132,7 +138,7 @@ class document {
         {
             $this->registry->getObject('template')->getPage()->addTag( 'actionpanel', '' );
             $this->registry->getObject('template')->getPage()->addTag( 'addFiles', '' );
-            $this->registry->getObject('template')->getPage()->addTag( 'editcard', '' );
+            $this->registry->getObject('template')->getPage()->addTag( 'editcardFile', '' );
             $this->registry->getObject('template')->getPage()->addTag( 'editIcon', '' );
         }
         
@@ -148,7 +154,7 @@ class document {
 
         $BaseUrl = $this->registry->getURLPath();
         $this->registry->getObject('template')->getPage()->addTag( 'BaseUrl', $BaseUrl );
-        $this->registry->getObject('template')->addTemplateBit('remindIcon','list-entry-remindicon.tpl.php');
+        $this->registry->getObject('template')->addTemplateBit('remindIcon','document-list-remindicon.tpl.php');
         
         
         // Parent folder
@@ -190,30 +196,6 @@ class document {
 		$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
 
         $this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'document-entry-view.tpl.php', 'footer.tpl.php');
-    }
-
-	public function editDocument( $entry, $filePath)
-	{
-		global $config;
-        $pref = $config['dbPrefix'];
-        $breads = $entry['breads'];
-
-        $this->registry->getObject('template')->getPage()->addTag( 'breads', $breads );
-        $this->registry->getObject('template')->getPage()->addTag( 'filePath', $filePath );
-        $this->registry->getObject('template')->dataToTags( $entry, '' );
-        if($entry['ADocumentNo'] != ""){
-            $this->registry->getObject('template')->getPage()->addTag( 'SelectedDocumentNo', $entry['ADocumentNo'] );
-        }else{
-            $sql = "SELECT ID as AID, DocumentNo, Description FROM ".$pref."agenda ".
-                    "WHERE `EntryID` = '' ".
-                    "ORDER BY TypeID,DocumentNo";
-
-            $cache = $this->registry->getObject('db')->cacheQuery( $sql );
-            $this->registry->getObject('template')->addTemplateBit('SelectedDocumentNo', 'document-edit-selectADocumentNo.tpl.php');
-            $this->registry->getObject('template')->getPage()->addTag( 'documentList', array( 'SQL', $cache ) );
-
-        }
-        $this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'edit-entry-document.tpl.php', 'footer.tpl.php');
     }
 
     public function createCategoryMenu()

@@ -190,11 +190,29 @@ class Generalcontroller {
 				$rec['Target'] = '';
 				$rec['cardID'] = '';
 				$rec['card'] = '';
+				$rec['Remind'] = '0';
+				$rec['RemindClose'] = '0';
+				$rec['FileExtension'] = '';
+				$rec['ADocumentNo'] = '---';
+
 
 				switch ($rec['Type']) {
 					case 'Folder':
 						$rec['Url'] = 'index.php?page=document/list/' . $rec['ID'];
 						$rec['deleteLink'] = "entry/deleteFolder";
+
+						$model = new Entry( $this->registry, $rec['ID'] );
+						$entry = $model->getData();
+						if( $model->isValid() )
+						{
+							$rec['Title'] = $entry['Title'];
+							$rec['Content'] = $entry['Content'];
+							$rec['ModifyDateTime'] = $entry['ModifyDateTime'];
+						};					
+
+						$rec['dmsClassName'] = 'item';
+						$rec['editFolderCardID'] = 'editFolderCard'.$rec['ID'];					
+					
 						break;
 					case 'Block':
 						$rec['Url'] = 'index.php?page=document/list/' . $rec['ID'];
@@ -212,23 +230,52 @@ class Generalcontroller {
 							}else{
 								$rec['Url'] = 'index.php?page=document/list/' . $rec['ID'];
 							}
-						};
-						$rec['viewcardID'] = '';
-						$rec['editcardID'] = 'editentry'.$rec['ID'];
+						};					
+
+						$rec['Title'] = $entry['Title'];
+						$rec['FileExtension'] = $entry['FileExtension'];						
+						$rec['Content'] = $entry['Content'];
+						$rec['RemindResponsiblePerson'] = $entry['RemindResponsiblePerson'];
+						$rec['ADocumentNo'] = $entry['ADocumentNo'];
+						$rec['CreateDate'] = $entry['CreateDate'];
+						$rec['ModifyDateTime'] = $entry['ModifyDateTime'];
+						$rec['Remind'] = $entry['Remind'] == "" ? "0" : $entry['Remind'];
+						$rec['RemindClose'] = $entry['RemindClose'] == "" ? "0" : $entry['RemindClose'];
+						$rec['FileExtension'] = $entry['FileExtension'];
+
+						$rec['dmsClassName'] = 'item';
+						$rec['viewFileCardID'] = 'viewFileCard'.$rec['ID'];					
+						$rec['editFileCardID'] = 'editFileCard'.$rec['ID'];					
 						$rec['deleteLink'] = "entry/deleteFile";
 
-						$this->registry->getObject('template')->getPage()->addTag('viewcard','');
-						$this->registry->getObject('template')->addTemplateBit('editcard', 'document-entry-editcard.tpl.php');
 						break;
 					case 'Note':
 						$rec['Url'] = 'index.php?page=document/list/' . $rec['ID'];
+						$model = new Entry( $this->registry, $rec['ID'] );
+						$entry = $model->getData();
+						if( $model->isValid() )
+						{
+							$rec['Title'] = $entry['Title'];
+							$rec['FileExtension'] = $entry['FileExtension'];						
+							$rec['Content'] = $entry['Content'];
+							$rec['RemindResponsiblePerson'] = $entry['RemindResponsiblePerson'];
+							$rec['CreateDate'] = $entry['CreateDate'];
+							$rec['ModifyDateTime'] = $entry['ModifyDateTime'];
+							$rec['Remind'] = $entry['Remind'] == "" ? "0" : $entry['Remind'];
+							$rec['RemindClose'] = $entry['RemindClose'] == "" ? "0" : $entry['RemindClose'];
+			
+							$rec['dmsClassName'] = 'item';
+							$rec['viewFileCardID'] = 'viewFileCard'.$rec['ID'];					
+							$rec['editFileCardID'] = 'editFileCard'.$rec['ID'];					
+						}
 						break;
 					case 'Agenda':
 						$rec['Url'] = 'Poznámka';
 						break;
 					case 'Contact':
 						$model = new Contact( $this->registry, $rec['ID'] );
-						$contact = $model->getData();
+						$contact = $model->getData();						
+
 						$rec['Title'] = ($contact['Title'] <> "")? $contact['Title'].'&nbsp;' : '';
 						$rec['FirstName'] = $contact['FirstName'];
 						$rec['LastName'] = $contact['LastName'];
@@ -240,20 +287,25 @@ class Generalcontroller {
 						$rec['Email'] = $contact['Email'];
 						$rec['Web'] = $contact['Web'];
 						$rec['ContactGroups'] = $contact['ContactGroups'];
-
-						$rec['viewcardID'] = 'viewcontact'.$rec['ID'];
-						$rec['editcardID'] = 'editcontact'.$rec['ID'];
+	
+						$rec['dmsClassName'] = 'contact';
+						$rec['viewContactCardID'] = 'viewContactCard'.$rec['ID'];					
+						$rec['editContactCardID'] = 'editContactCard'.$rec['ID'];					
 						$rec['deleteLink'] = "contact/delete";
 
-						$this->registry->getObject('template')->addTemplateBit('viewcard', 'contact-view.tpl.php');
-						$this->registry->getObject('template')->addTemplateBit('editcard', 'contact-edit.tpl.php');
+						// Select Free Agenda Document No.
+						$sql = "SELECT ID as AID, DocumentNo, Description FROM ".$pref."agenda ".
+							"WHERE `EntryID` = '' ".
+							"ORDER BY TypeID,DocumentNo";
+						$cache2 = $this->registry->getObject('db')->cacheQuery( $sql );
+						$this->registry->getObject('template')->getPage()->addTag( 'documentList', array( 'SQL', $cache2 ) );
+
 						break;
 					
 					default:
 						# code...
 						break;
 				}
-				
 				$result[] = $rec;
 		    }			
 		}else{
@@ -264,7 +316,7 @@ class Generalcontroller {
 			return;
 		}	
 		$cache = $this->registry->getObject('db')->cacheData( $result );
-	
+
 		// Build page 
 		$this->registry->getObject('template')->getPage()->addTag( 'searchText', $searchText );
 		$this->registry->getObject('template')->getPage()->addTag( 'ResultItems', array( 'DATA', $cache ) );
@@ -272,7 +324,38 @@ class Generalcontroller {
 		
 		// Search BOX
 		$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
-		  
+		
+		// Card subpages
+		$this->registry->getObject('template')->getPage()->addTag('viewcardFile','');
+		$this->registry->getObject('template')->addTemplateBit('editcardFile', 'document-entry-editcard.tpl.php');
+		$this->registry->getObject('template')->addTemplateBit('editcardFolder', 'document-entry-editfolder.tpl.php');
+		$this->registry->getObject('template')->addTemplateBit('viewcardContact', 'contact-view.tpl.php');
+		$this->registry->getObject('template')->addTemplateBit('editcardContact', 'contact-edit.tpl.php');
+		$this->registry->getObject('template')->addTemplateBit('SelectedDocumentNo', 'document-edit-selectADocumentNo.tpl.php');        
+		$this->registry->getObject('template')->addTemplateBit('remindIcon','document-list-remindicon.tpl.php');
+
+		// Add icons
+		$sql = "SELECT DISTINCT FileExtension FROM ".$pref."dmsentry WHERE FileExtension <> ''";
+		$this->registry->getObject('db')->executeQuery( $sql );
+		while( $data = $this->registry->getObject('db')->getRows() )
+		{
+			$ext = strtolower($data['FileExtension']);
+			$img = substr($ext,0,3);
+			$filename = "views/classic/images/icon/$img.png";
+			$fullFilename = $_SERVER['DOCUMENT_ROOT'].'/intranet/'.$filename;
+			if (!(file_exists($fullFilename)))
+			{
+				$filename = 'views/classic/images/icon/file.png';
+			}
+			$icon = "<img src='$filename' />";
+			$this->registry->getObject('template')->getPage()->addTag( "iconFile$ext", $icon );
+		}
+		$this->registry->getObject('template')->getPage()->addTag( "iconContact", "<img src='views/classic/images/icon/contact.png' />" );
+		$this->registry->getObject('template')->getPage()->addTag( "iconFolder", "<img src='views/classic/images/icon/folder.png' />" );
+		$this->registry->getObject('template')->getPage()->addTag( "iconNote", "<img src='views/classic/images/icon/note.png' />" );
+		$this->registry->getObject('template')->getPage()->addTag( "iconBlock", "<img src='views/classic/images/icon/block.png' />" );
+		$this->registry->getObject('template')->getPage()->addTag( "iconAgenda", "<img src='views/classic/images/icon/agenda.png' />" );
+
 	}	
 
 	/**

@@ -16,13 +16,3 @@
 <div id="pagecounter" class="bottom">
 {navigate_menu}
 </div>
-
-<script type="text/javascript">
-    function showDocumentCard(editcardID,SelectedADocumentNo,ADocumentNo){
-
-        document.getElementById(editcardID).style.display = 'block';
-        if (ADocumentNo != ''){
-            document.getElementById(SelectedADocumentNo).style.display = 'none';
-        };
-    }
-</script>

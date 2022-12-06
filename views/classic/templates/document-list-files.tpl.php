@@ -7,7 +7,7 @@
       <th>{lbl_RemindState}</th>
       <th>{lbl_RemindToDate}</th>
       <th>{lbl_ModifyDate}</th>
-      <th></th>
+      <th>&nbsp;</th>
     </tr>
     {addFiles}
     <!-- START DocumentItems -->
@@ -31,9 +31,9 @@
     <tr>
       <td></td>
       <td colspan="6">
-        <div id="{editcardID}" style="display:none;">
-          <span class="action" onclick="document.getElementById('{editcardID}').style.display = 'none';" style="margin:20px 10px;">{lbl_Close}</span>
-          {editcard}
+        <div id="{editFileCardID}" style="display:none;">
+          <span class="action_close" onclick="document.getElementById('{editFileCardID}').style.display = 'none';" >{lbl_Close}</span>
+          {editcardFile}
         </div>
       </td>
     </tr>

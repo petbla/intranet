@@ -271,11 +271,40 @@ if (password_confirm) {
 if(items){
     items.forEach(function(item){
         item.onclick = function (e) {
-            var form;
+            var form,card,type;
             var oldValue,inputValue,back,username;
             var activeForm;
             var isNew;
-    
+            var SelectedADocumentNo,ADocumentNo;
+
+            // Init record on the form
+            initForm('Title',e.target.id);
+            initForm('FileExtension',e.target.id);
+            initForm('Url',e.target.id);
+            initForm('RemindResponsiblePerson',e.target.id);
+            initForm('Content',e.target.id);
+            initForm('RemindLastDate',e.target.id);
+            initForm('Remind',e.target.id);
+            initForm('RemindFromDate',e.target.id);
+            initForm('RemindClose',e.target.id);
+
+            
+            // Show card
+            type = e.target.getAttribute('dmsClassType');
+            
+            if (type =="Note")
+                type = "File";
+           
+            card = document.querySelector('[id="edit' + type + 'Card' + e.target.id + '"]' );
+            card.style.display = 'block';
+
+            // ADocumentNo select
+            SelectedADocumentNo = "SelectedADocumentNo" + e.target.id;
+            ADocumentNo = document.querySelector('[ADocumentNoID="' + e.target.id + '"]' );
+            if (ADocumentNo.innerHTML != '<br>'){
+                document.getElementById(SelectedADocumentNo).style.display = 'none';
+            };
+   
             // Clean (HIDE) Old Entry
             if (lasteditcard)
             {
@@ -362,20 +391,37 @@ if(items){
 if(contacts){
     contacts.forEach(function(contact){
         contact.onclick = function (e) {
-            var form;
-            var oldValue,inputValue,back;
             var grouplist;
             var tag,arrGroup;
+            var card;
+
+            // Init record on the form
+            initForm('Title',e.target.id);
+            initForm('FirstName',e.target.id);
+            initForm('LastName',e.target.id);
+            initForm('Function',e.target.id);
+            initForm('Company',e.target.id);
+            initForm('Web',e.target.id);
+            initForm('Address',e.target.id);
+            initForm('BirthDate',e.target.id);
+            initForm('Phone',e.target.id);
+            initForm('Email',e.target.id);
+            initForm('Note',e.target.id);
+            initForm('ContactGroups',e.target.id);
+            initForm('Close',e.target.id);
             
+            // Show card
+            card = document.querySelector('[id="editContactCard' + e.target.id + '"]' );
+            card.style.display = 'block';
+
             tag = document.querySelector('[class="tags' + e.target.id + '"]' );
             grouplist = document.querySelector( '[id="grouplist' + e.target.id + '"]' );
-            arrGroup = (tag.innerText).split(',');
+            arrGroup = (tag.innerText).split(',');            
             if (tag.innerText !== ''){
                 tag.innerHTML = tags2Html( arrGroup );
             }
             grouplist.onchange = function  (ee) {
                 var tag,arrGroup; 
-                var oldValue,newValue;
                 var contactGroups;
                 
                 tag = document.querySelector('[class="tags' + e.target.id + '"]' );
@@ -404,7 +450,7 @@ if(contacts){
                     }
                 }
                 ee.target.value = '';
-            };
+            }
         }
     })   
 }
@@ -640,6 +686,29 @@ if(fld_handled){
     var name;
     name = "HideHandledNote";
     fld_handled.checked = getCookie(name);
+}
+
+function initForm(tag,id) {
+    var element, oldelement;
+
+    element = document.querySelector( '[' + tag + 'ID="' + id + '"]' );
+    oldelement = document.querySelector( '[old' + tag + 'ID="' + id + '"]' );
+    if (element){
+        if (oldelement){
+            switch (element.type) {
+                case 'checkbox':
+                    if (oldelement.getAttribute('value') == '1'){
+                        element.checked = true;
+                    }else{
+                        element.checked = false;
+                    }
+                    break;
+                default:
+                    element.value = oldelement.value;
+                    break;
+            }
+        }
+    }
 }
 
 function doesFileExist(urlToFile) {

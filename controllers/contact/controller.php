@@ -450,10 +450,11 @@ class Contactcontroller {
 				}
 				
 				$searchText = isset($_POST['searchText'])? $_POST['searchText'] : '';
+				$searchType = isset($_POST['searchType'])? ($_POST['searchType'] == 'general' ? '' : 'contact') : 'contact';
 				if ($searchText != '{searchText}'){
 					require_once( FRAMEWORK_PATH . 'controllers/general/controller.php');
 					$general = new Generalcontroller( $this->registry, true );
-					$general->searchGlobal($searchText,'contact');
+					$general->searchGlobal($searchText, $searchType);
 				}else{
 					$this->listContacts();
 				}
@@ -514,10 +515,10 @@ class Contactcontroller {
 					$rec['Email'] = $contact['Email'];
 					$rec['Web'] = $contact['Web'];
 					$rec['ContactGroups'] = $contact['ContactGroups'];
+					
 					$rec['dmsClassName'] = 'contact';
-				
-					$rec['viewcardID'] = 'view'.$rec['ID'];					
-					$rec['editcardID'] = 'edit'.$rec['ID'];					
+					$rec['viewContactCardID'] = 'viewContactCard'.$rec['ID'];					
+					$rec['editContactCardID'] = 'editContactCard'.$rec['ID'];					
 					$rec['deleteLink'] = "contact/delete";
 
 					$result[] = $rec;
@@ -534,9 +535,9 @@ class Contactcontroller {
 			$this->registry->getObject('template')->getPage()->addTag( 'pageTitle', '' );
 
 			// Onclick forms
-			$this->registry->getObject('template')->addTemplateBit('viewcard', 'contact-view.tpl.php');
-			$this->registry->getObject('template')->addTemplateBit('editcard', 'contact-edit.tpl.php');
-			$this->registry->getObject('template')->addTemplateBit('newcard', 'contact-edit.tpl.php');
+			$this->registry->getObject('template')->addTemplateBit('viewcardContact', 'contact-view.tpl.php');
+			$this->registry->getObject('template')->addTemplateBit('editcardContact', 'contact-edit.tpl.php');
+			$this->registry->getObject('template')->addTemplateBit('newcardContact', 'contact-edit.tpl.php');
 			
 			// For new contact
 			$this->registry->getObject('template')->getPage()->addTag( 'ID', 'contact' );			
