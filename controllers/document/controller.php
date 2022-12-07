@@ -116,7 +116,7 @@ class Documentcontroller{
 						}
 						break;
 					default:
-						$this->documentNotFound();
+						$this->pageNotFound();
 						break;
 				}
 			}
@@ -124,15 +124,29 @@ class Documentcontroller{
 	}
 	
     /**
+     * Sestavení stránky
+     * @return void
+     */
+	private function build( $template = 'page.tpl.php' )
+	{
+		// Category Menu
+		$this->registry->getObject('document')->createCategoryMenu();
+
+		// Build page
+		$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
+		$this->registry->getObject('template')->addTemplateBit('categories', 'categorymenu-document.tpl.php');
+		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', $template , 'footer.tpl.php');	
+	}
+    
+	/**
      * Zobrazení chybové stránky, pokud dokument nebyl nalezem 
      * @return void
      */
-	private function documentNotFound()
+	private function pageNotFound()
 	{
 		// Logování
 		$this->registry->getObject('log')->addMessage("Pokus o zobrazení neznámého dokumentu",'dmsentry','');
-		// Sestavení
-		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'invalid-document.tpl.php', 'footer.tpl.php');
+		$this->build('invalid-document.tpl.php');
 	}
 
     /**
@@ -144,12 +158,9 @@ class Documentcontroller{
 	{
 		// Logování
 		$this->registry->getObject('log')->addMessage("Chyba: $message",'dmsentry','');
-		// Nastavení parametrů
+
 		$this->registry->getObject('template')->getPage()->addTag('message',$message);
-		// Search BOX
-		$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
-		// Sestavení stránky
-		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page.tpl.php', 'footer.tpl.php');
+		$this->build();
 	}
 
     /**
@@ -194,23 +205,22 @@ class Documentcontroller{
 					$breads = $entry['breads'];
 					$this->registry->getObject('template')->getPage()->addTag( 'breads', $breads );
 					// Logování 
-					$this->registry->getObject('log')->addMessage('Zobrazení galerie obrázků','DmsEntry',$ID);
-					// Sestavení strýnky
-					$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'slideshow.tpl.php', 'footer.tpl.php');
+					$this->registry->getObject('log')->addMessage('Zobrazení galerie obrázků','DmsEntry',$ID);					
+					$this->build('slideshow.tpl.php');
 				}
 				else
 				{
-					$this->documentNotFound();	
+					$this->pageNotFound();	
 				}
 			}
 			else
 			{
-				$this->documentNotFound();	
+				$this->pageNotFound();	
 			}
 		}
 		else
 		{
-			$this->documentNotFound();	
+			$this->pageNotFound();	
 		}
 	}
 
@@ -274,9 +284,10 @@ class Documentcontroller{
 		$showBreads = true;
 		$pageTitle = '';
 		$template = '';
+		
 		// Logování akce
 		$this->registry->getObject('log')->addMessage('Zobrazení seznamu souborů a složek','DmsEntry',$ID);
-		// Zobrazení výsledku 
+		// Zobrazení výsledku
 		$this->registry->getObject('document')->listDocuments($entry,$showFolder,$sql,$showBreads,$pageTitle,$template);
 	}	
 	
@@ -411,7 +422,7 @@ class Documentcontroller{
 		}
 		else
 		{
-			$this->documentNotFound();
+			$this->pageNotFound();
 		}
 	}	
 
@@ -530,7 +541,7 @@ class Documentcontroller{
 		}
 		else
 		{
-			$this->documentNotFound();
+			$this->pageNotFound();
 		}
 		
 	}	
@@ -585,7 +596,6 @@ class Documentcontroller{
 				$condition = "ID = '$DocumentNo'";
 				$this->registry->getObject('db')->updateRecords('agenda',$changes, $condition);
 			};
-
 		}
 		$this->listDocuments($ID);
 	}	
@@ -687,7 +697,6 @@ class Documentcontroller{
 						}				
 					}
 				}
-
 			}
 		}
 		$this->error($message);

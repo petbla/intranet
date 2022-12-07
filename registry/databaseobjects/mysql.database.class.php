@@ -716,28 +716,18 @@ class mysqldatabase {
     }
 
     /**
-     * Zobrazení výsledku DOTAZU s nastavení stránkování
+     * Sestavení stránky
+     * @return void
      */
-    public function showResult( $sql, $dataTagName, $resultTemplateName, $searchTemplate = 'search.tpl.php')
-		{
-      global $config;
-     
-      $sql = $this->getSqlByPage( $sql );
-      $cache = $this->registry->getObject('db')->cacheQuery( $sql );
+    private function build( $template = 'page.tpl.php' )
+    {
+  		// Category Menu
+	  	//$this->registry->getObject('document')->createCategoryMenu();
 
-      if ($this->registry->getObject('db')->isEmpty( $cache )){
-        $message = 'Nenalezeno';
-        $this->registry->getObject('template')->getPage()->addTag('message',$message);
-        $this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
-        $this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page.tpl.php', 'footer.tpl.php');
-          }
-      else
-      {
-        $this->registry->getObject('template')->getPage()->addTag( $dataTagName, array( 'SQL', $cache ) );
-        $this->registry->getObject('template')->buildFromTemplates('header.tpl.php', $resultTemplateName, 'footer.tpl.php');						
-      }
-      // Search BOX
-      $this->registry->getObject('template')->addTemplateBit('search', $searchTemplate);
-    }
+      // Build page
+      $this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
+      $this->registry->getObject('template')->addTemplateBit('categories', 'categorymenu-empty.tpl.php');
+      $this->registry->getObject('template')->buildFromTemplates('header.tpl.php', $template , 'footer.tpl.php');
+    }  
 }
 ?>

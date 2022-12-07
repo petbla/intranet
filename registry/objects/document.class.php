@@ -109,7 +109,6 @@ class document {
                 $template = 'list-entry-nodocuments.tpl.php';
             }
         }
-        $this->registry->getObject('template')->buildFromTemplates('header.tpl.php', $template, 'footer.tpl.php');
         
         if ($perSet > 0)
         {
@@ -177,7 +176,8 @@ class document {
                 $this->registry->getObject('template')->getPage()->addTag('parentfoldername', $parentPath );
                 $this->registry->getObject('template')->getPage()->addTag('parentID', $parentID );            
             }
-        }
+        }        
+        $this->build( $template );
     }	
 
 	public function viewDocument( $entry, $filePath)
@@ -192,10 +192,7 @@ class document {
         // Add RemindState Caption
         $this->addRemindState();
         
-		// Search BOX
-		$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
-
-        $this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'document-entry-view.tpl.php', 'footer.tpl.php');
+		$this->build('document-entry-view.tpl.php');
     }
 
     public function createCategoryMenu()
@@ -265,5 +262,21 @@ class document {
         $this->registry->getObject('template')->getPage()->addTag( 'RemindState_40_storno', $caption['RemindState40'] );
         $this->registry->getObject('template')->getPage()->addTag( 'RemindState_50_finish', $caption['RemindState50'] );
     }
+
+     /**
+     * Sestavení stránky
+     * @return void
+     */
+    private function build( $template = 'page.tpl.php' )
+    {
+        // Category Menu
+	    $this->registry->getObject('document')->createCategoryMenu();
+
+        // Build page
+        $this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
+        $this->registry->getObject('template')->addTemplateBit('categories', 'categorymenu-document.tpl.php');
+        $this->registry->getObject('template')->buildFromTemplates('header.tpl.php', $template , 'footer.tpl.php');
+    }
+
 }
 ?>

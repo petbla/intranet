@@ -56,10 +56,8 @@ $registry->getObject('upgrade')->checkUpgrade();
 // pro uživatele, kteří jsou přihlášení
 $registry->getObject('authenticate')->checkForAuthentication();
 
-
 // vyplnění objektu stránky ze šablony
 $registry->getObject('template')->buildFromTemplates('header.tpl.php', 'main.tpl.php', 'footer.tpl.php');
-$registry->getObject('template')->addTemplateBit('categories', 'categorymenu.tpl.php');
 
 
 // Přihlášení 
@@ -117,7 +115,7 @@ $dateText = $caption['TodayIs'].' ' . $registry->getObject('fce')->Date2FullText
 $registry->getObject('template')->getPage()->addTag( 'dateText', $dateText );
 
 // Category Menu
-$registry->getObject('document')->createCategoryMenu();
+//$registry->getObject('document')->createCategoryMenu();
 
 // Barmenu 
 $perSet = $registry->getObject('authenticate')->getPermissionSet();
@@ -146,15 +144,12 @@ switch ($perSet) {
 		break;
 }
 $adminBarMenuItem = $isAdmin ? "<li><a href='index.php?page=admin'>Administrace</a></li>" : '';
-$adminBarMenuItem .= $isAdmin ? "<li><a href='index.php?page=admin/log'>Log</a></li>" : '';
-$portalBarMenuItem = $PortalCounter ? "<li><a href='index.php?page=admin/portalList'>Portál</a></li>" : '';
 
 $registry->getObject('template')->getPage()->addTag( 'adminBarMenuItem', $adminBarMenuItem );
 $registry->getObject('template')->getPage()->addTag( 'contactBarMenuItem', $contactBarMenuItem );
 $registry->getObject('template')->getPage()->addTag( 'calendarBarMenuItem', $calendarBarMenuItem );
 $registry->getObject('template')->getPage()->addTag( 'archiveBarMenuItem', $archiveBarMenuItem );
 $registry->getObject('template')->getPage()->addTag( 'newsBarMenuItem', $newsBarMenuItem );
-$registry->getObject('template')->getPage()->addTag( 'portalBarMenuItem', $portalBarMenuItem );
 $registry->getObject('template')->getPage()->addTag('compName',$config['compName']);
 
 // vše analyzuj a zobraz výsledek

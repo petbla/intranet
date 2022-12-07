@@ -30,9 +30,6 @@
     </form>
 </div>
 
-<div id="pagecounter">
-{navigate_menu}
-</div>
 {pageTitle}
 <div id="DocumentItems">
     <div id="newcardID" style="display:none;">

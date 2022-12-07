@@ -24,10 +24,7 @@ class Contactcontroller {
 			{
 				$this->registry->getObject('log')->addMessage($caption['msg_unauthorized'],'contact','');
 				$this->registry->getObject('template')->getPage()->addTag('message',$caption['msg_unauthorized']);
-				// Search BOX
-				$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
-				// Sestavení
-				$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page.tpl.php', 'footer.tpl.php');
+				$this->build('page.tpl.php');
 				return;
 			}
 
@@ -97,17 +94,29 @@ class Contactcontroller {
 	}
 
     /**
+     * Sestavení stránky
+     * @return void
+     */
+	private function build( $template = 'page.tpl.php' )
+	{
+		// Category Menu
+		$this->createCategoryMenu();
+
+		// Build page
+		$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
+		$this->registry->getObject('template')->addTemplateBit('categories', 'categorymenu-contact.tpl.php');
+		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', $template, 'footer.tpl.php');
+	}
+
+	/**
      * Zobrazení chybové stránky, pokud kontakt nebyl nalezem 
      * @return void
      */
-	private function notFound()
+	private function pageNotFound()
 	{
 		// Logování
-		$this->registry->getObject('log')->addMessage("Pokus o zobrazení neznámého kontaktu",'dmsentry','');
-		// Search BOX
-		$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
-		// Sestavení
-		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'invalid-contact.tpl.php', 'footer.tpl.php');
+		$this->registry->getObject('log')->addMessage("Pokus o zobrazení neznámého kontaktu",'dmsentry','');		
+		$this->build('invalid-contact.tpl.php');
 	}
 
     /**
@@ -119,13 +128,40 @@ class Contactcontroller {
 	{
 		// Logování
 		$this->registry->getObject('log')->addMessage("Chyba: $message",'contact','');
-		// Nastavení parametrů
+		
 		$this->registry->getObject('template')->getPage()->addTag('message',$message);
-		// Search BOX
-		$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
-		// Sestavení
-		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page.tpl.php', 'footer.tpl.php');
+		$this->build();
 	}
+
+    /**
+	 * Generování menu
+	 * @return void
+	 */
+	public function createCategoryMenu()
+    {
+		global $config;
+		$urlBits = $this->registry->getURLBits();
+		$typeID = isset( $urlBits[1]) ? $urlBits[1] : '';
+
+		$rec['idCat'] = '1';
+		$rec['titleCat'] = 'Skupiny kontaktů';
+		$rec['activeCat'] = $rec['idCat'] == $typeID ? 'active' : '';
+		$table[] = $rec;
+
+        $rec['idCat'] = '2';
+		$rec['titleCat'] = 'Export šablony pro import';
+		$rec['activeCat'] = $rec['idCat'] == $typeID ? 'active' : '';
+		$table[] = $rec;
+
+        $rec['idCat'] = '3';
+		$rec['titleCat'] = 'Import kontaktů';
+		$rec['activeCat'] = $rec['idCat'] == $typeID ? 'active' : '';
+		$table[] = $rec;
+
+		$cache = $this->registry->getObject('db')->cacheData( $table );
+		$this->registry->getObject('template')->getPage()->addTag( 'categoryList', array( 'DATA', $cache ) );
+    }
+
 
 	/**
 	 * Akce vyvolaná z webového formuláře, která načte CSV soubor 
@@ -273,14 +309,14 @@ class Contactcontroller {
 			$groupList = $this->model->getGroupList();
 			$cache = $this->registry->getObject('db')->cacheQuery("SELECT * FROM ".$pref."contactgroup");
 			$this->registry->getObject('template')->getPage()->addTag( 'GroupList', array('SQL' , $cache) );
+			
 			// Logování
 			$this->registry->getObject('log')->addMessage("Editace kontaktu ".$contact['FullName'],'contact',$ID);
-			// Sestavení
-			$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'contact-edit.tpl.php', 'footer.tpl.php');
+			$this->build('contact-edit.tpl.php');
 		}
 		else
 		{
-			$this->notFound();
+			$this->pageNotFound();
 		}
 	}	
 
@@ -302,10 +338,10 @@ class Contactcontroller {
 		$groupList = $this->model->getGroupList();
 		$cache = $this->registry->getObject('db')->cacheQuery("SELECT * FROM ".$pref."contactgroup");
 		$this->registry->getObject('template')->getPage()->addTag( 'GroupList', array('SQL' , $cache) );
+		
 		// Logování
 		$this->registry->getObject('log')->addMessage("Nový kontaktu ".$contact['FullName'],'contact',$contact['ID']);
-		// Sestavení
-		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'contact-edit.tpl.php', 'footer.tpl.php');
+		$this->build('contact-edit.tpl.php');
 	}	
 
 	/**
@@ -461,7 +497,7 @@ class Contactcontroller {
 			}
 			else
 			{
-				$this->notFound();
+				$this->pageNotFound();
 			}
 		}
 	}	
@@ -524,7 +560,7 @@ class Contactcontroller {
 					$result[] = $rec;
 				}
 			}else{
-				$this->notFound();
+				$this->pageNotFound();
 				return;
 			};
 			$cache = $this->registry->getObject('db')->cacheData( $result );
@@ -557,13 +593,12 @@ class Contactcontroller {
 			$cache2 = $this->registry->getObject('db')->cacheQuery("SELECT * FROM ".$pref."contactgroup");
 			$this->registry->getObject('template')->getPage()->addTag( 'GroupList', array('SQL' , $cache2) );
 				
-			$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', $template, 'footer.tpl.php');			
 
 			$this->registry->getObject('template')->getPage()->addTag( 'sqlrequest', '' );
+			// Log
 			$this->registry->getObject('log')->addMessage("Zobrazení seznamu kontaktů",'Contact','');
 			
-			// Search BOX
-			$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
+			$this->build( $template );			
 		}
         else
         {

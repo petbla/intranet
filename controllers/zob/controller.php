@@ -41,6 +41,22 @@ class Zobcontroller{
 			}
 		}
 	}
+
+    /**
+     * Sestavení stránky
+     * @return void
+     */
+	private function build( $template = 'page.tpl.php' )
+	{
+		// Category Menu
+		//$this->registry->getObject('document')->createCategoryMenu();
+
+		// Build page
+		$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
+		$this->registry->getObject('template')->addTemplateBit('categories', 'categorymenu-document.tpl.php');
+		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', $template , 'footer.tpl.php');
+	}
+	
     /**
      * Zobrazení chybové stránky, pokud agenda nebyla nalezem 
      * @return void
@@ -49,10 +65,7 @@ class Zobcontroller{
 	{
 		// Logování
 		$this->registry->getObject('log')->addMessage("Pokus o zobrazení neznámé agendy",'agenda','');
-		// Search BOX
-		$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
-		// Sestavení
-		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page-notfound.tpl.php', 'footer.tpl.php');
+		$this->build('page-notfound.tpl.php');
 	}
 
     /**
@@ -64,11 +77,8 @@ class Zobcontroller{
 	{
 		// Logování
 		$this->registry->getObject('log')->addMessage("Chyba: $message",'agenda','');
-		// Nastavení parametrů
+		
 		$this->registry->getObject('template')->getPage()->addTag('message',$message);
-		// Search BOX
-		$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
-		// Sestavení stránky
-		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page.tpl.php', 'footer.tpl.php');
+		$this->build();
 	}
 }

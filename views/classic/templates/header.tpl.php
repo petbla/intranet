@@ -45,7 +45,6 @@
           {contactBarMenuItem}
           {calendarBarMenuItem}
           {adminBarMenuItem}
-          {portalBarMenuItem}
         </ul>
       </nav>
     </header>

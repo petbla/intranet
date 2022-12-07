@@ -98,6 +98,21 @@ class Agendacontroller{
 		}
 	}
     /**
+     * Sestavení stránky
+     * @return void
+     */
+	private function build( $template = 'page.tpl.php' ) 
+	{
+		// Category Menu
+		$this->createCategoryMenu();
+
+		// Build page
+		$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
+		$this->registry->getObject('template')->addTemplateBit('categories', 'categorymenu-agenda.tpl.php');
+		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', $template, 'footer.tpl.php');
+	}
+
+	/**
      * Zobrazení chybové stránky, pokud agenda nebyla nalezem 
      * @return void
      */
@@ -105,10 +120,7 @@ class Agendacontroller{
 	{
 		// Logování
 		$this->registry->getObject('log')->addMessage("Pokus o zobrazení neznámé agendy",'agenda','');
-		// Search BOX
-		$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
-		// Sestavení
-		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page-notfound.tpl.php', 'footer.tpl.php');
+		$this->build('invalid-contact.tpl.php');
 	}
 
     /**
@@ -120,13 +132,32 @@ class Agendacontroller{
 	{
 		// Logování
 		$this->registry->getObject('log')->addMessage("Chyba: $message",'agenda','');
-		// Nastavení parametrů
+			
 		$this->registry->getObject('template')->getPage()->addTag('message',$message);
-		// Search BOX
-		$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
-		// Sestavení stránky
-		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page.tpl.php', 'footer.tpl.php');
+		$this->build();
 	}
+
+    /**
+	 * Generování menu
+	 * @return void
+	 */
+	public function createCategoryMenu()
+    {
+		global $config;
+        $pref = $config['dbPrefix'];
+        $perSet = $this->registry->getObject('authenticate')->getPermissionSet();
+
+		$urlBits = $this->registry->getURLBits();
+		$typeID = isset( $urlBits[2]) ? ($urlBits[2] != 'list' ? $urlBits[2] : 0) : 0;
+
+        $sql = "SELECT TypeID as idCat, Name as titleCat,
+					IF(TypeID = $typeID,'active','') as activeCat 
+					FROM ".$pref."agendatype";
+        
+        $cache = $this->registry->getObject('db')->cacheQuery( $sql );
+        $cacheCategory = $this->registry->getObject('db')->cacheQuery( $sql );
+        $this->registry->getObject('template')->getPage()->addTag( 'categoryList', array( 'SQL', $cache ) );
+    }
 
     /**
      * Zobrazení položek agendy
@@ -152,28 +183,38 @@ class Agendacontroller{
 			return;
 		}
 	 
-		// Zobrazení výsledku
-		$templateList = 'list-agenda.tpl.php';
-		$templateCard = 'agenda-edit.tpl.php';
-		$cache = $this->listResult( $sql );
-		if($this->registry->getObject('db')->isEmpty( $cache )){
-			$this->registry->getObject('template')->getPage()->addTag( 'ID', '' );				
-			$this->registry->getObject('template')->getPage()->addTag( 'DocumentNo', '' );				
-			$this->registry->getObject('template')->getPage()->addTag( 'Description', '' );				
-			$this->registry->getObject('template')->getPage()->addTag( 'CreateDate', '' );				
-			$this->registry->getObject('template')->getPage()->addTag( 'ExecuteDate', '' );				
-		}else{
-			$this->registry->getObject('template')->getPage()->addTag( 'AgendaList', array( 'SQL', $cache ) );
-		}
-		$this->registry->getObject('template')->getPage()->addTag( 'TypeID', $TypeID );				
-		$this->registry->getObject('template')->getPage()->addTag( 'pageTitle', $agendatype['Name'] );				
-		$this->registry->getObject('template')->getPage()->addTag( 'EditDocumentNo', '' );				
-		$this->registry->getObject('template')->getPage()->addTag( 'EditDescription', '' );				
-		$this->registry->getObject('template')->getPage()->addTag( 'EditCreateDate', '' );				
-		$this->registry->getObject('template')->getPage()->addTag( 'EditExecuteDate', '' );				
-		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', $templateList, 'footer.tpl.php');			
-		$this->registry->getObject('template')->addTemplateBit('editcard', $templateCard);
+        $perSet = $this->registry->getObject('authenticate')->getPermissionSet();
 
+		if($perSet > 0)
+		{
+			// Zobrazení výsledku
+			$templateList = 'agenda-list.tpl.php';
+			$templateCard = 'agenda-edit.tpl.php';
+
+			$cache = $this->listResult( $sql );
+			if($this->registry->getObject('db')->isEmpty( $cache )){
+				$this->registry->getObject('template')->getPage()->addTag( 'ID', '' );				
+				$this->registry->getObject('template')->getPage()->addTag( 'DocumentNo', '' );				
+				$this->registry->getObject('template')->getPage()->addTag( 'Description', '' );				
+				$this->registry->getObject('template')->getPage()->addTag( 'CreateDate', '' );				
+				$this->registry->getObject('template')->getPage()->addTag( 'ExecuteDate', '' );				
+			}else{
+				$this->registry->getObject('template')->getPage()->addTag( 'AgendaList', array( 'SQL', $cache ) );
+			}
+			$this->registry->getObject('template')->getPage()->addTag( 'TypeID', $TypeID );				
+			$this->registry->getObject('template')->getPage()->addTag( 'pageTitle', $agendatype['Name'] );				
+			$this->registry->getObject('template')->getPage()->addTag( 'EditDocumentNo', '' );				
+			$this->registry->getObject('template')->getPage()->addTag( 'EditDescription', '' );				
+			$this->registry->getObject('template')->getPage()->addTag( 'EditCreateDate', '' );				
+			$this->registry->getObject('template')->getPage()->addTag( 'EditExecuteDate', '' );				
+
+			$this->registry->getObject('template')->addTemplateBit('editcard', $templateCard);
+			$this->build($templateList);
+		}
+        else
+        {
+			$this->error($caption['msg_unauthorized']);
+        }
 	}
 
 	/**
@@ -196,7 +237,6 @@ class Agendacontroller{
 			$this->listAgenda($TypeID);
 		}else{
 			$this->pageNotFound();
-			return;
 		}
 	}
 
@@ -210,7 +250,7 @@ class Agendacontroller{
     	$sql = "SELECT * FROM ".$this->prefDb."agendatype ";
 
 		// Zobrazení výsledku
-		$templateList = 'list-agenda-type.tpl.php';
+		$templateList = 'agenda-type-list.tpl.php';
 		$templateCard = 'agenda-type-edit.tpl.php';
 		$cache = $this->listResult( $sql );
 		if($this->registry->getObject('db')->isEmpty( $cache )){
@@ -227,8 +267,8 @@ class Agendacontroller{
 		$this->registry->getObject('template')->getPage()->addTag( 'EditNoSeries', '' );
 		$this->registry->getObject('template')->getPage()->addTag( 'EditTypeID', '' );
 		$this->registry->getObject('template')->getPage()->addTag( 'pageTitle', '' );
-		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', $templateList, 'footer.tpl.php');			
 		$this->registry->getObject('template')->addTemplateBit('editcard', $templateCard);
+		$this->build($templateList);
 	}
 
 	/**
@@ -318,7 +358,7 @@ class Agendacontroller{
 			$this->registry->getObject('template')->getPage()->addTag( 'EditName', $agendaType['Name'] );				
 			$this->registry->getObject('template')->getPage()->addTag( 'EditNoSeries', $agendaType['NoSeries'] );				
 			$this->registry->getObject('template')->getPage()->addTag( 'EditTypeID', $agendaType['TypeID'] );				
-			$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'agenda-type-edit.tpl.php', 'footer.tpl.php');			
+			$this->build('agenda-type-edit.tpl.php');
 		}else{
 			$this->pageNotFound();
 		}
@@ -363,24 +403,9 @@ class Agendacontroller{
 
 		if($perSet > 0)
 		{
-			
-			// Stránkování
-			$cacheFull = $this->registry->getObject('db')->cacheQuery( $sql );
-			$records = $this->registry->getObject('db')->numRowsFromCache( $cacheFull );
-			$pageCount = (int) ($records / $config['maxVisibleItem']);
-			$pageCount = ($records > $pageCount * $config['maxVisibleItem']) ? $pageCount + 1 : $pageCount;  
-			$pageNo = ( isset($_GET['p'])) ? $_GET['p'] : 1;
-			$pageNo = ($pageNo > $pageCount) ? $pageCount : $pageNo;
-			$pageNo = ($pageNo < 1) ? 1 : $pageNo;
-			$fromItem = (($pageNo - 1) * $config['maxVisibleItem']);    
-			$navigate = $this->registry->getObject('template')->NavigateElement( $pageNo, $pageCount ); 
-			$this->registry->getObject('template')->getPage()->addTag( 'navigate_menu', $navigate );
-			$sql .= " LIMIT $fromItem," . $config['maxVisibleItem']; 
+			// Group records by Page
+			$sql = $this->registry->getObject('db')->getSqlByPage( $sql );
 			$cache = $this->registry->getObject('db')->cacheQuery( $sql );
-
-			// Search BOX
-			$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
-
 			return ( $cache );
 		}
         else

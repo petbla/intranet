@@ -26,10 +26,9 @@ class Generalcontroller {
 			if($perSet == 0)
 			{
 				$this->registry->getObject('log')->addMessage($caption['msg_unauthorized'],'contact','');
-				// Search BOX
-				$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
-				$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page.tpl.php', 'footer.tpl.php');
+				
 				$this->registry->getObject('template')->getPage()->addTag('message',$caption['msg_unauthorized']);
+				$this->build();
 				return;
 			}
 
@@ -67,22 +66,31 @@ class Generalcontroller {
 						break;
 				}
 			}
-			$this->notFound();
+			$this->pageNotFound();
 		}
+	}
+
+    /**
+     * Sestavení stránky
+     * @return void
+     */
+	private function build( $template = 'page.tpl.php' )
+	{
+		// Build page
+		$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
+		$this->registry->getObject('template')->addTemplateBit('categories', 'categorymenu-empty.tpl.php');
+		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', $template , 'footer.tpl.php');
 	}
 
     /**
      * Zobrazení chybové stránky, pokud dokument nebyl nalezem 
      * @return void
      */
-	private function notFound()
+	private function pageNotFound()
 	{
 		// Logování
-		$this->registry->getObject('log')->addMessage("Pokus o zobrazení neznámého obsahu",'dmsentry','');
-		// Search BOX
-		$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
-		// Sestavení
-		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'invalid-page.tpl.php', 'footer.tpl.php');
+		$this->registry->getObject('log')->addMessage("Pokus o zobrazení neznámého obsahu",'dmsentry','');		
+		$this->build('invalid-page.tpl.php');
 	}
 
     /**
@@ -94,12 +102,9 @@ class Generalcontroller {
 	{
 		// Logování
 		$this->registry->getObject('log')->addMessage("Chyba: $message",'contact','');
-		// Nastavení parametrů
+		
 		$this->registry->getObject('template')->getPage()->addTag('message',$message);
-		// Search BOX
-		$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
-		// Sestavení
-		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page.tpl.php', 'footer.tpl.php');
+		$this->build();
 	}
 
     /**
@@ -311,19 +316,13 @@ class Generalcontroller {
 		}else{
 			$message = 'Nenalezeno';
 			$this->registry->getObject('template')->getPage()->addTag('message',$message);
-			$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
-			$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page.tpl.php', 'footer.tpl.php');
+			$this->build();
 			return;
 		}	
 		$cache = $this->registry->getObject('db')->cacheData( $result );
 
-		// Build page 
 		$this->registry->getObject('template')->getPage()->addTag( 'searchText', $searchText );
 		$this->registry->getObject('template')->getPage()->addTag( 'ResultItems', array( 'DATA', $cache ) );
-		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'search-list-result.tpl.php', 'footer.tpl.php');						
-		
-		// Search BOX
-		$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
 		
 		// Card subpages
 		$this->registry->getObject('template')->getPage()->addTag('viewcardFile','');
@@ -355,6 +354,8 @@ class Generalcontroller {
 		$this->registry->getObject('template')->getPage()->addTag( "iconNote", "<img src='views/classic/images/icon/note.png' />" );
 		$this->registry->getObject('template')->getPage()->addTag( "iconBlock", "<img src='views/classic/images/icon/block.png' />" );
 		$this->registry->getObject('template')->getPage()->addTag( "iconAgenda", "<img src='views/classic/images/icon/agenda.png' />" );
+
+		$this->build('search-list-result.tpl.php');
 
 	}	
 

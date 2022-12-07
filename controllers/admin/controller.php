@@ -101,17 +101,84 @@ class Admincontroller {
 			{
 				if ( $this->registry->getObject('authenticate')->isAdmin())
 				{
-					$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'admin.tpl.php', 'footer.tpl.php');
+					$this->build('admin.tpl.php');
 					return;
 				}
 			}
 		}
 		$message = $caption['msg_unauthorized'];
 		$this->registry->getObject('template')->getPage()->addTag('message',$message);
-		// Search BOX
-		$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
-		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page.tpl.php', 'footer.tpl.php');
+		$this->build();		
 	}
+
+    /**
+     * Sestavení stránky
+     * @return void
+     */
+	private function build( $template = 'page.tpl.php')
+	{
+		// Category Menu
+		$this->createCategoryMenu();
+
+		// Build page
+		$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
+		$this->registry->getObject('template')->addTemplateBit('categories', 'categorymenu-admin.tpl.php');
+		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', $template, 'footer.tpl.php');
+	}
+
+    /**
+     * Zobrazení chybové stránky, pokud kontakt nebyl nalezem 
+     * @return void
+     */
+	private function pageNotFound()
+	{
+		$this->build('invalid-contact.tpl.php');
+	}
+
+    /**
+     * Zobrazení chybové stránky s uživatelským textem
+	 * @param String $message = text zobrazen jako chyba
+     * @return void
+     */
+	private function error( $message )
+	{
+		$this->registry->getObject('template')->getPage()->addTag('message',$message);
+		$this->build();
+	}
+
+    /**
+	 * Generování menu
+	 * @return void
+	 */
+	public function createCategoryMenu()
+    {
+		global $config;
+		$urlBits = $this->registry->getURLBits();
+		$typeID = isset( $urlBits[1]) ? $urlBits[1] : '';
+
+		$rec['idCat'] = 'users';
+		$rec['titleCat'] = 'Uživatelé';
+		$rec['activeCat'] = $rec['idCat'] == $typeID ? 'active' : '';
+		$table[] = $rec;
+
+        $rec['idCat'] = 'update';
+		$rec['titleCat'] = 'Synchronizace';
+		$rec['activeCat'] = $rec['idCat'] == $typeID ? 'active' : '';
+		$table[] = $rec;
+
+        $rec['idCat'] = 'log';
+		$rec['titleCat'] = 'Log';
+		$rec['activeCat'] = $rec['idCat'] == $typeID ? 'active' : '';
+		$table[] = $rec;
+
+        $rec['idCat'] = 'portalList';
+		$rec['titleCat'] = 'Portál';
+		$rec['activeCat'] = $rec['idCat'] == $typeID ? 'active' : '';
+		$table[] = $rec;
+
+		$cache = $this->registry->getObject('db')->cacheData( $table );
+		$this->registry->getObject('template')->getPage()->addTag( 'categoryList', array( 'DATA', $cache ) );
+    }
 
 	/**
 	 * Akce volaná z webové stránky,
@@ -123,10 +190,9 @@ class Admincontroller {
 		global $caption, $config;
 	    $this->urlBits = $this->registry->getURLBits();
 		$files = $this->registry->getObject('file')->synchroRoot();
-		// Search BOX
-		$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
-		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page.tpl.php', 'footer.tpl.php');
+
 		$this->registry->getObject('template')->getPage()->addTag('message',$caption['msg_updateFinished']);
+		$this->build();
 	}
 
 	/**
@@ -161,8 +227,9 @@ class Admincontroller {
 		// Form add user
 		$sql = "SELECT * FROM ".$pref."permissionset";
 		$cache = $this->registry->getObject('db')->cacheQuery( $sql );
+		
 		$this->registry->getObject('template')->getPage()->addTag( 'PermissionSet', array( 'SQL', $cache ) ); 
-		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'admin-users.tpl.php', 'footer.tpl.php');		
+		$this->build('admin-users.tpl.php');
 	}
 
 	/**
@@ -178,8 +245,17 @@ class Admincontroller {
 		       "FROM ".$pref."log ".
 		       "ORDER BY EntryNo DESC";
 		
-		// Zobrazení výsledku
-		$this->registry->getObject('db')->showResult( $sql, 'LogList', 'log-list.tpl.php');
+		// Group records by Page
+		$sql = $this->registry->getObject('db')->getSqlByPage( $sql );
+		// Save SQL result to $cache (array type) AND modify record
+		$cache = $this->registry->getObject('db')->cacheQuery( $sql );
+			   
+		if ($this->registry->getObject('db')->isEmpty( $cache )){
+			$this->pageNotFound();
+		}else{
+			$this->registry->getObject('template')->getPage()->addTag( 'LogList', array( 'SQL', $cache ) );        						
+			$this->build( 'log-list.tpl.php' );
+		}
 	}
 
 	/**
@@ -308,14 +384,12 @@ class Admincontroller {
 		if (!$this->registry->getObject('db')->isEmpty( $cache ))
 		{
 			$this->registry->getObject('template')->getPage()->addTag( 'PortalItems', array( 'SQL', $cache ) );   
-			$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'portal-list.tpl.php', 'footer.tpl.php');
+			$this->build('portal-list.tpl.php');
 		}
 		else
 		{
-			$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page-notfound.tpl.php', 'footer.tpl.php');
-		}
-		// Search BOX
-		$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
+			$this->pageNotFound();
+		}		
 	}
 
 	/**
