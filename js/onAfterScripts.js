@@ -724,3 +724,17 @@ function doesFileExist(urlToFile) {
         return true;
     }
 }
+
+function modifyContactGroup(Code,Name,Action,read){
+    document.getElementById("fieldName").value = Name;
+    document.getElementById("fieldCode").value = Code;
+    document.getElementById("fieldCode").readOnly = read;
+    document.getElementById("fieldAction").value = Action;
+}
+
+function modifyAgendaType(TypeID,Name,NoSeries,Action){
+    document.getElementById("fieldTypeID").value = TypeID;
+    document.getElementById("fieldName").value = Name;
+    document.getElementById("fieldNoSeries").value = NoSeries;
+    document.getElementById("fieldAction").value = Action;
+}

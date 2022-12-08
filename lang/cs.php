@@ -91,6 +91,7 @@ $caption['Synchronize'] =    'Synchronizace';
 $caption['Document'] =       'Dokument';
 $caption['Documents'] =      'Dokumenty';
 $caption['DocumentNo'] =     'Číslo jednací';
+$caption['Code'] =           'Kód';
 $caption['Agenda'] =         'Evidence';
 $caption['ZOB'] =            'Zápisy obce';
 $caption['Created'] =        'Vytvořeno';

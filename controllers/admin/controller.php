@@ -81,10 +81,16 @@ class Admincontroller {
 							$this->showLog();
 							return;
 						}
-					case 'portalList':
+					case 'listPortal':
 						if ( $this->registry->getObject('authenticate')->isAdmin())
 						{
-							$this->portalList();
+							$this->listPortal();
+							return;
+						}
+					case 'setup':
+						if ( $this->registry->getObject('authenticate')->isAdmin())
+						{
+							$this->listSetup();
 							return;
 						}
 					case 'setPortal':
@@ -101,7 +107,8 @@ class Admincontroller {
 			{
 				if ( $this->registry->getObject('authenticate')->isAdmin())
 				{
-					$this->build('admin.tpl.php');
+					$this->registry->getObject('template')->getPage()->addTag('message','Administrace');
+					$this->build();		
 					return;
 				}
 			}
@@ -156,6 +163,11 @@ class Admincontroller {
 		$urlBits = $this->registry->getURLBits();
 		$typeID = isset( $urlBits[1]) ? $urlBits[1] : '';
 
+		$rec['idCat'] = 'setup';
+		$rec['titleCat'] = 'Nastavení';
+		$rec['activeCat'] = $rec['idCat'] == $typeID ? 'active' : '';
+		$table[] = $rec;
+
 		$rec['idCat'] = 'users';
 		$rec['titleCat'] = 'Uživatelé';
 		$rec['activeCat'] = $rec['idCat'] == $typeID ? 'active' : '';
@@ -171,7 +183,7 @@ class Admincontroller {
 		$rec['activeCat'] = $rec['idCat'] == $typeID ? 'active' : '';
 		$table[] = $rec;
 
-        $rec['idCat'] = 'portalList';
+        $rec['idCat'] = 'listPortal';
 		$rec['titleCat'] = 'Portál';
 		$rec['activeCat'] = $rec['idCat'] == $typeID ? 'active' : '';
 		$table[] = $rec;
@@ -193,6 +205,24 @@ class Admincontroller {
 
 		$this->registry->getObject('template')->getPage()->addTag('message',$caption['msg_updateFinished']);
 		$this->build();
+	}
+
+	/**
+	 * Zobrazení nastavení
+	 * @return void
+	 */
+	private function listSetup()
+	{
+		global $config;
+		$pref = $config['dbPrefix'];
+
+		$this->registry->getObject('db')->initQuery('setup');
+		$this->registry->getObject('db')->findFirst();
+		$setup = $this->registry->getObject('db')->getResult();
+		$this->registry->getObject('template')->dataToTags( $setup, 's_' );
+		
+
+		$this->build('admin.tpl.php');		
 	}
 
 	/**
@@ -377,7 +407,7 @@ class Admincontroller {
 	 * Zobrazení seznamu portálů jako menu pro výběr
 	 * @return void
 	 */
-	private function portalList()
+	private function listPortal()
 	{
 		$sql = "SELECT * FROM source";
 		$cache = $this->registry->getObject('db')->cacheQuery( $sql );
@@ -400,7 +430,7 @@ class Admincontroller {
 	private function setPortal( $EntryNo )
 	{
 		$this->registry->getObject('db')->setPortal( $EntryNo );
-		$this->portalList();
+		$this->listPortal();
 	}
 }
 ?>

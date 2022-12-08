@@ -85,6 +85,37 @@ class Contactcontroller {
 								break;
 						}
 						break;
+					case 'group':
+						$action = isset($urlBits[2]) ? $urlBits[2] : '';
+						$Code = isset($_POST["Code"]) ? $_POST["Code"] : '';
+						$action = isset($_POST["action"]) ? $_POST["action"] : $action;
+						switch ($action) {
+							case 'list':
+								$this->listContactGroup();
+								break;
+							case 'add':
+								$this->addContactGroup( $Code );
+								break;
+							case 'modify':
+								if($Code !== ''){
+									$this->modifyContactGroup( $Code );
+								}else{
+									$this->pageNotFound();
+								}
+								break;
+							case 'delete':
+								$Code = isset($urlBits[3]) ? $urlBits[3] : '';
+								if($Code !== ''){
+									$this->deleteContactGroup( $Code );
+								}else{
+									$this->pageNotFound();
+								}
+								break;
+							default:
+								$this->pageNotFound();
+								break;
+						}						
+						break;
 					default:				
 						$this->listContacts();
 						break;		
@@ -142,19 +173,15 @@ class Contactcontroller {
 		global $config;
 		$urlBits = $this->registry->getURLBits();
 		$typeID = isset( $urlBits[1]) ? $urlBits[1] : '';
+		$typeID .= isset( $urlBits[2]) ? '/'.$urlBits[2] : '';
 
-		$rec['idCat'] = '1';
+		$rec['idCat'] = 'list';
+		$rec['titleCat'] = 'Kontakty';
+		$rec['activeCat'] = $rec['idCat'] == $typeID ? 'active' : '';
+		$table[] = $rec;
+
+		$rec['idCat'] = 'group/list';
 		$rec['titleCat'] = 'Skupiny kontaktů';
-		$rec['activeCat'] = $rec['idCat'] == $typeID ? 'active' : '';
-		$table[] = $rec;
-
-        $rec['idCat'] = '2';
-		$rec['titleCat'] = 'Export šablony pro import';
-		$rec['activeCat'] = $rec['idCat'] == $typeID ? 'active' : '';
-		$table[] = $rec;
-
-        $rec['idCat'] = '3';
-		$rec['titleCat'] = 'Import kontaktů';
 		$rec['activeCat'] = $rec['idCat'] == $typeID ? 'active' : '';
 		$table[] = $rec;
 
@@ -605,6 +632,116 @@ class Contactcontroller {
 			$this->error($caption['msg_unauthorized']);
         }
     }	
+
+    /**
+     * Zobrazení skupin kontaktů
+     * @return void
+     */
+	private function listContactGroup( )
+	{
+		global $caption,$config;
+		$pref = $config['dbPrefix'];
+
+    	$sql = "SELECT * FROM ".$pref."contactgroup ";
+
+		// Zobrazení výsledku
+		$sql = $this->registry->getObject('db')->getSqlByPage( $sql );
+		// Save SQL result to $cache (array type) AND modify record
+		$cache = $this->registry->getObject('db')->cacheQuery( $sql );
+		if ($this->registry->getObject('db')->isEmpty( $cache ))
+		{
+			$this->pageNotFound();
+			return;
+		};
+		$this->registry->getObject('template')->getPage()->addTag( 'ContactGroupList', array( 'SQL', $cache ) );
+		$this->registry->getObject('template')->getPage()->addTag( 'pageTitle', '' );				
+		$this->build('contact-group-list.tpl.php');
+	}
+
+	/**
+	 * Založení nové skupiny kontaktů
+	 * @return void
+	 */
+	private function addContactGroup( $Code )
+	{
+		global $config, $caption;
+
+		if ($Code == ''){
+			$this->error('Kód musí být vyplněn!');
+			return;
+		};
+
+		$Code = strtoupper($Code);
+		$Code = str_replace(' ','_', strtoupper($Code));
+		$Name = isset($_POST['Name']) ? $_POST['Name'] : '';
+		if ($Name == ''){
+			$this->error('Název musí být vyplněn!');
+			return;
+		};
+
+		$this->registry->getObject('db')->initQuery('contactgroup');
+		$this->registry->getObject('db')->setFilter('Code',$Code);
+		if (!$this->registry->getObject('db')->isEmpty()){
+			$this->error("Kód $Code již existuje!");
+			return;
+		}
+
+		$data = array();
+		$data['Name'] = $Name;
+		$data['Code'] = $Code;
+		$this->registry->getObject('db')->insertRecords('contactgroup',$data);
+		$this->listContactGroup();
+	}	
+
+	/**
+	 * Editace skupiny kontaktů
+	 * @return void
+	 */
+	private function modifyContactGroup( $Code )
+	{
+		$Name = isset($_POST['Name']) ? $_POST['Name'] : '';
+		if ($Name == ''){
+			$this->error('Název musí být vyplněn!');
+			return;
+		};
+
+		$this->registry->getObject('db')->initQuery('contactgroup');
+        $this->registry->getObject('db')->setFilter('Code',$Code);
+		if ($this->registry->getObject('db')->findFirst())
+		{
+            // Update
+            $changes = array();
+            $changes['Name'] = $Name;
+            $condition = "Code = '$Code'";
+            $this->registry->getObject('db')->updateRecords('contactgroup',$changes, $condition);
+			$this->listContactGroup();
+		}else{
+			$this->pageNotFound();
+		}
+		return;
+	}
+
+	/**
+	 * Výmaz skupiny kontaktů
+	 * @return void
+	 */
+	private function deleteContactGroup( $Code )
+	{	
+		global $caption,$config;
+		$pref = $config['dbPrefix'];
+
+    	$sql = "SELECT * FROM ".$pref."contact ".
+					"WHERE (ContactGroups like '%$Code,%') OR (ContactGroups like '$Code') ";
+		$cache = $this->registry->getObject('db')->cacheQuery( $sql );
+		if (!$this->registry->getObject('db')->isEmpty( $cache ))
+		{
+			$this->error("Kód $Code se používá, nelze jej odstranit.");
+			return;
+		}
+		$condition = "Code = '$Code'";
+		$this->registry->getObject('db')->deleteRecords( 'contactgroup', $condition, 1); 
+		$this->listContactGroup();
+	}
 
 	/**
 	 * Lokální funkce pro sestavení jednotného tvaru jména kontaktu

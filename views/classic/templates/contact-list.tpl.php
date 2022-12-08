@@ -5,18 +5,6 @@
                 <img src="views/classic/images/nav/addContact.png" alt="{lbl_New}" title="{lbl_NewContact}" onclick="document.getElementById('newcardID').style.display = 'block';">
                 <br>
                 {lbl_NewContact}
-            </td><td>
-                <img src="views/classic/images/nav/groups.png" alt="{lbl_Groups}" title="{lbl_Groups}">
-                <br>
-                {lbl_Groups}
-            </td><td>
-                <img src="views/classic/images/nav/import.png" alt="{lbl_Import}" title="{lbl_Import}" onclick="importContactCSV();">
-                <br>
-                {lbl_Import}
-            </td><td>
-                <a href="files/Kontakty.xlsx"><img src="views/classic/images/nav/export.png" alt="{lbl_Export}" title="{lbl_Export}"></a>
-                <br>
-                {lbl_ContTemplateImp}
             </td>
         </tr>
     </table>

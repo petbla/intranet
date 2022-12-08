@@ -557,11 +557,35 @@ div#admin table{
   text-align: center;
 } 
 div#admin td{
-  width: 50%; 
   background-color: #ff9;
-  padding: 20px 0;
+  padding: 2px;
+  text-align: left;
+  font-size: 14px;
   border: 1px solid #337AB7;
 }
+div#admin td.title{
+  text-align: center;
+  padding: 10px;
+  font-size: 20px;
+}
+div#admin td.name{
+  width: 20%;
+  padding: 5px;
+}
+div#admin td.value{
+  width: auto;
+  font-weight: bold;
+}
+div#admin td.action{
+  width: 10%;
+  font-weight: bold;
+}
+div#admin td input,
+div#admin td span{
+  margin: 2px 5px;
+  width: 90%;
+}
+
 div#admin a{
   text-decoration: none;
 }
