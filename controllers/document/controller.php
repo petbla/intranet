@@ -650,9 +650,9 @@ class Documentcontroller{
 				}
 				if($action == 'addFolder')
 				{
-					$fileFullPath = $this->registry->getObject('fce')->ConvertToSharePathName( $fullName );
+					$fileFullPath = $this->registry->getObject('fce')->ConvertToSharePath( $fullName );
 					$fileFullPath .= $_POST['fld_name'];
-					$fullName  = $this->registry->getObject('fce')->ConvertToDirectoryPathName( $fileFullPath , false);
+					$fullName  = $this->registry->getObject('fce')->ConvertToDirectorySeparator( $fileFullPath , false);
 					$fileFullPath = $this->registry->getObject('file')->Convert2SystemCodePage($fileFullPath);
 					$fullName = $this->registry->getObject('file')->Convert2SystemCodePage($fullName);
 					if(!file_exists($fullName))

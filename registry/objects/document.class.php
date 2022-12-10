@@ -172,7 +172,7 @@ class document {
                     $parentPath .=  $data['Name'];
                     $parentID = $data['ID'];
                 }
-                $parentPath = $this->registry->getObject('fce')->ConvertToSharePathName( $parentPath );
+                $parentPath = $this->registry->getObject('fce')->ConvertToSharePath( $parentPath );
                 $this->registry->getObject('template')->getPage()->addTag('parentfoldername', $parentPath );
                 $this->registry->getObject('template')->getPage()->addTag('parentID', $parentID );            
             }

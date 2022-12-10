@@ -29,23 +29,25 @@ class file {
     
     $this->deaktiveUnvalidEntries();
 
-    $directories[]  = $this->getRoot(); 
+    return;
+
+    $directories[]  = $this->getFileRoot(); 
 
     
     $paret = 0;
     $level = 0;
     while (count($directories)) { 
-      $dir  = array_pop($directories); 
-      $dir  = $this->registry->getObject('fce')->ConvertToSharePathName( $dir,false);
+      $directoryNamePath  = array_pop($directories); 
+      $directoryNamePath  = $this->registry->getObject('fce')->ConvertToSharePath( $directoryNamePath,false);
 
-      if ($handle = opendir($dir)) { 
-        while (false !== ($file = readdir($handle))) 
+      if ($handle = opendir($directoryNamePath)) { 
+        while (false !== ($fileName = readdir($handle))) 
         { 
-          if ($file == '.' |0| $file == '..') 
+          if ($fileName == '.' |0| $fileName == '..') 
           { 
             continue; 
           };
-          $fullItemPath = $dir.$file;
+          $fullItemPath = $directoryNamePath.$fileName;
           $winFullItemPath = $this->Convert2SystemCodePage($fullItemPath);
           $entryNo = $this->findItem($winFullItemPath);
           if(is_dir($fullItemPath))
@@ -61,25 +63,41 @@ class file {
 
   function synchoroDirectory($entry)
   {
-    $dir = $this->getRoot() . $entry['Name'];
-    $dir  = $this->registry->getObject('fce')->ConvertToSharePathName( $dir,false);
-    if ($handle = opendir($dir)) { 
-      while (false !== ($file = readdir($handle))) 
+    // Fileroot           =  \\petbla\c$\Users\petr\Desktop\OBECNTB\FileServer\
+    // $entry['Name']     =  Stavby RD\RD Šáchovi 313
+    $directoryNamePath = $this->getFileRoot() . $entry['Name'];
+    // $directoryNamePath =  \\petbla\c$\Users\petr\Desktop\OBECNTB\FileServer\Stavby RD\RD Šáchovi 313
+
+    $directoryNamePath  = $this->registry->getObject('fce')->ConvertToSharePath( $directoryNamePath,false);
+    // $directoryNamePath =  //petbla/c$/Users/petr/Desktop/OBECNTB/FileServer/Stavby RD/RD Šáchovi 313/
+
+    if ($handle = opendir($directoryNamePath)) { 
+      while (false !== ($fileName = readdir($handle))) 
       { 
-        if ($file == '.' |0| $file == '..') 
+        // $fileName = 	Šáchovi - Vyjádření k PD.docx
+        if ($fileName == '.' |0| $fileName == '..') 
         { 
           continue; 
         };
-        $fullItemPath = $dir.$file;
-        $name  = $this->registry->getObject('fce')->ConvertToDirectoryPathName( $fullItemPath,false );   
-        $name = str_replace(str_replace('http:','',$this->getRoot()),'',$name);      
+        
+        $fullItemPath = $directoryNamePath.$fileName;
+        // $fullItemPath = //petbla/c$/Users/petr/Desktop/OBECNTB/FileServer/Stavby RD/RD Šáchovi 313/Šáchovi - Vyjádření k PD.docx
+        
+        $name  = $this->registry->getObject('fce')->ConvertToDirectorySeparator( $fullItemPath,false );   
+        $name = str_replace(str_replace('http:','',$this->getFileRoot()),'',$name);      
+        // $name = Stavby RD\RD Šáchovi 313\Šáchovi - Vyjádření k PD.docx
 
-        $this->registry->getObject('db')->initQuery('DmsEntry','ID');
+        // Find $name in table 'dnsentry'
+        $this->registry->getObject('db')->initQuery('dmsentry','ID');
         $sanitizename = $this->registry->getObject('db')->sanitizeData($name);
         $this->registry->getObject('db')->setCondition( 'Name="'.$sanitizename.'" AND Archived=0' );
         if($this->registry->getObject('db')->findFirst() == false)
         {
+          // Convert $fullItemPath to CodePage of application (UTF-8)
           $winFullItemPath = $this->Convert2SystemCodePage($fullItemPath);
+          // $winFullItemPath = //petbla/c$/Users/petr/Desktop/OBECNTB/FileServer/Stavby RD/RD Šáchovi 313/Šáchovi - Vyjádření k PD.docx
+
+          // Deaktive entry due to NOT exists
           $entryNo = $this->findItem($winFullItemPath);
         }    
       }
@@ -101,7 +119,7 @@ class file {
       foreach ($data as $key => $entry) {
         $ID = $entry['ID'];
         $counter += 1;
-        $item = $this->getItem($entry['Name']);
+        $item = $this->getItemFromName($entry['Name']);
         if(! $item['Exist'])
         {
           $changes['Archived'] = 1;
@@ -123,16 +141,23 @@ class file {
 	 */
   public function findItem( $winFullItemPath , $isDir = false )
   {
+    // $winFullItemPath = //petbla/c$/Users/petr/Desktop/OBECNTB/FileServer/Stavby RD/RD Šáchovi 313/Šáchovi - Vyjádření k PD.docx
+
     $fullItemPath = $this->Convert2CoreCodePage($winFullItemPath);
-    $name  = $this->registry->getObject('fce')->ConvertToDirectoryPathName( $fullItemPath,false );    // formát Xxxxx\Ddddd\Aaaaa
-    $name = str_replace(str_replace('http:','',$this->getRoot()),'',$name);
+    // $fullItemPath = //petbla/c$/Users/petr/Desktop/OBECNTB/FileServer/Stavby RD/RD Šáchovi 313/Šáchovi - Vyjádření k PD.docx
+
+    $name  = $this->registry->getObject('fce')->ConvertToDirectorySeparator( $fullItemPath,false );    // formát Xxxxx\Ddddd\Aaaaa
+    // $name = \\petbla\c$\Users\petr\Desktop\OBECNTB\FileServer\Stavby RD\RD Šáchovi 313\Šáchovi - Vyjádření k PD.docx
+    $name = str_replace(str_replace('http:','',$this->getFileRoot()),'',$name);
+    // $name = Stavby RD\RD Šáchovi 313\Šáchovi - Vyjádření k PD.docx
+  
     if ($name === '')
     {
       return 0;
     }
-    $item = $this->getItem($name, $isDir);
+    $item = $this->getItemFromName($name, $isDir);
     
-    $this->registry->getObject('db')->initQuery('DmsEntry','EntryNo,ID,Name,Title,FileExtension,Multimedia');
+    $this->registry->getObject('db')->initQuery('dmsentry','EntryNo,ID,Name,Title,FileExtension,Multimedia');
     $sanitizename = $this->registry->getObject('db')->sanitizeData($name);
     $this->registry->getObject('db')->setCondition( 'Name="'.$sanitizename.'" AND Archived=0' );
     if( $this->registry->getObject('db')->findFirst())
@@ -153,7 +178,7 @@ class file {
        return $entry['EntryNo'];
     }
     
-    // Insert NEW folder
+    // Insert NEW 
     $data = array();
     $data['ID'] = $this->registry->getObject('fce')->GUID();
     $data['Level'] = $item['Level'];
@@ -184,8 +209,8 @@ class file {
 	 */
   public function addBlock( $fullParent,$name )
   {
-    $fullParent  = $this->registry->getObject('fce')->ConvertToDirectoryPathName( $fullParent,false );    
-    $parentPath = str_replace($this->getRoot(),'',$fullParent);
+    $fullParent  = $this->registry->getObject('fce')->ConvertToDirectorySeparator( $fullParent,false );    
+    $parentPath = str_replace($this->getFileRoot(),'',$fullParent);
     $parentID = $this->getIdByName($parentPath);
 
     $fullName = $parentPath !== '' ? $parentPath.DIRECTORY_SEPARATOR.$name : $name;
@@ -280,10 +305,14 @@ class file {
     return $lineNo;
   }
 
-  public function getItem( $name , $isDir = false)
+  public function getItemFromName( $name , $isDir = false)
   {
     global $config;
-    $root = str_replace('http:','',$this->getRoot());
+    
+    // $name = Stavby RD\RD Šáchovi 313\Šáchovi - Vyjádření k PD.docx
+
+    $root = str_replace('http:','',$this->getFileRoot());
+    // $root = 	\\petbla\c$\Users\petr\Desktop\OBECNTB\FileServer
 
     $item = array();
     $item['FullName'] = '';
@@ -299,9 +328,12 @@ class file {
     $item['WinParent'] = '';
     $item['Extension'] = '';
 
-    $item['Name'] = $this->registry->getObject('fce')->ConvertToDirectoryPathName( $name,false );    
+    $item['Name'] = $this->registry->getObject('fce')->ConvertToDirectorySeparator( $name,false );    
+    // => Stavby RD\RD Šáchovi 313\Šáchovi - Vyjádření k PD.docx
 
     $item['FullName'] =  $root.$item['Name'];
+    // => \\petbla\c$\Users\petr\Desktop\OBECNTB\FileServer\Stavby RD\RD Šáchovi 313\Šáchovi - Vyjádření k PD.docx
+
     $item['WinFullName'] =  $this->Convert2SystemCodePage($item['FullName']);
 
     if (!$isDir)
@@ -312,13 +344,20 @@ class file {
       }
     }
 
-
     $arr = explode(DIRECTORY_SEPARATOR,$item['Name']);
+    // $name = Stavby RD\RD Šáchovi 313\Šáchovi - Vyjádření k PD.docx
+    // $arr[0] = Stavby RD
+    // $arr[1] = RD Šáchovi 313
+    // $arr[2] = Šáchovi - Vyjádření k PD.docx
+
     $item['Item'] = (count($arr) > 0) ? $arr[count($arr) - 1] : '';
+    // => Šáchovi - Vyjádření k PD.docx
+
     if(count($arr) > 0)
     {
       array_pop($arr);
       $item['Parent'] = implode(DIRECTORY_SEPARATOR,$arr);
+      // => Stavby RD\RD Šáchovi 313
     }
     $item['WinItem'] =  $this->Convert2SystemCodePage($item['Item']);
     $item['WinParent'] =  $this->Convert2SystemCodePage($item['Parent']);
@@ -355,7 +394,7 @@ class file {
 
   public function getIdByName( $name )
   {
-    $name = $this->registry->getObject('fce')->ConvertToDirectoryPathName( $name ,false);    
+    $name = $this->registry->getObject('fce')->ConvertToDirectorySeparator( $name ,false);    
 
     $name = $this->registry->getObject('db')->sanitizeData($name);
     $this->registry->getObject('db')->initQuery('DmsEntry','ID');
@@ -442,12 +481,12 @@ class file {
    * Funkce vrací root složku dle nastavení z tabulky source
    * @return String $root
    */
-  private function getRoot()
+  private function getFileRoot()
   {
     global $config;
     $root = $config['fileroot'];
 
-    $root  = $this->registry->getObject('fce')->ConvertToDirectoryPathName( $root );
+    $root  = $this->registry->getObject('fce')->ConvertToDirectorySeparator( $root );
     return $root;
   }
 }

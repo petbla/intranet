@@ -568,6 +568,11 @@ div#admin td.title{
   padding: 10px;
   font-size: 20px;
 }
+div#admin th.caption{
+  color:black;
+  background-color: #07cf8c;
+  font-size: 14px;
+}
 div#admin td.name{
   width: 20%;
   padding: 5px;
@@ -575,6 +580,9 @@ div#admin td.name{
 div#admin td.value{
   width: auto;
   font-weight: bold;
+}
+div#admin td.value-small{
+    font-size: 12px;
 }
 div#admin td.action{
   width: 10%;
@@ -590,37 +598,6 @@ div#admin a{
   text-decoration: none;
 }
 
-div#users table{
-  width: 80%; 
-  margin: 16px 0;
-  border: 1px solid #337AB7;
-  font-size: 14px; 
-  text-align: left;
-}
-div#users th{
-  background-color: #337AB7;
-}
-div#users td{
-  padding: 5px;
-}
-div#users .form-style-user{
-  margin:30px;
-  width: 50%;
-	padding: 20px 12px 10px 20px;
-	font: 13px "Lucida Sans Unicode", "Lucida Grande", sans-serif;
-}
-div#users .form-style-user li {
-	padding: 0;
-	display: block;
-	list-style: none;
-	margin: 10px 0 0 0;
-}
-div#users .form-style-user label{
-	margin:0 0 3px 0;
-	padding:0px;
-	display:block;
-	font-weight: bold;
-}
 div#actionpanel{
   color: #808080;
   font-size: 12px;

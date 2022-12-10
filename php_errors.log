@@ -1,0 +1,202 @@
+[10-Dec-2022 21:15:04 Europe/Prague] PHP Fatal error:  Uncaught Error: Call to undefined method Admincontroller::modifyUser() in C:\inetpub\wwwroot\intranet\controllers\admin\controller.php:75
+Stack trace:
+#0 C:\inetpub\wwwroot\intranet\index.php(103): Admincontroller->__construct(Object(Registry), true)
+#1 {main}
+  thrown in C:\inetpub\wwwroot\intranet\controllers\admin\controller.php on line 75
+[10-Dec-2022 22:47:54 Europe/Prague] PHP Fatal error:  'break' not in the 'loop' or 'switch' context in C:\inetpub\wwwroot\intranet\controllers\admin\controller.php on line 115
+[10-Dec-2022 22:47:54 Europe/Prague] PHP Stack trace:
+[10-Dec-2022 22:47:54 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[10-Dec-2022 22:48:00 Europe/Prague] PHP Fatal error:  'break' not in the 'loop' or 'switch' context in C:\inetpub\wwwroot\intranet\controllers\admin\controller.php on line 115
+[10-Dec-2022 22:48:00 Europe/Prague] PHP Stack trace:
+[10-Dec-2022 22:48:00 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[10-Dec-2022 22:48:22 Europe/Prague] PHP Fatal error:  'break' not in the 'loop' or 'switch' context in C:\inetpub\wwwroot\intranet\controllers\admin\controller.php on line 115
+[10-Dec-2022 22:48:22 Europe/Prague] PHP Stack trace:
+[10-Dec-2022 22:48:22 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[10-Dec-2022 22:49:31 Europe/Prague] PHP Notice:  Undefined offset: 0 in C:\inetpub\wwwroot\intranet\registry\objects\page.class.php on line 132
+[10-Dec-2022 22:49:31 Europe/Prague] PHP Stack trace:
+[10-Dec-2022 22:49:31 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[10-Dec-2022 22:49:31 Europe/Prague] PHP   2. template->parseOutput() C:\inetpub\wwwroot\intranet\index.php:156
+[10-Dec-2022 22:49:31 Europe/Prague] PHP   3. template->replaceTags($pp = FALSE) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:236
+[10-Dec-2022 22:49:31 Europe/Prague] PHP   4. template->replaceDBTags($tag = 'UserList', $cacheId = 1) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:94
+[10-Dec-2022 22:49:31 Europe/Prague] PHP   5. page->getBlock($tag = 'UserList') C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:124
+[10-Dec-2022 22:49:31 Europe/Prague] PHP Notice:  Undefined offset: 0 in C:\inetpub\wwwroot\intranet\registry\objects\page.class.php on line 132
+[10-Dec-2022 22:49:31 Europe/Prague] PHP Stack trace:
+[10-Dec-2022 22:49:31 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[10-Dec-2022 22:49:31 Europe/Prague] PHP   2. template->parseOutput() C:\inetpub\wwwroot\intranet\index.php:156
+[10-Dec-2022 22:49:31 Europe/Prague] PHP   3. template->replaceTags($pp = FALSE) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:236
+[10-Dec-2022 22:49:31 Europe/Prague] PHP   4. template->replaceDBTags($tag = 'PermissionSet', $cacheId = 2) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:94
+[10-Dec-2022 22:49:31 Europe/Prague] PHP   5. page->getBlock($tag = 'PermissionSet') C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:124
+[10-Dec-2022 22:51:55 Europe/Prague] PHP Notice:  Undefined offset: 0 in C:\inetpub\wwwroot\intranet\registry\objects\page.class.php on line 132
+[10-Dec-2022 22:51:55 Europe/Prague] PHP Stack trace:
+[10-Dec-2022 22:51:55 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[10-Dec-2022 22:51:55 Europe/Prague] PHP   2. template->parseOutput() C:\inetpub\wwwroot\intranet\index.php:156
+[10-Dec-2022 22:51:55 Europe/Prague] PHP   3. template->replaceTags($pp = FALSE) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:236
+[10-Dec-2022 22:51:55 Europe/Prague] PHP   4. template->replaceDBTags($tag = 'UserList', $cacheId = 1) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:94
+[10-Dec-2022 22:51:55 Europe/Prague] PHP   5. page->getBlock($tag = 'UserList') C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:124
+[10-Dec-2022 22:51:55 Europe/Prague] PHP Notice:  Undefined offset: 0 in C:\inetpub\wwwroot\intranet\registry\objects\page.class.php on line 132
+[10-Dec-2022 22:51:55 Europe/Prague] PHP Stack trace:
+[10-Dec-2022 22:51:55 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[10-Dec-2022 22:51:55 Europe/Prague] PHP   2. template->parseOutput() C:\inetpub\wwwroot\intranet\index.php:156
+[10-Dec-2022 22:51:55 Europe/Prague] PHP   3. template->replaceTags($pp = FALSE) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:236
+[10-Dec-2022 22:51:55 Europe/Prague] PHP   4. template->replaceDBTags($tag = 'PermissionSet', $cacheId = 2) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:94
+[10-Dec-2022 22:51:55 Europe/Prague] PHP   5. page->getBlock($tag = 'PermissionSet') C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:124
+[10-Dec-2022 22:52:56 Europe/Prague] PHP Notice:  Undefined offset: 0 in C:\inetpub\wwwroot\intranet\registry\objects\page.class.php on line 132
+[10-Dec-2022 22:52:56 Europe/Prague] PHP Stack trace:
+[10-Dec-2022 22:52:56 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[10-Dec-2022 22:52:56 Europe/Prague] PHP   2. template->parseOutput() C:\inetpub\wwwroot\intranet\index.php:156
+[10-Dec-2022 22:52:56 Europe/Prague] PHP   3. template->replaceTags($pp = FALSE) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:236
+[10-Dec-2022 22:52:56 Europe/Prague] PHP   4. template->replaceDBTags($tag = 'UserList', $cacheId = 1) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:94
+[10-Dec-2022 22:52:56 Europe/Prague] PHP   5. page->getBlock($tag = 'UserList') C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:124
+[10-Dec-2022 22:52:56 Europe/Prague] PHP Notice:  Undefined offset: 0 in C:\inetpub\wwwroot\intranet\registry\objects\page.class.php on line 132
+[10-Dec-2022 22:52:56 Europe/Prague] PHP Stack trace:
+[10-Dec-2022 22:52:56 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[10-Dec-2022 22:52:56 Europe/Prague] PHP   2. template->parseOutput() C:\inetpub\wwwroot\intranet\index.php:156
+[10-Dec-2022 22:52:56 Europe/Prague] PHP   3. template->replaceTags($pp = FALSE) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:236
+[10-Dec-2022 22:52:56 Europe/Prague] PHP   4. template->replaceDBTags($tag = 'PermissionSet', $cacheId = 2) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:94
+[10-Dec-2022 22:52:56 Europe/Prague] PHP   5. page->getBlock($tag = 'PermissionSet') C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:124
+[10-Dec-2022 22:54:05 Europe/Prague] PHP Notice:  Undefined offset: 0 in C:\inetpub\wwwroot\intranet\registry\objects\page.class.php on line 132
+[10-Dec-2022 22:54:05 Europe/Prague] PHP Stack trace:
+[10-Dec-2022 22:54:05 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[10-Dec-2022 22:54:05 Europe/Prague] PHP   2. template->parseOutput() C:\inetpub\wwwroot\intranet\index.php:156
+[10-Dec-2022 22:54:05 Europe/Prague] PHP   3. template->replaceTags($pp = FALSE) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:236
+[10-Dec-2022 22:54:05 Europe/Prague] PHP   4. template->replaceDBTags($tag = 'UserList', $cacheId = 1) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:94
+[10-Dec-2022 22:54:05 Europe/Prague] PHP   5. page->getBlock($tag = 'UserList') C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:124
+[10-Dec-2022 22:54:05 Europe/Prague] PHP Notice:  Undefined offset: 0 in C:\inetpub\wwwroot\intranet\registry\objects\page.class.php on line 132
+[10-Dec-2022 22:54:05 Europe/Prague] PHP Stack trace:
+[10-Dec-2022 22:54:05 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[10-Dec-2022 22:54:05 Europe/Prague] PHP   2. template->parseOutput() C:\inetpub\wwwroot\intranet\index.php:156
+[10-Dec-2022 22:54:05 Europe/Prague] PHP   3. template->replaceTags($pp = FALSE) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:236
+[10-Dec-2022 22:54:05 Europe/Prague] PHP   4. template->replaceDBTags($tag = 'PermissionSet', $cacheId = 2) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:94
+[10-Dec-2022 22:54:05 Europe/Prague] PHP   5. page->getBlock($tag = 'PermissionSet') C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:124
+[10-Dec-2022 22:54:14 Europe/Prague] PHP Notice:  Undefined offset: 0 in C:\inetpub\wwwroot\intranet\registry\objects\page.class.php on line 132
+[10-Dec-2022 22:54:14 Europe/Prague] PHP Stack trace:
+[10-Dec-2022 22:54:14 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[10-Dec-2022 22:54:14 Europe/Prague] PHP   2. template->parseOutput() C:\inetpub\wwwroot\intranet\index.php:156
+[10-Dec-2022 22:54:14 Europe/Prague] PHP   3. template->replaceTags($pp = FALSE) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:236
+[10-Dec-2022 22:54:14 Europe/Prague] PHP   4. template->replaceDBTags($tag = 'UserList', $cacheId = 1) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:94
+[10-Dec-2022 22:54:14 Europe/Prague] PHP   5. page->getBlock($tag = 'UserList') C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:124
+[10-Dec-2022 22:54:14 Europe/Prague] PHP Notice:  Undefined offset: 0 in C:\inetpub\wwwroot\intranet\registry\objects\page.class.php on line 132
+[10-Dec-2022 22:54:14 Europe/Prague] PHP Stack trace:
+[10-Dec-2022 22:54:14 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[10-Dec-2022 22:54:14 Europe/Prague] PHP   2. template->parseOutput() C:\inetpub\wwwroot\intranet\index.php:156
+[10-Dec-2022 22:54:14 Europe/Prague] PHP   3. template->replaceTags($pp = FALSE) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:236
+[10-Dec-2022 22:54:14 Europe/Prague] PHP   4. template->replaceDBTags($tag = 'PermissionSet', $cacheId = 2) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:94
+[10-Dec-2022 22:54:14 Europe/Prague] PHP   5. page->getBlock($tag = 'PermissionSet') C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:124
+[10-Dec-2022 22:54:16 Europe/Prague] PHP Notice:  Undefined offset: 0 in C:\inetpub\wwwroot\intranet\registry\objects\page.class.php on line 132
+[10-Dec-2022 22:54:16 Europe/Prague] PHP Stack trace:
+[10-Dec-2022 22:54:16 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[10-Dec-2022 22:54:16 Europe/Prague] PHP   2. template->parseOutput() C:\inetpub\wwwroot\intranet\index.php:156
+[10-Dec-2022 22:54:16 Europe/Prague] PHP   3. template->replaceTags($pp = FALSE) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:236
+[10-Dec-2022 22:54:16 Europe/Prague] PHP   4. template->replaceDataTags($tag = 'portalList', $cacheId = 0) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:99
+[10-Dec-2022 22:54:16 Europe/Prague] PHP   5. page->getBlock($tag = 'portalList') C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:155
+[10-Dec-2022 22:55:14 Europe/Prague] PHP Notice:  Undefined offset: 0 in C:\inetpub\wwwroot\intranet\registry\objects\page.class.php on line 132
+[10-Dec-2022 22:55:14 Europe/Prague] PHP Stack trace:
+[10-Dec-2022 22:55:14 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[10-Dec-2022 22:55:14 Europe/Prague] PHP   2. template->parseOutput() C:\inetpub\wwwroot\intranet\index.php:156
+[10-Dec-2022 22:55:14 Europe/Prague] PHP   3. template->replaceTags($pp = FALSE) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:236
+[10-Dec-2022 22:55:14 Europe/Prague] PHP   4. template->replaceDataTags($tag = 'portalList', $cacheId = 0) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:99
+[10-Dec-2022 22:55:14 Europe/Prague] PHP   5. page->getBlock($tag = 'portalList') C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:155
+[10-Dec-2022 22:56:30 Europe/Prague] PHP Notice:  Undefined offset: 0 in C:\inetpub\wwwroot\intranet\registry\objects\page.class.php on line 132
+[10-Dec-2022 22:56:30 Europe/Prague] PHP Stack trace:
+[10-Dec-2022 22:56:30 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[10-Dec-2022 22:56:30 Europe/Prague] PHP   2. template->parseOutput() C:\inetpub\wwwroot\intranet\index.php:156
+[10-Dec-2022 22:56:30 Europe/Prague] PHP   3. template->replaceTags($pp = FALSE) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:236
+[10-Dec-2022 22:56:30 Europe/Prague] PHP   4. template->replaceDBTags($tag = 'UserList', $cacheId = 1) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:94
+[10-Dec-2022 22:56:30 Europe/Prague] PHP   5. page->getBlock($tag = 'UserList') C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:124
+[10-Dec-2022 22:56:30 Europe/Prague] PHP Notice:  Undefined offset: 0 in C:\inetpub\wwwroot\intranet\registry\objects\page.class.php on line 132
+[10-Dec-2022 22:56:30 Europe/Prague] PHP Stack trace:
+[10-Dec-2022 22:56:30 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[10-Dec-2022 22:56:30 Europe/Prague] PHP   2. template->parseOutput() C:\inetpub\wwwroot\intranet\index.php:156
+[10-Dec-2022 22:56:30 Europe/Prague] PHP   3. template->replaceTags($pp = FALSE) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:236
+[10-Dec-2022 22:56:30 Europe/Prague] PHP   4. template->replaceDBTags($tag = 'PermissionSet', $cacheId = 2) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:94
+[10-Dec-2022 22:56:30 Europe/Prague] PHP   5. page->getBlock($tag = 'PermissionSet') C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:124
+[10-Dec-2022 22:56:44 Europe/Prague] PHP Notice:  Undefined offset: 0 in C:\inetpub\wwwroot\intranet\registry\objects\page.class.php on line 132
+[10-Dec-2022 22:56:44 Europe/Prague] PHP Stack trace:
+[10-Dec-2022 22:56:44 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[10-Dec-2022 22:56:44 Europe/Prague] PHP   2. template->parseOutput() C:\inetpub\wwwroot\intranet\index.php:156
+[10-Dec-2022 22:56:44 Europe/Prague] PHP   3. template->replaceTags($pp = FALSE) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:236
+[10-Dec-2022 22:56:44 Europe/Prague] PHP   4. template->replaceDBTags($tag = 'UserList', $cacheId = 1) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:94
+[10-Dec-2022 22:56:44 Europe/Prague] PHP   5. page->getBlock($tag = 'UserList') C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:124
+[10-Dec-2022 22:56:44 Europe/Prague] PHP Notice:  Undefined offset: 0 in C:\inetpub\wwwroot\intranet\registry\objects\page.class.php on line 132
+[10-Dec-2022 22:56:44 Europe/Prague] PHP Stack trace:
+[10-Dec-2022 22:56:44 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[10-Dec-2022 22:56:44 Europe/Prague] PHP   2. template->parseOutput() C:\inetpub\wwwroot\intranet\index.php:156
+[10-Dec-2022 22:56:44 Europe/Prague] PHP   3. template->replaceTags($pp = FALSE) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:236
+[10-Dec-2022 22:56:44 Europe/Prague] PHP   4. template->replaceDBTags($tag = 'PermissionSet', $cacheId = 2) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:94
+[10-Dec-2022 22:56:44 Europe/Prague] PHP   5. page->getBlock($tag = 'PermissionSet') C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:124
+[10-Dec-2022 22:58:10 Europe/Prague] PHP Notice:  Undefined offset: 0 in C:\inetpub\wwwroot\intranet\registry\objects\page.class.php on line 132
+[10-Dec-2022 22:58:10 Europe/Prague] PHP Stack trace:
+[10-Dec-2022 22:58:10 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[10-Dec-2022 22:58:10 Europe/Prague] PHP   2. template->parseOutput() C:\inetpub\wwwroot\intranet\index.php:156
+[10-Dec-2022 22:58:10 Europe/Prague] PHP   3. template->replaceTags($pp = FALSE) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:236
+[10-Dec-2022 22:58:10 Europe/Prague] PHP   4. template->replaceDBTags($tag = 'UserList', $cacheId = 1) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:94
+[10-Dec-2022 22:58:10 Europe/Prague] PHP   5. page->getBlock($tag = 'UserList') C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:124
+[10-Dec-2022 22:58:10 Europe/Prague] PHP Notice:  Undefined offset: 0 in C:\inetpub\wwwroot\intranet\registry\objects\page.class.php on line 132
+[10-Dec-2022 22:58:10 Europe/Prague] PHP Stack trace:
+[10-Dec-2022 22:58:10 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[10-Dec-2022 22:58:10 Europe/Prague] PHP   2. template->parseOutput() C:\inetpub\wwwroot\intranet\index.php:156
+[10-Dec-2022 22:58:10 Europe/Prague] PHP   3. template->replaceTags($pp = FALSE) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:236
+[10-Dec-2022 22:58:10 Europe/Prague] PHP   4. template->replaceDBTags($tag = 'PermissionSet', $cacheId = 2) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:94
+[10-Dec-2022 22:58:10 Europe/Prague] PHP   5. page->getBlock($tag = 'PermissionSet') C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:124
+[10-Dec-2022 23:01:10 Europe/Prague] PHP Notice:  Undefined variable: TypeID in C:\inetpub\wwwroot\intranet\controllers\admin\controller.php on line 348
+[10-Dec-2022 23:01:10 Europe/Prague] PHP Stack trace:
+[10-Dec-2022 23:01:10 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[10-Dec-2022 23:01:10 Europe/Prague] PHP   2. Admincontroller->__construct($registry = class Registry {  }, $directCall = TRUE) C:\inetpub\wwwroot\intranet\index.php:103
+[10-Dec-2022 23:01:10 Europe/Prague] PHP   3. Admincontroller->modifyUser($ID = '') C:\inetpub\wwwroot\intranet\controllers\admin\controller.php:68
+[10-Dec-2022 23:01:10 Europe/Prague] PHP Fatal error:  Chyba při provádění dotazu: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1 in C:\inetpub\wwwroot\intranet\registry\databaseobjects\mysql.database.class.php on line 505
+[10-Dec-2022 23:01:10 Europe/Prague] PHP Stack trace:
+[10-Dec-2022 23:01:10 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[10-Dec-2022 23:01:10 Europe/Prague] PHP   2. Admincontroller->__construct($registry = class Registry {  }, $directCall = TRUE) C:\inetpub\wwwroot\intranet\index.php:103
+[10-Dec-2022 23:01:10 Europe/Prague] PHP   3. Admincontroller->modifyUser($ID = '') C:\inetpub\wwwroot\intranet\controllers\admin\controller.php:68
+[10-Dec-2022 23:01:10 Europe/Prague] PHP   4. mysqldatabase->isEmpty($cache_id = *uninitialized*) C:\inetpub\wwwroot\intranet\controllers\admin\controller.php:349
+[10-Dec-2022 23:01:10 Europe/Prague] PHP   5. mysqldatabase->executeQuery($queryStr = 'SELECT * FROM mis_agendatype WHERE NoSeries <> ') C:\inetpub\wwwroot\intranet\registry\databaseobjects\mysql.database.class.php:478
+[10-Dec-2022 23:01:10 Europe/Prague] PHP   6. trigger_error($message = 'Chyba při provádění dotazu: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near \'\' at line 1', $error_type = 256) C:\inetpub\wwwroot\intranet\registry\databaseobjects\mysql.database.class.php:505
+[10-Dec-2022 23:11:25 Europe/Prague] PHP Notice:  Undefined variable: TypeID in C:\inetpub\wwwroot\intranet\controllers\admin\controller.php on line 335
+[10-Dec-2022 23:11:25 Europe/Prague] PHP Stack trace:
+[10-Dec-2022 23:11:25 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[10-Dec-2022 23:11:25 Europe/Prague] PHP   2. Admincontroller->__construct($registry = class Registry {  }, $directCall = TRUE) C:\inetpub\wwwroot\intranet\index.php:103
+[10-Dec-2022 23:11:25 Europe/Prague] PHP   3. Admincontroller->modifyUser($ID = '1294F67A-D1D5-4470-BF7C-D4FAC23F9F31') C:\inetpub\wwwroot\intranet\controllers\admin\controller.php:59
+[10-Dec-2022 23:11:25 Europe/Prague] PHP Fatal error:  Chyba při provádění dotazu: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1 in C:\inetpub\wwwroot\intranet\registry\databaseobjects\mysql.database.class.php on line 505
+[10-Dec-2022 23:11:25 Europe/Prague] PHP Stack trace:
+[10-Dec-2022 23:11:25 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[10-Dec-2022 23:11:25 Europe/Prague] PHP   2. Admincontroller->__construct($registry = class Registry {  }, $directCall = TRUE) C:\inetpub\wwwroot\intranet\index.php:103
+[10-Dec-2022 23:11:25 Europe/Prague] PHP   3. Admincontroller->modifyUser($ID = '1294F67A-D1D5-4470-BF7C-D4FAC23F9F31') C:\inetpub\wwwroot\intranet\controllers\admin\controller.php:59
+[10-Dec-2022 23:11:25 Europe/Prague] PHP   4. mysqldatabase->isEmpty($cache_id = *uninitialized*) C:\inetpub\wwwroot\intranet\controllers\admin\controller.php:336
+[10-Dec-2022 23:11:25 Europe/Prague] PHP   5. mysqldatabase->executeQuery($queryStr = 'SELECT * FROM mis_agendatype WHERE NoSeries <> ') C:\inetpub\wwwroot\intranet\registry\databaseobjects\mysql.database.class.php:478
+[10-Dec-2022 23:11:25 Europe/Prague] PHP   6. trigger_error($message = 'Chyba při provádění dotazu: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near \'\' at line 1', $error_type = 256) C:\inetpub\wwwroot\intranet\registry\databaseobjects\mysql.database.class.php:505
+[10-Dec-2022 23:13:43 Europe/Prague] PHP Notice:  Undefined variable: TypeID in C:\inetpub\wwwroot\intranet\controllers\admin\controller.php on line 334
+[10-Dec-2022 23:13:43 Europe/Prague] PHP Stack trace:
+[10-Dec-2022 23:13:43 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[10-Dec-2022 23:13:43 Europe/Prague] PHP   2. Admincontroller->__construct($registry = class Registry {  }, $directCall = TRUE) C:\inetpub\wwwroot\intranet\index.php:103
+[10-Dec-2022 23:13:43 Europe/Prague] PHP   3. Admincontroller->modifyUser($ID = '1A6E25B5-02FA-4520-9452-B42BDCE0BD71') C:\inetpub\wwwroot\intranet\controllers\admin\controller.php:58
+[10-Dec-2022 23:13:43 Europe/Prague] PHP Fatal error:  Chyba při provádění dotazu: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1 in C:\inetpub\wwwroot\intranet\registry\databaseobjects\mysql.database.class.php on line 505
+[10-Dec-2022 23:13:43 Europe/Prague] PHP Stack trace:
+[10-Dec-2022 23:13:43 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[10-Dec-2022 23:13:43 Europe/Prague] PHP   2. Admincontroller->__construct($registry = class Registry {  }, $directCall = TRUE) C:\inetpub\wwwroot\intranet\index.php:103
+[10-Dec-2022 23:13:43 Europe/Prague] PHP   3. Admincontroller->modifyUser($ID = '1A6E25B5-02FA-4520-9452-B42BDCE0BD71') C:\inetpub\wwwroot\intranet\controllers\admin\controller.php:58
+[10-Dec-2022 23:13:43 Europe/Prague] PHP   4. mysqldatabase->isEmpty($cache_id = *uninitialized*) C:\inetpub\wwwroot\intranet\controllers\admin\controller.php:335
+[10-Dec-2022 23:13:43 Europe/Prague] PHP   5. mysqldatabase->executeQuery($queryStr = 'SELECT * FROM mis_agendatype WHERE NoSeries <> ') C:\inetpub\wwwroot\intranet\registry\databaseobjects\mysql.database.class.php:478
+[10-Dec-2022 23:13:43 Europe/Prague] PHP   6. trigger_error($message = 'Chyba při provádění dotazu: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near \'\' at line 1', $error_type = 256) C:\inetpub\wwwroot\intranet\registry\databaseobjects\mysql.database.class.php:505
+[10-Dec-2022 23:21:47 Europe/Prague] PHP Notice:  Undefined variable: fullname in C:\inetpub\wwwroot\intranet\controllers\admin\controller.php on line 342
+[10-Dec-2022 23:21:47 Europe/Prague] PHP Stack trace:
+[10-Dec-2022 23:21:47 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[10-Dec-2022 23:21:47 Europe/Prague] PHP   2. Admincontroller->__construct($registry = class Registry {  }, $directCall = TRUE) C:\inetpub\wwwroot\intranet\index.php:103
+[10-Dec-2022 23:21:47 Europe/Prague] PHP   3. Admincontroller->modifyUser($ID = '1A6E25B5-02FA-4520-9452-B42BDCE0BD71') C:\inetpub\wwwroot\intranet\controllers\admin\controller.php:58
+[10-Dec-2022 23:21:47 Europe/Prague] PHP Fatal error:  Uncaught Error: Call to undefined method Admincontroller::listAgendaType() in C:\inetpub\wwwroot\intranet\controllers\admin\controller.php:347
+Stack trace:
+#0 C:\inetpub\wwwroot\intranet\controllers\admin\controller.php(58): Admincontroller->modifyUser('1A6E25B5-02FA-4...')
+#1 C:\inetpub\wwwroot\intranet\index.php(103): Admincontroller->__construct(Object(Registry), true)
+#2 {main}
+  thrown in C:\inetpub\wwwroot\intranet\controllers\admin\controller.php on line 347
+[10-Dec-2022 23:25:12 Europe/Prague] PHP Notice:  Undefined variable: fullname in C:\inetpub\wwwroot\intranet\controllers\admin\controller.php on line 342
+[10-Dec-2022 23:25:12 Europe/Prague] PHP Stack trace:
+[10-Dec-2022 23:25:12 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[10-Dec-2022 23:25:12 Europe/Prague] PHP   2. Admincontroller->__construct($registry = class Registry {  }, $directCall = TRUE) C:\inetpub\wwwroot\intranet\index.php:103
+[10-Dec-2022 23:25:12 Europe/Prague] PHP   3. Admincontroller->modifyUser($ID = '1A6E25B5-02FA-4520-9452-B42BDCE0BD71') C:\inetpub\wwwroot\intranet\controllers\admin\controller.php:58
+[10-Dec-2022 23:31:16 Europe/Prague] PHP Notice:  Undefined offset: 0 in C:\inetpub\wwwroot\intranet\registry\objects\page.class.php on line 132
+[10-Dec-2022 23:31:16 Europe/Prague] PHP Stack trace:
+[10-Dec-2022 23:31:16 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[10-Dec-2022 23:31:16 Europe/Prague] PHP   2. template->parseOutput() C:\inetpub\wwwroot\intranet\index.php:156
+[10-Dec-2022 23:31:16 Europe/Prague] PHP   3. template->replaceTags($pp = FALSE) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:236
+[10-Dec-2022 23:31:16 Europe/Prague] PHP   4. template->replaceDataTags($tag = 'portalList', $cacheId = 0) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:99
+[10-Dec-2022 23:31:16 Europe/Prague] PHP   5. page->getBlock($tag = 'portalList') C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:155

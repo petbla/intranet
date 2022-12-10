@@ -27,19 +27,6 @@ class Admincontroller {
 		{
 			$urlBits = $this->registry->getURLBits();    
 			$params = $this->registry->getURLParam();
-			$ID = '';
-			if ($params !== '')
-			{
-				$params = explode('&',$params);
-				if (isset($params[1]))
-				{
-					$arr = explode('=',$params[1]);
-					if($arr[0] == 'ID')
-					{
-						$ID = $arr[1];
-					}
-				}
-			}
 
 			if( isset( $urlBits[1] ) )
 			{		
@@ -49,73 +36,69 @@ class Admincontroller {
 						if ( $this->registry->getObject('authenticate')->isAdmin())
 						{
 							$this->updateDmsStore();
-							return;
 						}
+						break;
 					case 'users':
 						if ( $this->registry->getObject('authenticate')->isAdmin())
 						{
 							$this->listUsers();
-							return;
 						}
-					case 'adduser':
+						break;
+					case 'user':
 						if ( $this->registry->getObject('authenticate')->isAdmin())
-						{
-							$this->addUser();
-							return;
+						{							
+							$action = isset($urlBits[2]) ? $urlBits[2] : '';
+							$action = isset($_POST["action"]) ? $_POST["action"] : $action;
+							switch ($action) {
+								case 'add':
+									$this->addUser();
+									break;
+								case 'modify':
+									$UserID = isset($_POST["ID"]) ? $_POST["ID"] : '';
+									$this->modifyUser($UserID);
+									break;								
+								case 'delete':
+									$UserID = isset($urlBits[3]) ? $urlBits[3] : '';
+									$this->deleteUser($UserID);
+									break;								
+								default:
+							}
 						}
-					case 'deleteuser':
-						if ( $this->registry->getObject('authenticate')->isAdmin())
-						{
-							$this->deleteUser($ID);
-							return;
-						}
-					case 'modifyuser':
-						if ( $this->registry->getObject('authenticate')->isAdmin())
-						{
-							$this->modifyUser($ID);
-							return;
-						}
+						break;
 					case 'log':
 						if ( $this->registry->getObject('authenticate')->isAdmin())
 						{
 							$this->showLog();
-							return;
 						}
+						break;
 					case 'listPortal':
 						if ( $this->registry->getObject('authenticate')->isAdmin())
 						{
 							$this->listPortal();
-							return;
 						}
+						break;
 					case 'setup':
 						if ( $this->registry->getObject('authenticate')->isAdmin())
 						{
 							$this->listSetup();
-							return;
 						}
+						break;
 					case 'setPortal':
 						if ( $this->registry->getObject('authenticate')->isAdmin())
 						{
 							if( isset( $urlBits[2] ) ){
 								$this->setPortal($urlBits[2]);
 							}								
-							return;
 						}
+						break;
+					default:
+						$this->error($caption['msg_unauthorized']);		
+						break;
 				}
-			}
-			else
-			{
-				if ( $this->registry->getObject('authenticate')->isAdmin())
-				{
-					$this->registry->getObject('template')->getPage()->addTag('message','Administrace');
-					$this->build();		
-					return;
-				}
+			}else{
+				$this->build('admin.tpl.php');
 			}
 		}
-		$message = $caption['msg_unauthorized'];
-		$this->registry->getObject('template')->getPage()->addTag('message',$message);
-		$this->build();		
 	}
 
     /**
@@ -219,10 +202,17 @@ class Admincontroller {
 		$this->registry->getObject('db')->initQuery('setup');
 		$this->registry->getObject('db')->findFirst();
 		$setup = $this->registry->getObject('db')->getResult();
+		$setup['Separator'] = DIRECTORY_SEPARATOR;
 		$this->registry->getObject('template')->dataToTags( $setup, 's_' );
-		
 
-		$this->build('admin.tpl.php');		
+		$this->registry->getObject('db')->initQuery('source','*',false);
+		$this->registry->getObject('db')->findSet();
+		$source = $this->registry->getObject('db')->getResult();
+		$cache = $this->registry->getObject('db')->cacheData($source);
+		
+		$this->registry->getObject('template')->getPage()->addTag( 'portalList', array('DATA', $cache));
+
+		$this->build('admin-setup.tpl.php');		
 	}
 
 	/**
@@ -245,13 +235,6 @@ class Admincontroller {
 		if (!$this->registry->getObject('db')->isEmpty( $cache ))
 		{
 			$this->registry->getObject('template')->getPage()->addTag( 'UserList', array( 'SQL', $cache ) );   
-		}
-		else
-		{
-			$this->registry->getObject('template')->getPage()->AddTag('ID','');
-			$this->registry->getObject('template')->getPage()->AddTag('Name','');
-			$this->registry->getObject('template')->getPage()->AddTag('FullName','');
-			$this->registry->getObject('template')->getPage()->AddTag('PermissionSet','');
 		}
 
 		// Form add user
@@ -298,14 +281,14 @@ class Admincontroller {
 		
 		$message = $caption['new_user_failed'];
 
-		if (isset($_POST['usr_name']) && isset($_POST['usr_perset']) && isset($_POST['usr_psw1']) && isset($_POST['usr_psw2']))
+		if (isset($_POST['Name']) && isset($_POST['PerSet']) && isset($_POST['Psw1']) && isset($_POST['Psw2']))
 		{
-			$name = $_POST['usr_name'];
-			$fullname = $_POST['usr_fullname'];
+			$name = $_POST['Name'];
+			$fullname = $_POST['FullName'];
 			$name = $this->registry->getObject('db')->sanitizeData($name);
 			$fullname = $this->registry->getObject('db')->sanitizeData($fullname);
-			$perset = $_POST['usr_perset'];
-			$psw = ($_POST['usr_psw1'] === $_POST['usr_psw2']) ? $_POST['usr_psw1'] : '';
+			$perset = $_POST['PerSet'];
+			$psw = ($_POST['Psw1'] === $_POST['Psw2']) ? $_POST['Psw1'] : '';
 			if ($psw != '')
 			{
 				$psw = md5($psw);
@@ -327,9 +310,42 @@ class Admincontroller {
 				{
 					$message = $caption['new_user_created'];
 				}
-
 			}
 		}
+		$this->listUsers();
+	}
+
+	/**
+	 * Editace uživatele
+	 * @return void
+	 */
+	private function modifyUser( $ID )
+	{
+		$Name = isset($_POST['Name']) ? $_POST['Name'] : '';
+		if ($Name == ''){
+			$this->error('Login musí být vyplněn!');
+			return;
+		};
+		$fullname = isset($_POST['FullName']) ? $_POST['FullName'] : '';
+		if ($Name == ''){
+			$this->error('Jnémo uživatele  musí být vyplněno!');
+			return;
+		};
+		if ($_POST['Psw1'] === $_POST['Psw2']){
+			$psw = ($_POST['Psw1'] === $_POST['Psw2']) ? $_POST['Psw1'] : '';
+		}else{
+			$this->error('Kontrola hesla neodpovídá zadanému heslu.!');
+			return;
+		}
+
+		// Update
+		$changes = array();
+		$changes['Name'] = $Name;
+		$changes['FullName'] = $fullname;
+		$changes['Password'] = $psw;
+		$changes['PermissionSet'] =  $_POST['PerSet'];
+		$condition = "ID = '$ID'";
+		$this->registry->getObject('db')->updateRecords('user',$changes, $condition);
 		$this->listUsers();
 	}
 
@@ -341,10 +357,12 @@ class Admincontroller {
 	 * @return void
 	 */
 	private function deleteUser( $ID )
-	{
+	{		
 		global $config, $caption;
         $pref = $config['dbPrefix'];
-		$this->pageMessage = '';
+
+		if ($ID == "")
+			return;
 
 		$UserID = $this->registry->getObject('authenticate')->getUserID();
 		$userName = $this->registry->getObject('authenticate')->getUserName();
@@ -356,15 +374,11 @@ class Admincontroller {
 			case $this->isUserUsed($ID):
 				$this->pageMessage = 'Uživatel se již přihlásil, nelze jej odstranit.';
 				break;
-		};
-	
-		
-		if ($this->pageMessage == "")
-		{
-			$condition = "ID = '$ID'";
-			$data['Close'] = 1;
-			$this->registry->getObject('log')->addMessage("Uzavření uživatele ID = $ID",'user',$ID);
-			$this->registry->getObject('db')->updateRecords('user',$data,$condition);			
+			default:
+				$condition = "ID = '$ID'";
+				$data['Close'] = 1;
+				$this->registry->getObject('log')->addMessage("Uzavření uživatele ID = $ID",'user',$ID);
+				$this->registry->getObject('db')->updateRecords('user',$data,$condition);			
 		}
 		$this->listUsers();
 	}

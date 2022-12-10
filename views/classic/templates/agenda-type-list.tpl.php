@@ -29,10 +29,10 @@
                     <img src="views/classic/images/nav/addNew.png" alt="{lbl_New}" onClick = "modifyAgendaType('','','','add');"/>                    
                 </td>
                 <td>
-                    <input type="text" id="fieldName" class="value" name="Name" value=""/>
+                    <input type="text" id="fieldName" class="value" name="Name" value="" required/>
                 </td>
                 <td>
-                    <input type="text" id="fieldNoSeries" class="value" name="NoSeries" value=""/>
+                    <input type="text" id="fieldNoSeries" class="value" name="NoSeries" value="" required/>
                     </td>
                 <td>
                     <input type="hidden" id="fieldTypeID" name="TypeID" value="">

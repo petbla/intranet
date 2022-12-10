@@ -324,7 +324,7 @@ class UsefulFunction {
     	return sprintf('%04X%04X-%04X-%04X-%04X-%04X%04X%04X', mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(16384, 20479), mt_rand(32768, 49151), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535));
 	}
 
-  public function ConvertToSharePathName( $path )
+  public function ConvertToSharePath( $path )
   {
     $path = str_replace('\\','/',$path);
     $path = str_replace('https:','',$path);
@@ -336,7 +336,7 @@ class UsefulFunction {
     return($path);
   }
 
-  public function ConvertToDirectoryPathName( $path, $addLast = true )
+  public function ConvertToDirectorySeparator( $path, $addLast = true )
   {
     if($path == "")
       return("");

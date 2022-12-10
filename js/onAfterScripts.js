@@ -28,6 +28,7 @@ var a_agendaSourceFolder;
 var arrGroup = null;
 var grouplistnewcontact;
 var fld_handled;
+var fld_webroot;
 
 
 // ----------------------------------------------------------------------------------------
@@ -55,6 +56,7 @@ a_agendaPDF = document.querySelectorAll('[a_type="agendaPDF"]');
 a_agendaUnlink = document.querySelectorAll('[a_type="agendaUnlink"]');
 a_agendaSourceFolder = document.querySelectorAll('[a_type="agendaSourceFolder"]');
 fld_handled = document.querySelector('#fld_handled');
+fld_webroot = document.querySelector('#fld_webroot');
 grouplistnewcontact = document.querySelector( '[id="grouplistnewcontact"]' );
 
 
@@ -688,6 +690,21 @@ if(fld_handled){
     fld_handled.checked = getCookie(name);
 }
 
+if(fld_webroot){
+    var url;
+    var xhr = new XMLHttpRequest();
+
+    url = fld_webroot.getAttribute('data-dms-server');
+    xhr.open("get",url,false);
+    xhr.send(null);    
+    
+    if (xhr.status == 200){   
+        fld_webroot.src = "views/classic/images/icon/trafficOK.png";
+    }else{
+        fld_webroot.src = "views/classic/images/icon/trafficFailed.png";
+    }
+}
+
 function initForm(tag,id) {
     var element, oldelement;
 
@@ -737,4 +754,19 @@ function modifyAgendaType(TypeID,Name,NoSeries,Action){
     document.getElementById("fieldName").value = Name;
     document.getElementById("fieldNoSeries").value = NoSeries;
     document.getElementById("fieldAction").value = Action;
+}
+
+function modifyUser(ID,Name,FullName,PermissionSet,Action,read){
+    var e;
+
+    document.getElementById("fieldID").value = ID;
+    document.getElementById("fieldName").value = Name;
+    document.getElementById("fieldName").readOnly = read;    
+    document.getElementById("fieldFullName").value = FullName;
+    document.getElementById("fieldPerSet").value = PermissionSet;
+    document.getElementById("fieldAction").value = Action;
+    e = document.getElementById("fieldPerSet" + Name);
+    if(e){
+        e.setAttribute('selected','selected');
+    }
 }
