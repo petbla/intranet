@@ -2,7 +2,7 @@
     <tr>
         <td class="label">{lbl_First_name}</td>
         <td class="value">
-            {Title}{FirstName}&nbsp;{LastName}<br>
+            {FullName}<br>
             {Function}
         </td>
         <td class="label">{lbl_Phone}</td>

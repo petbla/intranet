@@ -93,6 +93,7 @@ $activeControllers[] = 'agenda';
 $activeControllers[] = 'zob';
 $activeControllers[] = 'general';
 $activeControllers[] = 'admin';
+$activeControllers[] = 'todo';
 $currentController = $registry->getURLBit( 0 );  // controller
 
 if( in_array( $currentController, $activeControllers ) )
@@ -121,8 +122,6 @@ $registry->getObject('template')->getPage()->addTag( 'dateText', $dateText );
 $perSet = $registry->getObject('authenticate')->getPermissionSet();
 $isAdmin = $registry->getObject('authenticate')->isAdmin();
 $contactBarMenuItem = $perSet > 0 ? "<li><a href='index.php?page=contact/list'>".$caption['Contacts']."</a></li>" : '';
-$archiveBarMenuItem = $perSet == 9 ? "<li><a href='index.php?page=document/listArchive'>".$caption['Archive']."</a></li>" : '';
-$newsBarMenuItem = $perSet == 9 ? "<li><a href='index.php?page=document/listNew'>".$caption['News']."</a></li>" : '';
 $PortalCounter = $perSet == 9 ? $registry->getObject('db')->GetPortalCount() : 0;
 switch ($perSet) {
 	case 9:
@@ -148,8 +147,6 @@ $adminBarMenuItem = $isAdmin ? "<li><a href='index.php?page=admin'>Administrace<
 $registry->getObject('template')->getPage()->addTag( 'adminBarMenuItem', $adminBarMenuItem );
 $registry->getObject('template')->getPage()->addTag( 'contactBarMenuItem', $contactBarMenuItem );
 $registry->getObject('template')->getPage()->addTag( 'calendarBarMenuItem', $calendarBarMenuItem );
-$registry->getObject('template')->getPage()->addTag( 'archiveBarMenuItem', $archiveBarMenuItem );
-$registry->getObject('template')->getPage()->addTag( 'newsBarMenuItem', $newsBarMenuItem );
 $registry->getObject('template')->getPage()->addTag('compName',$config['compName']);
 
 // vše analyzuj a zobraz výsledek

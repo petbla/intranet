@@ -84,7 +84,7 @@ function wsLogDocumentView(ID,siteurl) {
 function wsSetRemindEntry(ID,siteurl,BaseUrl) {
     const Http = new XMLHttpRequest();
     var url, result;
-    url = siteurl + 'index.php?page=document/WS/setRemind/' + ID;
+    url = siteurl + 'index.php?page=todo/WS/setRemind/' + ID;
     Http.open("GET", url);
     Http.send();
     Http.onreadystatechange = (e) => {

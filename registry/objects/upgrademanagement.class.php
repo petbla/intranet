@@ -262,6 +262,80 @@ class upgrademanagement {
             // upgrade to 2.21
             $this->upgrade_221('2.21');
         }
+        if ($this->version === '2.21') 
+        {
+            // upgrade to 2.22
+            $this->upgrade_222('2.22');
+        }
+    }
+
+    private function upgrade_222($upVer)
+    {
+		global $config;
+        $pref = $config['dbPrefix'];
+
+        // Fill FullName in contact
+        $this->registry->getObject('db')->initQuery('contact');
+        if ($this->registry->getObject('db')->findSet()){
+            $contact = $this->registry->getObject('db')->getResult();
+            foreach ($contact as $data) {
+                $ID = $data['ID'];
+                $FullName = isset($data['LastName']) ? $data['LastName'] : "";
+                if($data['FirstName'] !== "")
+                {
+                    $sp = ($FullName !== "") ? " " : "";
+                    $FullName = $FullName . $sp . $data['FirstName'];
+                }
+                if($data['Title'] !== "")
+                {
+                    $sp = ($FullName !== "" ) ? " " : "";
+                    $FullName = $FullName . $sp . $data['Title'];
+                }
+                $FullName = ($FullName !== "" ) ? $FullName : $data['Company'];
+                $changes['FullName'] = $FullName;
+                $condition = "ID = '$ID'";
+                $this->registry->getObject('db')->updateRecords('contact',$changes, $condition);            
+            };
+        };
+        
+        
+        // Fill RemindUserID, RemindContactID in dmsentry
+        $this->registry->getObject('db')->initQuery('dmsentry');
+        $this->registry->getObject('db')->setCondition("RemindResponsiblePerson <> ''");
+        if ($this->registry->getObject('db')->findSet()){
+            $dmsentry = $this->registry->getObject('db')->getResult();
+            foreach ($dmsentry as $entry) {
+                $changes = array();
+                $entryNo = $entry['EntryNo'];               
+                $success = false;
+
+                // Find User
+                $this->registry->getObject('db')->initQuery('user');
+                $this->registry->getObject('db')->setFilter('Name',$entry['RemindResponsiblePerson']);
+                if ($this->registry->getObject('db')->findFirst()){
+                    $user = $this->registry->getObject('db')->getResult();                    
+                    $changes['RemindUserID'] = $user['ID'];
+                    $condition = "EntryNo = '$entryNo'";
+                    $this->registry->getObject('db')->updateRecords('dmsentry',$changes, $condition);            
+                    $success = true;
+                }
+
+                // Find contact
+                if (!$success){
+                    $this->registry->getObject('db')->initQuery('contact');
+                    $this->registry->getObject('db')->setFilter('FullName',$entry['RemindResponsiblePerson']);
+                    if ($this->registry->getObject('db')->findFirst()){
+                        $contact = $this->registry->getObject('db')->getResult();                    
+                        $changes['RemindContactID'] = $contact['ID'];
+                        $condition = "EntryNo = '$entryNo'";
+                        $this->registry->getObject('db')->updateRecords('dmsentry',$changes, $condition);            
+                        $success = true;
+                    }
+                }
+        
+            }
+        }      
+        $this->setNewVersion($upVer);
     }
 
     private function upgrade_221($upVer)

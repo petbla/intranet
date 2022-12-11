@@ -303,7 +303,7 @@ if(items){
             // ADocumentNo select
             SelectedADocumentNo = "SelectedADocumentNo" + e.target.id;
             ADocumentNo = document.querySelector('[ADocumentNoID="' + e.target.id + '"]' );
-            if (ADocumentNo.innerHTML != '<br>'){
+            if (ADocumentNo.innerHTML != ''){
                 document.getElementById(SelectedADocumentNo).style.display = 'none';
             };
    

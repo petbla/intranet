@@ -203,6 +203,11 @@ class Admincontroller {
 		$this->registry->getObject('db')->findFirst();
 		$setup = $this->registry->getObject('db')->getResult();
 		$setup['Separator'] = DIRECTORY_SEPARATOR;
+		if ($config['synchroFolderonOpen'] === true){
+			$setup['synchroFolderonOpen'] = 'ano';
+		}else{
+			$setup['synchroFolderonOpen'] = 'ne';
+		};
 		$this->registry->getObject('template')->dataToTags( $setup, 's_' );
 
 		$this->registry->getObject('db')->initQuery('source','*',false);

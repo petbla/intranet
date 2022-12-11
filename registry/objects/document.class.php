@@ -34,7 +34,14 @@ class document {
 		$cache = $this->registry->getObject('db')->cacheQuery( $sql );
 		if (!$this->registry->getObject('db')->isEmpty( $cache ))
 		{
-			while( $rec = $this->registry->getObject('db')->resultsFromCache( $cache ) )
+            // Select Free Agenda Document No.
+            $sql = "SELECT ID as AID, DocumentNo, Description FROM ".$pref."agenda ".
+                "WHERE `EntryID` = '' ".
+                "ORDER BY TypeID,DocumentNo";
+            $cache2 = $this->registry->getObject('db')->cacheQuery( $sql );
+            $this->registry->getObject('template')->getPage()->addTag( 'documentList', array( 'SQL', $cache2 ) );
+            			
+            while( $rec = $this->registry->getObject('db')->resultsFromCache( $cache ) )
 			{			
                 $this->model = new Entry( $this->registry, $rec['ID'] );
                 $entry = $this->model->getData();
@@ -48,22 +55,14 @@ class document {
 
                 $rec['viewFileCardID'] = 'viewFileCard'.$rec['ID'];					
                 $rec['editFileCardID'] = 'editFileCard'.$rec['ID'];					
-
-                // Select Free Agenda Document No.
-                $sql = "SELECT ID as AID, DocumentNo, Description FROM ".$pref."agenda ".
-                    "WHERE `EntryID` = '' ".
-                    "ORDER BY TypeID,DocumentNo";
-                $cache2 = $this->registry->getObject('db')->cacheQuery( $sql );
-                $this->registry->getObject('template')->getPage()->addTag( 'documentList', array( 'SQL', $cache2 ) );
-
             
                 $result[] = $rec;
-		    }			
-            $isEntries = true;
+            };
+
             $cache = $this->registry->getObject('db')->cacheData( $result );
             $this->registry->getObject('template')->getPage()->addTag( 'DocumentItems', array( 'DATA', $cache ) );
-            
-		}else{
+            $isEntries = true;            
+		}else{            
             $isEntries = false;
         }                
         
@@ -82,9 +81,6 @@ class document {
         else
             $breads = $showBreads;
         $this->registry->getObject('template')->getPage()->addTag( 'breads', $breads );
-
-        // Search BOX
-        $this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
 
         // Show Folders
         if ($showFolder)
@@ -113,14 +109,7 @@ class document {
         if ($perSet > 0)
         {
             $this->registry->getObject('template')->addTemplateBit('actionpanel', 'document-list-actions.tpl.php');
-            if($template == 'list-entry-resultsearch.tpl.php')
-            {
-                $this->registry->getObject('template')->getPage()->addTag( 'addFiles', '' );
-            }
-            else
-            {
-                $this->registry->getObject('template')->addTemplateBit('addFiles', 'document-list-addfiles.tpl.php');
-            };
+            $this->registry->getObject('template')->addTemplateBit('addFiles', 'document-list-addfiles.tpl.php');
             $this->registry->getObject('template')->addTemplateBit('editcardFile', 'document-entry-editcard.tpl.php');
             $this->registry->getObject('template')->addTemplateBit('editIcon', 'document-list-actionicons.tpl.php');
             if(($entry !== null) && ($entry['Type'] == 20))

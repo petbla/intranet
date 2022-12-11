@@ -51,6 +51,7 @@ class Entry{
 	private $RemindUserID;
 	private $RemindContactID;
 	private $RemindState;
+	private $RemindStateText;
 	private $Private;
 
 	private $ADocumentNo;
@@ -74,7 +75,7 @@ class Entry{
 		
 	public function __construct( Registry $registry, $id )
 	{
-		global $config;
+		global $config, $caption;
         $pref = $config['dbPrefix'];
 
 		$this->registry = $registry;
@@ -127,7 +128,32 @@ class Entry{
 				$this->RemindResponsiblePerson = $data['RemindResponsiblePerson'];
 				$this->RemindUserID = $data['RemindUserID'];
 				$this->RemindContactID = $data['RemindContactID'];
+
 				$this->RemindState = $data['RemindState'];
+				switch ($this->RemindState) {
+					case '00_new':
+						$this->RemindStateText = $caption['RemindState00'];
+						break;
+					case '10_process':
+						$this->RemindStateText = $caption['RemindState10'];
+						break;
+					case '20_wait':
+						$this->RemindStateText = $caption['RemindState20'];
+						break;
+					case '30_aprowed':
+						$this->RemindStateText = $caption['RemindState30'];
+						break;
+					case '40_storno':
+						$this->RemindStateText = $caption['RemindState40'];
+						break;
+					case '50_finish':
+						$this->RemindStateText = $caption['RemindState50'];
+						break;					
+					default:
+						$this->RemindStateText = '';
+						break;
+				}
+					
 				$this->Private = $data['Private'];
 								
 				$this->activeEntry = true;
@@ -250,6 +276,19 @@ class Entry{
 		return $this->activeEntry;
 	}
 	
+	public function getEmpty()
+	{
+		$this->initNew();
+		$this->ModifyDateTime = '';
+		$this->CreateDate = '';
+		$this->NewEntry = 0;
+		$this->LastChange = '';
+		$this->RemindFromDate = '';
+		$this->RemindLastDate = '';
+		$entry = $this->getData();		
+		return $entry;
+	}
+
 	public function getData( $onlyCuloms = false )
 	{
 		$data = array();

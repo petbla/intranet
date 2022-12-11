@@ -2,7 +2,7 @@
     <table class="edit-card">
         <tr>
             <td colspan="3" class="title">
-                ADMIN menu
+                ADMIN menu (config.php)
             </td>
         </tr>
         <tr>
@@ -33,7 +33,26 @@
     <table class="edit-card">
         <tr>
             <td colspan="3" class="title">
-                Databáze / Portál
+                DMS (config.php)
+            </td>
+        </tr>
+        <tr>
+            <td class="name">
+                Synchronizace složky při otevření
+            </td>
+            <td class="value">
+                <span>
+                    {s_synchroFolderonOpen}
+                </span>
+            </td>
+            <td class="action">
+            </td>
+        </tr>
+    </table>
+    <table class="edit-card">
+        <tr>
+            <td colspan="3" class="title">
+                Databáze / Portál 
             </td>
         </tr>
         <tr>

@@ -94,6 +94,8 @@
                 <button type="submit" name="stornoRemind" class="action_button" value="{lbl_CancelRemind}">{lbl_CancelRemind}</button>
                 <input type="hidden" name="searchText" value={searchText} />
                 <input type="hidden" name="searchType" value="general" />
+                <input type="hidden" name="controller" value="{controller}" />
+                <input type="hidden" name="controllerAction" value="{controllerAction}" />
             </td>
             <td colspan="2">
                 <label class="title">{lbl_Modified}: </label>

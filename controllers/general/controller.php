@@ -283,6 +283,7 @@ class Generalcontroller {
 
 						$rec['Title'] = ($contact['Title'] <> "")? $contact['Title'].'&nbsp;' : '';
 						$rec['FirstName'] = $contact['FirstName'];
+						$rec['FullName'] = $contact['FullName'];
 						$rec['LastName'] = $contact['LastName'];
 						$rec['Function'] = $contact['Function'];
 						$rec['Company'] = $contact['Company'];
