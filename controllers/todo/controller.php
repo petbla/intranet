@@ -46,6 +46,9 @@ class Todocontroller{
 					case 'listMyTodoClose':
 						$this->listMyTodoClose();
 						break;
+					case 'listNote':
+						$this->listNote();
+						break;
 					case 'listNew':
 						$this->listNewDocuments();
 						break;
@@ -151,6 +154,11 @@ class Todocontroller{
 		$rec['activeCat'] = $rec['idCat'] == $action ? 'active' : '';
 		$table[] = $rec;
 
+		$rec['idCat'] = 'listNote';
+		$rec['titleCat'] = 'Poznámky';
+		$rec['activeCat'] = $rec['idCat'] == $action ? 'active' : '';
+		$table[] = $rec;
+
 		$rec['idCat'] = 'listNew';
 		$rec['titleCat'] = 'Novinky - (poslední změny)';
 		$rec['activeCat'] = $rec['idCat'] == $action ? 'active' : '';
@@ -236,6 +244,60 @@ class Todocontroller{
 				  	"WHERE Archived = 0 AND Remind = 1 ".
 				  	"AND PermissionSet <= $this->perSet ".
 				  	"AND RemindUserID = '$userID' ".
+				  	"ORDER BY RemindLastDate,Title ";
+
+		$sql = $this->registry->getObject('db')->getSqlByPage( $sql );
+		$cache = $this->registry->getObject('db')->cacheQuery( $sql );
+		$result = null;
+		
+		while( $rec = $this->registry->getObject('db')->resultsFromCache( $cache ) )
+		{			
+			$this->model = new Entry( $this->registry, $rec['ID'] );
+			$entry = $this->model->getData();
+		
+			$rec['dmsClassName'] = 'item';                
+			$rec['DocumentType'] = $entry['DocumentType'];
+			$rec['RemindState'] = $entry['RemindStateText'];
+			$rec['editFileCardID'] = 'editFileCard'.$rec['ID'];					
+			$result[] = $rec;
+		};
+
+		if ($result == null){			
+			$this->model = new Entry($this->registry,'');
+			$rec = $this->model->getEmpty();
+			$rec['termDays'] = '';
+			$result[] = $rec;
+		}
+
+		$cache = $this->registry->getObject('db')->cacheData( $result );
+		$this->registry->getObject('template')->getPage()->addTag( 'listTodo', array( 'DATA', $cache ) );
+        $this->registry->getObject('template')->getPage()->addTag( 'controllerAction', 'listTodo' );
+
+		// Logování
+		$this->registry->getObject('log')->addMessage('Zobrazení seznamu všech aktivních úkolů.','DmsEntry','');
+		// Zobrazení výsledku 
+		$this->build('todo-list.tpl.php');
+	}	
+	
+    /**
+     * Zobrazení seznamu všech úkolů
+     * @return void
+     */
+	public function listNote()
+	{
+		require_once( FRAMEWORK_PATH . 'models/entry/model.php');
+		
+		$userID = $this->registry->getObject('authenticate')->getUserID();
+		
+		$sql = "SELECT ID,Title,Name,Type,Url,Parent,ModifyDateTime,LOWER(FileExtension) as FileExtension ".
+					",IF(Remind=0,'0','1') as Remind,IF(RemindClose=0,'0','1') as RemindClose,RemindFromDate,RemindLastDate".
+					",Content,RemindResponsiblePerson,RemindUserID,RemindContactID,RemindState ".	
+					",(DATE_FORMAT(RemindLastDate,'%Y-%m-%d') < CURDATE()) as term ".
+					",(RemindLastDate - CURDATE()) as termDays ".
+				  	"FROM ".$this->prefDb."DmsEntry ".
+				  	"WHERE Archived = 0 ".
+				  	"AND PermissionSet <= $this->perSet ".
+				  	"AND Type = 35 ".
 				  	"ORDER BY RemindLastDate,Title ";
 
 		$sql = $this->registry->getObject('db')->getSqlByPage( $sql );

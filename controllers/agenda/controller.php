@@ -84,10 +84,10 @@ class Agendacontroller{
 					case 'WS':
 						// Je voláno jako XMLHttpRequest (function.js) a pouze loguje zobrazené položky
 						switch ($urlBits[2]) {
-							case 'xxx':
+							case 'unlink':
 								$ID = isset($urlBits[3]) ? $urlBits[3] : '';
-								//$result = $this->wsLogDocumentView($ID);
-								//exit($result);		
+								$result = $this->wsUnlinkAgenda($ID);
+								exit($result);		
 								break;
 						}
 						break;
@@ -120,8 +120,8 @@ class Agendacontroller{
 	private function pageNotFound()
 	{
 		// Logování
-		$this->registry->getObject('log')->addMessage("Pokus o zobrazení neznámé agendy",'agenda','');
-		$this->build('invalid-contact.tpl.php');
+		$this->registry->getObject('log')->addMessage("Pokus o zobrazení neznámého dokladu agendy",'agenda','');
+		$this->error('Doklad v evidenci nenalezen.');
 	}
 
     /**
@@ -240,6 +240,34 @@ class Agendacontroller{
 			$this->pageNotFound();
 		}
 	}
+
+    /**
+     * Webová služba 
+	 * @param String $ID = ID položky Agendy
+     * @return String = Návratová hodnota
+	 *                  => OK    = zápis proběhl korektně
+	 *                  => Error = zápis do logu skončil chybou
+     */
+	private function wsUnlinkAgenda( $ID )
+	{
+		global $deb;
+		require_once( FRAMEWORK_PATH . 'models/agenda/model.php');
+		$this->model = new Agenda( $this->registry, $ID );
+
+		if( $this->model->isValid() )
+		{
+			$agenda = $this->model->getData();
+	
+			$changes =  array();
+			$changes['Description'] = '';
+			$changes['EntryID'] = '';
+			$condition = "ID = '$ID'";
+			$this->registry->getObject('db')->updateRecords('agenda',$changes, $condition);			
+			return 'OK';
+		}
+		return 'Error';
+	}	
+
 
     /**
      * Zobrazení seznam typů agend

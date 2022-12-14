@@ -96,6 +96,21 @@ function wsSetRemindEntry(ID,siteurl,BaseUrl) {
     };
 }
 
+function wsUnlinkAgenda(AgendaID,siteurl,BaseUrl) {
+    const Http = new XMLHttpRequest();
+    var url, result;
+    url = siteurl + 'index.php?page=agenda/WS/unlink/' + AgendaID;
+    Http.open("GET", url);
+    Http.send();
+    Http.onreadystatechange = (e) => {
+        result = Http.responseText;
+        if(result == 'OK'){
+            console.log('url: ',window.location);
+            window.location = siteurl + 'index.php?page=/' + BaseUrl;
+        }       
+    };
+}
+
 function importContactCSV() {
     var form;
     form = document.querySelector('#formImportContactCSV');

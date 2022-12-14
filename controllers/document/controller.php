@@ -251,7 +251,7 @@ class Documentcontroller{
 		$sql = "SELECT e.ID,e.Title,e.Name,e.Type,e.Url,e.Parent,e.ModifyDateTime,LOWER(e.FileExtension) as FileExtension ".
 						",IF(e.Remind=0,'0','1') as Remind,IF(e.RemindClose=0,'0','1') as RemindClose,e.RemindFromDate,e.RemindLastDate".
 						",e.Content,e.RemindResponsiblePerson,e.RemindUserID,e.RemindContactID,e.RemindState ".	
-						",a.DocumentNo, a.ExecuteDate ".
+						",a.DocumentNo, a.ExecuteDate, a.ID as AgendaID ".
 					"FROM ".$this->prefDb."DmsEntry as e ".
 				  	"LEFT JOIN ".$this->prefDb."agenda as a ON e.ID = a.EntryID ".
 				  	"WHERE e.Archived = 0 AND e.parent=".$entry['EntryNo']." AND e.Type IN (10,30,35,40) ".

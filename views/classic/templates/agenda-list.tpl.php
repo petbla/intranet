@@ -9,7 +9,7 @@
         </tr>
     </table>
 </div>
-<div id="ListItems">
+<div id="DocumentItems">
     <table>
         <tr>
             <th style="width:100px;">..........</th>

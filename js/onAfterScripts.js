@@ -29,6 +29,8 @@ var arrGroup = null;
 var grouplistnewcontact;
 var fld_handled;
 var fld_webroot;
+var activeElectionPeriod
+var activeMemberType
 
 
 // ----------------------------------------------------------------------------------------
@@ -59,6 +61,8 @@ fld_handled = document.querySelector('#fld_handled');
 fld_webroot = document.querySelector('#fld_webroot');
 grouplistnewcontact = document.querySelector( '[id="grouplistnewcontact"]' );
 
+activeElectionPeriod = document.getElementById('activeElectionPeriod');
+activeMemberType = document.getElementById('activeMemberType');
 
 // ----------------------------------------------------------------------------------------
 // Functions
@@ -705,6 +709,28 @@ if(fld_webroot){
     }
 }
 
+if(activeElectionPeriod){
+    var ElectionPeriodID, e;
+    ElectionPeriodID = activeElectionPeriod.getAttribute('value');
+    e = document.getElementById('meetingtypeCard' + ElectionPeriodID);
+    if(e)
+        e.style.display = 'block'; 
+    e = document.getElementById('MeetingTypeID' + ElectionPeriodID);
+    if(e)
+        e.setAttribute('value',ElectionPeriodID);
+}
+
+if(activeMemberType){
+    var MemberTypeID, e;
+    MemberTypeID = activeMemberType.getAttribute('value');
+    e = document.getElementById('memberCard' + MemberTypeID);
+    if(e)
+        e.style.display = 'block'; 
+    e = document.getElementById('MemberID' + MemberTypeID);
+    if(e)
+        e.setAttribute('value',MemberTypeID);
+}
+
 function initForm(tag,id) {
     var element, oldelement;
 
@@ -768,5 +794,44 @@ function modifyUser(ID,Name,FullName,PermissionSet,Action,read){
     e = document.getElementById("fieldPerSet" + Name);
     if(e){
         e.setAttribute('selected','selected');
+    }
+}
+
+function modifyZobElectionPeriod(ElectionPeriodID,Name,Actual,Action){
+    var e;
+    document.getElementById("fieldEpElectionPeriodID").value = ElectionPeriodID;
+    document.getElementById("fieldEpPeriodName").value = Name;
+    e = document.getElementById("fieldEpActual");
+    e.value = Actual;
+    if (Actual == '1'){
+        e.checked = true;
+    }else{
+        e.checked = false;
+    };
+    document.getElementById("fieldEpAction").value = Action;
+}
+
+function modifyZobMeetingType(MeetingTypeID,ElectionPeriodID,MeetingName,Members,Action){
+    document.getElementById("fieldMtMeetingTypeID" + ElectionPeriodID).value = MeetingTypeID;
+    document.getElementById("fieldMtElectionPeriodID" + ElectionPeriodID).value = ElectionPeriodID;
+    document.getElementById("fieldMtMeetingName" + ElectionPeriodID).value = MeetingName;
+    document.getElementById("fieldMtMembers" + ElectionPeriodID).value = Members;
+    document.getElementById("fieldMtAction" + ElectionPeriodID).value = Action;
+}
+
+function modifyZobMember(MemberID,MeetingTypeID,ContactName,MemberType,Action){
+    document.getElementById("fieldMemMemberID" + MeetingTypeID).value = MemberID;
+    document.getElementById("fieldMemMeetingTypeID" + MeetingTypeID).value = MeetingTypeID;
+    document.getElementById("fieldMemMemberType" + MeetingTypeID).value = MemberType;
+    document.getElementById("fieldMemContactName" + MeetingTypeID).value = ContactName;
+    document.getElementById("fieldMemAction" + MeetingTypeID).value = Action;
+}
+
+
+function validateCheckbox( e ){
+    if (e.checked) {
+        e.setAttribute('value',1);
+    }else{
+        e.setAttribute('value',0);
     }
 }

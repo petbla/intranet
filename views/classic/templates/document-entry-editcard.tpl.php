@@ -30,6 +30,10 @@
                 </select><br>
                 <label class="title">{lbl_DocumentNo}</label>
                 <span class="value col_documentno" name="ADocumentNo" ADocumentNoID="{ID}">{ADocumentNo}</span>
+
+                <img src="views/classic/images/icon/unlink.png" alt="Zrušit vazbu" title="Odebrat číslo jednací" onclick="wsUnlinkAgenda('{AgendaID}','{cfg_siteurl}','{BaseUrl}');" />
+
+
                 <input type="hidden" name="oldADocumentNo" value="{ADocumentNo}" oldADocumentNoID="{ID}">
                 <div id="SelectedADocumentNo{ID}">{SelectedDocumentNo}</div>
                 <script>

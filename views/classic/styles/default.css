@@ -80,11 +80,13 @@ header#page_header h2{
 /* BAR menu */
 header#page_header nav{
   margin-top: 45px;
-  background-color: #65a2f163}
+  background-color: #65a2f163;
+  border-bottom: 1px solid #000;
+}
 
 header#page_header nav ul{
   list-style: none;
-  padding: 5px 0;
+  padding: 2px 0;
   margin: -20px 0 0 300px; 
 }
 header#page_header img.imageLogo{
@@ -102,11 +104,14 @@ header#page_header #loginform{
 }
 
 #page_header nav ul li, footer#page_footer nav ul li{
-  top: 20px;
   padding:0;
   margin: 0 20px 0 0;
   display:inline;
 }
+#page_header nav ul li a.active{
+  color: #0000ff;
+}
+
 #page_header nav a{
   font-family: Century-gothic, Calibri, Arial, sans-serif; 
   font-size: 22px;
@@ -116,7 +121,7 @@ header#page_header #loginform{
   color: black;
 }
 #page_header nav a:hover{
-  color: rgb(0, 0, 255);
+  background-color:#99c5ff;
 }
 span#UserName{
   color: #000;
@@ -165,10 +170,10 @@ section#navigate ul li{
   border-bottom: 1px solid #dadada;
 }
 section#navigate ul li.active{
-  background-color: #337AB7;
+  background-color: #C3DBFA;
 }
 section#navigate ul li.active a{
-  color: #ffffff;
+  color: blue;
 }
 section#navigate ul li a.EntryType25{
   color: blue;
@@ -313,7 +318,7 @@ div#ListItems{
 }
 div#ListItems td{
   font-family: Arial, sans-serif, Calibri; 
-  font-size: 12px;
+  font-size: 14px;
   font-weight:normal;
   text-decoration: none;
   padding: 6px 0;
@@ -325,6 +330,10 @@ div#ListItems td.col_fullname{
 div#ListItems td.col_link {
   text-decoration: underline;
   color: #0000ff;
+}
+
+div#ListItems table.sub1 td{
+  border: 1p solid #000;
 }
 
 div#FolderItems ul li{
@@ -536,8 +545,8 @@ th, td{
 }
 /* TABLE Header */
 th{
-  background-color: #000; 
-  color: #fff;
+  background-color: #07CF8C; 
+  color: #000;
   font-size: 15px; 
   text-align: left;
 }
@@ -778,6 +787,9 @@ div#DocumentItems td.value a.col_email{
 .col_phone{
   width: 700px;
 }
+.col_text{
+  font-size: 20px;
+}
 .col_address{
   width: 370px;
 }
@@ -790,6 +802,7 @@ div#DocumentItems td.value a.col_email{
 .col_action{
   width: 100px;
   text-align: left;
+  vertical-align: text-top;
 }
 .col_action img{
   cursor: pointer;
@@ -810,6 +823,9 @@ div#DocumentItems td.value a.col_email{
 }
 .col_note{
   width: 700px;
+}
+.center{
+  text-align: center;
 }
 .version{
   font-size: 11px;
@@ -832,10 +848,27 @@ div#DocumentItems td.value a.col_email{
   color: blue;
   text-decoration: none;
 }
+.table-child{
+  border: 1px solid #000;
+}
 pre.content{
   background-color: #eeeeee;
   font-family: Arial, Helvetica, sans-serif;
   font-size: 14px;
   padding: 10px;
   border: 1px solid #000;
+}
+.formlabel{
+  width: 30px;
+  color:#0000ff;
+}
+.error{
+  color: black;
+  background-color: red;
+  border: 3px solid black;
+  padding: 5px 10px;
+  margin-bottom: 10px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: bold;
 }

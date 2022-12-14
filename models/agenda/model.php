@@ -19,6 +19,7 @@ class Agenda{
     private $TypeName;
     private $NoSeries;
     private $LastNo;
+    private $activeEntry;    
  
 	public function __construct( Registry $registry, $id )
 	{
@@ -30,7 +31,7 @@ class Agenda{
 		{
 			$sql = "SELECT a.ID, a.TypeID, a.DocumentNo, a.Description, a.CreateDate, a.ExecuteDate, a.EntryID, ".
 							"t.Name as TypeName, t.NoSeries, t.LastNo ".
-                		"FROM ".$pref."agenda c, ".$pref."agendatype t ".
+                		"FROM ".$pref."agenda a, ".$pref."agendatype t ".
                         "WHERE  ID='$id' ".
                             "AND a.TypeID = t.TypeID";
 
@@ -48,6 +49,7 @@ class Agenda{
 				$this->TypeName = $data['TypeName'];
 				$this->NoSeries = $data['NoSeries'];
 				$this->LastNo = $data['LastNo'];
+                $this->activeEntry = true;
 			}
 		}
 		else
@@ -55,6 +57,19 @@ class Agenda{
 			// New empty contact card
 			$this->initEmpty();
 		}
+	}
+
+    public function getData()
+	{
+		$data = array();
+		foreach( $this as $field => $fdata )
+		{
+			if( !is_object( $fdata ) )
+			{
+				$data[ $field ] = $fdata;
+			}
+		}
+		return $data;
 	}
 
     /**
@@ -75,6 +90,11 @@ class Agenda{
         return $data;
     }
 
+	public function isValid()
+	{
+		return $this->activeEntry;
+	}
+
     /**
      * Inicializace prázdného záznamu
      * @return void
@@ -91,6 +111,7 @@ class Agenda{
         $this->TypeName = '';
         $this->NoSeries = '';
         $this->LastNo = '';
+        $this->activeEntry = false;
     }
 
     /**

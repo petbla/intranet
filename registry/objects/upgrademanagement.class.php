@@ -267,6 +267,170 @@ class upgrademanagement {
             // upgrade to 2.22
             $this->upgrade_222('2.22');
         }
+        if ($this->version === '2.22') 
+        {
+            // upgrade to 2.23
+            $this->upgrade_223('2.23');
+        }
+        if ($this->version === '2.23') 
+        {
+            // upgrade to 2.24
+            $this->upgrade_224('2.24');
+        }
+        if ($this->version === '2.24') 
+        {
+            // upgrade to 2.25
+            $this->upgrade_225('2.25');
+        }
+        if ($this->version === '2.25') 
+        {
+            // upgrade to 2.26
+            $this->upgrade_226('2.26');
+        }
+        if ($this->version === '2.26') 
+        {
+            // upgrade to 2.27
+            $this->upgrade_227('2.27');
+        }
+    }
+
+    private function upgrade_227($upVer)
+    {
+        global $config;
+        $pref = $config['dbPrefix'];
+
+        $sql = "ALTER TABLE `".$pref."meeting`".
+                " ADD `RecorderBy` varchar(36) DEFAULT '00000000-0000-0000-0000-000000000000'".
+                ", ADD `VerifierBy1` varchar(36) DEFAULT '00000000-0000-0000-0000-000000000000'".
+                ", ADD `VerifierBy2` varchar(36) DEFAULT '00000000-0000-0000-0000-000000000000'";
+        $this->registry->getObject('db')->executeQuery( $sql );
+        
+        $this->setNewVersion($upVer);
+    }
+
+    private function upgrade_226($upVer)
+    {
+        global $config;
+        $pref = $config['dbPrefix'];
+
+        $sql = "CREATE TABLE IF NOT EXISTS `".$pref."meetinglinepage` (
+            `PaggeID` int(11) NOT NULL AUTO_INCREMENT,
+            `MeetingLineID` int(11) NOT NULL,
+            `Order` int(11) DEFAULT 0,
+            `Content` varchar(5000) COLLATE utf8_czech_ci DEFAULT '',
+            `ImageURL` varchar(250) COLLATE utf8_czech_ci DEFAULT '',
+            `ImageWidth` int(11) DEFAULT 0,
+            `ImageHeight` int(11) DEFAULT 0,
+            PRIMARY KEY (`PaggeID`)
+            ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci";
+        $this->registry->getObject('db')->executeQuery( $sql );
+        
+        $this->setNewVersion($upVer);
+    }
+
+    private function upgrade_225($upVer)
+    {
+        $this->setNewVersion($upVer);
+    }
+
+    private function upgrade_224($upVer)
+    {
+        global $config;
+        $pref = $config['dbPrefix'];
+
+        // upgrade table 'electionperiod'
+        $sql = "ALTER TABLE `".$pref."electionperiod`".
+                " ADD `Actual` tinyint DEFAULT 0";
+        $this->registry->getObject('db')->executeQuery( $sql );
+
+        $this->setNewVersion($upVer);
+    }
+
+    private function upgrade_223($upVer)
+    {
+		global $config;
+        $pref = $config['dbPrefix'];
+
+        // New Tables for Meeting Agend
+        $sql = "CREATE TABLE IF NOT EXISTS `".$pref."electionperiod` (
+            `ElectionPeriodID` int(11) NOT NULL AUTO_INCREMENT,
+            `PeriodName` varchar(250) COLLATE utf8_czech_ci DEFAULT '',
+            PRIMARY KEY (`ElectionPeriodID`)
+            ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci";
+        $this->registry->getObject('db')->executeQuery( $sql );
+
+        $sql = "CREATE TABLE IF NOT EXISTS `".$pref."meetingtype` (
+            `MeetingTypeID` int(11) NOT NULL AUTO_INCREMENT,
+            `ElectionPeriodID` int(11) NOT NULL,
+            `MeetingName` varchar(250) COLLATE utf8_czech_ci DEFAULT '',
+            `Members` int(11) DEFAULT 0,
+            PRIMARY KEY (`MeetingTypeID`)
+            ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci";
+        $this->registry->getObject('db')->executeQuery( $sql );
+
+        $sql = "CREATE TABLE IF NOT EXISTS `".$pref."member` (
+            `MemberID` int(11) NOT NULL AUTO_INCREMENT,
+            `MeetingTypeID` int(11) NOT NULL,
+            `MemberType` varchar(20) COLLATE utf8_czech_ci DEFAULT '',
+            `ContactID` varchar(36) DEFAULT '00000000-0000-0000-0000-000000000000',
+            PRIMARY KEY (`MemberID`)
+            ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci";
+        $this->registry->getObject('db')->executeQuery( $sql );
+
+        $sql = "CREATE TABLE IF NOT EXISTS `".$pref."meeting` (
+            `MeetingID` int(11) NOT NULL AUTO_INCREMENT,
+            `MeetingTypeID` int(11) NOT NULL,
+            `EntryNo` int(11) DEFAULT 0,
+            `AtDate` datetime NULL,            
+            `MeetingPlace` varchar(100) COLLATE utf8_czech_ci DEFAULT '',
+            `PostedUpDate` datetime NULL,            
+            `PostedDownDate` datetime NULL,            
+            `State` varchar(20) COLLATE utf8_czech_ci DEFAULT '',
+            `RecorderAtDate` datetime NULL,            
+            PRIMARY KEY (`MeetingID`)
+            ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci";
+        $this->registry->getObject('db')->executeQuery( $sql );
+
+        $sql = "CREATE TABLE IF NOT EXISTS `".$pref."meetingline` (
+            `MeetingLineID` int(11) NOT NULL AUTO_INCREMENT,
+            `MeetingID` int(11) NOT NULL,
+            `LineNo` int(11) NOT NULL,
+            `PresenterID` varchar(36) DEFAULT '00000000-0000-0000-0000-000000000000',
+            `Title` varchar(100) COLLATE utf8_czech_ci DEFAULT '',
+            `Content` varchar(5000) COLLATE utf8_czech_ci DEFAULT '',
+            `Discussion` varchar(5000) COLLATE utf8_czech_ci DEFAULT '',
+            `DraftResolution` varchar(5000) COLLATE utf8_czech_ci DEFAULT '',
+            `Vote` tinyint DEFAULT 0,
+            `VoteFor` int(11) DEFAULT 0,
+            `VoteAgainst` int(11) DEFAULT 0,
+            `VoteDelayed` int(11) DEFAULT 0,
+            PRIMARY KEY (`MeetingLineID`)
+            ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci";
+        $this->registry->getObject('db')->executeQuery( $sql );
+
+        $sql = "CREATE TABLE IF NOT EXISTS `".$pref."meetinglinetask` (
+            `TaskID` int(11) NOT NULL AUTO_INCREMENT,
+            `PointID` int(11) NOT NULL,
+            `ContactID` varchar(36) DEFAULT '00000000-0000-0000-0000-000000000000',
+            `Description` varchar(100) COLLATE utf8_czech_ci DEFAULT '',
+            `Content` varchar(5000) COLLATE utf8_czech_ci DEFAULT '',
+            `DeadlineDate` datetime NULL,            
+            `Done` tinyint DEFAULT 0,
+            PRIMARY KEY (`TaskID`)
+            ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci";
+        $this->registry->getObject('db')->executeQuery( $sql );
+
+        $sql = "CREATE TABLE IF NOT EXISTS `".$pref."meetinglineattachment` (
+            `AttechmentID` int(11) NOT NULL AUTO_INCREMENT,
+            `MeetingLineID` int(11) NOT NULL,
+            `Description` varchar(100) COLLATE utf8_czech_ci DEFAULT '',
+            `Content` varchar(5000) COLLATE utf8_czech_ci DEFAULT '',
+            `URL` varchar(250) COLLATE utf8_czech_ci DEFAULT '',
+            PRIMARY KEY (`AttechmentID`)
+            ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci";
+        $this->registry->getObject('db')->executeQuery( $sql );
+
+        $this->setNewVersion($upVer);
     }
 
     private function upgrade_222($upVer)

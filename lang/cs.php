@@ -112,6 +112,7 @@ $caption['CreateDate'] =     'Datum vytvoření';
 $caption['ExecuteDate'] =    'Datum vyřízení';
 $caption['Close'] =          'Zavřít';
 $caption['CloseCard'] =      'Uzavřít kartu';
+$caption['Actual'] =         'Aktuální';
 
 $caption['RemindState'] =    'Stav';
 $caption['RemindState00'] = '';
@@ -205,4 +206,22 @@ $caption['msg_SetRemind'] =        'Označení položky jako vyřízené.';
 $caption['ImmportContactsCsv'] =   'Import kontaktů z Excelu (CSV)';
 $caption['ImportNotesCsv'] =       'Import poznámek z Excelu (CSV)';
 
+/**
+ * ZOB - Zápisy Obce
+ */
+
+ $caption['electionperiod'] =           'Volební období';  
+ $caption['meetingtype'] =              'Typ jednání';  
+ $caption['Members'] =                  'Počet členů';  
+ $caption['member'] =                   'Člen jednání';  
+ $caption['MemberType'] =               'Typ člena';  
+ $caption['Chairman'] =                 'Předseda';  
+ $caption['Member'] =                   'Člen';  
+ $caption['RecorderBy'] =               'Zapisovatel';  
+ $caption['VerifierBy'] =               'Ověřovatel';  
+ $caption['Mayor'] =                    'Starosta';  
+ $caption['DeputyMayor'] =              'Místostarosta';  
+ $caption['Councilor'] =                'Radní';  
+ $caption['Representative'] =           'Zastupitel';  
+ 
 ?>
