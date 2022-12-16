@@ -223,5 +223,12 @@ $caption['ImportNotesCsv'] =       'Import poznámek z Excelu (CSV)';
  $caption['DeputyMayor'] =              'Místostarosta';  
  $caption['Councilor'] =                'Radní';  
  $caption['Representative'] =           'Zastupitel';  
+ $caption['EntryNo'] =                  'Číslo';  
+ $caption['AtDate'] =                   'Termín';  
+ $caption['MeetingPlace'] =             'Místo';  
+ $caption['PostedUpDate'] =             'Vyvěšeno';  
+ $caption['PostedDownDate'] =           'Sňato';  
+ $caption['State'] =                    'Stav';  
+ $caption['RecorderAtDate'] =           'Zapsáno dne';  
  
 ?>

@@ -21,7 +21,7 @@
         <!-- START AgendaList -->
         <tr>      
             <td class="col_action">
-                <a href="index.php?page=agenda/modify/{ID}"><img src="views/classic/images/icon/modify.png" alt="{lbl_edit}" id="{ID}" /></a>
+                <!-- <a href="index.php?page=agenda/modify/{ID}"><img src="views/classic/images/icon/modify.png" alt="{lbl_edit}" id="{ID}" /></a> -->
                 <a href="index.php?page=agenda/delete/{TypeID}"><img src="views/classic/images/icon/delete.png" alt="{lbl_delete}" id="{TypeID}" onclick="return ConfirmDelete();"/></a>
                 <a href="index.php?page=agenda/unlink/{ID}" a_type="agendaUnlink" data-agenda-entryid="{EntryID}" ><img src="views/classic/images/icon/unlink.png" alt="{lbl_delete}" id="{ID}" onclick="return ConfirmUnlink();"/></a>
                 

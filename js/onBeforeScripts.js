@@ -51,6 +51,13 @@ function ConfirmDelete(){
         return false;
     }
 }
+function ConfirmAction(){
+    var opt;
+    opt = confirm("Chcete spustit akci?");
+    if (opt === false){
+        return false;
+    }
+}
 function ConfirmUnlink(){
     var opt;
     opt = confirm("Skutečně chete odstranit propojení evidence na dokument (zrušení čísla jednacího)?");

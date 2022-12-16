@@ -1,4 +1,4 @@
-<?php
+)45<?php
 /**
  * @author  Petr Blažek
  * @version 2.0
@@ -44,7 +44,7 @@ class Agendacontroller{
 						break;
 					case 'modify':
 						$ID = isset($urlBits[2]) ? $urlBits[2] : '';
-						//TODO $this->modifyAgenda($ID);
+						$this->modifyAgenda($ID);
 						break;
 					case 'unlink':
 						$ID = isset($urlBits[2]) ? $urlBits[2] : '';

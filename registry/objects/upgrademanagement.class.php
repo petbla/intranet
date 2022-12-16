@@ -292,6 +292,52 @@ class upgrademanagement {
             // upgrade to 2.27
             $this->upgrade_227('2.27');
         }
+        if ($this->version === '2.27') 
+        {
+            // upgrade to 2.28
+            $this->upgrade_228('2.28');
+        }
+        if ($this->version === '2.28') 
+        {
+            // upgrade to 2.29
+            $this->upgrade_229('2.29');
+        }
+    }
+
+    private function upgrade_229($upVer)
+    {
+        global $config;
+        $pref = $config['dbPrefix'];
+
+        $sql = "ALTER TABLE `".$pref."meeting`".
+                " CHANGE `AtDate` `AtDate` date DEFAULT NULL";
+        $this->registry->getObject('db')->executeQuery( $sql );
+        
+        $sql = "ALTER TABLE `".$pref."meeting`".
+                " CHANGE `PostedUpDate` `PostedUpDate` date DEFAULT NULL";
+        $this->registry->getObject('db')->executeQuery( $sql );
+        
+        $sql = "ALTER TABLE `".$pref."meeting`".
+                " CHANGE `PostedDownDate` `PostedDownDate` date DEFAULT NULL";
+        $this->registry->getObject('db')->executeQuery( $sql );
+        
+        $sql = "ALTER TABLE `".$pref."meeting`".
+                " CHANGE `RecorderAtDate` `RecorderAtDate` date DEFAULT NULL";
+        $this->registry->getObject('db')->executeQuery( $sql );
+        
+        $this->setNewVersion($upVer);
+    }
+
+    private function upgrade_228($upVer)
+    {
+        global $config;
+        $pref = $config['dbPrefix'];
+
+        $sql = "ALTER TABLE `".$pref."meeting`".
+                " ADD `Year` int(11) DEFAULT 0";
+        $this->registry->getObject('db')->executeQuery( $sql );
+        
+        $this->setNewVersion($upVer);
     }
 
     private function upgrade_227($upVer)

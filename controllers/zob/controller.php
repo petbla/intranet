@@ -53,6 +53,11 @@ class Zobcontroller{
 						$action = isset($_POST["action"]) ? $_POST["action"] : $action;						
 						$this->contact($action);
 						break;
+					case 'meeting':
+						$action = isset($urlBits[2]) ? $urlBits[2] : '';
+						$action = isset($_POST["action"]) ? $_POST["action"] : $action;						
+						$this->meeting($action);
+						break;
 					default:
 						$this->pageNotFound();
 						break;
@@ -125,7 +130,7 @@ class Zobcontroller{
 			if ($this->registry->getObject('db')->findSet()){
 				$result = $this->registry->getObject('db')->getResult();
 				foreach ($result as $mt) {
-					$rec['idCat'] = 'meetingtype/'.$mt['MeetingTypeID'];
+					$rec['idCat'] = 'meetingtype/list/'.$mt['MeetingTypeID'];
 					$rec['titleCat'] = $mt['MeetingName'] ;
 					$rec['activeCat'] = $rec['idCat'] == $typeID ? 'active' : '';
 					$table[] = $rec;
@@ -162,44 +167,48 @@ class Zobcontroller{
 		// Podřádky 'meetingtype' pro každý záznam 'electionperiod'
 		// a 'member' pro  každý záznam 'meetingtype'
 		$electionperiod = $this->getSetElectionperiod();
-		foreach ($electionperiod as $rec) {
-			$meetingtype = $this->getSetMeetingtypeByElectionperiod($rec['ElectionPeriodID']);
-			if ($meetingtype){
-				$cache = $this->registry->getObject('db')->cacheData( $meetingtype );
-				$this->registry->getObject('template')->getPage()->addTag( 'meetingTypeList'.$rec['ElectionPeriodID'], array( 'DATA', $cache ) );
-				foreach($meetingtype as $mt){
-					$members = $this->getSetMember($mt['MeetingTypeID']);
-					$result = array();
-					if($members){
-						foreach($members as $member){
-							$contact = $this->getContactByID($member['ContactID']);
-							if($contact)
-								$member['ContactName'] = $contact['FullName'];
-							else
-								$member['ContactName'] = $member['MemberID'];
-							$idx = $member['MemberType'];
-							if ($idx)
-								$member['MemberType'] = $caption[$idx];
-							
-							$member['MemberType'.$mt['MeetingTypeID']] = $member['MemberType'];
-							$member['ContactName'.$mt['MeetingTypeID']] = $member['ContactName'];
-							
-							$result[] = $member;
-						}						
-						$cache = $this->registry->getObject('db')->cacheData( $result );						
-						$this->registry->getObject('template')->getPage()->addTag( 'memberList'.$mt['MeetingTypeID'], array( 'DATA', $cache ) );		
-					}else{
-						$this->registry->getObject('template')->getPage()->addTag( 'ContactName'.$mt['MeetingTypeID'], '' );				
-						$this->registry->getObject('template')->getPage()->addTag( 'MemberType'.$mt['MeetingTypeID'], '' );				
+		if ($electionperiod){
+			foreach ($electionperiod as $rec) {
+				$meetingtype = $this->getSetMeetingtypeByElectionperiod($rec['ElectionPeriodID']);
+				if ($meetingtype){
+					$cache = $this->registry->getObject('db')->cacheData( $meetingtype );
+					$this->registry->getObject('template')->getPage()->addTag( 'meetingTypeList'.$rec['ElectionPeriodID'], array( 'DATA', $cache ) );
+					foreach($meetingtype as $mt){
+						$members = $this->getSetMember($mt['MeetingTypeID']);
+						$result = array();
+						if($members){
+							foreach($members as $member){
+								$contact = $this->getContactByID($member['ContactID']);
+								if($contact)
+									$member['ContactName'] = $contact['FullName'];
+								else
+									$member['ContactName'] = $member['MemberID'];
+								$idx = $member['MemberType'];
+								if ($idx)
+									$member['MemberType'] = $caption[$idx];
+								
+								$member['MemberType'.$mt['MeetingTypeID']] = $member['MemberType'];
+								$member['ContactName'.$mt['MeetingTypeID']] = $member['ContactName'];
+								
+								$result[] = $member;
+							}						
+							$cache = $this->registry->getObject('db')->cacheData( $result );						
+							$this->registry->getObject('template')->getPage()->addTag( 'memberList'.$mt['MeetingTypeID'], array( 'DATA', $cache ) );		
+						}else{
+							$this->registry->getObject('template')->getPage()->addTag( 'ContactName'.$mt['MeetingTypeID'], '' );				
+							$this->registry->getObject('template')->getPage()->addTag( 'MemberType'.$mt['MeetingTypeID'], '' );				
+						}
 					}
+				}else{
+					$this->registry->getObject('template')->getPage()->addTag( 'MeetingTypeID', '' );				
+					$this->registry->getObject('template')->getPage()->addTag( 'ElectionPeriodID', '' );				
+					$this->registry->getObject('template')->getPage()->addTag( 'MeetingName', '' );				
+					$this->registry->getObject('template')->getPage()->addTag( 'Members', '' );					
 				}
-			}else{
-				$this->registry->getObject('template')->getPage()->addTag( 'MeetingTypeID', '' );				
-				$this->registry->getObject('template')->getPage()->addTag( 'ElectionPeriodID', '' );				
-				$this->registry->getObject('template')->getPage()->addTag( 'MeetingName', '' );				
-				$this->registry->getObject('template')->getPage()->addTag( 'Members', '' );					
-			}
-		} 
+			} 
+		}else{
+			$this->registry->getObject('template')->getPage()->addTag( 'PeriodName','' );
+		}
 
 		$this->registry->getObject('template')->getPage()->addTag( 'pageTitle', $this->message );						
 		$this->registry->getObject('template')->addTemplateBit('meetingtypeCard', 'zob-meetingtype-list.tpl.php');
@@ -209,6 +218,47 @@ class Zobcontroller{
 
 		$this->build('zob-electionperiod-list.tpl.php');
 	}
+
+	 /**
+     * Zobrazení seznam zápisů jednání
+     * @return void
+     */
+	private function listMeetingType( $MeetingTypeID )
+	{
+
+		// Zápis z jednání
+		$sql = "SELECT * FROM ".$this->prefDb."meeting WHERE MeetingTypeID = $MeetingTypeID";
+		$sql = $this->registry->getObject('db')->getSqlByPage( $sql );
+		$cache = $this->registry->getObject('db')->cacheQuery( $sql );	
+		if(!$this->registry->getObject('db')->isEmpty( $cache )){
+			$meetings = array();
+			while( $meeting = $this->registry->getObject('db')->resultsFromCache( $cache ) )
+			{
+				if($meeting['AtDate'])
+					$meeting['AtDate'] = $this->registry->getObject('core')->formatDate($meeting['AtDate']);
+				if($meeting['PostedUpDate'])
+					$meeting['PostedUpDate'] = $this->registry->getObject('core')->formatDate($meeting['PostedUpDate']);
+				if($meeting['PostedDownDate'])
+					$meeting['PostedDownDate'] = $this->registry->getObject('core')->formatDate($meeting['PostedDownDate']);
+				if($meeting['RecorderAtDate'])
+					$meeting['RecorderAtDate'] = $this->registry->getObject('core')->formatDate($meeting['RecorderAtDate']);
+				$meetings[] = $meeting;
+			}
+			$cache = $this->registry->getObject('db')->cacheData( $meetings );
+			$this->registry->getObject('template')->getPage()->addTag( 'meetingList', array( 'DATA', $cache ) );
+		}else{
+			$this->registry->getObject('template')->getPage()->addTag( 'EntryNo', '' );				
+			$this->registry->getObject('template')->getPage()->addTag( 'Year', '' );				
+			$this->registry->getObject('template')->getPage()->addTag( 'AtDate', '' );				
+			$this->registry->getObject('template')->getPage()->addTag( 'PostedUpDate', '' );				
+			$this->registry->getObject('template')->getPage()->addTag( 'PostedDownDate', '' );				
+		}
+		$this->registry->getObject('template')->getPage()->addTag( 'pageTitle', $this->message );						
+		$this->registry->getObject('template')->getPage()->addTag( 'MeetingTypeID', $MeetingTypeID );						
+
+		$this->build('zob-meeting-list.tpl.php');
+	}
+
 
 	/**
 	 * Modifikace tabulky volebního období
@@ -298,6 +348,10 @@ class Zobcontroller{
 			case 'modify':
 				$MeetingTypeID = isset($_POST["MeetingTypeID"]) ? $_POST["MeetingTypeID"] : '';
 				break;
+			case 'list':
+				$MeetingTypeID = isset($urlBits[3]) ? $urlBits[3] : '';
+				$this->listMeetingType( $MeetingTypeID );
+				return;
 			case 'delete':
 				$MeetingTypeID = isset($urlBits[3]) ? $urlBits[3] : '';
 				$ElectionPeriodID = isset($urlBits[4]) ? $urlBits[4] : '';
@@ -508,6 +562,92 @@ class Zobcontroller{
 		$this->listElectionperiod( $ElectionPeriodID , $MeetingTypeID );
 	}	
 	
+	/**
+	 * Modifikace tabulky jednání
+	 * @return void
+	 */
+	private function meeting( $action )
+	{
+		global $config, $caption;
+		$urlBits = $this->registry->getURLBits();     
+
+		$post = $_POST;
+		$MeetingTypeID = isset($_POST["MeetingTypeID"]) ? $_POST["MeetingTypeID"] : '';
+		if ($MeetingTypeID == ''){
+			$this->message = 'Není vyplněno ID jednání';
+			$this->listMeetingType( );
+			return;
+		}
+		$meetingtype = $this->getMeetingtype($MeetingTypeID);
+		$ElectionPeriodID = $meetingtype['ElectionPeriodID'];
+
+		switch ($action) {
+			case 'modify':
+				$MeetingID = isset($_POST["MeetingID"]) ? $_POST["MeetingID"] : '';
+				break;
+			case 'delete':
+				$MeetingID = isset($urlBits[3]) ? $urlBits[3] : '';
+				break;
+			case 'add':
+				$MeetingID = 0;
+				break;
+			default:
+				$this->listMeetingType( $MeetingTypeID );
+				return;
+		}		
+
+		if ($action == 'delete'){
+			$condition = "MeetingID = $MeetingID";
+			$this->registry->getObject('db')->deleteRecords( 'member', $condition, 1); 
+			$this->listMeetingType( $MeetingTypeID );
+			return;
+		}
+
+		$EntryNo = $this->geNextMeetingEntryNo( $MeetingTypeID );
+		$AtDate = isset($_POST['AtDate']) ? $_POST['AtDate'] : '';
+		if ($AtDate == ''){
+			$this->message = 'Termín jednání musí být vyplněn.';
+			$this->listMeetingType( );
+			return;
+		}
+	
+		$Year = $this->registry->getObject('core')->formatDate($AtDate,'Y');
+		$MeetingPlace = isset($_POST['MeetingPlace']) ? $_POST['MeetingPlace'] : '';
+		$PostedUpDate = isset($_POST['PostedUpDate']) ? $_POST['PostedUpDate'] : '';
+		$PostedUpDate = $PostedUpDate != '' ? $PostedUpDate : null;
+		$PostedDownDate = isset($_POST['PostedDownDate']) ? $_POST['PostedDownDate'] : '';
+		$PostedDownDate = $PostedDownDate != '' ? $PostedDownDate : null;
+		$State = isset($_POST['State']) ? $_POST['State'] : '';
+		$RecorderAtDate = isset($_POST['RecorderAtDate']) ? $_POST['RecorderAtDate'] : '';
+		$RecorderAtDate = $RecorderAtDate != '' ? $RecorderAtDate : null;
+		$RecorderBy = isset($_POST['RecorderBy']) ? $_POST['RecorderBy'] : '';
+		$VerifierBy1 = isset($_POST['VerifierBy1']) ? $_POST['VerifierBy1'] : '';
+		$VerifierBy2 = isset($_POST['VerifierBy2']) ? $_POST['VerifierBy2'] : '';
+
+		$data = array();
+		$data['MeetingID'] = $MeetingID;
+		$data['MeetingTypeID'] = $MeetingTypeID;
+		$data['EntryNo'] = $EntryNo;
+		$data['Year'] = $Year;
+		$data['AtDate'] = $AtDate;
+		$data['MeetingPlace'] = $MeetingPlace;
+		$data['PostedUpDate'] = $PostedUpDate;
+		$data['PostedDownDate'] = $PostedDownDate;
+		$data['State'] = $State;
+		$data['RecorderAtDate'] = $RecorderAtDate;
+		$data['RecorderBy'] = $RecorderBy;
+		$data['VerifierBy1'] = $VerifierBy1;
+		$data['VerifierBy2'] = $VerifierBy2;
+		
+		if ($action == 'add'){
+			$this->registry->getObject('db')->insertRecords('meeting',$data);
+		}else{
+			$condition = "MeetingID = $MeetingID";
+			$this->registry->getObject('db')->updateRecords('meeting',$data,$condition);
+		}
+		$this->listMeetingType( $MeetingTypeID );
+	}	
+	
 	public function isElectionperiodUsed ( $ElectionPeriodID )
 	{
 		// meetingtype
@@ -603,6 +743,15 @@ class Zobcontroller{
 		if ($this->registry->getObject('db')->findFirst())
 			$contact = $this->registry->getObject('db')->getResult();			
 		return $contact;
+	}
+
+	public function geNextMeetingEntryNo( $MeetingTypeID )
+	{
+		$sql = "SELECT max(EntryNo) as EntryNo FROM ".$this->prefDb."meeting WHERE MeetingTypeID = $MeetingTypeID";
+		$cache = $this->registry->getObject('db')->cacheQuery( $sql );	
+		$this->registry->getObject('db')->findFirst( $cache );
+		$result = $this->registry->getObject('db')->resultsFromCache( $cache );
+		return $result['EntryNo'] + 1;				
 	}
 
 	public function countRec($table, $filter = ''){

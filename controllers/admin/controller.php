@@ -149,26 +149,32 @@ class Admincontroller {
 		$rec['idCat'] = 'setup';
 		$rec['titleCat'] = 'Nastavení';
 		$rec['activeCat'] = $rec['idCat'] == $typeID ? 'active' : '';
+		$rec['script'] = '';
 		$table[] = $rec;
 
 		$rec['idCat'] = 'users';
 		$rec['titleCat'] = 'Uživatelé';
 		$rec['activeCat'] = $rec['idCat'] == $typeID ? 'active' : '';
+		$rec['script'] = '';
 		$table[] = $rec;
 
         $rec['idCat'] = 'update';
 		$rec['titleCat'] = 'Synchronizace';
 		$rec['activeCat'] = $rec['idCat'] == $typeID ? 'active' : '';
+		$rec['script'] = "onclick='return ConfirmAction();'";
 		$table[] = $rec;
+		$rec['script'] = '';
 
         $rec['idCat'] = 'log';
 		$rec['titleCat'] = 'Log';
 		$rec['activeCat'] = $rec['idCat'] == $typeID ? 'active' : '';
+		$rec['script'] = '';
 		$table[] = $rec;
 
         $rec['idCat'] = 'listPortal';
 		$rec['titleCat'] = 'Portál';
 		$rec['activeCat'] = $rec['idCat'] == $typeID ? 'active' : '';
+		$rec['script'] = '';
 		$table[] = $rec;
 
 		$cache = $this->registry->getObject('db')->cacheData( $table );
