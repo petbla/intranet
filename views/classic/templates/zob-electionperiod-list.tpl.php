@@ -1,5 +1,6 @@
-<div id="pagecounter"></div>
+<div id="pagecounter">
 {navigate_menu}
+</div>
 <div id="DocumentItems">
     <p id="pageTitle" class="error" onClick="this.style.display = 'none';" >{pageTitle}</p>
     <script>
@@ -27,7 +28,9 @@
                     {meetingtypeCard}
                 </div >
             </td>
-            <td colspan="2" class="col_action" ><img src="views/classic/images/icon/remind0{Actual}.png" /></td>
+            <td colspan="2" class="col_action" >
+                <a href="index.php?page=zob/electionperiod/active/{ElectionPeriodID}"><img src="views/classic/images/icon/remind0{Actual}.png" /></a>
+            </td>
         </tr>
         <!-- END electionPeriodList -->
         <form action="index.php?page=zob/electionperiod/add"  method="post">
@@ -36,7 +39,7 @@
                     <img src="views/classic/images/nav/addNew.png" alt="{lbl_New}" onClick = "modifyZobElectionPeriod('','','add');"/>                    
                 </td>
                 <td>
-                    <input type="text" id="fieldEpPeriodName" class="value col_name" name="PeriodName" value="" autofocus required/>
+                    <input type="text" id="fieldEpPeriodName" class="value col_fullname" name="PeriodName" value="" autofocus required/>
                 </td>
                 <td>
                     <input type="checkbox" id="fieldEpActual" class="value" name="Actual" value="0" onClick = "validateCheckbox( this );"/>

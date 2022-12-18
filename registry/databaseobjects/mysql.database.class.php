@@ -208,7 +208,7 @@ class mysqldatabase {
     	$update = "UPDATE " . $table . " SET ";
     	foreach( $changes as $field => $value )
     	{
-        if($value == 'NULL')
+        if(($value == 'NULL') or ($value == null))
           $update .= "`" . $field . "`= NULL ,";
         else
           $update .= "`" . $field . "`='{$value}',";

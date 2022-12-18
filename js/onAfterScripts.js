@@ -29,8 +29,9 @@ var arrGroup = null;
 var grouplistnewcontact;
 var fld_handled;
 var fld_webroot;
-var activeElectionPeriod
-var activeMemberType
+var activeElectionPeriod;
+var activeMemberType;
+var meetings;
 
 
 // ----------------------------------------------------------------------------------------
@@ -50,6 +51,7 @@ grouplist = document.querySelector('#grouplist');
 deleteEntryType20 = document.querySelectorAll('#DeleteEntryType20');
 items = document.querySelectorAll('[dmsClassName="item"]');
 contacts = document.querySelectorAll('[dmsClassName="contact"]');
+meetings = document.querySelectorAll('[dmsClassName="meeting"]');
 entriesType35 = document.querySelectorAll('a[entrytype="35"]');
 sqlrequest = document.querySelector('#sqlrequest');
 a_entry = document.querySelectorAll('[a_type="entry"]');
@@ -392,6 +394,17 @@ if(items){
             lasteditcard = e;
         }
     })   
+}
+
+if(meetings){
+    meetings.forEach(function(meeting){
+        meeting.onclick = function (e) {
+            var card;
+            // Show card
+            card = document.querySelector('[id="editMeetingCard' + e.target.id + '"]' );
+            card.style.display = 'block';
+        }
+    })
 }
 
 if(contacts){

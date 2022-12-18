@@ -302,6 +302,69 @@ class upgrademanagement {
             // upgrade to 2.29
             $this->upgrade_229('2.29');
         }
+        if ($this->version === '2.29') 
+        {
+            // upgrade to 2.30
+            $this->upgrade_230('2.30');
+        }
+        if ($this->version === '2.30') 
+        {
+            // upgrade to 2.31
+            $this->upgrade_231('2.31');
+        }
+        if ($this->version === '2.31') 
+        {
+            // upgrade to 2.32
+            $this->upgrade_232('2.32');
+        }
+    }
+
+    private function upgrade_Pattrern($upVer)
+    {
+        global $config;
+        $pref = $config['dbPrefix'];
+
+        $sql = "ALTER TABLE `".$pref."meeting`".
+                " CHANGE `AtDate` `AtDate` date DEFAULT NULL";
+        $this->registry->getObject('db')->executeQuery( $sql );
+        
+        $this->setNewVersion($upVer);
+    }
+
+    private function upgrade_232($upVer)
+    {
+        global $config;
+        $pref = $config['dbPrefix'];
+
+        $sql = "ALTER TABLE `".$pref."meetingline`".
+                " ADD `LineType` varchar(20) NULL DEFAULT ''";
+        $this->registry->getObject('db')->executeQuery( $sql );
+        
+        $this->setNewVersion($upVer);
+    }
+
+    private function upgrade_231($upVer)
+    {
+        global $config;
+        $pref = $config['dbPrefix'];
+
+        $sql = "ALTER TABLE `".$pref."meeting`".
+                " ADD `Close` tinyint(1) NULL DEFAULT 0";
+        $this->registry->getObject('db')->executeQuery( $sql );
+        
+        $this->setNewVersion($upVer);
+    }
+
+    private function upgrade_230($upVer)
+    {
+        global $config;
+        $pref = $config['dbPrefix'];
+
+        $sql = "ALTER TABLE `".$pref."meeting`".
+                " ADD `Actual` tinyint(1) NULL DEFAULT 0";
+        $this->registry->getObject('db')->executeQuery( $sql );
+        
+        $this->setNewVersion($upVer);
     }
 
     private function upgrade_229($upVer)

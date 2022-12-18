@@ -47,6 +47,8 @@ class Core
    */
   public function formatDate( $date, $mask = "d.m.Y")
   {
+    if (!$date)
+      return null;
     $fdate = date($mask,strtotime($date));
     return $fdate;
   } 

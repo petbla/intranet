@@ -4,7 +4,7 @@
             <td>
                 <label class="title">{lbl_Name} </label><br>
                 <span>
-                    <input type="text" class="value col_name" name="Title" value="{Title}" TitleID="{ID}">
+                    <input type="text" class="value col_fullname" name="Title" value="{Title}" TitleID="{ID}">
                     <input type="hidden" name="oldTitle" value="{Title}" oldTitleID="{ID}">
                 </span>
             </td>

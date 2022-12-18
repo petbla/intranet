@@ -14,6 +14,9 @@ p{
 p, li{
   line-height:20px;
 }
+.blue{
+  color: blue;
+}
 
 /* Fieldset */
 
@@ -294,7 +297,6 @@ div#DocumentItems td a, div#DocumentItems td{
   font-weight:normal;
   text-decoration: none;
   padding: 4px 0;
-  color: brown; 
 }
 div#DocumentItems a:hover{
   color: rgb(9, 13, 221); 
@@ -322,7 +324,6 @@ div#ListItems td{
   font-weight:normal;
   text-decoration: none;
   padding: 6px 0;
-  color: black;  
 }
 div#ListItems td.col_fullname{
   padding-left: 10px;
@@ -766,7 +767,6 @@ div#DocumentItems td.value a.col_email{
   background-color: #06f5a5;
 }
  
-
 .col_function,
 .col_lastname,
 .col_email{
@@ -778,14 +778,14 @@ div#DocumentItems td.value a.col_email{
 .col_filename{
   width: 600px;
 }
-
-
 .col_fullname,
-.col_name,
 .col_company,
 .col_web,
 .col_phone{
   width: 700px;
+}
+.col_name{
+  width: 300px;
 }
 .col_text{
   font-size: 20px;
