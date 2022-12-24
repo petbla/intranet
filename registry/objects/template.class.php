@@ -106,6 +106,7 @@ class template {
 	    	$newContent = str_replace( '{' . $tag . '}', $data, $this->page->getContent() );
 	    	// aktualizuj obsah stránky
 	    	$this->page->setContent( $newContent );
+    
     	}
     }
   } // end function replaceTags
@@ -232,7 +233,7 @@ class template {
    */
   public function parseOutput()
   {
-    $this->replaceBits();            // Načte části šablon stránky a vloží je to do obsahu stránky
+    $this->replaceBits();            // Načte části šablon stránky a vloží je to do obsahu stránky    
     $this->replaceTags(false);       // Nahradí značky ve stránce požadovaným obsahem
     $this->replaceTags(true);        // Nahradí značky ve stránce požadovaným obsahem - postParse
     $this->parseTitle();             // Načte titulek nastavený v objektu stránky a vloží ho do pohledu

@@ -1,4 +1,4 @@
-<form action="index.php?page=contact/save/{ID}"  method="post">
+<form id="editName" action="index.php?page=contact/save/{ID}"  method="post">
     <table class="edit-card">
         <tr>
             <td>

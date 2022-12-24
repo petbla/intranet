@@ -160,7 +160,6 @@ class Zobcontroller{
 				} 
 			} 
 		}
-
 		$cache = $this->registry->getObject('db')->cacheData( $table );
 		$this->registry->getObject('template')->getPage()->addTag( 'categoryList', array( 'DATA', $cache ) );
     }
@@ -235,7 +234,7 @@ class Zobcontroller{
 		}
 
 		$data = array();
-		$data['PeriodName'] = $PeriodName;
+		$data['PeriodName'] = $this->registry->getObject('db')->sanitizeData($PeriodName);
 		$data['Actual'] = $Actual;
 		if ($action == 'add'){
 			$this->registry->getObject('db')->insertRecords('electionperiod',$data);
@@ -316,7 +315,7 @@ class Zobcontroller{
 
 		$data = array();
 		$data['ElectionPeriodID'] = $ElectionPeriodID;
-		$data['MeetingName'] = $MeetingName;
+		$data['MeetingName'] = $this->registry->getObject('db')->sanitizeData($MeetingName);
 		$data['Members'] = $Members;
 		if ($action == 'add'){
 			$this->registry->getObject('db')->insertRecords('meetingtype',$data);
@@ -372,7 +371,7 @@ class Zobcontroller{
 			$sp = ($FullName !== "" ) ? " " : "";
 			$FullName = $FullName . $sp . $contact['Title'];
 		}
-		$contact['FullName'] = $FullName;
+		$contact['FullName'] = $this->registry->getObject('db')->sanitizeData($FullName);
 		$this->registry->getObject('db')->insertRecords('contact',$contact);
 
 		// Založení člena jednání
@@ -421,6 +420,11 @@ class Zobcontroller{
 		}		
 
 		if ($action == 'delete'){
+			if ($this->isMemberUsed($MemberID)){
+				$this->message = "Člen $MemberID již byl použit, nelze jej odstranit!";
+				$this->listElectionPeriod( $ElectionPeriodID, $MeetingTypeID );
+				return;	
+			}
 			$condition = "MemberID = $MemberID";
 			$this->registry->getObject('db')->deleteRecords( 'member', $condition, 1); 
 			$this->listElectionPeriod( $ElectionPeriodID, $MeetingTypeID );
@@ -516,6 +520,14 @@ class Zobcontroller{
 				return;
 			}			
 
+			if ($this->isMeetingUsed($MeetingID)){
+				$this->message = "Jednání ".
+					$this->getMeetingNo($meeting['MeetingID']).
+					" již bylo použito, nelze jej odstranit!";
+				$this->listMeetingType( $MeetingTypeID );
+				return;	
+			}
+			
 			$condition = "MeetingID = $MeetingID";
 			$this->registry->getObject('db')->deleteRecords( 'meeting', $condition, 1); 
 			$this->listMeetingType( $MeetingTypeID );
@@ -710,10 +722,10 @@ class Zobcontroller{
 		$data['MeetingID'] = $MeetingID;
 		$data['LineNo'] = isset($_POST['LineNo']) ? $_POST['LineNo'] : '';
 		$data['LineType'] = isset($_POST['LineType']) ? $_POST['LineType'] : '';
-		$data['PresenterID'] = isset($_POST['PresenterID']) ? $_POST['PresenterID'] : '';
-		$data['Title'] = isset($_POST['Title']) ? $_POST['Title'] : '';
-		$data['Content'] = isset($_POST['Content']) ? $_POST['Content'] : '';
-		$data['Discussion'] = isset($_POST['Discussion']) ? $_POST['Discussion'] : '';
+		$data['PresenterID'] = isset($_POST['PresenterID']) ? $this->registry->getObject('db')->sanitizeData($_POST['PresenterID']) : '';
+		$data['Title'] = isset($_POST['Title']) ? $this->registry->getObject('db')->sanitizeData($_POST['Title']) : '';
+		$data['Content'] = isset($_POST['Content']) ? $this->registry->getObject('db')->sanitizeData($_POST['Content']) : '';
+		$data['Discussion'] = isset($_POST['Discussion']) ? $this->registry->getObject('db')->sanitizeData($_POST['Discussion']) : '';
 		$data['Vote'] = isset($_POST['Vote']) ? $_POST['Vote'] : 0;
 		$data['VoteFor'] = isset($_POST['VoteFor']) ? $_POST['VoteFor'] : 0;
 		$data['VoteAgainst'] = isset($_POST['VoteAgainst']) ? $_POST['VoteAgainst'] : 0;
@@ -912,13 +924,16 @@ class Zobcontroller{
 	private function listMeeting( $MeetingID )
 	{
 		$meeting = $this->getMeeting($MeetingID);
-		$meetingtype = $this->getMeetingtype($meeting['MeetingTypeID']);
+		$MeetingTypeID = $meeting['MeetingTypeID'];
+		$meetingtype = $this->getMeetingtype($MeetingTypeID);
 		$electionperiod = $this->getElectionperiod($meetingtype['ElectionPeriodID']);
 		$Year = $meeting['Year'];
 		$EntryNo = $meeting['EntryNo'];
-		$header = $meetingtype['MeetingName']." - $EntryNo/$Year";
+		$○r = $meetingtype['MeetingName']." - <b>$EntryNo/$Year</b>, datum jednání: ";
+		$○r .= $this->registry->getObject('core')->formatDate($meeting['AtDate'],'d.m.Y');
+				
 		if($this->isElectionperiodTemplate($electionperiod['ElectionPeriodID']))
-			$header .= ' (šablona)';
+			$○r .= ' (šablona)';
 
 		// Body zápisu z jednání
 		$sql = "SELECT * FROM ".$this->prefDb."meetingline WHERE MeetingID = $MeetingID ORDER BY LineNo";
@@ -946,11 +961,21 @@ class Zobcontroller{
 		$this->registry->getObject('template')->getPage()->addTag( 'pageTitle', $this->message );						
 		$this->registry->getObject('template')->getPage()->addTag( 'Year', $Year );						
 		$this->registry->getObject('template')->getPage()->addTag( 'EntryNo', $EntryNo );						
-		$this->registry->getObject('template')->getPage()->addTag( 'Header', $header );						
+		$this->registry->getObject('template')->getPage()->addTag( 'Header', $○r );						
 		$this->registry->getObject('template')->getPage()->addTag( 'MeetingID', $MeetingID );						
+		$this->registry->getObject('template')->getPage()->addTag( 'MeetingTypeID', $MeetingTypeID );						
 		//$this->registry->getObject('template')->addTemplateBit('editdMeetingCard', 'zob-meetingline-edit.tpl.php');
 
 		$this->build('zob-meetingline-list.tpl.php');
+	}
+
+	public function isElectionperiodTemplate ( $ElectionPeriodID )
+	{
+		// meetingtype
+		$this->registry->getObject('db')->initQuery('electionperiod');
+		$this->registry->getObject('db')->setFilter('ElectionPeriodID',$ElectionPeriodID);
+		$this->registry->getObject('db')->setCondition("PeriodName like '<%>'");
+		return (!$this->registry->getObject('db')->isEmpty());
 	}
 
 	public function isElectionperiodUsed ( $ElectionPeriodID )
@@ -962,23 +987,6 @@ class Zobcontroller{
 			return true;
 
 		return false;
-	}
-
-	public function isMeetinglineUsed ( $MeetingLineID )
-	{
-		//TODO-kontrola příloh k meetingline
-
-
-		return false;
-	}
-
-	public function isElectionperiodTemplate ( $ElectionPeriodID )
-	{
-		// meetingtype
-		$this->registry->getObject('db')->initQuery('electionperiod');
-		$this->registry->getObject('db')->setFilter('ElectionPeriodID',$ElectionPeriodID);
-		$this->registry->getObject('db')->setCondition("PeriodName like '<%>'");
-		return (!$this->registry->getObject('db')->isEmpty());
 	}
 
 	public function isMeetingtypeUsed($MeetingTypeID) 
@@ -994,6 +1002,38 @@ class Zobcontroller{
 		$this->registry->getObject('db')->setFilter('MeetingTypeID',$MeetingTypeID);
 		if (!$this->registry->getObject('db')->isEmpty())
 			return true;
+
+		return false;
+	}
+
+	public function isMemberUsed($MemberID) 
+	{
+		// Check if used somewhere
+
+		return false;
+	}
+
+	public function isMeetingUsed($MeetingID) 
+	{
+		// meetingline
+		$this->registry->getObject('db')->initQuery('meetingline');
+		$this->registry->getObject('db')->setFilter('MeetingID',$MeetingID);
+		if (!$this->registry->getObject('db')->isEmpty())
+			return true;
+
+		// inbox
+		$this->registry->getObject('db')->initQuery('inbox');
+		$this->registry->getObject('db')->setFilter('MeetingID',$MeetingID);
+		if (!$this->registry->getObject('db')->isEmpty())
+			return true;
+
+		return false;
+	}
+
+	public function isMeetinglineUsed ( $MeetingLineID )
+	{
+		//TODO-kontrola příloh k meetingline
+
 
 		return false;
 	}
@@ -1110,6 +1150,20 @@ class Zobcontroller{
 		if ($this->registry->getObject('db')->findFirst())
 			$meeting = $this->registry->getObject('db')->getResult();			
 		return $meeting;
+	}
+
+	public function getMeetingNo ( $MeetingID , $withMeetingName = false)
+	{
+		$MeetingNo = '';
+		$meeting = $this->getMeeting( $MeetingID );
+		if($meeting){
+			$MeetingNo = $meeting['EntryNo'].'/'.$meeting['Year'];
+			if ($withMeetingName){
+				$meetingtype = $this->getMeetingtype($meeting['MeetingTypeID']);
+				$MeetingNo = $meetingtype['MeetingName'].' - '.$MeetingNo;
+			}
+		}
+		return $MeetingNo;
 	}
 
 	public function getMeetingLine ( $MeetingLineID )

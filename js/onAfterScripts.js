@@ -31,6 +31,7 @@ var fld_handled;
 var fld_webroot;
 var activeElectionPeriod;
 var activeMemberType;
+var a_inbox;
 var meetings;
 
 
@@ -59,6 +60,8 @@ a_agenda = document.querySelectorAll('[a_type="agenda"]');
 a_agendaPDF = document.querySelectorAll('[a_type="agendaPDF"]');
 a_agendaUnlink = document.querySelectorAll('[a_type="agendaUnlink"]');
 a_agendaSourceFolder = document.querySelectorAll('[a_type="agendaSourceFolder"]');
+a_inbox = document.querySelectorAll('[name="activeInbox"]');
+
 fld_handled = document.querySelector('#fld_handled');
 fld_webroot = document.querySelector('#fld_webroot');
 grouplistnewcontact = document.querySelector( '[id="grouplistnewcontact"]' );
@@ -744,6 +747,16 @@ if(activeMemberType){
         e.setAttribute('value',MemberTypeID);
 }
 
+if(a_inbox){
+    a_inbox.forEach( function (inbox) {
+        var InboxID;
+        InboxID = inbox.getAttribute('value');
+        if(document.getElementById('editInbox' + InboxID)){
+            modifyTodoInbox(InboxID);
+        }
+    })
+}
+
 function initForm(tag,id) {
     var element, oldelement;
 
@@ -838,6 +851,10 @@ function modifyZobMember(MemberID,MeetingTypeID,ContactName,MemberType,Action){
     document.getElementById("fieldMemMemberType" + MeetingTypeID).value = MemberType;
     document.getElementById("fieldMemContactName" + MeetingTypeID).value = ContactName;
     document.getElementById("fieldMemAction" + MeetingTypeID).value = Action;
+}
+
+function modifyTodoInbox(InboxID){
+    document.getElementById("editInbox" + InboxID).style.display = 'block';    
 }
 
 

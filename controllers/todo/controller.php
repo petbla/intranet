@@ -55,6 +55,19 @@ class Todocontroller{
 					case 'listArchive':
 						$this->listArchiveDocuments();
 						break;
+					case 'inbox':
+						$action = isset($urlBits[2]) ? $urlBits[2] : '';
+						switch ($action) {
+							case 'refresh':
+								$this->refreshInbox();
+								break;
+							case 'modify':
+								$this->modifyInbox();
+								break;
+							default:
+								$this->listInbox();
+						}
+						break;
 					case 'WS':
 						// Je voláno jako XMLHttpRequest (function.js) a pouze loguje zobrazené položky
 						switch ($urlBits[2]) {
@@ -92,7 +105,7 @@ class Todocontroller{
         $this->registry->getObject('template')->getPage()->addTag( 'BaseUrl', $BaseUrl );
 
         $this->registry->getObject('template')->getPage()->addTag( 'controller', 'todo' );
-        $this->registry->getObject('template')->addTemplateBit('editcard', 'document-entry-editcard.tpl.php');
+		$this->registry->getObject('template')->addTemplateBit('editcard', 'document-entry-editcard.tpl.php');
 
 		$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
 		$this->registry->getObject('template')->addTemplateBit('categories', 'categorymenu-todo.tpl.php');
@@ -134,6 +147,16 @@ class Todocontroller{
 		$urlBits = $this->registry->getURLBits();
 		$action = isset( $urlBits[1]) ? $urlBits[1] : '';
 
+		$countInboxNew = $this->countInboxNew();
+
+		$rec['idCat'] = 'inbox';
+		if($countInboxNew)
+			$rec['titleCat'] = "<b>Doručená pošta ($countInboxNew)</b>";
+		else
+			$rec['titleCat'] = "Doručená pošta ($countInboxNew)";
+		$rec['activeCat'] = $rec['idCat'] == $action ? 'active' : '';
+		$table[] = $rec;
+
 		$rec['idCat'] = 'listTodo';
 		$rec['titleCat'] = 'Úkoly';
 		$rec['activeCat'] = $rec['idCat'] == $action ? 'active' : '';
@@ -174,6 +197,69 @@ class Todocontroller{
     }
 
 
+    /**
+     * Zobrazení doručené pošty
+     * @return void
+     */
+	public function listInbox($activeInboxID = 0)
+	{
+		require_once( FRAMEWORK_PATH . 'controllers/zob/controller.php');
+		$zob = new Zobcontroller( $this->registry, true );
+		
+		$sql = "SELECT * FROM ".$this->prefDb."inbox ".
+				  	"WHERE Close = 0 ".
+				  	"ORDER BY CreateDate DESC ";
+
+		$sql = $this->registry->getObject('db')->getSqlByPage( $sql );
+		$cache = $this->registry->getObject('db')->cacheQuery( $sql );
+		$result = null;
+		while( $inbox = $this->registry->getObject('db')->resultsFromCache( $cache ) )
+		{				
+			
+			$inbox['ismodify'] = $inbox['Modified'] == 0 ? 'no' : '';
+			$inbox['isfolder'] = $inbox['DmsEntryID'] == '00000000-0000-0000-0000-000000000000' ? 'no' : '';			
+			$MeetingID = $inbox['MeetingID'] == 0 ? 'no' : '';
+			$inbox['ismeeting'] = $MeetingID == 0 ? 'no' : '';
+			$inbox['MeetingNo'] = $zob->getMeetingNo($MeetingID,true);
+			$inbox['CreateDate'] = $this->registry->getObject('core')->formatDate($inbox['CreateDate'],'d.m.Y H:i');
+			$inbox['SelectMeetingTypeID'] = '';
+			$inbox['MeetingNo'] = '';
+			if($inbox['MeetingID']){
+				$meeting = $zob->getMeeting($inbox['MeetingID']);
+				if($meeting){
+					$meetingtype = $zob->getMeetingtype($meeting['MeetingTypeID']);
+					$inbox['MeetingNo'] = $zob->getMeetingNo($inbox['MeetingID']);
+					$inbox['SelectMeetingTypeID'] = $meetingtype['MeetingTypeID'];
+				}
+			}
+			$result[] = $inbox;
+		};
+		if($result){
+			$cache = $this->registry->getObject('db')->cacheData( $result );
+			$this->registry->getObject('template')->getPage()->addTag( 'listInbox', array( 'DATA', $cache ) );
+			
+			$electionperiod = $zob->getActualElectionperiod();
+			$meetingtype = $zob->readMeetingtypesByElectionperiodID($electionperiod['ElectionPeriodID']);
+			$meetingtype[] = array('MeetingName' => 'Úkol');
+			$meetingtype[] = array('MeetingName' => 'Storno');
+			$meetingtype[] = array('MeetingName' => '');
+				
+			foreach ($result as $inbox) {
+				if($meetingtype){
+					$cache = $this->registry->getObject('db')->cacheData( $meetingtype );
+					$this->registry->getObject('template')->getPage()->addTag( 'listType'.$inbox['InboxID'], array( 'DATA', $cache ) );	
+				}
+			}
+		}else{
+			$this->registry->getObject('template')->getPage()->addTag( 'Title', '' );
+			$this->registry->getObject('template')->getPage()->addTag( 'CreateDate', '' );
+		}
+		$this->registry->getObject('template')->getPage()->addTag( 'activeInboxID', $activeInboxID );					
+		$this->registry->getObject('template')->addTemplateBit('inboxCard', 'todo-inbox-edit.tpl.php');
+
+		$this->build('todo-inbox-list.tpl.php');
+	}	
+	
     /**
      * Zobrazení seznamu všech úkolů
      * @return void
@@ -508,6 +594,69 @@ class Todocontroller{
 		// Zobrazení výsledku
 		$this->build('todo-list.tpl.php');
 	}	
+
+	private function modifyInbox(){
+		$InboxID = isset($_POST['InboxID']) ? $_POST['InboxID'] : 0;
+		$Title = isset($_POST['Title']) ? $_POST['Title'] : 0;
+		if ($InboxID){
+			$data = array();
+			$data['Title'] = $this->registry->getObject('db')->sanitizeData($Title);
+			$data['Modified'] = 1;
+			$condition = "InboxID = $InboxID";
+			$this->registry->getObject('db')->updateRecords('inbox',$data,$condition);
+		}
+		$this->listInbox($InboxID);
+	}
+
+	public function countInboxNew(){
+		$table = 'inbox';
+		$sql = "SELECT count(*) as pocet FROM ".$this->prefDb.$table;
+		$sql .= " WHERE Close = 0";
+		$cache = $this->registry->getObject('db')->cacheQuery( $sql );	
+		$this->registry->getObject('db')->findFirst( $cache );
+		$result = $this->registry->getObject('db')->resultsFromCache( $cache );
+		return $result['pocet'];				
+	}
+
+	public function refreshInbox()	
+	{
+		// DefaultAppPool => IIS AppPool\DefaultAppPool
+
+		$inboxUrl = 'http://petbla:91/';
+		$inboxRoot = 'c:/Temp/Sken/';
+
+		$this->registry->getObject('log')->addMessage("Přihlášený uživatel: ".get_current_user(),'inbox','');
+
+		if ($handle = opendir($inboxRoot)) { 
+			while (false !== ($fileName = readdir($handle))) 
+			{ 
+				if ($fileName == '.' |0| $fileName == '..' | $fileName == 'web.config') 
+			  	{ 
+					continue; 
+			  	};
+			  	$fullItemPath = $inboxRoot.$fileName;
+			  	$url = $inboxUrl.$fileName;
+				
+				// Windows Name
+				$SourcePath  = $this->registry->getObject('fce')->ConvertToDirectorySeparator( $fullItemPath,false );    // formát Xxxxx\Ddddd\Aaaaa
+				
+				$this->registry->getObject('db')->initQuery('inbox');
+				$SourcePath = $this->registry->getObject('db')->sanitizeData($SourcePath);
+				$url = $this->registry->getObject('db')->sanitizeData($url);
+				$this->registry->getObject('db')->setFilter('SourcePath',$SourcePath);
+				if ($this->registry->getObject('db')->isEmpty()){
+					$data = array();
+					$data['SourcePath'] = $SourcePath;
+					$data['SourceUrl'] = $url;
+					$data['Title'] = $this->registry->getObject('db')->sanitizeData($fileName);
+					$data['CreateDate'] = date('Y-m-d H:i');
+					$this->registry->getObject('db')->insertRecords('inbox',$data);
+				}		  			  	
+			} 
+			closedir($handle); 
+		  } 
+		$this->listInbox();
+	}
 
     /**
      * Webová služba 

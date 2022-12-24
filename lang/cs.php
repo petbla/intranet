@@ -233,5 +233,8 @@ $caption['ImportNotesCsv'] =       'Import poznámek z Excelu (CSV)';
  $caption['LineType'] =                 'Typ';  
  $caption['LineNo'] =                   'Číslo';  
  $caption['MeetingPointText'] =         'Bod jednání';  
+ $caption['MeetingNo'] =                'Číslo zápisu';  
+ $caption['DocumentTyp'] =              'Typ dokumentu';  
+ $caption['Settlement'] =              'Vyřízení';  
  
 ?>

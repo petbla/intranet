@@ -17,6 +17,9 @@ p, li{
 .blue{
   color: blue;
 }
+.button{
+  text-decoration: none;
+}
 
 /* Fieldset */
 
@@ -97,7 +100,7 @@ header#page_header img.imageLogo{
   margin: 15px;
   float: left;
 }
-header#page_header img.logout:hover, .action {
+header#page_header img.logout:hover, .action, .pointer:hover {
   cursor: pointer;
 }
 header#page_header #loginform{
@@ -291,14 +294,16 @@ div#newcardID{
 div#DocumentItems{
   margin: 10px auto;
 }
-div#DocumentItems td a, div#DocumentItems td{
+div#DocumentItems td a, div#DocumentItems td,
+div#ListItems td a, div#ListItems td{
   font-family: Century-gothic, Calibri, Arial, sans-serif; 
   font-size: 18px;
   font-weight:normal;
   text-decoration: none;
   padding: 4px 0;
 }
-div#DocumentItems a:hover{
+div#DocumentItems a:hover,
+div#ListItems a:hover{
   color: rgb(9, 13, 221); 
   text-decoration: underline;
 }
@@ -326,6 +331,9 @@ div#ListItems td{
   padding: 6px 0;
 }
 div#ListItems td.col_fullname{
+  padding-left: 10px;
+}
+div#ListItems td.col_title{
   padding-left: 10px;
 }
 div#ListItems td.col_link {
@@ -737,6 +745,7 @@ div#DocumentItems table.edit-card td{
   border: 1px solid white;
 }
 
+
 div#DocumentItems table.edit-card label.title{
   font-size: 12px;
   font-weight: bold;
@@ -798,6 +807,12 @@ div#DocumentItems td.value a.col_email{
   font-weight: bold;
   color:#808080;
   width: 200px;
+}
+.col_code{
+  width: 100px;
+}
+.col_title{
+  width: 100px;
 }
 .col_action{
   width: 100px;

@@ -29,6 +29,18 @@
             <td class="action">
             </td>
         </tr>
+        <tr>
+            <td class="name">
+            Přihlášený uživatel:
+            </td>
+            <td class="value">
+                <span>
+                    {s_CurrentUser}                    
+                </span>
+            </td>
+            <td class="action">
+            </td>
+        </tr>
     </table>
     <table class="edit-card">
         <tr>

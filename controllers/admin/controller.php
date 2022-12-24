@@ -214,6 +214,7 @@ class Admincontroller {
 		}else{
 			$setup['synchroFolderonOpen'] = 'ne';
 		};
+		$setup['CurrentUser'] = get_current_user();
 		$this->registry->getObject('template')->dataToTags( $setup, 's_' );
 
 		$this->registry->getObject('db')->initQuery('source','*',false);
@@ -255,6 +256,26 @@ class Admincontroller {
 		$this->registry->getObject('template')->getPage()->addTag( 'PermissionSet', array( 'SQL', $cache ) ); 
 		$this->build('admin-users.tpl.php');
 	}
+
+	/**
+	 * Zobrazení seznamu portálů jako menu pro výběr
+	 * @return void
+	 */
+	private function listPortal()
+	{
+		$sql = "SELECT * FROM source";
+		$cache = $this->registry->getObject('db')->cacheQuery( $sql );
+		if (!$this->registry->getObject('db')->isEmpty( $cache ))
+		{
+			$this->registry->getObject('template')->getPage()->addTag( 'PortalItems', array( 'SQL', $cache ) );   
+			$this->build('portal-list.tpl.php');
+		}
+		else
+		{
+			$this->pageNotFound();
+		}		
+	}
+
 
 	/**
 	 * Zobrazení všech položek logu
@@ -426,25 +447,6 @@ class Admincontroller {
 		$this->registry->getObject('db')->insertRecords('permissionset',$data);
 		$data = array('Level'=>'9','Name'=>'administrátor');
 		$this->registry->getObject('db')->insertRecords('permissionset',$data);
-	}
-
-	/**
-	 * Zobrazení seznamu portálů jako menu pro výběr
-	 * @return void
-	 */
-	private function listPortal()
-	{
-		$sql = "SELECT * FROM source";
-		$cache = $this->registry->getObject('db')->cacheQuery( $sql );
-		if (!$this->registry->getObject('db')->isEmpty( $cache ))
-		{
-			$this->registry->getObject('template')->getPage()->addTag( 'PortalItems', array( 'SQL', $cache ) );   
-			$this->build('portal-list.tpl.php');
-		}
-		else
-		{
-			$this->pageNotFound();
-		}		
 	}
 
 	/**

@@ -2,6 +2,7 @@
     {navigate_menu}
 </div>
 <h1>{Header}</h1>
+<a href ="index.php?page=zob/meetingtype/list/{MeetingTypeID}" class="button"><span class="action_close">{lbl_Close}</span></a>
 <div id="DocumentItems">
  
     <p id="pageTitle" class="error" onClick="this.style.display = 'none';" >{pageTitle}</p>
@@ -23,13 +24,12 @@
             <td class="col_action">
                 <img src="views/classic/images/icon/modify.png" title="{lbl_edit}" id="{MeetingID}" dmsClassName="{dmsClassName}""/>
                 <a href="index.php?page=zob/meetingline/delete/{MeetingID}/{MeetingLineID}"><img src="views/classic/images/icon/delete.png" title="{lbl_Delete}" onclick="return ConfirmDelete();"/></a>
-                <a href="index.php?page=zob/meetingline/list/{MeetingID}"><img src="views/classic/images/icon/meeting.png" title="Body jednání"/></a>
             </td>
-            <td class="col_text">{LineType}</td>
-            <td class="col_text">
-                <a href="index.php?page=zob/meetingline/moveup/{MeetingID}/{MeetingLineID}"><img src="views/classic/images/icon/moveup.png" title="Posun bodu nahorů"/></a>
-                &nbsp; {EntryNo}/{Year}/{LineNo} &nbsp;
-                <a href="index.php?page=zob/meetingline/movedown/{MeetingID}/{MeetingLineID}"><img src="views/classic/images/icon/movedown.png" title="Posun bodu dolů"/></a>
+            <td class="col_code">{LineType}</td>
+            <td class="col_name">
+                <span>
+                    <a href="index.php?page=zob/meetingline/moveup/{MeetingID}/{MeetingLineID}"><img src="views/classic/images/icon/moveup.png" title="Posun bodu nahorů"/></a>&nbsp;{EntryNo}/{Year}/{LineNo}&nbsp;<a href="index.php?page=zob/meetingline/movedown/{MeetingID}/{MeetingLineID}"><img src="views/classic/images/icon/movedown.png" title="Posun bodu dolů"/></a>
+                </span>
             </td>
             <td colspan="2" class="col_name">{Title}</td>
         </tr>

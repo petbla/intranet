@@ -317,6 +317,21 @@ class upgrademanagement {
             // upgrade to 2.32
             $this->upgrade_232('2.32');
         }
+        if ($this->version === '2.32') 
+        {
+            // upgrade to 2.33
+            $this->upgrade_233('2.33');
+        }
+        if ($this->version === '2.33') 
+        {
+            // upgrade to 2.34
+            $this->upgrade_234('2.34');
+        }
+        if ($this->version === '2.34') 
+        {
+            // upgrade to 2.35
+            $this->upgrade_235('2.35');
+        }
     }
 
     private function upgrade_Pattrern($upVer)
@@ -326,6 +341,53 @@ class upgrademanagement {
 
         $sql = "ALTER TABLE `".$pref."meeting`".
                 " CHANGE `AtDate` `AtDate` date DEFAULT NULL";
+        $this->registry->getObject('db')->executeQuery( $sql );
+        
+        $this->setNewVersion($upVer);
+    }
+
+    private function upgrade_235($upVer)
+    {
+        global $config;
+        $pref = $config['dbPrefix'];
+
+        $sql = "ALTER TABLE `".$pref."inbox`".
+                " ADD `SourceUrl` varchar(250) NULL DEFAULT ''";
+        $this->registry->getObject('db')->executeQuery( $sql );
+        
+        $this->setNewVersion($upVer);
+    }
+
+    private function upgrade_234($upVer)
+    {
+        global $config;
+        $pref = $config['dbPrefix'];
+
+        $sql = "ALTER TABLE `".$pref."inbox`".
+                " ADD `MeetingID` int(11) NULL DEFAULT 0".
+                " ,ADD `Modified` tinyint(1) NULL DEFAULT 0";
+        $this->registry->getObject('db')->executeQuery( $sql );
+        
+        $this->setNewVersion($upVer);
+    }
+
+    private function upgrade_233($upVer)
+    {
+        global $config;
+        $pref = $config['dbPrefix'];
+
+        $sql = "CREATE TABLE IF NOT EXISTS `".$pref."inbox` (
+            `InboxID` int(11) NOT NULL AUTO_INCREMENT,
+            `SourcePath` varchar(250) COLLATE utf8_czech_ci DEFAULT '',
+            `DestinationPath` varchar(250) COLLATE utf8_czech_ci DEFAULT '',
+            `DmsEntryID` varchar(36) DEFAULT '00000000-0000-0000-0000-000000000000',
+            `Title` varchar(100) COLLATE utf8_czech_ci DEFAULT '',
+            `CreateDate` datetime NULL ,            
+            `SettlementDate` datetime NULL,                        
+            `Close` int(11) NULL DEFAULT 0,
+            `AssignedUserID` varchar(36) DEFAULT '00000000-0000-0000-0000-000000000000',
+            PRIMARY KEY (`InboxID`)
+            ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci";
         $this->registry->getObject('db')->executeQuery( $sql );
         
         $this->setNewVersion($upVer);
