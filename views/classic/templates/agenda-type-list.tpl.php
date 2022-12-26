@@ -1,7 +1,19 @@
-<div id="pagecounter"></div>
-{pageTitle}
-{navigate_menu}
+<div id="pagecounter">{navigate_menu}</div>
 <div id="ListItems">
+    <p id="pageMessage" class="message" onClick="this.style.display = 'none';" >{message}</p>
+    <script>
+        var e;
+        e = document.getElementById('pageMessage');
+        if(e.innerHTML == '')
+            e.style.display = 'none';
+    </script>
+    <p id="pageErrorMesage" class="error" onClick="this.style.display = 'none';" >{errorMessage}</p>
+    <script>
+        var e;
+        e = document.getElementById('pageErrorMesage');
+        if(e.innerHTML == '')
+            e.style.display = 'none';
+    </script>
     <form action="index.php?page=agenda/type/add"  method="post">
         <table>
             <tr>
@@ -43,7 +55,5 @@
         </table>
     </form>
 </div>
-<div id="pagecounter" class="bottom">
-{navigate_menu}
-</div>
+<div id="pagecounter" class="bottom">{navigate_menu}</div>
 

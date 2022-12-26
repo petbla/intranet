@@ -8,6 +8,8 @@ class Generalcontroller {
 
 	private $registry;
 	private $urlBits;
+	private $message;
+	private $errorMessage;
 	
 	public function __construct( Registry $registry, $directCall )
 	{
@@ -153,7 +155,7 @@ class Generalcontroller {
 		if (($table == '') || ($table == 'agenda')){
 				$sql = "INSERT INTO ".$pref."resultsearch (BatchID,CreateDate,Type,Description,ID) ".
 					"SELECT $batchID as BatchID, '$createDate' as CreateDate, ".
-						"'Agenda' as Type, CONCAT (DocumentNo,' ', Description) as Description,ID ".
+						"'Agenda' as Type, CONCAT (IFNULL(DocumentNo,''),' ', IFNULL(Description,'')) as Description,ID ".
 					"FROM ".$pref."agenda ".
 					"WHERE (DocumentNo like '%$searchText%') OR (Description like '%$searchText%')";
 			$this->registry->getObject('db')->executeQuery($sql);
@@ -163,7 +165,7 @@ class Generalcontroller {
 		if (($table == '') || ($table == 'contact')){
 			$sql = "INSERT INTO ".$pref."resultsearch (BatchID,CreateDate,Type,Description,ID) ".
 					"SELECT $batchID as BatchID, '$createDate' as CreateDate, ".
-						"'Contact' as Type, CONCAT (FullName,', Tel.:',Phone,', Email:',Email) as Description ,ID ".
+						"'Contact' as Type, CONCAT (IFNULL(FullName,''),', Tel.:',IFNULL(Phone,''),', Email:',IFNULL(Email,'')) as Description ,ID ".
 					"FROM ".$pref."contact ".
 					"WHERE (Close = 0) ".
 						"AND (".

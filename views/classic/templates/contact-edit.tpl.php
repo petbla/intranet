@@ -6,7 +6,7 @@
                 <input type="text" class="value" name="Title" value="{Title}" TitleID="{ID}"/><br>
                 <input type="hidden" name="oldTitle" value="{Title}" oldTitleID="{ID}">               
                 <label class="title">{lbl_First_name}</label><br>
-                <input type="text" class="value" name="FirstName" value="{FirstName}" FirstNameID="{ID}"/><br>
+                <input type="text" class="value col_name" name="FirstName" value="{FirstName}" FirstNameID="{ID}"/><br>
                 <input type="hidden" name="oldFirstName" value="{FirstName}" oldFirstNameID="{ID}"/>
                 <label class="title">{lbl_Last_name}</label><br>
                 <input type="text" class="value col_lastname" name="LastName" value="{LastName}" LastNameID="{ID}"/>
@@ -22,7 +22,7 @@
                 <input type="hidden" name="oldCompany" value="{Company}" oldCompanyID="{ID}"/>
 
                 <label class="title">{lbl_Web}</label><br>
-                <input type="url" class="value col_web" name="Web" value="{Web}" WebID="{ID}"/>
+                <input type="text" class="value col_web" name="Web" value="{Web}" WebID="{ID}"/>
                 <input type="hidden" name="oldWeb" value="{Web}" oldWebID="{ID}"/>
             </td>
             <td>
@@ -46,7 +46,7 @@
                 <input type="hidden" name="oldEmail" value="{Email}" oldEmailID="{ID}"/>
 
                 <label class="title">{lbl_CloseCard}</label>
-                <input type="checkbox" class="value" name="Close" value="{Close}" CloseID="{ID}"/>
+                <input type="checkbox" class="value" name="Close" value="{Close}" CloseID="{ID}" onClick = "validateCheckbox( this );"/>
                 <input type="hidden" name="oldClose" value="{Close}" oldCloseID="{ID}"/>                
             </td>
             <td width="50%">

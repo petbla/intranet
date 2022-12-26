@@ -8,17 +8,17 @@
         <!-- START memberList{MeetingTypeID} -->
         <tr>      
             <td class="col_action">
-                <img src="views/classic/images/icon/modify.png" alt="{lbl_edit}" onClick = "modifyZobMember('{MemberID}','{MeetingTypeID}','{ContactName}','{MemberType}','modify');"/>
+                <img src="views/classic/images/icon/modify.png" alt="{lbl_edit}" onClick = "modifyZobMember('{MemberID}','{MeetingTypeID}','{ContactName}','{MemberTypeCSY}','{MemberType}','modify');"/>
                 <a href="index.php?page=zob/member/delete/{MemberID}/{MeetingTypeID}"><img src="views/classic/images/icon/delete.png" alt="{lbl_delete}" onclick="return ConfirmDelete();"/></a>
             </td>
             <td class="col_text">{ContactName{MeetingTypeID}}</td>
-            <td colspan="2" class="col_text">{MemberType{MeetingTypeID}}</td>
+            <td colspan="2" class="col_text">{MemberTypeCSY{MeetingTypeID}}</td>
         </tr>
         <!-- END memberList{MeetingTypeID} -->
         <form action="index.php?page=zob/member/add"  method="post">
             <tr>
                 <td>
-                    <img src="views/classic/images/nav/addNew.png" alt="{lbl_New}" onClick = "modifyZobMember('','','','','add');"/>                    
+                    <img src="views/classic/images/nav/addNew.png" alt="{lbl_New}" onClick = "modifyZobMember('','','','','','add');"/>                    
              </td>
                 <td>
                     <input type="text" id="fieldMemContactName{MeetingTypeID}" class="value" name="ContactName" value="" autofocus required/>

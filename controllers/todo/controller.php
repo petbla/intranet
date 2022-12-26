@@ -9,6 +9,8 @@ class Todocontroller{
 	private $registry;
 	private $perSet;
 	private $prefDb;
+	private $message;
+	private $errorMessage;
 
 	/**
 	 * @param Registry $registry 
@@ -58,6 +60,16 @@ class Todocontroller{
 					case 'inbox':
 						$action = isset($urlBits[2]) ? $urlBits[2] : '';
 						switch ($action) {
+							case 'folder':
+								$action = isset($urlBits[3]) ? $urlBits[3] : '';
+								$action = isset($_POST['storno']) ? 'storno' : $action;
+								$action = isset($_POST['add']) ? 'add' : $action;
+								$InboxID = isset($urlBits[4]) ? $urlBits[4] : '';
+								$InboxID = isset($_POST['InboxID']) ? $_POST['InboxID'] : $InboxID;
+								$ID = isset($urlBits[5]) ? $urlBits[5] : '';
+								$ID = isset($_POST['ID']) ? $_POST['ID'] : $ID;		
+								$this->folder($action, $InboxID, $ID);
+								break;
 							case 'refresh':
 								$this->refreshInbox();
 								break;
@@ -104,6 +116,10 @@ class Todocontroller{
         $BaseUrl = $this->registry->getURLPath();
         $this->registry->getObject('template')->getPage()->addTag( 'BaseUrl', $BaseUrl );
 
+		// Page message
+		$this->registry->getObject('template')->getPage()->addTag('message',$this->message);
+		$this->registry->getObject('template')->getPage()->addTag('errorMessage',$this->errorMessage);
+
         $this->registry->getObject('template')->getPage()->addTag( 'controller', 'todo' );
 		$this->registry->getObject('template')->addTemplateBit('editcard', 'document-entry-editcard.tpl.php');
 
@@ -119,8 +135,7 @@ class Todocontroller{
 	private function pageNotFound()
 	{
 		// Logování
-		$this->registry->getObject('log')->addMessage("Pokus o zobrazení neznámého obsahu.",'dmsentry','');
-		$this->build('invalid-document.tpl.php');
+		$this->error("Pokus o zobrazení neznámého obsahu.");
 	}
 
     /**
@@ -132,8 +147,7 @@ class Todocontroller{
 	{
 		// Logování
 		$this->registry->getObject('log')->addMessage("Chyba: $message",'dmsentry','');
-
-		$this->registry->getObject('template')->getPage()->addTag('message',$message);
+		$this->errorMessage = $message;
 		$this->build();
 	}
 
@@ -595,10 +609,39 @@ class Todocontroller{
 		$this->build('todo-list.tpl.php');
 	}	
 
+	private function getDmsentry($ID)
+	{
+		$entry = null;
+        if($ID != ''){
+			$this->registry->getObject('db')->initQuery('dmsentry');
+			$this->registry->getObject('db')->setFilter('ID',$ID);
+			if ($this->registry->getObject('db')->findFirst())
+				$entry = $this->registry->getObject('db')->getResult();			
+		}
+		return $entry;
+	}
+
+	private function getInbox($InboxID)
+	{
+		$inbox = null;
+		$this->registry->getObject('db')->initQuery('inbox');
+		$this->registry->getObject('db')->setFilter('InboxID',$InboxID);
+		if ($this->registry->getObject('db')->findFirst())
+			$inbox = $this->registry->getObject('db')->getResult();			
+		return $inbox;
+	}
+
 	private function modifyInbox(){
 		$InboxID = isset($_POST['InboxID']) ? $_POST['InboxID'] : 0;
 		$Title = isset($_POST['Title']) ? $_POST['Title'] : 0;
 		if ($InboxID){
+			$inbox = $this->getInbox($InboxID);
+			if($inbox['DmsEntryID'] == '00000000-0000-0000-0000-000000000000'){
+				$this->message = "Dokument musí být nejprve zařazen do složky.";
+				$this->listInbox($InboxID);
+				return;	
+			}
+			
 			$data = array();
 			$data['Title'] = $this->registry->getObject('db')->sanitizeData($Title);
 			$data['Modified'] = 1;
@@ -618,6 +661,76 @@ class Todocontroller{
 		return $result['pocet'];				
 	}
 
+	public function folder($action, $InboxID , $DmsParentEntryID )	
+	{
+		// Najít ParentFolder - pokud byl zadán - a určit level složky pro výběr
+		$path = '';
+		if ($DmsParentEntryID != ''){
+			$entry = $this->getDmsentry($DmsParentEntryID );
+			if( $entry ){
+				$path .= $entry['Name'];
+			}				
+		}
+		$breads = str_replace("\\"," => ",$path);
+
+		// Seznam složek pro výběr
+		$folder = array();
+		$dmsentry = $this->registry->getObject('document')->readFolders($DmsParentEntryID);
+		if($dmsentry){
+			foreach ($dmsentry as $entry){
+				$rec['ID'] = $entry['ID'];
+				$rec['Name'] = $entry['Name'];
+				$rec['Title'] = $entry['Title'];
+				$folder[] = $rec;
+			}
+		}else{
+			$rec['ID'] = '';
+			$rec['Name'] = '<NONE>';
+			$rec['Title'] = '<NONE>';
+			$folder[] = $rec;
+		}
+
+		// Vložení do Page
+		$cache =  $this->registry->getObject('db')->cacheData($folder);
+		$this->registry->getObject('template')->getPage()->addTag( 'listFolder', array( 'DATA', $cache ) );
+
+		$post = $_POST;
+		switch ($action) {
+			case 'storno':
+				# Bez zápisu
+				break;
+			case 'select':
+				# code...
+				$this->folder('list',$InboxID, $DmsParentEntryID );
+				return;
+			case 'add':
+				$ParentID = isset($_POST['ParentID']) ? $_POST['ParentID'] : 0;
+				$name = isset($_POST['newFolder']) ? $_POST['newFolder'] : '';
+				
+				if ($name != ""){
+					//TODO: založení nové složky
+					
+					// Virtuální položka "dmsentry"
+					//$fullname = "$path\\$name"; 
+					//$entry = $this->registry->getObject('file')->getItemFromName( $fullname , $isDir = false);
+					//TODO: Zápis $entry do tabulky dmsentry
+				}
+				break;			
+			case 'set':
+					//TODO - zapsat $inbox['DmsEntryID]
+				break;			
+			default:
+				# 'list'
+				# Zobrazení stránky pro výběr složky
+				$this->registry->getObject('template')->getPage()->addTag( 'InboxID', $InboxID );							
+				$this->registry->getObject('template')->getPage()->addTag( 'ParentID', $DmsParentEntryID );							
+				$this->registry->getObject('template')->getPage()->addTag( 'breads', $breads );							
+				$this->build('todo-inbox-choicefolder.tpl.php');
+				return;
+		}
+		$this->listInbox($InboxID);		
+	}
+	
 	public function refreshInbox()	
 	{
 		// DefaultAppPool => IIS AppPool\DefaultAppPool

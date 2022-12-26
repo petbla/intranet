@@ -18,8 +18,21 @@
     </form>
 </div>
 
-{pageTitle}
 <div id="DocumentItems">
+    <p id="pageMessage" class="message" onClick="this.style.display = 'none';" >{message}</p>
+    <script>
+        var e;
+        e = document.getElementById('pageMessage');
+        if(e.innerHTML == '')
+            e.style.display = 'none';
+    </script>
+    <p id="pageErrorMesage" class="error" onClick="this.style.display = 'none';" >{errorMessage}</p>
+    <script>
+        var e;
+        e = document.getElementById('pageErrorMesage');
+        if(e.innerHTML == '')
+            e.style.display = 'none';
+    </script>
     <div id="newcardID" style="display:none;">
         <span class="action_close" onclick="document.getElementById('newcardID').style.display = 'none';">{lbl_Close}</span>
         <br><br>
@@ -88,7 +101,5 @@
     </table>
     <p id="sqlrequest" valus={sqlrequest} stype="display:none;"></p>
 </div>
-<div id="pagecounter" class="bottom">
-{navigate_menu}
-</div>
+<div id="pagecounter" class="bottom">{navigate_menu}</div>
 

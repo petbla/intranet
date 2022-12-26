@@ -10,7 +10,16 @@
         </tr>
         <tr>
             <td class="col_title">
-                <label>{lbl_Settlement}</label>
+                <label>{lbl_Folder}</label>
+            </td>
+            <td>
+                <a href="index.php?page=todo/inbox/folder/list/{InboxID}" class="action_button">{lbl_AddToFolder}</a>
+                {DmsentryName}
+            </td>
+        </tr>
+        <tr>
+            <td class="col_title">
+                <label>{lbl_SettlementType}</label>
             </td>
             <td>
                 <select id="select{InboxID}">

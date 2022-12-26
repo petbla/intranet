@@ -1,4 +1,18 @@
 <div id="DocumentItems">
+  <p id="pageMessage" class="message" onClick="this.style.display = 'none';" >{message}</p>
+  <script>
+      var e;
+      e = document.getElementById('pageMessage');
+      if(e.innerHTML == '')
+          e.style.display = 'none';
+  </script>
+  <p id="pageErrorMesage" class="error" onClick="this.style.display = 'none';" >{errorMessage}</p>
+  <script>
+      var e;
+      e = document.getElementById('pageErrorMesage');
+      if(e.innerHTML == '')
+          e.style.display = 'none';
+  </script>
   <table>
     <tr>
       <th>&nbsp;</th>
@@ -15,7 +29,7 @@
         <img src="views/classic/images/icon/remind{Remind}{RemindClose}.png" alt="Připomenout" title="{lbl_msg_SetRemind}" onclick="wsSetRemindEntry('{ID}','{cfg_siteurl}','{BaseUrl}');" />
       </td>
       <td class="term{term} column">
-        <a href="" a_id="{ID}" a_type="entry" data-dms-url="{Url}" data-dms-name="{Name}" data-dms-extension="{FileExtension}" data-dms-server="{cfg_webroot}" data-dms-entrytype="{Type}" onclick="wsLogDocumentView('{ID},'{cfg_siteurl}');" class="term{term}">
+        <a href="" a_id="{ID}" a_type="entry" data-dms-url="{Url}" data-dms-name="{Name}" data-dms-extension="{FileExtension}" data-dms-server="{cfg_webroot}" data-dms-entrytype="{Type}" onclick="wsLogDocumentView('{ID}','{cfg_siteurl}');" class="term{term}">
             {Title}
         </a>
       </td>
@@ -37,6 +51,4 @@
     <!-- END listTodo -->
   </table>
 </div>
-<div id="pagecounter" class="bottom">
-{navigate_menu}
-</div>
+<div id="pagecounter" class="bottom">{navigate_menu}</div>

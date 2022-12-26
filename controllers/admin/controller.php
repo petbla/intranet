@@ -8,7 +8,8 @@ class Admincontroller {
 
 	private $registry;
 	private $urlBits;
-	private $pageMessage;
+	private $message;
+	private $errorMessage;
 	
 	public function __construct( Registry $registry, $directCall )
 	{
@@ -110,6 +111,10 @@ class Admincontroller {
 		// Category Menu
 		$this->createCategoryMenu();
 
+		// Page message
+		$this->registry->getObject('template')->getPage()->addTag('message',$this->message);
+		$this->registry->getObject('template')->getPage()->addTag('errorMessage',$this->errorMessage);
+
 		// Build page
 		$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
 		$this->registry->getObject('template')->addTemplateBit('categories', 'categorymenu-admin.tpl.php');
@@ -122,7 +127,7 @@ class Admincontroller {
      */
 	private function pageNotFound()
 	{
-		$this->build('invalid-contact.tpl.php');
+		$this->error("Stránka nenalezena");
 	}
 
     /**
@@ -132,7 +137,7 @@ class Admincontroller {
      */
 	private function error( $message )
 	{
-		$this->registry->getObject('template')->getPage()->addTag('message',$message);
+		$this->errorMessage = $message;
 		$this->build();
 	}
 
@@ -192,7 +197,7 @@ class Admincontroller {
 	    $this->urlBits = $this->registry->getURLBits();
 		$files = $this->registry->getObject('file')->synchroRoot();
 
-		$this->registry->getObject('template')->getPage()->addTag('message',$caption['msg_updateFinished']);
+		$this->message = $caption['msg_updateFinished'];
 		$this->build();
 	}
 
@@ -235,9 +240,6 @@ class Admincontroller {
 	{
 		global $config;
 		$pref = $config['dbPrefix'];
-
-		// Message
-		$this->registry->getObject('template')->getPage()->AddTag('message',$this->pageMessage);
 
 		// List users
 		$sql = "SELECT u.ID, u.Name, u.FullName, u.PermissionSet, p.Name as Role, u.Close ".
@@ -311,7 +313,7 @@ class Admincontroller {
 	{
 		global $caption;
 		
-		$message = $caption['new_user_failed'];
+		$this->errorMessage = $caption['new_user_failed'];
 
 		if (isset($_POST['Name']) && isset($_POST['PerSet']) && isset($_POST['Psw1']) && isset($_POST['Psw2']))
 		{
@@ -326,21 +328,25 @@ class Admincontroller {
 				$psw = md5($psw);
 				
 				// Check if not exists users yet
-				$isFirst = false;
 				$this->registry->getObject('db')->initQuery('user');
-				if ($this->registry->getObject('db')->isEmpty()){
-					$isFirst = true;
-				}
+				$isFirst = $this->registry->getObject('db')->isEmpty();
 
-				// Insert to Databáze
-				$data['ID'] = $this->registry->getObject('fce')->GUID();
-				$data['Name'] = $name;
-				$data['FullName'] = $fullname;
-				$data['Password'] = $psw;
-				$data['PermissionSet'] = $isFirst ? 9 : $perset;
-				if ($this->registry->getObject('db')->insertRecords('user',$data))
-				{
-					$message = $caption['new_user_created'];
+				$this->registry->getObject('db')->initQuery('user');
+				$this->registry->getObject('db')->setFilter('Name',$name);
+				if ($this->registry->getObject('db')->isEmpty()){
+
+					// Insert to Databáze
+					$data['ID'] = $this->registry->getObject('fce')->GUID();
+					$data['Name'] = $name;
+					$data['FullName'] = $fullname;
+					$data['Password'] = $psw;
+					$data['PermissionSet'] = $isFirst ? 9 : $perset;
+					if ($this->registry->getObject('db')->insertRecords('user',$data))
+					{
+						$this->message = $caption['new_user_created'];
+					}
+				}else{
+					$this->errorMessage = "Uživatel $name již existuje";
 				}
 			}
 		}
@@ -401,10 +407,10 @@ class Admincontroller {
 
 		switch (true) {
 			case ($UserID == $ID):
-				$this->pageMessage = 'Nelze odstranit aktuálně přihlášeného uživatele.';		
+				$this->Message = 'Nelze odstranit aktuálně přihlášeného uživatele.';		
 				break;
 			case $this->isUserUsed($ID):
-				$this->pageMessage = 'Uživatel se již přihlásil, nelze jej odstranit.';
+				$this->Message = 'Uživatel se již přihlásil, nelze jej odstranit.';
 				break;
 			default:
 				$condition = "ID = '$ID'";

@@ -235,6 +235,12 @@ $caption['ImportNotesCsv'] =       'Import poznámek z Excelu (CSV)';
  $caption['MeetingPointText'] =         'Bod jednání';  
  $caption['MeetingNo'] =                'Číslo zápisu';  
  $caption['DocumentTyp'] =              'Typ dokumentu';  
- $caption['Settlement'] =              'Vyřízení';  
+ $caption['Settlement'] =               'Vyřízení';  
+ $caption['SettlementType'] =           'Způsob vyřízení';  
+ $caption['AddToFolder'] =              'Zařadit do složky';  
+ $caption['Folder'] =                   'Složka';  
+ $caption['ShowFolder'] =               'Zobrazit složku';  
+ $caption['Choice'] =                   'Vybrat';  
+ $caption['Storno'] =                   'Zpět';  
  
 ?>

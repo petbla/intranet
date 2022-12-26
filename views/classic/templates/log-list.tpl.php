@@ -21,7 +21,5 @@
             <!-- END LogList -->
         </table>
     </div>
-    <div id="pagecounter">
-    {navigate_menu}
-    </div>
+    <div id="pagecounter">{navigate_menu}</div>
 </div>

@@ -31,7 +31,7 @@
                 <label class="title">{lbl_DocumentNo}</label>
                 <span class="value col_documentno" name="ADocumentNo" ADocumentNoID="{ID}">{ADocumentNo}</span>
 
-                <img src="views/classic/images/icon/unlink.png" alt="Zrušit vazbu" title="Odebrat číslo jednací" onclick="wsUnlinkAgenda('{AgendaID}','{cfg_siteurl}','{BaseUrl}');" />
+                <img src="views/classic/images/icon/unlink.png" style="cursor: pointer;" alt="Zrušit vazbu" title="Odebrat číslo jednací" onclick="wsUnlinkAgenda('{AgendaID}','{cfg_siteurl}','{BaseUrl}');" />
 
 
                 <input type="hidden" name="oldADocumentNo" value="{ADocumentNo}" oldADocumentNoID="{ID}">
@@ -46,7 +46,7 @@
             </td>
             <td>               
                 <label class="title"">Vyřízeno</label>
-                <input type="checkbox" class="value" name="RemindClose" value="{RemindClose}" RemindCloseID="{ID}">
+                <input type="checkbox" class="value" name="RemindClose" value="{RemindClose}" RemindCloseID="{ID}" onClick = "validateCheckbox( this );"/>
                 <script>
                     var inputValue;
                     inputValue = document.querySelector( '[RemindCloseID="{ID}"]' );
@@ -71,7 +71,7 @@
                 <input type="hidden" name="oldRemindLastDate" value="{RemindLastDate}" oldRemindLastDateID="{ID}">
                 
                 <label class="title">{lbl_Remind}</label>
-                <input type="checkbox" class="value" name="Remind" value="{Remind}" RemindID="{ID}"><br>
+                <input type="checkbox" class="value" name="Remind" value="{Remind}" RemindID="{ID}" onClick = "validateCheckbox( this );"><br>
                 <script>
                     var inputValue;
                     inputValue = document.querySelector( '[RemindID="{ID}"]' );

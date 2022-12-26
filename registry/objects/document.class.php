@@ -12,13 +12,35 @@ class document {
     # Any private var
     # private $justProcessed = false;
 	
+    private $message = '';
+    private $errorMessage = '';
+
     public function __construct( $registry ) 
     {
         $this->registry = $registry;
     }
     
+     /**
+     * Sestavení stránky
+     * @return void
+     */
+    private function build( $template = 'page.tpl.php' )
+    {
+        // Category Menu
+	    $this->registry->getObject('document')->createCategoryMenu();
+
+		// Page message
+		$this->registry->getObject('template')->getPage()->addTag('message',$this->message);
+		$this->registry->getObject('template')->getPage()->addTag('errorMessage',$this->errorMessage);
+
+        // Build page
+        $this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
+        $this->registry->getObject('template')->addTemplateBit('categories', 'categorymenu-document.tpl.php');
+        $this->registry->getObject('template')->buildFromTemplates('header.tpl.php', $template , 'footer.tpl.php');
+    }
+
     //public function listDocuments( $sql, $entryNo, $pageLink , $isHeader, $isFolder, $isFiles, $isFooter, $breads, $template = 'document-list.tpl.php')
-    public function listDocuments( $entry, $showFolder, $sql, $showBreads, $pageTitle, $template )
+    public function listDocuments( $entry, $showFolder, $sql, $showBreads, $template )
 	{
 		global $config, $caption;
         $pref = $config['dbPrefix'];
@@ -36,8 +58,8 @@ class document {
 		{
             // Select Free Agenda Document No.
             $sql = "SELECT ID as AID, DocumentNo, Description FROM ".$pref."agenda ".
-                "WHERE `EntryID` = '' ".
-                "ORDER BY TypeID,DocumentNo";
+                " WHERE IFNULL(`EntryID`,'') = ''".
+                " ORDER BY TypeID,DocumentNo";
             $cache2 = $this->registry->getObject('db')->cacheQuery( $sql );
             $this->registry->getObject('template')->getPage()->addTag( 'documentList', array( 'SQL', $cache2 ) );
             			
@@ -66,8 +88,6 @@ class document {
             $isEntries = false;
         }                
         
-
-        $this->registry->getObject('template')->getPage()->addTag( 'pageTitle', $pageTitle );
         //
         // Show icons
         $this->addIcons();
@@ -206,6 +226,46 @@ class document {
         $this->registry->getObject('template')->getPage()->addTag( 'categoryList', array( 'SQL', $cache ) );
     }
 
+    public function readFolders($ID)
+    {
+        global $config;
+        $dmsentry = null;
+        $level = 0;
+        $parent = 0;
+        $perSet = $this->registry->getObject('authenticate')->getPermissionSet();
+        
+
+        $entry = $this->getDmsentry($ID);
+        if( $entry ){   
+            $level = $entry['Level'] + 1;    
+            $parent = $entry['EntryNo'];
+        }
+
+        $this->registry->getObject('db')->initQuery('dmsentry');
+        if($parent > 0)
+            $this->registry->getObject('db')->setFilter('Parent',$parent);
+        $this->registry->getObject('db')->setFilter('Level',$level);
+        $this->registry->getObject('db')->setFilter('Archived',0);
+        $this->registry->getObject('db')->setFilter('Type',20);
+        $this->registry->getObject('db')->setCondition("PermissionSet <= $perSet");
+        $this->registry->getObject('db')->setOrderBy("Name");
+        if ($this->registry->getObject('db')->findSet())
+            $dmsentry = $this->registry->getObject('db')->getResult();			
+        return $dmsentry;
+    }
+
+	private function getDmsentry($ID)
+	{
+		$entry = null;
+        if($ID != ''){
+            $this->registry->getObject('db')->initQuery('dmsentry');
+            $this->registry->getObject('db')->setFilter('ID',$ID);
+            if ($this->registry->getObject('db')->findFirst())
+                $entry = $this->registry->getObject('db')->getResult();			
+        }
+        return $entry;
+	}
+    
     public function addIcons()
     {
         global $config;
@@ -250,21 +310,6 @@ class document {
         $this->registry->getObject('template')->getPage()->addTag( 'RemindState_30_aprowed', $caption['RemindState30'] );
         $this->registry->getObject('template')->getPage()->addTag( 'RemindState_40_storno', $caption['RemindState40'] );
         $this->registry->getObject('template')->getPage()->addTag( 'RemindState_50_finish', $caption['RemindState50'] );
-    }
-
-     /**
-     * Sestavení stránky
-     * @return void
-     */
-    private function build( $template = 'page.tpl.php' )
-    {
-        // Category Menu
-	    $this->registry->getObject('document')->createCategoryMenu();
-
-        // Build page
-        $this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
-        $this->registry->getObject('template')->addTemplateBit('categories', 'categorymenu-document.tpl.php');
-        $this->registry->getObject('template')->buildFromTemplates('header.tpl.php', $template , 'footer.tpl.php');
     }
 
 }

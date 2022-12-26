@@ -1,15 +1,19 @@
-<div id="pagecounter">
-{navigate_menu}
-</div>
+<div id="pagecounter">{navigate_menu}</div>
 <div id="DocumentItems">
-    <p id="pageTitle" class="error" onClick="this.style.display = 'none';" >{pageTitle}</p>
+    <p id="pageMessage" class="message" onClick="this.style.display = 'none';" >{message}</p>
     <script>
         var e;
-        e = document.getElementById('pageTitle');
+        e = document.getElementById('pageMessage');
         if(e.innerHTML == '')
             e.style.display = 'none';
     </script>
-    <table>
+    <p id="pageErrorMesage" class="error" onClick="this.style.display = 'none';" >{errorMessage}</p>
+    <script>
+        var e;
+        e = document.getElementById('pageErrorMesage');
+        if(e.innerHTML == '')
+            e.style.display = 'none';
+    </script>    <table>
         <tr>
             <th style="width:100px;">...............</th>
             <th>{lbl_electionperiod}</th>
@@ -64,7 +68,5 @@
         </form>
     </table>
 </div>
-<div id="pagecounter" class="bottom">
-{navigate_menu}
-</div>
+<div id="pagecounter" class="bottom">{navigate_menu}</div>
 

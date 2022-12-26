@@ -315,86 +315,7 @@ if(items){
             if (ADocumentNo.innerHTML != ''){
                 document.getElementById(SelectedADocumentNo).style.display = 'none';
             };
-   
-            // Clean (HIDE) Old Entry
-            if (lasteditcard)
-            {
-                form = document.querySelector( '[form_id="' + lasteditcard.target.id + '"]' );
-                form.style.display = 'none';
-            }
-            // Prepare New Entry to Edit
-            form = document.querySelector( '[form_id="' + e.target.id + '"]' );
-            form.style.display = '';
-            form.style.left = '300px';
-            form.style.top = '100px';
-            
-            activeForm = form;
-            window.onkeyup = function (event) {
-                if (event.keyCode == 27) {
-                    activeForm.style.display = "none";
-                }
-            }
-            // Make the DIV element draggable:
-            dragElement(form);
-
-            back = document.querySelector( '[back_id="' + e.target.id + '"]' );
-            back.onclick = function (ee) {
-                var form;
-                form = document.querySelector( '[form_id="' + e.target.id + '"]' );
-                form.style.display = 'none';
-                ee.preventDefault();
-            };
-
-            // Write value from Hidden do Forms Input
-            oldValue = document.querySelector( '[oldTitle_id="' + e.target.id + '"]' );
-            inputValue = document.querySelector( '[inputtitle_id="' + e.target.id + '"]' );
-            isNew = (oldValue.value == 'Nová poznámka');
-            if (isNew)
-                inputValue.value = '';
-            else
-                inputValue.value = oldValue.value;
-            inputValue.focus();
-            
-            oldValue = document.querySelector( '[oldUrl_id="' + e.target.id + '"]' );
-            inputValue = document.querySelector( '[inputurl_id="' + e.target.id + '"]' );
-            inputValue.value = oldValue.value;
-      
-            oldValue = document.querySelector( '[oldRemind_id="' + e.target.id + '"]' );
-            inputValue = document.querySelector( '[inputRemind_id="' + e.target.id + '"]' );
-            if ((oldValue.getAttribute('value') == '1') || (isNew)){
-                inputValue.setAttribute('checked','');
-                inputValue.value = 'on';            
-            }
-
-            oldValue = document.querySelector( '[oldRemindClose_id="' + e.target.id + '"]' );
-            inputValue = document.querySelector( '[inputRemindClose_id="' + e.target.id + '"]' );
-            if (oldValue.getAttribute('value') == '1'){
-                inputValue.setAttribute('checked','');
-                inputValue.value = 'on';            
-            }
-
-            oldValue = document.querySelector( '[oldRemindFromDate_id="' + e.target.id + '"]' );
-            inputValue = document.querySelector( '[inputRemindFromDate_id="' + e.target.id + '"]' );
-            inputValue.value = oldValue.value;
-            
-            oldValue = document.querySelector( '[oldRemindLastDate_id="' + e.target.id + '"]' );
-            inputValue = document.querySelector( '[inputRemindLastDate_id="' + e.target.id + '"]' );
-            inputValue.value = oldValue.value;
-            
-            oldValue = document.querySelector( '[oldRemindState_id="' + e.target.id + '"]' );
-            inputValue = document.querySelector( '[inputRemindState_id="' + e.target.id + '"]' );
-            inputValue.value = oldValue.value;
-            
-            username = document.querySelector( '#UserName' );
-            oldValue = document.querySelector( '[oldRemindResponsiblePerson_id="' + e.target.id + '"]' );
-            inputValue = document.querySelector( '[inputRemindResponsiblePerson_id="' + e.target.id + '"]' );
-            if(isNew && (username != null)){
-                inputValue.value = username.innerHTML;
-            }
-            else
-                inputValue.value = oldValue.value;
-            
-            lasteditcard = e;
+  
         }
     })   
 }
@@ -845,10 +766,13 @@ function modifyZobMeetingType(MeetingTypeID,ElectionPeriodID,MeetingName,Members
     document.getElementById("fieldMtAction" + ElectionPeriodID).value = Action;
 }
 
-function modifyZobMember(MemberID,MeetingTypeID,ContactName,MemberType,Action){
+function modifyZobMember(MemberID,MeetingTypeID,ContactName,MemberTypeCSY,MemberType,Action){
     document.getElementById("fieldMemMemberID" + MeetingTypeID).value = MemberID;
     document.getElementById("fieldMemMeetingTypeID" + MeetingTypeID).value = MeetingTypeID;
-    document.getElementById("fieldMemMemberType" + MeetingTypeID).value = MemberType;
+    document.getElementById("fieldMemMemberType" + MeetingTypeID).value = MemberTypeCSY;
+    
+    document.getElementById(MemberType + MeetingTypeID).selected = 'selected';
+    
     document.getElementById("fieldMemContactName" + MeetingTypeID).value = ContactName;
     document.getElementById("fieldMemAction" + MeetingTypeID).value = Action;
 }

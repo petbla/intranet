@@ -1,17 +1,7 @@
-<div id="pagecounter">
-    {navigate_menu}
-</div>
+<div id="pagecounter">{navigate_menu}</div>
 <h1>{Header}</h1>
 <a href ="index.php?page=zob/meetingtype/list/{MeetingTypeID}" class="button"><span class="action_close">{lbl_Close}</span></a>
 <div id="DocumentItems">
- 
-    <p id="pageTitle" class="error" onClick="this.style.display = 'none';" >{pageTitle}</p>
-    <script>
-        var e;
-        e = document.getElementById('pageTitle');
-        if(e.innerHTML == '')
-            e.style.display = 'none';
-    </script>
     <table class="table-child">
         <tr>
             <th style="width:100px;">.................</th>

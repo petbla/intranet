@@ -128,7 +128,9 @@ class page {
     {
       global $deb;
   		preg_match ('#<!-- START '. $tag . ' -->(.+?)<!-- END '. $tag . ' -->#si', $this->content, $tor);
- 		
+      if(!$tor)
+        return '';
+
       $tor = str_replace ('<!-- START '. $tag . ' -->', "", $tor[0]);
   		$tor = str_replace ('<!-- END '  . $tag . ' -->', "", $tor);
   		

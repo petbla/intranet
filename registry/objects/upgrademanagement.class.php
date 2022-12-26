@@ -332,6 +332,11 @@ class upgrademanagement {
             // upgrade to 2.35
             $this->upgrade_235('2.35');
         }
+        if ($this->version === '2.35') 
+        {
+            // upgrade to 2.36
+            $this->upgrade_236('2.36');
+        }
     }
 
     private function upgrade_Pattrern($upVer)
@@ -341,6 +346,19 @@ class upgrademanagement {
 
         $sql = "ALTER TABLE `".$pref."meeting`".
                 " CHANGE `AtDate` `AtDate` date DEFAULT NULL";
+        $this->registry->getObject('db')->executeQuery( $sql );
+        
+        $this->setNewVersion($upVer);
+    }
+
+    private function upgrade_236($upVer)
+    {
+        global $config;
+        $pref = $config['dbPrefix'];
+
+        $sql = "ALTER TABLE `".$pref."dmsentry`".
+                " CHANGE `Url` `Url` varchar(250) CHARACTER SET utf8 COLLATE utf8_czech_ci DEFAULT ''";
+
         $this->registry->getObject('db')->executeQuery( $sql );
         
         $this->setNewVersion($upVer);

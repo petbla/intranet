@@ -1,4 +1,19 @@
 <div id="ListItems">
+    <p id="pageMessage" class="message" onClick="this.style.display = 'none';" >{message}</p>
+    <script>
+        var e;
+        e = document.getElementById('pageMessage');
+        if(e.innerHTML == '')
+            e.style.display = 'none';
+    </script>
+    <p id="pageErrorMesage" class="error" onClick="this.style.display = 'none';" >{errorMessage}</p>
+    <script>
+        var e;
+        e = document.getElementById('pageErrorMesage');
+        if(e.innerHTML == '')
+            e.style.display = 'none';
+    </script>
+
     <a href="index.php?page=todo/inbox/refresh" class="button"><span class="action_close">Aktualizace</span></a>
     <table class="table-child">
         <tr>

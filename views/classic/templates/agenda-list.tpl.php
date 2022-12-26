@@ -10,6 +10,20 @@
     </table>
 </div>
 <div id="DocumentItems">
+    <p id="pageMessage" class="message" onClick="this.style.display = 'none';" >{message}</p>
+    <script>
+        var e;
+        e = document.getElementById('pageMessage');
+        if(e.innerHTML == '')
+            e.style.display = 'none';
+    </script>
+    <p id="pageErrorMesage" class="error" onClick="this.style.display = 'none';" >{errorMessage}</p>
+    <script>
+        var e;
+        e = document.getElementById('pageErrorMesage');
+        if(e.innerHTML == '')
+            e.style.display = 'none';
+    </script>
     <table>
         <tr>
             <th style="width:100px;">..........</th>
@@ -21,7 +35,6 @@
         <!-- START AgendaList -->
         <tr>      
             <td class="col_action">
-                <!-- <a href="index.php?page=agenda/modify/{ID}"><img src="views/classic/images/icon/modify.png" alt="{lbl_edit}" id="{ID}" /></a> -->
                 <a href="index.php?page=agenda/delete/{TypeID}"><img src="views/classic/images/icon/delete.png" alt="{lbl_delete}" id="{TypeID}" onclick="return ConfirmDelete();"/></a>
                 <a href="index.php?page=agenda/unlink/{ID}" a_type="agendaUnlink" data-agenda-entryid="{EntryID}" ><img src="views/classic/images/icon/unlink.png" alt="{lbl_delete}" id="{ID}" onclick="return ConfirmUnlink();"/></a>
                 
@@ -38,7 +51,5 @@
         <!-- END AgendaList -->
     </table>
 </div>
-<div id="pagecounter" class="bottom">
-{navigate_menu}
-</div>
+<div id="pagecounter" class="bottom">{navigate_menu}</div>
 

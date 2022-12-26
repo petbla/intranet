@@ -10,6 +10,8 @@ class Documentcontroller{
 	private $model;
 	private $perSet;
 	private $prefDb;
+	private $message;
+	private $errorMessage;
 
 	/**
 	 * @param Registry $registry 
@@ -108,6 +110,10 @@ class Documentcontroller{
 		// Category Menu
 		$this->registry->getObject('document')->createCategoryMenu();
 
+		// Page message
+		$this->registry->getObject('template')->getPage()->addTag('message',$this->message);
+		$this->registry->getObject('template')->getPage()->addTag('errorMessage',$this->errorMessage);
+
 		// Build page
 		$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
 		$this->registry->getObject('template')->addTemplateBit('categories', 'categorymenu-document.tpl.php');
@@ -134,8 +140,7 @@ class Documentcontroller{
 	{
 		// Logování
 		$this->registry->getObject('log')->addMessage("Chyba: $message",'dmsentry','');
-
-		$this->registry->getObject('template')->getPage()->addTag('message',$message);
+		$this->errorMessage = $message;
 		$this->build();
 	}
 
@@ -238,8 +243,8 @@ class Documentcontroller{
 		if ($showFolder){
 			$this->registry->getObject('template')->getPage()->addTag( 'FolderItems', array( 'SQL', $cache ) );			
 		}
-		// Zobrazení dokumentů
 		
+		// Zobrazení dokumentů		
 		if(!isset($config['HideHandledNote'])){
 			$config['HideHandledNote'] = "";
 		};
@@ -259,13 +264,12 @@ class Documentcontroller{
 						$HideRemindClose.
 				  	"ORDER BY e.Remind DESC,e.Type,e.Title DESC ";
 		$showBreads = true;
-		$pageTitle = '';
 		$template = '';
 		
 		// Logování akce
 		$this->registry->getObject('log')->addMessage('Zobrazení seznamu souborů a složek','DmsEntry',$ID);
 		// Zobrazení výsledku
-		$this->registry->getObject('document')->listDocuments($entry,$showFolder,$sql,$showBreads,$pageTitle,$template);
+		$this->registry->getObject('document')->listDocuments($entry,$showFolder,$sql,$showBreads,$template);
 	}	
 
 	
@@ -331,8 +335,8 @@ class Documentcontroller{
 				$Url = isset($_POST['Url'] ) ? $_POST['Url'] : '';
 				$Content = isset($_POST['Content']) ? $_POST['Content'] : '';
 				
-				$Remind = (isset($_POST['Remind'])) ? ($_POST['Remind'] === '') ? '0' : '1' : '0';
-				$RemindClose = (isset($_POST['RemindClose'])) ? ($_POST['RemindClose'] === '') ? '0' : '1' : '0';
+				$Remind = (isset($_POST['Remind'])) ? (($_POST['Remind'] === '') ? '0' : '1') : '0';
+				$RemindClose = (isset($_POST['RemindClose'])) ? (($_POST['RemindClose'] === '') ? '0' : '1') : '0';
 
 				$RemindFromDate = isset($_POST['RemindFromDate']) ? ($_POST['RemindFromDate'] === '' ? 'NULL' : $_POST['RemindFromDate']): 'NULL';
 				$RemindLastDate = isset($_POST['RemindLastDate'] ) ? ($_POST['RemindLastDate'] === '' ? 'NULL' : $_POST['RemindFromDate']) : 'NULL';
@@ -359,11 +363,11 @@ class Documentcontroller{
 					}else{
 						if($Remind == '1')
 							$changes['RemindClose'] = '0';
-						if ($RemindFromDate != ''){
+						if ($RemindFromDate != 'NULL'){
 							$changes['RemindFromDate'] = $RemindFromDate;
 							$changes['Remind'] = '1';
 						}
-						if ($RemindLastDate != '')
+						if ($RemindLastDate != 'NULL')
 							$changes['RemindLastDate'] = $RemindLastDate;
 					}
 					if ($RemindResponsiblePerson != '')
@@ -456,7 +460,7 @@ class Documentcontroller{
 	private function addFolder()
 	{
 		global $caption, $deb;
-
+		$message = '';
 
 		if(! $this->registry->getObject('authenticate')->isAdmin())
 		{
@@ -650,7 +654,7 @@ class Documentcontroller{
 		}				
 		$this->error($message);
 	}
-		
+
 	/**
 	 * Interní funkce, která z pole webového formuláře typu upload filed, 
 	 * vytvoří seznam souborů, které se budou importova na server

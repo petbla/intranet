@@ -454,7 +454,7 @@ div#pagecounter a span strong{
   vertical-align: middle;
 } 
 
-span.action_close, .action_button{
+span.action_close, div#ListItems td a.action_button, .action_button{
   margin: 0;
   padding: 0 10px;
   border: 1px solid black;
@@ -464,6 +464,9 @@ span.action_close, .action_button{
   color: black;
   text-decoration: none;
   border-radius: 3px;
+}
+a.action_button:hover{
+  text-decoration: none;
 }
 .action_close:hover{
   cursor: pointer;
@@ -880,6 +883,16 @@ pre.content{
 .error{
   color: black;
   background-color: red;
+  border: 3px solid black;
+  padding: 5px 10px;
+  margin-bottom: 10px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: bold;
+}
+.message{
+  color: black;
+  background-color: rgb(241, 241, 202);
   border: 3px solid black;
   padding: 5px 10px;
   margin-bottom: 10px;

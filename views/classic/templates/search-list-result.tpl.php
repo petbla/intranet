@@ -51,7 +51,5 @@
     <!-- END ResultItems -->
   </table>
 </div>
-<div id="pagecounter" class="bottom">
-{navigate_menu}
-</div>
+<div id="pagecounter" class="bottom">{navigate_menu}</div>
 

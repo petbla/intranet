@@ -7,7 +7,8 @@
 class Zobcontroller{
 	
 	private $registry;
-	private $message = '';
+	private $message;
+	private $errorMessage;
 
 	/**
 	 * @param Registry $registry 
@@ -80,6 +81,10 @@ class Zobcontroller{
 		// Category Menu
 		$this->createCategoryMenu();
 
+		// Page message
+		$this->registry->getObject('template')->getPage()->addTag('message',$this->message);
+		$this->registry->getObject('template')->getPage()->addTag('errorMessage',$this->errorMessage);
+
 		// Build page
 		$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
 		$this->registry->getObject('template')->addTemplateBit('categories', 'categorymenu-zob.tpl.php');
@@ -93,8 +98,7 @@ class Zobcontroller{
 	private function pageNotFound()
 	{
 		// Logování
-		$this->registry->getObject('log')->addMessage("Pokus o zobrazení neznámé agendy",'agenda','');
-		$this->build('page-notfound.tpl.php');
+		$this->error("Pokus o zobrazení neznámé agendy");
 	}
 
     /**
@@ -105,9 +109,8 @@ class Zobcontroller{
 	private function error( $message )
 	{
 		// Logování
-		$this->registry->getObject('log')->addMessage("Chyba: $message",'agenda','');
-		
-		$this->registry->getObject('template')->getPage()->addTag('message',$message);
+		$this->registry->getObject('log')->addMessage("Chyba: $message",'agenda','');		
+		$this->errorMessage = $message;
 		$this->build();
 	}
 
@@ -201,7 +204,7 @@ class Zobcontroller{
 
 		if ($action == 'delete'){
 			if ($this->isElectionperiodUsed($ElectionPeriodID)){
-				$this->message = "Volební období $PeriodName již bylo použito, nelze jej odstranit!";
+				$this->errorMessage = "Volební období $PeriodName již bylo použito, nelze jej odstranit!";
 				$this->listElectionperiod();
 				return;	
 			}
@@ -212,7 +215,7 @@ class Zobcontroller{
 		}
 
 		if ($PeriodName == ''){
-			$this->message = 'Název musí být vyplněn!';
+			$this->errorMessage = 'Název musí být vyplněn!';
 			$this->listElectionperiod();
 			return;
 		};		
@@ -221,7 +224,7 @@ class Zobcontroller{
 		if ($ElectionPeriodID > 0)
 			$this->registry->getObject('db')->setCondition("ElectionPeriodID <> $ElectionPeriodID");
 		if (!$this->registry->getObject('db')->isEmpty()){
-			$this->message = "Volební období $PeriodName již existuje!";
+			$this->errorMessage = "Volební období $PeriodName již existuje!";
 			$this->listElectionPeriod( );
 			return;
 		}
@@ -280,7 +283,7 @@ class Zobcontroller{
 		$Members = isset($_POST['Members']) ? $_POST['Members'] : 0;
 		if ($action == 'delete'){
 			if ($this->isMeetingtypeUsed($MeetingTypeID)){
-				$this->message = "Typ jednání $MeetingName pro volební období již bylo použito, nelze jej odstranit!";
+				$this->errorMessage = "Typ jednání $MeetingName pro volební období již bylo použito, nelze jej odstranit!";
 				$this->listElectionperiod( $ElectionPeriodID );
 				return;	
 			}
@@ -292,12 +295,12 @@ class Zobcontroller{
 		}
 
 		if ($MeetingName == ''){
-			$this->message = 'Název musí být vyplněn!';
+			$this->errorMessage = 'Název musí být vyplněn!';
 			$this->listElectionperiod( $ElectionPeriodID );
 			return;
 		};		
 		if ($Members == 0){
-			$this->message = "Zadejte počet členů.";
+			$this->errorMessage = "Zadejte počet členů.";
 			$this->listElectionperiod( $ElectionPeriodID );
 			return;	
 		};
@@ -308,7 +311,7 @@ class Zobcontroller{
 		if ($MeetingTypeID > 0)
 			$this->registry->getObject('db')->setCondition("MeetingTypeID <> $MeetingTypeID");
 		if (!$this->registry->getObject('db')->isEmpty()){
-			$this->message = "Typ jednání $MeetingName pro volební období již existuje!";
+			$this->errorMessage = "Typ jednání $MeetingName pro volební období již existuje!";
 			$this->listElectionperiod( $ElectionPeriodID );
 			return;
 		}
@@ -336,7 +339,7 @@ class Zobcontroller{
 		$MeetingTypeID = isset($_POST["MeetingTypeID"]) ? $_POST["MeetingTypeID"] : '';
 
 		if ($MeetingTypeID == ''){
-			$this->message = 'Není vyplněno ID jednání';
+			$this->errorMessage = 'Není vyplněno ID jednání';
 			$this->listElectionperiod( );
 			return;
 		}
@@ -397,7 +400,7 @@ class Zobcontroller{
 		$MeetingTypeID = isset($urlBits[4]) ? $urlBits[4] : $MeetingTypeID;
 
 		if ($MeetingTypeID == ''){
-			$this->message = 'Není vyplněno ID jednání';
+			$this->errorMessage = 'Není vyplněno ID jednání';
 			$this->listElectionperiod( );
 			return;
 		}
@@ -421,7 +424,7 @@ class Zobcontroller{
 
 		if ($action == 'delete'){
 			if ($this->isMemberUsed($MemberID)){
-				$this->message = "Člen $MemberID již byl použit, nelze jej odstranit!";
+				$this->errorMessage = "Člen $MemberID již byl použit, nelze jej odstranit!";
 				$this->listElectionPeriod( $ElectionPeriodID, $MeetingTypeID );
 				return;	
 			}
@@ -434,14 +437,14 @@ class Zobcontroller{
 		$MemberType = isset($_POST['MemberType']) ? $_POST['MemberType'] : '';
 		$ContactName = isset($_POST['ContactName']) ? $_POST['ContactName'] : 0;
 		if ($ContactName == ''){
-			$this->message = 'Jméno musí být vyplněno.';
+			$this->errorMessage = 'Jméno musí být vyplněno.';
 			$this->listElectionperiod( $ElectionPeriodID, $MeetingTypeID );
 			return;
 		}
 
 		$contact = $this->getContactByName($ContactName);
 		if(!$contact){
-			$this->message = "Jméno $ContactName nenalezeno v kontaktech.";
+			$this->errorMessage = "Jméno $ContactName nenalezeno v kontaktech.";
 			$this->listElectionperiod( $ElectionPeriodID, $MeetingTypeID );
 			return;
 		}
@@ -453,16 +456,18 @@ class Zobcontroller{
 		if ($MemberID > 0)
 			$this->registry->getObject('db')->setCondition("$MemberID <> $MemberID");
 		if (!$this->registry->getObject('db')->isEmpty()){
-			$this->message = "Člen jednání $ContactName pro volební období již existuje!";
+			$this->errorMessage = "Člen jednání $ContactName pro volební období již existuje!";
 			$this->listElectionPeriod( $ElectionPeriodID, $MeetingTypeID );
 			return;
 		}
 
-		$countMember = $this->countRec('member', "MeetingTypeID = $MeetingTypeID");
-		if ($countMember >= $meetingtype['Members']){
-			$this->message = "Překročen maximální počet členů";
-			$this->listElectionPeriod( $ElectionPeriodID, $MeetingTypeID );
-			return;
+		if ($action == 'add'){
+			$countMember = $this->countRec('member', "MeetingTypeID = $MeetingTypeID");
+			if ($countMember >= $meetingtype['Members']){
+				$this->errorMessage = "Překročen maximální počet členů";
+				$this->listElectionPeriod( $ElectionPeriodID, $MeetingTypeID );
+				return;
+			}
 		}
 
 		$data = array();
@@ -515,13 +520,13 @@ class Zobcontroller{
 		
 		if ($action == 'delete'){
 			if ($meeting['Close'] == 1){
-				$this->message = "Nelze odstranit uzavřené jednání.";
+				$this->errorMessage = "Nelze odstranit uzavřené jednání.";
 				$this->listMeetingType( $MeetingTypeID );
 				return;
 			}			
 
 			if ($this->isMeetingUsed($MeetingID)){
-				$this->message = "Jednání ".
+				$this->errorMessage = "Jednání ".
 					$this->getMeetingNo($meeting['MeetingID']).
 					" již bylo použito, nelze jej odstranit!";
 				$this->listMeetingType( $MeetingTypeID );
@@ -557,29 +562,29 @@ class Zobcontroller{
 		// Test uzavření jednání
 		if ($Close == 1){
 			if ($meeting['AtDate'] ==null){
-				$this->message = "Nelze uzavřít jednání pokud není vyplnměn termín jednání.";
+				$this->errorMessage = "Nelze uzavřít jednání pokud není vyplnměn termín jednání.";
 				$this->listMeetingType( $MeetingTypeID );
 				return;
 			};
 			if ($meeting['MeetingPlace'] == ''){
-				$this->message = "Nelze uzavřít jednání pokud není vyplnměno místo jednání.";
+				$this->errorMessage = "Nelze uzavřít jednání pokud není vyplnměno místo jednání.";
 				$this->listMeetingType( $MeetingTypeID );
 				return;
 			};
 			if ($meeting['RecorderAtDate'] == null){
-				$this->message = "Nelze uzavřít jednání pokud není vyplnměn datum zápisu.";
+				$this->errorMessage = "Nelze uzavřít jednání pokud není vyplnměn datum zápisu.";
 				$this->listMeetingType( $MeetingTypeID );
 				return;
 			};
 			if ($meeting['RecorderBy'] == ''){
-				$this->message = "Nelze uzavřít jednání pokud není vyplnměn zapisovatel.";
+				$this->errorMessage = "Nelze uzavřít jednání pokud není vyplnměn zapisovatel.";
 				$this->listMeetingType( $MeetingTypeID );
 				return;
 			};
 
 			//TODO-Kontrola zadaných bodů z jednání
 			if (true == true){
-				$this->message = "Nelze uzavřít jednání pokud nejsou vyplněny body jednání.";
+				$this->errorMessage = "Nelze uzavřít jednání pokud nejsou vyplněny body jednání.";
 				$this->listMeetingType( $MeetingTypeID );
 				return;
 			};
@@ -613,7 +618,7 @@ class Zobcontroller{
 			// Check Template
 			if ($isTemplate){
 				if ($data['EntryNo'] <> 1){
-					$this->message = "Šablona jednání může mít jen jeden vzorový zápis";
+					$this->errorMessage = "Šablona jednání může mít jen jeden vzorový zápis";
 					$this->listMeetingType( $MeetingTypeID );
 					return;					
 				}
@@ -624,7 +629,7 @@ class Zobcontroller{
 			$this->registry->getObject('db')->setFilter('MeetingTypeID',$MeetingTypeID);
 			$this->registry->getObject('db')->setFilter('Close',0);
 			if (!$this->registry->getObject('db')->isEmpty()){
-				$this->message = 'Před založení nového jednání musí být všechny předchozí uzavřeny.';
+				$this->errorMessage = 'Před založení nového jednání musí být všechny předchozí uzavřeny.';
 				$this->listMeetingType( $MeetingTypeID );
 				return;	
 			}
@@ -703,7 +708,7 @@ class Zobcontroller{
 			
 			$meetingTemplate = $this->readMeetingLinesFromTemplate( $meetingtype['MeetingName']);
 			if($meetingTemplate == null){
-				$this->message = 'Šablona pro jednání '.$meetingtype['MeetingName'].'nebyla nalezena.';
+				$this->errorMessage = 'Šablona pro jednání '.$meetingtype['MeetingName'].'nebyla nalezena.';
 				$this->listMeeting( $MeetingID );
 				return;		
 			}
@@ -734,14 +739,14 @@ class Zobcontroller{
 
 		// Kontroly
 		if($meeting['Close'] == 1){
-			$this->message = 'Nelze měnit zápis uzavřeného jednání.';
+			$this->errorMessage = 'Nelze měnit zápis uzavřeného jednání.';
 			$this->listMeeting( $MeetingID );
 			return;				
 		}
 
 		if (($action == 'add') || ($action == 'modify'))
 			if($data['Title'] == ''){
-				$this->message = 'Text bodu jednání musí být vyplněn.';
+				$this->errorMessage = 'Text bodu jednání musí být vyplněn.';
 				$this->listMeeting( $MeetingID );
 				return;				
 			}
@@ -757,7 +762,7 @@ class Zobcontroller{
 				break;
 			case 'delete':
 				if($this->isMeetingLineUsed( $MeetingLineID )){
-					$this->message = 'Bod programu již obsahuje přílohy, nelze jej odstranit.';
+					$this->errorMessage = 'Bod programu již obsahuje přílohy, nelze jej odstranit.';
 				}else{
 					$condition = "MeetingLineID = $MeetingLineID";
 					$this->registry->getObject('db')->deleteRecords( 'meetingline', $condition, 1); 					
@@ -823,11 +828,15 @@ class Zobcontroller{
 									$member['ContactName'] = $contact['FullName'];
 								else
 									$member['ContactName'] = $member['MemberID'];
-								$idx = $member['MemberType'];
-								if ($idx)
-									$member['MemberType'] = $caption[$idx];
 								
-								$member['MemberType'.$mt['MeetingTypeID']] = $member['MemberType'];
+								// Překlad typu člena
+								$member['MemberTypeCSY'] = $member['MemberType'];
+								$idx = $member['MemberTypeCSY'];
+								if ($idx)
+									$member['MemberTypeCSY'] = $caption[$idx];
+								
+								
+								$member['MemberTypeCSY'.$mt['MeetingTypeID']] = $member['MemberTypeCSY'];
 								$member['ContactName'.$mt['MeetingTypeID']] = $member['ContactName'];
 								
 								$result[] = $member;
@@ -836,7 +845,7 @@ class Zobcontroller{
 							$this->registry->getObject('template')->getPage()->addTag( 'memberList'.$mt['MeetingTypeID'], array( 'DATA', $cache ) );		
 						}else{
 							$this->registry->getObject('template')->getPage()->addTag( 'ContactName'.$mt['MeetingTypeID'], '' );				
-							$this->registry->getObject('template')->getPage()->addTag( 'MemberType'.$mt['MeetingTypeID'], '' );				
+							$this->registry->getObject('template')->getPage()->addTag( 'MemberTypeCSY'.$mt['MeetingTypeID'], '' );				
 						}
 					}
 				}else{
@@ -850,7 +859,6 @@ class Zobcontroller{
 			$this->registry->getObject('template')->getPage()->addTag( 'PeriodName','' );
 		}
 
-		$this->registry->getObject('template')->getPage()->addTag( 'pageTitle', $this->message );						
 		$this->registry->getObject('template')->addTemplateBit('meetingtypeCard', 'zob-meetingtype-list.tpl.php');
 		$this->registry->getObject('template')->addTemplateBit('memberCard', 'zob-member-list.tpl.php');
 		$this->registry->getObject('template')->addTemplateBit('memberTypeSelect', 'zob-member-type.tpl.php');
@@ -910,7 +918,6 @@ class Zobcontroller{
 			$this->registry->getObject('template')->getPage()->addTag( 'PostedDownDate_view', '' );				
 			$this->registry->getObject('template')->getPage()->addTag( 'MeetingID', 0 );				
 		}
-		$this->registry->getObject('template')->getPage()->addTag( 'pageTitle', $this->message );						
 		$this->registry->getObject('template')->getPage()->addTag( 'MeetingTypeID', $MeetingTypeID );						
 		$this->registry->getObject('template')->addTemplateBit('editdMeetingCard', 'zob-meeting-edit.tpl.php');
 
@@ -958,7 +965,6 @@ class Zobcontroller{
 			$this->registry->getObject('template')->getPage()->addTag( 'MeetingLineID', 0 );				
 			$this->registry->getObject('template')->getPage()->addTag( 'MeetingLineID', 0 );				
 		}
-		$this->registry->getObject('template')->getPage()->addTag( 'pageTitle', $this->message );						
 		$this->registry->getObject('template')->getPage()->addTag( 'Year', $Year );						
 		$this->registry->getObject('template')->getPage()->addTag( 'EntryNo', $EntryNo );						
 		$this->registry->getObject('template')->getPage()->addTag( 'Header', $○r );						

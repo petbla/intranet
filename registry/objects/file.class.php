@@ -97,7 +97,7 @@ class file {
           $winFullItemPath = $this->Convert2SystemCodePage($fullItemPath);
           // $winFullItemPath = //petbla/c$/Users/petr/Desktop/OBECNTB/FileServer/Stavby RD/RD Šáchovi 313/Šáchovi - Vyjádření k PD.docx
 
-          // Deaktive entry due to NOT exists
+          // Add entry 
           $entryNo = $this->findItem($winFullItemPath);
         }    
       }
@@ -481,7 +481,7 @@ class file {
    * Funkce vrací root složku dle nastavení z tabulky source
    * @return String $root
    */
-  private function getFileRoot()
+  public function getFileRoot()
   {
     global $config;
     $root = $config['fileroot'];

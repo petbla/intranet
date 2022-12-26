@@ -8,6 +8,8 @@ class Contactcontroller {
 
 	private $registry;
 	private $urlBits;
+	private $message;
+	private $errorMessage;
 	
 	public function __construct( Registry $registry, $directCall )
 	{
@@ -22,9 +24,7 @@ class Contactcontroller {
 			
 			if($perSet == 0)
 			{
-				$this->registry->getObject('log')->addMessage($caption['msg_unauthorized'],'contact','');
-				$this->registry->getObject('template')->getPage()->addTag('message',$caption['msg_unauthorized']);
-				$this->build('page.tpl.php');
+				$this->error($caption['msg_unauthorized']);
 				return;
 			}
 
@@ -133,6 +133,10 @@ class Contactcontroller {
 		// Category Menu
 		$this->createCategoryMenu();
 
+		// Page message
+		$this->registry->getObject('template')->getPage()->addTag('message',$this->message);
+		$this->registry->getObject('template')->getPage()->addTag('errorMessage',$this->errorMessage);
+
 		// Build page
 		$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
 		$this->registry->getObject('template')->addTemplateBit('categories', 'categorymenu-contact.tpl.php');
@@ -146,8 +150,7 @@ class Contactcontroller {
 	private function pageNotFound()
 	{
 		// Logování
-		$this->registry->getObject('log')->addMessage("Pokus o zobrazení neznámého kontaktu",'dmsentry','');		
-		$this->build('invalid-contact.tpl.php');
+		$this->error("Pokus o zobrazení neznámého kontaktu");		
 	}
 
     /**
@@ -160,7 +163,7 @@ class Contactcontroller {
 		// Logování
 		$this->registry->getObject('log')->addMessage("Chyba: $message",'contact','');
 		
-		$this->registry->getObject('template')->getPage()->addTag('message',$message);
+		$this->errorMessage = $message;
 		$this->build();
 	}
 
@@ -595,7 +598,6 @@ class Contactcontroller {
 			// Build page 		
 			$this->registry->getObject('template')->getPage()->addTag( 'ContactList', array( 'DATA', $cache ) );
 			$this->registry->getObject('template')->getPage()->addTag( 'pageLink', $pageLink );
-			$this->registry->getObject('template')->getPage()->addTag( 'pageTitle', '' );
 
 			// Onclick forms
 			$this->registry->getObject('template')->addTemplateBit('viewcardContact', 'contact-view.tpl.php');
@@ -654,7 +656,6 @@ class Contactcontroller {
 			return;
 		};
 		$this->registry->getObject('template')->getPage()->addTag( 'ContactGroupList', array( 'SQL', $cache ) );
-		$this->registry->getObject('template')->getPage()->addTag( 'pageTitle', '' );				
 		$this->build('contact-group-list.tpl.php');
 	}
 

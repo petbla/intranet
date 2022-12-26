@@ -114,7 +114,7 @@ function wsUnlinkAgenda(AgendaID,siteurl,BaseUrl) {
         if(result == 'OK'){
             console.log('url: ',window.location);
             window.location = siteurl + 'index.php?page=/' + BaseUrl;
-        }       
+        }
     };
 }
 
