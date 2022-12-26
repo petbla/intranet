@@ -18,9 +18,14 @@ define( "FRAMEWORK_PATH", dirname( __FILE__ ) ."/" );
 
 // Debug
 require_once('debug/classDebug.php');
-$deb = new debug('',FRAMEWORK_PATH . 'debug/logFile.txt');  // '',info,trace,error
+if (file_exists("mu.exe"))
+  $deb = new debug('error',FRAMEWORK_PATH . 'debug/logFile.txt');  // info,trace,error
+else
+  $deb = new debug('info',FRAMEWORK_PATH . 'debug/logFile.txt');  // info,trace,error
 
-$deb->trace('Start');
+// true - aktivace debugeru
+// false - deaktivace logu
+$deb->active(true);
 
 // Load registry and config
 require_once('registry/registry.class.php');
@@ -41,8 +46,6 @@ if( isset($_COOKIE["HideHandledNote"]) ){
   $config['HideHandledNote'] = $_COOKIE["HideHandledNote"];
 }
 
-$deb->trace('Set Cookies');
-
 // Connect to database
 $registry->getObject('db')->newConnection($config['db_host'], $config['db_user'], $config['db_pass'], $config['db_name']);
 
@@ -59,10 +62,8 @@ $deb->trace('Check update');
 // pro uživatele, kteří jsou přihlášení
 $registry->getObject('authenticate')->checkForAuthentication();
 
-
 // vyplnění objektu stránky ze šablony
 $registry->getObject('template')->buildFromTemplates('header.tpl.php', 'main.tpl.php', 'footer.tpl.php');
-$registry->getObject('template')->addTemplateBit('categories', 'categorymenu.tpl.php');
 
 
 // Přihlášení 
@@ -72,20 +73,19 @@ if (($registry->getObject('authenticate')->isLoggedIn()) || ($registry->getObjec
   {
 	if ($registry->getURLBit( 0 ) == 'logout'){
 		$registry->getObject('authenticate')->logout();
-		$registry->getObject('template')->addTemplateBit('loginform',  'login.tpl.php');
+		$registry->getObject('template')->addTemplateBit('logininfo',  'login.tpl.php');
 	}else{
-		$registry->getObject('template')->addTemplateBit('loginform', 'logout.tpl.php');
+		$registry->getObject('template')->addTemplateBit('logininfo', 'logout.tpl.php');
 	}
   }
   else
   {
-	$registry->getObject('template')->getPage()->addTag('loginform','');
-  }
-}else{
-  $registry->getObject('template')->addTemplateBit('loginform','login.tpl.php');
+	$registry->getObject('template')->getPage()->addTag('logininfo','');
 }
-
-$deb->trace('Logged');
+}else{
+  $registry->getObject('template')->addTemplateBit('logininfo','login.tpl.php');
+}
+$registry->getObject('template')->addTemplateBit('loginform','login-form.tpl.php');
 
 $registry->getObject('template')->getPage()->addTag('Version',$registry->getObject('upgrade')->getVersion());
 $registry->getObject('template')->getPage()->addTag('UserName',$registry->getObject('authenticate')->getUserName());
@@ -96,8 +96,10 @@ $activeControllers = array();
 $activeControllers[] = 'document';
 $activeControllers[] = 'contact';
 $activeControllers[] = 'agenda';
+$activeControllers[] = 'zob';
 $activeControllers[] = 'general';
 $activeControllers[] = 'admin';
+$activeControllers[] = 'todo';
 $currentController = $registry->getURLBit( 0 );  // controller
 
 $deb->trace('Check active controllers');
@@ -124,16 +126,12 @@ $registry->getObject('template')->getPage()->addTag( 'dateText', $dateText );
 $deb->trace('Get Today');
 
 // Category Menu
-$registry->getObject('document')->createCategoryMenu();
-
-$deb->trace('Category Menu');
+//$registry->getObject('document')->createCategoryMenu();
 
 // Barmenu 
 $perSet = $registry->getObject('authenticate')->getPermissionSet();
 $isAdmin = $registry->getObject('authenticate')->isAdmin();
 $contactBarMenuItem = $perSet > 0 ? "<li><a href='index.php?page=contact/list'>".$caption['Contacts']."</a></li>" : '';
-$archiveBarMenuItem = $perSet == 9 ? "<li><a href='index.php?page=document/listArchive'>".$caption['Archive']."</a></li>" : '';
-$newsBarMenuItem = $perSet == 9 ? "<li><a href='index.php?page=document/listNew'>".$caption['News']."</a></li>" : '';
 $PortalCounter = $perSet == 9 ? $registry->getObject('db')->GetPortalCount() : 0;
 switch ($perSet) {
 	case 9:
@@ -155,17 +153,10 @@ switch ($perSet) {
 		break;
 }
 $adminBarMenuItem = $isAdmin ? "<li><a href='index.php?page=admin'>Administrace</a></li>" : '';
-$adminBarMenuItem .= $isAdmin ? "<li><a href='index.php?page=admin/log'>Log</a></li>" : '';
-$portalBarMenuItem = $PortalCounter ? "<li><a href='index.php?page=admin/portalList'>Portál</a></li>" : '';
-
-$deb->trace('Bar Menu');
 
 $registry->getObject('template')->getPage()->addTag( 'adminBarMenuItem', $adminBarMenuItem );
 $registry->getObject('template')->getPage()->addTag( 'contactBarMenuItem', $contactBarMenuItem );
 $registry->getObject('template')->getPage()->addTag( 'calendarBarMenuItem', $calendarBarMenuItem );
-$registry->getObject('template')->getPage()->addTag( 'archiveBarMenuItem', $archiveBarMenuItem );
-$registry->getObject('template')->getPage()->addTag( 'newsBarMenuItem', $newsBarMenuItem );
-$registry->getObject('template')->getPage()->addTag( 'portalBarMenuItem', $portalBarMenuItem );
 $registry->getObject('template')->getPage()->addTag('compName',$config['compName']);
 
 $deb->trace('Add tag to MENU');

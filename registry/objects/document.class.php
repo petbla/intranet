@@ -12,39 +12,82 @@ class document {
     # Any private var
     # private $justProcessed = false;
 	
+    private $message = '';
+    private $errorMessage = '';
+
     public function __construct( $registry ) 
     {
         $this->registry = $registry;
     }
     
-    //public function listDocuments( $sql, $entryNo, $pageLink , $isHeader, $isFolder, $isFiles, $isFooter, $breads, $template = 'list-entry.tpl.php')
-    public function listDocuments( $entry, $showFolder, $sql, $showBreads, $pageTitle, $template )
+     /**
+     * Sestavení stránky
+     * @return void
+     */
+    private function build( $template = 'page.tpl.php' )
+    {
+        // Category Menu
+	    $this->registry->getObject('document')->createCategoryMenu();
+
+		// Page message
+		$this->registry->getObject('template')->getPage()->addTag('message',$this->message);
+		$this->registry->getObject('template')->getPage()->addTag('errorMessage',$this->errorMessage);
+
+        // Build page
+        $this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
+        $this->registry->getObject('template')->addTemplateBit('categories', 'categorymenu-document.tpl.php');
+        $this->registry->getObject('template')->buildFromTemplates('header.tpl.php', $template , 'footer.tpl.php');
+    }
+
+    //public function listDocuments( $sql, $entryNo, $pageLink , $isHeader, $isFolder, $isFiles, $isFooter, $breads, $template = 'document-list.tpl.php')
+    public function listDocuments( $entry, $showFolder, $sql, $showBreads, $template )
 	{
 		global $config, $caption;
+        $pref = $config['dbPrefix'];
+		require_once( FRAMEWORK_PATH . 'models/entry/model.php');
         
-        $template = ($template === '' ? 'list-entry.tpl.php' : $template);
+        $template = ($template === '' ? 'document-list.tpl.php' : $template);
         $perSet = $this->registry->getObject('authenticate')->getPermissionSet();
 
-        // Stránkování
-        $cacheFull = $this->registry->getObject('db')->cacheQuery( $sql );
-        $records = $this->registry->getObject('db')->numRowsFromCache( $cacheFull );
-        $pageCount = (int) ($records / $config['maxVisibleItem']);
-        $pageCount = ($records > $pageCount * $config['maxVisibleItem']) ? $pageCount + 1 : $pageCount;  
-        $pageNo = ( isset($_GET['p'])) ? $_GET['p'] : 1;
-        $pageNo = ($pageNo > $pageCount) ? $pageCount : $pageNo;
-        $pageNo = ($pageNo < 1) ? 1 : $pageNo;
-        $fromItem = (($pageNo - 1) * $config['maxVisibleItem']);    
-        $navigate = $this->registry->getObject('template')->NavigateElement( $pageNo, $pageCount ); 
-        $this->registry->getObject('template')->getPage()->addTag( 'navigate_menu', $navigate );
-        $sql .= " LIMIT $fromItem," . $config['maxVisibleItem']; 
-        $cache = $this->registry->getObject('db')->cacheQuery( $sql );
-        $isEntries = ($this->registry->getObject('db')->isEmpty( $cache )) ? false : true;
-        if($isEntries)
-        {
-            $this->registry->getObject('template')->getPage()->addTag( 'DocumentItems', array( 'SQL', $cache ) );
-        }
+		// Group records by Page
+		$sql = $this->registry->getObject('db')->getSqlByPage( $sql );
+
+		// Save SQL result to $cache (array type) AND modify record
+		$cache = $this->registry->getObject('db')->cacheQuery( $sql );
+		if (!$this->registry->getObject('db')->isEmpty( $cache ))
+		{
+            // Select Free Agenda Document No.
+            $sql = "SELECT ID as AID, DocumentNo, Description FROM ".$pref."agenda ".
+                " WHERE IFNULL(`EntryID`,'') = ''".
+                " ORDER BY TypeID,DocumentNo";
+            $cache2 = $this->registry->getObject('db')->cacheQuery( $sql );
+            $this->registry->getObject('template')->getPage()->addTag( 'documentList', array( 'SQL', $cache2 ) );
+            			
+            while( $rec = $this->registry->getObject('db')->resultsFromCache( $cache ) )
+			{			
+                $this->model = new Entry( $this->registry, $rec['ID'] );
+                $entry = $this->model->getData();
+                        
+                $rec['ADocumentNo'] = $entry['ADocumentNo'];
+                $rec['CreateDate'] = $entry['CreateDate'];
+
+                $rec['dmsClassName'] = 'item';
+                
+                $rec['DocumentType'] = $entry['DocumentType'];
+
+                $rec['viewFileCardID'] = 'viewFileCard'.$rec['ID'];					
+                $rec['editFileCardID'] = 'editFileCard'.$rec['ID'];					
+            
+                $result[] = $rec;
+            };
+
+            $cache = $this->registry->getObject('db')->cacheData( $result );
+            $this->registry->getObject('template')->getPage()->addTag( 'DocumentItems', array( 'DATA', $cache ) );
+            $isEntries = true;            
+		}else{            
+            $isEntries = false;
+        }                
         
-        $this->registry->getObject('template')->getPage()->addTag( 'pageTitle', $pageTitle );
         //
         // Show icons
         $this->addIcons();
@@ -59,13 +102,10 @@ class document {
             $breads = $showBreads;
         $this->registry->getObject('template')->getPage()->addTag( 'breads', $breads );
 
-        // Search BOX
-        $this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
-
         // Show Folders
         if ($showFolder)
         {
-            $this->registry->getObject('template')->addTemplateBit('folders', 'list-entry-folders.tpl.php');
+            $this->registry->getObject('template')->addTemplateBit('folders', 'document-list-folders.tpl.php');
         }
         else
         {
@@ -75,46 +115,38 @@ class document {
         // Show result of SQL request
         if ($isEntries)
         {
-            $this->registry->getObject('template')->addTemplateBit('documents', 'list-entry-documents.tpl.php');
+            $this->registry->getObject('template')->addTemplateBit('documents', 'document-list-files.tpl.php');
         }
         else
         {
-            $this->registry->getObject('template')->addTemplateBit('documents', 'list-entry-addfiles.tpl.php');
+            $this->registry->getObject('template')->addTemplateBit('documents', 'document-list-addfiles.tpl.php');
             if (!$showFolder){
                 $this->registry->getObject('template')->getPage()->addTag( 'message', '' );
                 $template = 'list-entry-nodocuments.tpl.php';
             }
         }
-        $this->registry->getObject('template')->buildFromTemplates('header.tpl.php', $template, 'footer.tpl.php');
         
         if ($perSet > 0)
         {
-            $this->registry->getObject('template')->addTemplateBit('actionpanel', 'list-entry-actionpanel.tpl.php');
-            if($template == 'list-entry-resultsearch.tpl.php')
-            {
-                $this->registry->getObject('template')->getPage()->addTag( 'addFiles', '' );
-            }
-            else
-            {
-                $this->registry->getObject('template')->addTemplateBit('addFiles', 'list-entry-addfiles.tpl.php');
-            };
-            $this->registry->getObject('template')->addTemplateBit('editcard', 'list-entry-editcard.tpl.php');
-            $this->registry->getObject('template')->addTemplateBit('editIcon', 'list-entry-editicon.tpl.php');
-            $this->registry->getObject('template')->getPage()->addTag( 'dmsClassName', 'item' );
+            $this->registry->getObject('template')->addTemplateBit('actionpanel', 'document-list-actions.tpl.php');
+            $this->registry->getObject('template')->addTemplateBit('addFiles', 'document-list-addfiles.tpl.php');
+            $this->registry->getObject('template')->addTemplateBit('editcardFile', 'document-entry-editcard.tpl.php');
+            $this->registry->getObject('template')->addTemplateBit('editIcon', 'document-list-actionicons.tpl.php');
             if(($entry !== null) && ($entry['Type'] == 20))
-                $this->registry->getObject('template')->addTemplateBit('addFolder', 'list-entry-actionpanel-addFolder.tpl.php');
+                $this->registry->getObject('template')->addTemplateBit('addFolder', 'document-list-addFolder.tpl.php');
             else
                 $this->registry->getObject('template')->getPage()->addTag( 'addFolder', '' );
             if(($entry !== null) && ($entry['isImage'] == true))
-                $this->registry->getObject('template')->addTemplateBit('slideshow', 'list-entry-actionpanel-slideshow.tpl.php');
+                $this->registry->getObject('template')->addTemplateBit('slideshow', 'document-list-slideshow.tpl.php');
             else
                 $this->registry->getObject('template')->getPage()->addTag( 'slideshow', '' );
+            $this->registry->getObject('template')->addTemplateBit('SelectedDocumentNo', 'document-edit-selectADocumentNo.tpl.php');        
         }
         else
         {
             $this->registry->getObject('template')->getPage()->addTag( 'actionpanel', '' );
             $this->registry->getObject('template')->getPage()->addTag( 'addFiles', '' );
-            $this->registry->getObject('template')->getPage()->addTag( 'editcard', '' );
+            $this->registry->getObject('template')->getPage()->addTag( 'editcardFile', '' );
             $this->registry->getObject('template')->getPage()->addTag( 'editIcon', '' );
         }
         
@@ -130,7 +162,7 @@ class document {
 
         $BaseUrl = $this->registry->getURLPath();
         $this->registry->getObject('template')->getPage()->addTag( 'BaseUrl', $BaseUrl );
-        $this->registry->getObject('template')->addTemplateBit('remindIcon','list-entry-remindicon.tpl.php');
+        $this->registry->getObject('template')->addTemplateBit('remindIcon','document-list-remindicon.tpl.php');
         
         
         // Parent folder
@@ -149,11 +181,12 @@ class document {
                     $parentPath .=  $data['Name'];
                     $parentID = $data['ID'];
                 }
-                $parentPath = $this->registry->getObject('fce')->ConvertToSharePathName( $parentPath );
+                $parentPath = $this->registry->getObject('fce')->ConvertToSharePath( $parentPath );
                 $this->registry->getObject('template')->getPage()->addTag('parentfoldername', $parentPath );
                 $this->registry->getObject('template')->getPage()->addTag('parentID', $parentID );            
             }
-        }
+        }        
+        $this->build( $template );
     }	
 
 	public function viewDocument( $entry, $filePath)
@@ -163,39 +196,12 @@ class document {
         $this->registry->getObject('template')->getPage()->addTag( 'breads', $breads );
         $this->registry->getObject('template')->getPage()->addTag( 'filePath', $filePath );
         $this->registry->getObject('template')->dataToTags( $entry, '' );
-        $this->registry->getObject('template')->addTemplateBit('editcard', 'list-entry-editcard.tpl.php');
+        $this->registry->getObject('template')->addTemplateBit('editcard', 'document-entry-editcard.tpl.php');
         
         // Add RemindState Caption
         $this->addRemindState();
         
-		// Search BOX
-		$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
-
-        $this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'view-entry-document.tpl.php', 'footer.tpl.php');
-    }
-
-	public function editDocument( $entry, $filePath)
-	{
-		global $config;
-        $pref = $config['dbPrefix'];
-        $breads = $entry['breads'];
-
-        $this->registry->getObject('template')->getPage()->addTag( 'breads', $breads );
-        $this->registry->getObject('template')->getPage()->addTag( 'filePath', $filePath );
-        $this->registry->getObject('template')->dataToTags( $entry, '' );
-        if($entry['ADocumentNo'] != ""){
-            $this->registry->getObject('template')->getPage()->addTag( 'SelectedDocumentNo', $entry['ADocumentNo'] );
-        }else{
-            $sql = "SELECT ID as AID, DocumentNo, Description FROM ".$pref."agenda ".
-                    "WHERE `EntryID` = '' ".
-                    "ORDER BY TypeID,DocumentNo";
-
-            $cache = $this->registry->getObject('db')->cacheQuery( $sql );
-            $this->registry->getObject('template')->getPage()->addTag( 'documentList', array( 'SQL', $cache ) );
-
-            $this->registry->getObject('template')->addTemplateBit('SelectedDocumentNo', 'edit-entry-document-documentsList.tpl.php');
-        }
-        $this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'edit-entry-document.tpl.php', 'footer.tpl.php');
+		$this->build('document-entry-view.tpl.php');
     }
 
     public function createCategoryMenu()
@@ -220,6 +226,46 @@ class document {
         $this->registry->getObject('template')->getPage()->addTag( 'categoryList', array( 'SQL', $cache ) );
     }
 
+    public function readFolders($ID)
+    {
+        global $config;
+        $dmsentry = null;
+        $level = 0;
+        $parent = 0;
+        $perSet = $this->registry->getObject('authenticate')->getPermissionSet();
+        
+
+        $entry = $this->getDmsentry($ID);
+        if( $entry ){   
+            $level = $entry['Level'] + 1;    
+            $parent = $entry['EntryNo'];
+        }
+
+        $this->registry->getObject('db')->initQuery('dmsentry');
+        if($parent > 0)
+            $this->registry->getObject('db')->setFilter('Parent',$parent);
+        $this->registry->getObject('db')->setFilter('Level',$level);
+        $this->registry->getObject('db')->setFilter('Archived',0);
+        $this->registry->getObject('db')->setFilter('Type',20);
+        $this->registry->getObject('db')->setCondition("PermissionSet <= $perSet");
+        $this->registry->getObject('db')->setOrderBy("Name");
+        if ($this->registry->getObject('db')->findSet())
+            $dmsentry = $this->registry->getObject('db')->getResult();			
+        return $dmsentry;
+    }
+
+	private function getDmsentry($ID)
+	{
+		$entry = null;
+        if($ID != ''){
+            $this->registry->getObject('db')->initQuery('dmsentry');
+            $this->registry->getObject('db')->setFilter('ID',$ID);
+            if ($this->registry->getObject('db')->findFirst())
+                $entry = $this->registry->getObject('db')->getResult();			
+        }
+        return $entry;
+	}
+    
     public function addIcons()
     {
         global $config;
@@ -265,5 +311,6 @@ class document {
         $this->registry->getObject('template')->getPage()->addTag( 'RemindState_40_storno', $caption['RemindState40'] );
         $this->registry->getObject('template')->getPage()->addTag( 'RemindState_50_finish', $caption['RemindState50'] );
     }
+
 }
 ?>

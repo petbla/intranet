@@ -10,6 +10,8 @@ class Agendacontroller{
 	private $model;
 	private $perSet;
 	private $prefDb;
+	private $message;
+	private $errorMessage;
 
 	/**
 	 * @param Registry $registry 
@@ -42,26 +44,22 @@ class Agendacontroller{
 						$TypeID = isset($urlBits[2]) ? $urlBits[2] : '';
 						$this->addAgenda($TypeID);
 						break;
-					case 'modify':
-						$ID = isset($urlBits[2]) ? $urlBits[2] : '';
-						//TODO $this->modifyAgenda($ID);
-						break;
 					case 'unlink':
 						$ID = isset($urlBits[2]) ? $urlBits[2] : '';
 						$this->unlinkAgenda($ID);
 						break;
 					case 'type':
 						$action = isset($urlBits[2]) ? $urlBits[2] : '';
+						$action = isset($_POST["action"]) ? $_POST["action"] : $action;
 						switch ($action) {
 							case 'list':
 								$this->listAgendaType();
 								break;
 							case 'add':
-								$TypeID = isset($urlBits[3]) ? $urlBits[3] : '';
-								$this->addAgendaType( $TypeID );
+								$this->addAgendaType();
 								break;
 							case 'modify':
-								$TypeID = isset($urlBits[3]) ? $urlBits[3] : '';
+								$TypeID = isset($_POST["TypeID"]) ? $_POST["TypeID"] : '';
 								if($TypeID !== ''){
 									$this->modifyAgendaType( $TypeID );
 								}else{
@@ -79,14 +77,15 @@ class Agendacontroller{
 							default:
 								$this->pageNotFound();
 								break;
-						}						
+						}		
+						break;				
 					case 'WS':
 						// Je voláno jako XMLHttpRequest (function.js) a pouze loguje zobrazené položky
 						switch ($urlBits[2]) {
-							case 'xxx':
+							case 'unlink':
 								$ID = isset($urlBits[3]) ? $urlBits[3] : '';
-								//$result = $this->wsLogDocumentView($ID);
-								//exit($result);		
+								$result = $this->wsUnlinkAgenda($ID);
+								exit($result);		
 								break;
 						}
 						break;
@@ -98,17 +97,31 @@ class Agendacontroller{
 		}
 	}
     /**
+     * Sestavení stránky
+     * @return void
+     */
+	private function build( $template = 'page.tpl.php' ) 
+	{
+		// Category Menu
+		$this->createCategoryMenu();
+
+		// Page message
+		$this->registry->getObject('template')->getPage()->addTag('message',$this->message);
+		$this->registry->getObject('template')->getPage()->addTag('errorMessage',$this->errorMessage);
+
+		// Build page
+		$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
+		$this->registry->getObject('template')->addTemplateBit('categories', 'categorymenu-agenda.tpl.php');
+		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', $template, 'footer.tpl.php');
+	}
+
+	/**
      * Zobrazení chybové stránky, pokud agenda nebyla nalezem 
      * @return void
      */
 	private function pageNotFound()
 	{
-		// Logování
-		$this->registry->getObject('log')->addMessage("Pokus o zobrazení neznámé agendy",'agenda','');
-		// Search BOX
-		$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
-		// Sestavení
-		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page-notfound.tpl.php', 'footer.tpl.php');
+		$this->error("Pokus o zobrazení neznámého dokladu agendy");
 	}
 
     /**
@@ -120,13 +133,32 @@ class Agendacontroller{
 	{
 		// Logování
 		$this->registry->getObject('log')->addMessage("Chyba: $message",'agenda','');
-		// Nastavení parametrů
-		$this->registry->getObject('template')->getPage()->addTag('message',$message);
-		// Search BOX
-		$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
-		// Sestavení stránky
-		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page.tpl.php', 'footer.tpl.php');
+			
+		$this->errorMessage = $message;
+		$this->build();
 	}
+
+    /**
+	 * Generování menu
+	 * @return void
+	 */
+	public function createCategoryMenu()
+    {
+		global $config;
+        $pref = $config['dbPrefix'];
+        $perSet = $this->registry->getObject('authenticate')->getPermissionSet();
+
+		$urlBits = $this->registry->getURLBits();
+		$typeID = isset( $urlBits[2]) ? ($urlBits[2] != 'list' ? $urlBits[2] : 0) : 0;
+
+        $sql = "SELECT TypeID as idCat, Name as titleCat,
+					IF(TypeID = '$typeID','active','') as activeCat 
+					FROM ".$pref."agendatype";
+        
+        $cache = $this->registry->getObject('db')->cacheQuery( $sql );
+        $cacheCategory = $this->registry->getObject('db')->cacheQuery( $sql );
+        $this->registry->getObject('template')->getPage()->addTag( 'categoryList', array( 'SQL', $cache ) );
+    }
 
     /**
      * Zobrazení položek agendy
@@ -152,53 +184,39 @@ class Agendacontroller{
 			return;
 		}
 	 
-		// Zobrazení výsledku
-		$templateList = 'list-agenda.tpl.php';
-		$templateCard = 'edit-agenda.tpl.php';
-		$cache = $this->listResult( $sql );
-		if($this->registry->getObject('db')->isEmpty( $cache )){
-			$this->registry->getObject('template')->getPage()->addTag( 'ID', '' );				
-			$this->registry->getObject('template')->getPage()->addTag( 'DocumentNo', '' );				
-			$this->registry->getObject('template')->getPage()->addTag( 'Description', '' );				
-			$this->registry->getObject('template')->getPage()->addTag( 'CreateDate', '' );				
-			$this->registry->getObject('template')->getPage()->addTag( 'ExecuteDate', '' );				
-		}else{
-			$this->registry->getObject('template')->getPage()->addTag( 'AgendaList', array( 'SQL', $cache ) );
-		}
-		$this->registry->getObject('template')->getPage()->addTag( 'TypeID', $TypeID );				
-		$this->registry->getObject('template')->getPage()->addTag( 'pageTitle', $agendatype['Name'] );				
-		$this->registry->getObject('template')->getPage()->addTag( 'EditDocumentNo', '' );				
-		$this->registry->getObject('template')->getPage()->addTag( 'EditDescription', '' );				
-		$this->registry->getObject('template')->getPage()->addTag( 'EditCreateDate', '' );				
-		$this->registry->getObject('template')->getPage()->addTag( 'EditExecuteDate', '' );				
-		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', $templateList, 'footer.tpl.php');			
-		$this->registry->getObject('template')->addTemplateBit('editcard', $templateCard);
+        $perSet = $this->registry->getObject('authenticate')->getPermissionSet();
 
-	}
-
-	/**
-	 * Odstranení odkazu agendy na dokument (číslo jednací)
-	 * @param string $ID = ID agendy
-	 */
-	private function unlinkAgenda($ID)
-	{
-		$this->registry->getObject('db')->initQuery('agenda');
-		$this->registry->getObject('db')->setFilter('ID',$ID);
-		if ($this->registry->getObject('db')->findFirst())
+		if($perSet > 0)
 		{
-			$agenda = $this->registry->getObject('db')->getResult();
-			$TypeID = $agenda['TypeID'];
-			$changes =  array();
-			$changes['Description'] = '';
-			$changes['EntryID'] = '';
-			$condition = "ID = '$ID'";
-			$this->registry->getObject('db')->updateRecords('agenda',$changes, $condition);
-			$this->listAgenda($TypeID);
-		}else{
-			$this->pageNotFound();
-			return;
+			// Zobrazení výsledku
+			$templateList = 'agenda-list.tpl.php';
+			$templateCard = 'agenda-edit.tpl.php';
+
+			$cache = $this->listResult( $sql );
+			if($this->registry->getObject('db')->isEmpty( $cache )){
+				$this->registry->getObject('template')->getPage()->addTag( 'ID', '' );				
+				$this->registry->getObject('template')->getPage()->addTag( 'DocumentNo', '' );				
+				$this->registry->getObject('template')->getPage()->addTag( 'Description', '' );				
+				$this->registry->getObject('template')->getPage()->addTag( 'CreateDate', '' );				
+				$this->registry->getObject('template')->getPage()->addTag( 'ExecuteDate', '' );				
+			}else{
+				$this->registry->getObject('template')->getPage()->addTag( 'AgendaList', array( 'SQL', $cache ) );
+			}
+			$this->registry->getObject('template')->getPage()->addTag( 'TypeID', $TypeID );				
+			$this->registry->getObject('template')->getPage()->addTag( 'EditDocumentNo', '' );				
+			$this->registry->getObject('template')->getPage()->addTag( 'EditDescription', '' );				
+			$this->registry->getObject('template')->getPage()->addTag( 'EditCreateDate', '' );				
+			$this->registry->getObject('template')->getPage()->addTag( 'EditExecuteDate', '' );				
+
+			$this->registry->getObject('template')->addTemplateBit('editcard', $templateCard);
+			$this->build($templateList);
 		}
+        else
+        {
+			$this->error($caption['msg_unauthorized']);
+        }
 	}
+
 
     /**
      * Zobrazení seznam typů agend
@@ -208,10 +226,9 @@ class Agendacontroller{
 	{
 		global $caption,$deb;		
     	$sql = "SELECT * FROM ".$this->prefDb."agendatype ";
-		
+
 		// Zobrazení výsledku
-		$templateList = 'list-agenda-type.tpl.php';
-		$templateCard = 'edit-agenda-type.tpl.php';
+		$templateList = 'agenda-type-list.tpl.php';
 		$cache = $this->listResult( $sql );
 		if($this->registry->getObject('db')->isEmpty( $cache )){
 			$this->registry->getObject('template')->getPage()->addTag( 'TypeID', '' );				
@@ -222,15 +239,32 @@ class Agendacontroller{
 		}else{
 			$this->registry->getObject('template')->getPage()->addTag( 'AgendaTypeList', array( 'SQL', $cache ) );
 		}
-		$this->registry->getObject('template')->getPage()->addTag( 'pageTitle', '' );				
-		$this->registry->getObject('template')->getPage()->addTag( 'EditName', '' );
-		$this->registry->getObject('template')->getPage()->addTag( 'EditNoSeries', '' );
-		$this->registry->getObject('template')->getPage()->addTag( 'EditTypeID', '' );
-		$this->registry->getObject('template')->getPage()->addTag( 'pageTitle', '' );
-		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', $templateList, 'footer.tpl.php');			
-		$this->registry->getObject('template')->addTemplateBit('editcard', $templateCard);
-		$deb->info('After List Agenda Type');
+		$this->build($templateList);
 	}
+
+	/**
+	 * SQL dotaz přeskládán do listu položek v $cache
+	 * @param string $sql - SELECT dotaz
+	 * @return int $cache - index výsledku dotazu
+	 */
+	private function listResult( $sql )
+	{
+		global $config, $caption;
+        $pref = $config['dbPrefix'];
+        $perSet = $this->registry->getObject('authenticate')->getPermissionSet();
+
+		if($perSet > 0)
+		{
+			// Group records by Page
+			$sql = $this->registry->getObject('db')->getSqlByPage( $sql );
+			$cache = $this->registry->getObject('db')->cacheQuery( $sql );
+			return ( $cache );
+		}
+        else
+        {
+			$this->error($caption['msg_unauthorized']);
+        }
+    }	
 
 	/**
 	 * Založení nového typu dokumentu
@@ -250,59 +284,35 @@ class Agendacontroller{
 	 * Založení nového typu dokumentu
 	 * @return void
 	 */
-	private function addAgendaType( $TypeID )
+	private function addAgendaType( )
 	{
 		global $config, $caption;
 
-		require_once( FRAMEWORK_PATH . 'models/agenda/model.php');
-		$this->model = new Agenda( $this->registry, '' );
+		$Name = isset($_POST['Name']) ? $_POST['Name'] : '';
+		if ($Name == ''){
+			$this->error('Název musí být vyplněn!');
+			return;
+		};
+		$NoSeries = isset($_POST['NoSeries']) ? $_POST['NoSeries'] : '';
+		if ($Name == ''){
+			$this->error('Číselná řada musí být vyplněna!');
+			return;
+		};
+
+		$this->registry->getObject('db')->initQuery('agendatype');
+		$this->registry->getObject('db')->setFilter('NoSeries',$NoSeries);
+		if (!$this->registry->getObject('db')->isEmpty()){
+			$this->error("Kód číselné řady $NoSeries již existuje!");
+			return;
+		}
 
 		$data = array();
-		$data['Name'] = isset($_POST['Name']) ? $_POST['Name'] : '';
-		$data['NoSeries'] = isset($_POST['NoSeries']) ? $_POST['NoSeries'] : '';
-		$data['TypeID'] = isset($_POST['TypeID']) ? $_POST['TypeID'] : '';
-		$this->newAgendaType( $data );
+		$data['Name'] = $Name;
+		$data['NoSeries'] = $NoSeries;
+		$this->registry->getObject('db')->insertRecords('agendatype',$data);
 		$this->listAgendaType();
 	}	
 
-    /**
-     * Globální funkce pro založení nového typu agendy
-     * @param $data - pole nového záznamu
-     * @return boolean $success - výsledek založení nového záznamu
-     */
-    function newAgendaType( $data )
-    {
-		global $config;
-        $pref = $config['dbPrefix'];
-
-        $Name = isset($data['Name']) ? $data['Name'] : '';
-        if (($Name == '') && ($data['TypeID'] == ''))
-            return false;   
-        
-        $this->registry->getObject('db')->initQuery('agendatype');
-        $this->registry->getObject('db')->setFilter('TypeID',$data['TypeID']);
-        if (($data['TypeID'] !== "") && ($this->registry->getObject('db')->findFirst())){
-            $TypeID = $data['TypeID'];
-            
-            // Update
-            $changes = array();
-            $changes['Name'] = $data['Name'];
-            $changes['NoSeries'] = $data['NoSeries'];
-            $condition = "TypeID = '$TypeID'";
-            $this->registry->getObject('db')->updateRecords('agendatype',$changes, $condition);
-    
-        }else{
-            // Insert New
-            unset($data['TypeID']);
-            $this->registry->getObject('db')->initQuery('agendatype');
-            $this->registry->getObject('db')->setFilter('NoSeries',$data['NoSeries']);
-            if($this->registry->getObject('db')->isEmpty()){
-                $this->registry->getObject('db')->insertRecords('agendatype',$data);
-                return true;
-            }
-            return false;
-        }
-    }
 	
 	/**
 	 * Editace typu agendy
@@ -310,20 +320,31 @@ class Agendacontroller{
 	 */
 	private function modifyAgendaType( $TypeID )
 	{
-        $this->registry->getObject('db')->initQuery('agendatype');
-        $this->registry->getObject('db')->setFilter('TypeID',$TypeID);
-		if ($this->registry->getObject('db')->findFirst())
-		{
-			$agendaType = $this->registry->getObject('db')->getResult();
-			
-			$this->registry->getObject('template')->getPage()->addTag( 'EditName', $agendaType['Name'] );				
-			$this->registry->getObject('template')->getPage()->addTag( 'EditNoSeries', $agendaType['NoSeries'] );				
-			$this->registry->getObject('template')->getPage()->addTag( 'EditTypeID', $agendaType['TypeID'] );				
-			$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'edit-agenda-type.tpl.php', 'footer.tpl.php');			
-		}else{
-			$this->pageNotFound();
+		$Name = isset($_POST['Name']) ? $_POST['Name'] : '';
+		if ($Name == ''){
+			$this->error('Název musí být vyplněn!');
+			return;
+		};
+		$NoSeries = isset($_POST['NoSeries']) ? $_POST['NoSeries'] : '';
+		if ($Name == ''){
+			$this->error('Číselná řada musí být vyplněna!');
+			return;
+		};
+		$this->registry->getObject('db')->initQuery('agendatype');
+		$this->registry->getObject('db')->setFilter('NoSeries',$NoSeries);
+		$this->registry->getObject('db')->setCondition("NoSeries <> $TypeID");
+		if (!$this->registry->getObject('db')->isEmpty()){
+			$this->error("Kód číselné řady $NoSeries již existuje!");
+			return;
 		}
-		return;
+
+		// Update
+		$changes = array();
+		$changes['Name'] = $Name;
+		$changes['NoSeries'] = $NoSeries;
+		$condition = "TypeID = '$TypeID'";
+		$this->registry->getObject('db')->updateRecords('agendatype',$changes, $condition);
+		$this->listAgendaType();
 	}
 
 	/**
@@ -332,61 +353,96 @@ class Agendacontroller{
 	 */
 	private function deleteAgendaType( $TypeID )
 	{
+		if ($this->isAgendaTypeUsed( $TypeID ))
+		{
+			$NoSeries = $this->getNoSeries($TypeID);
+			$this->error("Číselná řada $NoSeries se používá, nelze ji odstranit.");
+			return;
+		};
+		
 		$condition = "TypeID = ".$TypeID;
 		$this->registry->getObject('db')->deleteRecords( 'agendatype', $condition, 1); 
 		$this->listAgendaType();
+
 	}
 
     /**
-     * Test, zda byla již číselná řada použita
-     * @param int $NoSeries - Maska číselné řady agendy
-     * @return boolean - info, zda byla číselná řada použita 
+     * Test, zda byl typ již použitý - podle TypeID
+     * @param int $TypeID - Maska číselné řady agendy
+     * @return boolean 
      */
-    function isAgendaTypeUsed( $NoSeries ) 
+    function isAgendaTypeUsed( $TypeID ) 
     {
         $this->registry->getObject('db')->initQuery('agenda');
-        $this->registry->getObject('db')->setFilter('NoSeries',$NoSeries);
+        $this->registry->getObject('db')->setFilter('TypeID',$TypeID);
         if($this->registry->getObject('db')->isEmpty())
             return false;
         return true;
     }
 
-	/**
-	 * SQL dotaz přeskládán do listu položek v $cache
-	 * @param string $sql - SELECT dotaz
-	 * @return int $cache - index výsledku dotazu
+    /**
+     * Vrací kód číselné řady
+     * @param int $TypeID
+     * @return varchar(20) $NoSeries
+     */
+    function getNoSeries( $TypeID ) 
+    {
+        $this->registry->getObject('db')->initQuery('agendatype');
+        $this->registry->getObject('db')->setFilter('TypeID',$TypeID);
+        if($this->registry->getObject('db')->findFirst()){
+			$agendatype = $this->registry->getObject('db')->getResult();				
+			return $agendatype['NoSeries'];
+		};
+        return '';
+    }
+
+		/**
+	 * Odstranení odkazu agendy na dokument (číslo jednací)
+	 * @param string $ID = ID agendy
 	 */
-	private function listResult( $sql )
+	private function unlinkAgenda($ID)
 	{
-		global $config, $caption;
-        $pref = $config['dbPrefix'];
-        $perSet = $this->registry->getObject('authenticate')->getPermissionSet();
-
-		if($perSet > 0)
+		$this->registry->getObject('db')->initQuery('agenda');
+		$this->registry->getObject('db')->setFilter('ID',$ID);
+		if ($this->registry->getObject('db')->findFirst())
 		{
-			// Stránkování
-			$cacheFull = $this->registry->getObject('db')->cacheQuery( $sql );
-			$records = $this->registry->getObject('db')->numRowsFromCache( $cacheFull );
-			$pageCount = (int) ($records / $config['maxVisibleItem']);
-			$pageCount = ($records > $pageCount * $config['maxVisibleItem']) ? $pageCount + 1 : $pageCount;  
-			$pageNo = ( isset($_GET['p'])) ? $_GET['p'] : 1;
-			$pageNo = ($pageNo > $pageCount) ? $pageCount : $pageNo;
-			$pageNo = ($pageNo < 1) ? 1 : $pageNo;
-			$fromItem = (($pageNo - 1) * $config['maxVisibleItem']);    
-			$navigate = $this->registry->getObject('template')->NavigateElement( $pageNo, $pageCount ); 
-			$this->registry->getObject('template')->getPage()->addTag( 'navigate_menu', $navigate );
-			$sql .= " LIMIT $fromItem," . $config['maxVisibleItem']; 
-			$cache = $this->registry->getObject('db')->cacheQuery( $sql );
-
-			// Search BOX
-			$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
-
-			return ( $cache );
+			$agenda = $this->registry->getObject('db')->getResult();
+			$TypeID = $agenda['TypeID'];
+			$changes =  array();
+			$changes['Description'] = '';
+			$changes['EntryID'] = '';
+			$condition = "ID = '$ID'";
+			$this->registry->getObject('db')->updateRecords('agenda',$changes, $condition);
+			$this->listAgenda($TypeID);
+		}else{
+			$this->pageNotFound();
 		}
-        else
-        {
-			$this->error($caption['msg_unauthorized']);
-        }
-    }	
+	}
 
+    /**
+     * Webová služba 
+	 * @param String $ID = ID položky Agendy
+     * @return String = Návratová hodnota
+	 *                  => OK    = zápis proběhl korektně
+	 *                  => Error = zápis do logu skončil chybou
+     */
+	private function wsUnlinkAgenda( $ID )
+	{
+		global $deb;
+		require_once( FRAMEWORK_PATH . 'models/agenda/model.php');
+		$this->model = new Agenda( $this->registry, $ID );
+
+		if( $this->model->isValid() )
+		{
+			$agenda = $this->model->getData();
+	
+			$changes =  array();
+			$changes['Description'] = '';
+			$changes['EntryID'] = '';
+			$condition = "ID = '$ID'";
+			$this->registry->getObject('db')->updateRecords('agenda',$changes, $condition);			
+			return 'OK';
+		}
+		return 'Error';
+	}	
 }

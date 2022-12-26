@@ -28,6 +28,11 @@ var a_agendaSourceFolder;
 var arrGroup = null;
 var grouplistnewcontact;
 var fld_handled;
+var fld_webroot;
+var activeElectionPeriod;
+var activeMemberType;
+var a_inbox;
+var meetings;
 
 
 // ----------------------------------------------------------------------------------------
@@ -47,6 +52,7 @@ grouplist = document.querySelector('#grouplist');
 deleteEntryType20 = document.querySelectorAll('#DeleteEntryType20');
 items = document.querySelectorAll('[dmsClassName="item"]');
 contacts = document.querySelectorAll('[dmsClassName="contact"]');
+meetings = document.querySelectorAll('[dmsClassName="meeting"]');
 entriesType35 = document.querySelectorAll('a[entrytype="35"]');
 sqlrequest = document.querySelector('#sqlrequest');
 a_entry = document.querySelectorAll('[a_type="entry"]');
@@ -54,9 +60,14 @@ a_agenda = document.querySelectorAll('[a_type="agenda"]');
 a_agendaPDF = document.querySelectorAll('[a_type="agendaPDF"]');
 a_agendaUnlink = document.querySelectorAll('[a_type="agendaUnlink"]');
 a_agendaSourceFolder = document.querySelectorAll('[a_type="agendaSourceFolder"]');
+a_inbox = document.querySelectorAll('[name="activeInbox"]');
+
 fld_handled = document.querySelector('#fld_handled');
+fld_webroot = document.querySelector('#fld_webroot');
 grouplistnewcontact = document.querySelector( '[id="grouplistnewcontact"]' );
 
+activeElectionPeriod = document.getElementById('activeElectionPeriod');
+activeMemberType = document.getElementById('activeMemberType');
 
 // ----------------------------------------------------------------------------------------
 // Functions
@@ -271,111 +282,89 @@ if (password_confirm) {
 if(items){
     items.forEach(function(item){
         item.onclick = function (e) {
-            var form;
+            var form,card,type;
             var oldValue,inputValue,back,username;
             var activeForm;
             var isNew;
-    
-            // Clean (HIDE) Old Entry
-            if (lasteditcard)
-            {
-                form = document.querySelector( '[form_id="' + lasteditcard.target.id + '"]' );
-                form.style.display = 'none';
-            }
-            // Prepare New Entry to Edit
-            form = document.querySelector( '[form_id="' + e.target.id + '"]' );
-            form.style.display = '';
-            form.style.left = '300px';
-            form.style.top = '100px';
-            
-            activeForm = form;
-            window.onkeyup = function (event) {
-                if (event.keyCode == 27) {
-                    activeForm.style.display = "none";
-                }
-            }
-            // Make the DIV element draggable:
-            dragElement(form);
+            var SelectedADocumentNo,ADocumentNo;
 
-            back = document.querySelector( '[back_id="' + e.target.id + '"]' );
-            back.onclick = function (ee) {
-                var form;
-                form = document.querySelector( '[form_id="' + e.target.id + '"]' );
-                form.style.display = 'none';
-                ee.preventDefault();
+            // Init record on the form
+            initForm('Title',e.target.id);
+            initForm('FileExtension',e.target.id);
+            initForm('Url',e.target.id);
+            initForm('RemindResponsiblePerson',e.target.id);
+            initForm('Content',e.target.id);
+            initForm('RemindLastDate',e.target.id);
+            initForm('Remind',e.target.id);
+            initForm('RemindFromDate',e.target.id);
+            initForm('RemindClose',e.target.id);
+
+            
+            // Show card
+            type = e.target.getAttribute('dmsClassType');
+            
+            if (type =="Note")
+                type = "File";
+           
+            card = document.querySelector('[id="edit' + type + 'Card' + e.target.id + '"]' );
+            card.style.display = 'block';
+
+            // ADocumentNo select
+            SelectedADocumentNo = "SelectedADocumentNo" + e.target.id;
+            ADocumentNo = document.querySelector('[ADocumentNoID="' + e.target.id + '"]' );
+            if (ADocumentNo.innerHTML != ''){
+                document.getElementById(SelectedADocumentNo).style.display = 'none';
             };
-
-            // Write value from Hidden do Forms Input
-            oldValue = document.querySelector( '[oldTitle_id="' + e.target.id + '"]' );
-            inputValue = document.querySelector( '[inputtitle_id="' + e.target.id + '"]' );
-            isNew = (oldValue.value == 'Nová poznámka');
-            if (isNew)
-                inputValue.value = '';
-            else
-                inputValue.value = oldValue.value;
-            inputValue.focus();
-            
-            oldValue = document.querySelector( '[oldUrl_id="' + e.target.id + '"]' );
-            inputValue = document.querySelector( '[inputurl_id="' + e.target.id + '"]' );
-            inputValue.value = oldValue.value;
-      
-            oldValue = document.querySelector( '[oldRemind_id="' + e.target.id + '"]' );
-            inputValue = document.querySelector( '[inputRemind_id="' + e.target.id + '"]' );
-            if ((oldValue.getAttribute('value') == '1') || (isNew)){
-                inputValue.setAttribute('checked','');
-                inputValue.value = 'on';            
-            }
-
-            oldValue = document.querySelector( '[oldRemindClose_id="' + e.target.id + '"]' );
-            inputValue = document.querySelector( '[inputRemindClose_id="' + e.target.id + '"]' );
-            if (oldValue.getAttribute('value') == '1'){
-                inputValue.setAttribute('checked','');
-                inputValue.value = 'on';            
-            }
-
-            oldValue = document.querySelector( '[oldRemindFromDate_id="' + e.target.id + '"]' );
-            inputValue = document.querySelector( '[inputRemindFromDate_id="' + e.target.id + '"]' );
-            inputValue.value = oldValue.value;
-            
-            oldValue = document.querySelector( '[oldRemindLastDate_id="' + e.target.id + '"]' );
-            inputValue = document.querySelector( '[inputRemindLastDate_id="' + e.target.id + '"]' );
-            inputValue.value = oldValue.value;
-            
-            oldValue = document.querySelector( '[oldRemindState_id="' + e.target.id + '"]' );
-            inputValue = document.querySelector( '[inputRemindState_id="' + e.target.id + '"]' );
-            inputValue.value = oldValue.value;
-            
-            username = document.querySelector( '#UserName' );
-            oldValue = document.querySelector( '[oldRemindResponsiblePerson_id="' + e.target.id + '"]' );
-            inputValue = document.querySelector( '[inputRemindResponsiblePerson_id="' + e.target.id + '"]' );
-            if(isNew && (username != null)){
-                inputValue.value = username.innerHTML;
-            }
-            else
-                inputValue.value = oldValue.value;
-            
-            lasteditcard = e;
+  
         }
     })   
+}
+
+if(meetings){
+    meetings.forEach(function(meeting){
+        meeting.onclick = function (e) {
+            var card;
+            // Show card
+            card = document.querySelector('[id="editMeetingCard' + e.target.id + '"]' );
+            card.style.display = 'block';
+        }
+    })
 }
 
 if(contacts){
     contacts.forEach(function(contact){
         contact.onclick = function (e) {
-            var form;
-            var oldValue,inputValue,back;
             var grouplist;
             var tag,arrGroup;
+            var card;
+
+            // Init record on the form
+            initForm('Title',e.target.id);
+            initForm('FirstName',e.target.id);
+            initForm('LastName',e.target.id);
+            initForm('Function',e.target.id);
+            initForm('Company',e.target.id);
+            initForm('Web',e.target.id);
+            initForm('Address',e.target.id);
+            initForm('BirthDate',e.target.id);
+            initForm('Phone',e.target.id);
+            initForm('Email',e.target.id);
+            initForm('Note',e.target.id);
+            initForm('ContactGroups',e.target.id);
+            initForm('Close',e.target.id);
             
+            // Show card
+            card = document.querySelector('[id="editContactCard' + e.target.id + '"]' );
+            card.style.display = 'block';
+
             tag = document.querySelector('[class="tags' + e.target.id + '"]' );
             grouplist = document.querySelector( '[id="grouplist' + e.target.id + '"]' );
-            arrGroup = (tag.innerText).split(',');
+            arrGroup = (tag.innerText).split(',');            
             if (tag.innerText !== ''){
                 tag.innerHTML = tags2Html( arrGroup );
             }
             grouplist.onchange = function  (ee) {
                 var tag,arrGroup; 
-                var oldValue,newValue;
                 var contactGroups;
                 
                 tag = document.querySelector('[class="tags' + e.target.id + '"]' );
@@ -404,84 +393,7 @@ if(contacts){
                     }
                 }
                 ee.target.value = '';
-            };
-    
-            // Clean (HIDE) Old Entry
-            if (lastEditContact)
-            {
-                form = document.querySelector( '[form_id="' + lastEditContact.target.id + '"]' );
-                form.style.display = 'none';
             }
-            // Prepare New Entry to Edit
-            form = document.querySelector( '[form_id="' + e.target.id + '"]' );
-            form.style.display = '';
-            form.style.left = '300px';
-            form.style.top = '100px';
-            
-            activeForm = form;
-            window.onkeyup = function (event) {
-                if (event.keyCode == 27) {
-                    activeForm.style.display = "none";
-                }
-            }
-            // Make the DIV element draggable:
-            dragElement(form);
-
-            back = document.querySelector( '[back_id="' + e.target.id + '"]' );
-            back.onclick = function (ee) {
-                var form;
-                form = document.querySelector( '[form_id="' + e.target.id + '"]' );
-                form.style.display = 'none';
-                ee.preventDefault();
-            };
-
-            // Write value from Hidden do Forms Input
-            oldValue = document.querySelector( '[oldFirstName_id="' + e.target.id + '"]' );
-            inputValue = document.querySelector( '[inputFirstName_id="' + e.target.id + '"]' );
-            inputValue.value = oldValue.value;
-            inputValue.focus();
-            
-            oldValue = document.querySelector( '[oldLastName_id="' + e.target.id + '"]' );
-            inputValue = document.querySelector( '[inputLastName_id="' + e.target.id + '"]' );
-            inputValue.value = oldValue.value;
-   
-            oldValue = document.querySelector( '[oldTitle_id="' + e.target.id + '"]' );
-            inputValue = document.querySelector( '[inputTitle_id="' + e.target.id + '"]' );
-            inputValue.value = oldValue.value;
-   
-            oldValue = document.querySelector( '[oldBirthDate_id="' + e.target.id + '"]' );
-            inputValue = document.querySelector( '[inputBirthDate_id="' + e.target.id + '"]' );
-            inputValue.value = oldValue.value;
-   
-            oldValue = document.querySelector( '[oldFunction_id="' + e.target.id + '"]' );
-            inputValue = document.querySelector( '[inputFunction_id="' + e.target.id + '"]' );
-            inputValue.value = oldValue.value;
-   
-            oldValue = document.querySelector( '[oldCompany_id="' + e.target.id + '"]' );
-            inputValue = document.querySelector( '[inputCompany_id="' + e.target.id + '"]' );
-            inputValue.value = oldValue.value;
-   
-            oldValue = document.querySelector( '[oldPhone_id="' + e.target.id + '"]' );
-            inputValue = document.querySelector( '[inputPhone_id="' + e.target.id + '"]' );
-            inputValue.value = oldValue.value;
-   
-            oldValue = document.querySelector( '[oldEmail_id="' + e.target.id + '"]' );
-            inputValue = document.querySelector( '[inputEmail_id="' + e.target.id + '"]' );
-            inputValue.value = oldValue.value;
-   
-            oldValue = document.querySelector( '[oldWeb_id="' + e.target.id + '"]' );
-            inputValue = document.querySelector( '[inputWeb_id="' + e.target.id + '"]' );
-            inputValue.value = oldValue.value;
-   
-            oldValue = document.querySelector( '[oldAddress_id="' + e.target.id + '"]' );
-            inputValue = document.querySelector( '[inputAddress_id="' + e.target.id + '"]' );
-            inputValue.value = oldValue.value;
-   
-            oldValue = document.querySelector( '[oldNote_id="' + e.target.id + '"]' );
-            inputValue = document.querySelector( '[inputNote_id="' + e.target.id + '"]' );
-            inputValue.value = oldValue.value;
-   
-            lastEditContact = e;
         }
     })   
 }
@@ -719,6 +631,76 @@ if(fld_handled){
     fld_handled.checked = getCookie(name);
 }
 
+if(fld_webroot){
+    var url;
+    var xhr = new XMLHttpRequest();
+
+    url = fld_webroot.getAttribute('data-dms-server');
+    xhr.open("get",url,false);
+    xhr.send(null);    
+    
+    if (xhr.status == 200){   
+        fld_webroot.src = "views/classic/images/icon/trafficOK.png";
+    }else{
+        fld_webroot.src = "views/classic/images/icon/trafficFailed.png";
+    }
+}
+
+if(activeElectionPeriod){
+    var ElectionPeriodID, e;
+    ElectionPeriodID = activeElectionPeriod.getAttribute('value');
+    e = document.getElementById('meetingtypeCard' + ElectionPeriodID);
+    if(e)
+        e.style.display = 'block'; 
+    e = document.getElementById('MeetingTypeID' + ElectionPeriodID);
+    if(e)
+        e.setAttribute('value',ElectionPeriodID);
+}
+
+if(activeMemberType){
+    var MemberTypeID, e;
+    MemberTypeID = activeMemberType.getAttribute('value');
+    e = document.getElementById('memberCard' + MemberTypeID);
+    if(e)
+        e.style.display = 'block'; 
+    e = document.getElementById('MemberID' + MemberTypeID);
+    if(e)
+        e.setAttribute('value',MemberTypeID);
+}
+
+if(a_inbox){
+    a_inbox.forEach( function (inbox) {
+        var InboxID;
+        InboxID = inbox.getAttribute('value');
+        if(document.getElementById('editInbox' + InboxID)){
+            modifyTodoInbox(InboxID);
+        }
+    })
+}
+
+function initForm(tag,id) {
+    var element, oldelement;
+
+    element = document.querySelector( '[' + tag + 'ID="' + id + '"]' );
+    oldelement = document.querySelector( '[old' + tag + 'ID="' + id + '"]' );
+    if (element){
+        if (oldelement){
+            switch (element.type) {
+                case 'checkbox':
+                    if (oldelement.getAttribute('value') == '1'){
+                        element.checked = true;
+                    }else{
+                        element.checked = false;
+                    }
+                    break;
+                default:
+                    element.value = oldelement.value;
+                    break;
+            }
+        }
+    }
+}
+
 function doesFileExist(urlToFile) {
     var xhr = new XMLHttpRequest();
     var response = $.ajax({
@@ -730,5 +712,80 @@ function doesFileExist(urlToFile) {
         return false;
     } else {
         return true;
+    }
+}
+
+function modifyContactGroup(Code,Name,Action,read){
+    document.getElementById("fieldName").value = Name;
+    document.getElementById("fieldCode").value = Code;
+    document.getElementById("fieldCode").readOnly = read;
+    document.getElementById("fieldAction").value = Action;
+}
+
+function modifyAgendaType(TypeID,Name,NoSeries,Action){
+    document.getElementById("fieldTypeID").value = TypeID;
+    document.getElementById("fieldName").value = Name;
+    document.getElementById("fieldNoSeries").value = NoSeries;
+    document.getElementById("fieldAction").value = Action;
+}
+
+function modifyUser(ID,Name,FullName,PermissionSet,Action,read){
+    var e;
+
+    document.getElementById("fieldID").value = ID;
+    document.getElementById("fieldName").value = Name;
+    document.getElementById("fieldName").readOnly = read;    
+    document.getElementById("fieldFullName").value = FullName;
+    document.getElementById("fieldPerSet").value = PermissionSet;
+    document.getElementById("fieldAction").value = Action;
+    e = document.getElementById("fieldPerSet" + Name);
+    if(e){
+        e.setAttribute('selected','selected');
+    }
+}
+
+function modifyZobElectionPeriod(ElectionPeriodID,Name,Actual,Action){
+    var e;
+    document.getElementById("fieldEpElectionPeriodID").value = ElectionPeriodID;
+    document.getElementById("fieldEpPeriodName").value = Name;
+    e = document.getElementById("fieldEpActual");
+    e.value = Actual;
+    if (Actual == '1'){
+        e.checked = true;
+    }else{
+        e.checked = false;
+    };
+    document.getElementById("fieldEpAction").value = Action;
+}
+
+function modifyZobMeetingType(MeetingTypeID,ElectionPeriodID,MeetingName,Members,Action){
+    document.getElementById("fieldMtMeetingTypeID" + ElectionPeriodID).value = MeetingTypeID;
+    document.getElementById("fieldMtElectionPeriodID" + ElectionPeriodID).value = ElectionPeriodID;
+    document.getElementById("fieldMtMeetingName" + ElectionPeriodID).value = MeetingName;
+    document.getElementById("fieldMtMembers" + ElectionPeriodID).value = Members;
+    document.getElementById("fieldMtAction" + ElectionPeriodID).value = Action;
+}
+
+function modifyZobMember(MemberID,MeetingTypeID,ContactName,MemberTypeCSY,MemberType,Action){
+    document.getElementById("fieldMemMemberID" + MeetingTypeID).value = MemberID;
+    document.getElementById("fieldMemMeetingTypeID" + MeetingTypeID).value = MeetingTypeID;
+    document.getElementById("fieldMemMemberType" + MeetingTypeID).value = MemberTypeCSY;
+    
+    document.getElementById(MemberType + MeetingTypeID).selected = 'selected';
+    
+    document.getElementById("fieldMemContactName" + MeetingTypeID).value = ContactName;
+    document.getElementById("fieldMemAction" + MeetingTypeID).value = Action;
+}
+
+function modifyTodoInbox(InboxID){
+    document.getElementById("editInbox" + InboxID).style.display = 'block';    
+}
+
+
+function validateCheckbox( e ){
+    if (e.checked) {
+        e.setAttribute('value',1);
+    }else{
+        e.setAttribute('value',0);
     }
 }

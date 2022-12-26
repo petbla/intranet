@@ -35,6 +35,18 @@ class template {
 		}
 		$this->page->addTemplateBit( $tag, $bit );
   } // end function addTemplateBit
+
+  /**
+   * Vrací obsah soubotu šablony
+   * @param String $template - šablona
+   * @return $templateContent
+   */
+  public function getContentTemplate( $template )
+  {
+		$templatePath = 'views/' . $this->registry->getSetting('view') . '/templates/' . $template;
+    $templateContent = file_get_contents( $templatePath );
+    return $templateContent;
+  } // end function getContentTemplate
   
   /**
    * Načte části šablon stránky a vloží je to do obsahu stránky
@@ -94,6 +106,7 @@ class template {
 	    	$newContent = str_replace( '{' . $tag . '}', $data, $this->page->getContent() );
 	    	// aktualizuj obsah stránky
 	    	$this->page->setContent( $newContent );
+    
     	}
     }
   } // end function replaceTags
@@ -220,7 +233,7 @@ class template {
    */
   public function parseOutput()
   {
-    $this->replaceBits();            // Načte části šablon stránky a vloží je to do obsahu stránky
+    $this->replaceBits();            // Načte části šablon stránky a vloží je to do obsahu stránky    
     $this->replaceTags(false);       // Nahradí značky ve stránce požadovaným obsahem
     $this->replaceTags(true);        // Nahradí značky ve stránce požadovaným obsahem - postParse
     $this->parseTitle();             // Načte titulek nastavený v objektu stránky a vloží ho do pohledu
@@ -316,6 +329,8 @@ class template {
     global $caption;
     $element = 'page';
      
+    $get = $_GET;
+
     $imgPath = 'views/' . $this->registry->getSetting('view') . '/images/navigate/';
     if ( isset($_GET["page"]) )
       $urlPath = $_GET["page"];
@@ -323,22 +338,27 @@ class template {
       if ( isset($_GET["search"]) ){
         $urlPath = $_GET["search"];
         if ( isset($_GET["searchitem_x"]) ){
-          $element = 'searchitem';
+          $element = 'searchItem';
         }
         else
         {
-          $element = 'searchcontact';
+          $element = 'searchGlobal';
         }
       }
-			elseif (isset($_GET['searchitem']))
+			elseif (isset($_GET['searchItem']))
 			{
-				$urlPath = $_GET["searchitem"];
-				$element = 'searchitem';
+				$urlPath = $_GET["searchItem"];
+				$element = 'searchItem';
 			}
-			elseif (isset($_GET['searchcontact']))
+			elseif (isset($_GET['searchContact']))
 			{
-				$urlPath = $_GET["searchcontact"];
-				$element = 'searchcontact';
+				$urlPath = $_GET["searchContact"];
+				$element = 'searchContact';
+			}
+			elseif (isset($_GET['searchGlobal']))
+			{
+				$urlPath = $_GET["searchGlobal"];
+				$element = 'searchGlobal';
 			}
       else
         $urlPath = '';            

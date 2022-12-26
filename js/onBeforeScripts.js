@@ -51,6 +51,13 @@ function ConfirmDelete(){
         return false;
     }
 }
+function ConfirmAction(){
+    var opt;
+    opt = confirm("Chcete spustit akci?");
+    if (opt === false){
+        return false;
+    }
+}
 function ConfirmUnlink(){
     var opt;
     opt = confirm("Skutečně chete odstranit propojení evidence na dokument (zrušení čísla jednacího)?");
@@ -84,7 +91,7 @@ function wsLogDocumentView(ID,siteurl) {
 function wsSetRemindEntry(ID,siteurl,BaseUrl) {
     const Http = new XMLHttpRequest();
     var url, result;
-    url = siteurl + 'index.php?page=document/WS/setRemind/' + ID;
+    url = siteurl + 'index.php?page=todo/WS/setRemind/' + ID;
     Http.open("GET", url);
     Http.send();
     Http.onreadystatechange = (e) => {
@@ -93,6 +100,21 @@ function wsSetRemindEntry(ID,siteurl,BaseUrl) {
             console.log('url: ',window.location);
             window.location = siteurl + 'index.php?page=/' + BaseUrl;
         }       
+    };
+}
+
+function wsUnlinkAgenda(AgendaID,siteurl,BaseUrl) {
+    const Http = new XMLHttpRequest();
+    var url, result;
+    url = siteurl + 'index.php?page=agenda/WS/unlink/' + AgendaID;
+    Http.open("GET", url);
+    Http.send();
+    Http.onreadystatechange = (e) => {
+        result = Http.responseText;
+        if(result == 'OK'){
+            console.log('url: ',window.location);
+            window.location = siteurl + 'index.php?page=/' + BaseUrl;
+        }
     };
 }
 

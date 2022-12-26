@@ -10,6 +10,8 @@ class Documentcontroller{
 	private $model;
 	private $perSet;
 	private $prefDb;
+	private $message;
+	private $errorMessage;
 
 	/**
 	 * @param Registry $registry 
@@ -17,7 +19,7 @@ class Documentcontroller{
 	 */
 	public function __construct( Registry $registry, $directCall )
 	{
-		global $config, $caption;
+		global $config, $caption, $deb;
 		$this->registry = $registry;
 		$this->perSet = $this->registry->getObject('authenticate')->getPermissionSet();
         $this->prefDb = $config['dbPrefix'];
@@ -25,6 +27,7 @@ class Documentcontroller{
 		if( $directCall == true )
 		{
 			$urlBits = $this->registry->getURLBits();     
+			
 			if($this->perSet == 10)
 			{
 				$this->error($caption['msg_unauthorized']);
@@ -44,25 +47,9 @@ class Documentcontroller{
 						$ID = isset($urlBits[2]) ? $urlBits[2] : '';
 						$this->listDocuments($ID);
 						break;
-					case 'listTodo':
-						$this->listTodo();
-						break;
-					case 'listTodoClose':
-						$this->listTodoClose();
-						break;
-					case 'listNew':
-						$this->listNewDocuments();
-						break;
-					case 'listArchive':
-						$this->listArchiveDocuments();
-						break;
 					case 'view':
 						$ID = isset($urlBits[2]) ? $urlBits[2] : '';
 						$this->viewDocument($ID);
-						break;
-					case 'editcontent':
-						$ID = isset($urlBits[2]) ? $urlBits[2] : '';
-						$this->editContentDocument($ID);
 						break;
 					case 'addFiles':
 						$this->addFiles();
@@ -81,10 +68,6 @@ class Documentcontroller{
 					case 'modify':
 						$ID = isset($urlBits[2]) ? $urlBits[2] : '';
 						$this->modifyDocument($ID);
-						break;
-					case 'savecontent':
-						$ID = isset($urlBits[2]) ? $urlBits[2] : '';
-						$this->saveContentDocument($ID);
 						break;
 					case 'slideshow':
 						$ID = isset($urlBits[2]) ? $urlBits[2] : '';
@@ -108,18 +91,10 @@ class Documentcontroller{
 								$result = $this->wsLogDocumentView($ID);
 								exit($result);		
 								break;
-							case 'setRemind':
-								$ID = isset($urlBits[3]) ? $urlBits[3] : '';
-								if($this->perSet > 0)
-									$result = $this->wsSetRemindEntry($ID);
-								else
-									$result = 'Error';
-								exit($result);
-								break;
 						}
 						break;
 					default:
-						$this->documentNotFound();
+						$this->pageNotFound();
 						break;
 				}
 			}
@@ -127,15 +102,33 @@ class Documentcontroller{
 	}
 	
     /**
+     * Sestavení stránky
+     * @return void
+     */
+	private function build( $template = 'page.tpl.php' )
+	{
+		// Category Menu
+		$this->registry->getObject('document')->createCategoryMenu();
+
+		// Page message
+		$this->registry->getObject('template')->getPage()->addTag('message',$this->message);
+		$this->registry->getObject('template')->getPage()->addTag('errorMessage',$this->errorMessage);
+
+		// Build page
+		$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
+		$this->registry->getObject('template')->addTemplateBit('categories', 'categorymenu-document.tpl.php');
+		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', $template , 'footer.tpl.php');	
+	}
+    
+	/**
      * Zobrazení chybové stránky, pokud dokument nebyl nalezem 
      * @return void
      */
-	private function documentNotFound()
+	private function pageNotFound()
 	{
 		// Logování
 		$this->registry->getObject('log')->addMessage("Pokus o zobrazení neznámého dokumentu",'dmsentry','');
-		// Sestavení
-		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'invalid-document.tpl.php', 'footer.tpl.php');
+		$this->build('invalid-document.tpl.php');
 	}
 
     /**
@@ -147,12 +140,8 @@ class Documentcontroller{
 	{
 		// Logování
 		$this->registry->getObject('log')->addMessage("Chyba: $message",'dmsentry','');
-		// Nastavení parametrů
-		$this->registry->getObject('template')->getPage()->addTag('message',$message);
-		// Search BOX
-		$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
-		// Sestavení stránky
-		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page.tpl.php', 'footer.tpl.php');
+		$this->errorMessage = $message;
+		$this->build();
 	}
 
     /**
@@ -197,23 +186,22 @@ class Documentcontroller{
 					$breads = $entry['breads'];
 					$this->registry->getObject('template')->getPage()->addTag( 'breads', $breads );
 					// Logování 
-					$this->registry->getObject('log')->addMessage('Zobrazení galerie obrázků','DmsEntry',$ID);
-					// Sestavení strýnky
-					$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'slideshow.tpl.php', 'footer.tpl.php');
+					$this->registry->getObject('log')->addMessage('Zobrazení galerie obrázků','DmsEntry',$ID);					
+					$this->build('slideshow.tpl.php');
 				}
 				else
 				{
-					$this->documentNotFound();	
+					$this->pageNotFound();	
 				}
 			}
 			else
 			{
-				$this->documentNotFound();	
+				$this->pageNotFound();	
 			}
 		}
 		else
 		{
-			$this->documentNotFound();	
+			$this->pageNotFound();	
 		}
 	}
 
@@ -241,7 +229,8 @@ class Documentcontroller{
 			// Synchronizace složky
 			if($entry['Type'] == 20)
 			{
-				$this->registry->getObject('file')->synchoroDirectory($entry);
+				if ($config['synchroFolderonOpen'])
+					$this->registry->getObject('file')->synchoroDirectory($entry);
 			}
 		}
 		// Zobrazení podsložek
@@ -254,8 +243,8 @@ class Documentcontroller{
 		if ($showFolder){
 			$this->registry->getObject('template')->getPage()->addTag( 'FolderItems', array( 'SQL', $cache ) );			
 		}
-		// Zobrazení dokumentů
 		
+		// Zobrazení dokumentů		
 		if(!isset($config['HideHandledNote'])){
 			$config['HideHandledNote'] = "";
 		};
@@ -267,7 +256,7 @@ class Documentcontroller{
 		$sql = "SELECT e.ID,e.Title,e.Name,e.Type,e.Url,e.Parent,e.ModifyDateTime,LOWER(e.FileExtension) as FileExtension ".
 						",IF(e.Remind=0,'0','1') as Remind,IF(e.RemindClose=0,'0','1') as RemindClose,e.RemindFromDate,e.RemindLastDate".
 						",e.Content,e.RemindResponsiblePerson,e.RemindUserID,e.RemindContactID,e.RemindState ".	
-						",a.DocumentNo, a.ExecuteDate ".
+						",a.DocumentNo, a.ExecuteDate, a.ID as AgendaID ".
 					"FROM ".$this->prefDb."DmsEntry as e ".
 				  	"LEFT JOIN ".$this->prefDb."agenda as a ON e.ID = a.EntryID ".
 				  	"WHERE e.Archived = 0 AND e.parent=".$entry['EntryNo']." AND e.Type IN (10,30,35,40) ".
@@ -275,125 +264,14 @@ class Documentcontroller{
 						$HideRemindClose.
 				  	"ORDER BY e.Remind DESC,e.Type,e.Title DESC ";
 		$showBreads = true;
-		$pageTitle = '';
 		$template = '';
+		
 		// Logování akce
 		$this->registry->getObject('log')->addMessage('Zobrazení seznamu souborů a složek','DmsEntry',$ID);
-		// Zobrazení výsledku 
-		$this->registry->getObject('document')->listDocuments($entry,$showFolder,$sql,$showBreads,$pageTitle,$template);
-	}	
-	
-    /**
-     * Zobrazení seznamu VŠECH aktivních úkolů, tj. položky s Připomenutím
-     * @return void
-     */
-	private function listTodo()
-	{
-		$sql = "SELECT ID,Title,Name,Type,Url,Parent,ModifyDateTime,LOWER(FileExtension) as FileExtension ".
-					",IF(Remind=0,'0','1') as Remind,IF(RemindClose=0,'0','1') as RemindClose,RemindFromDate,RemindLastDate".
-					",Content,RemindResponsiblePerson,RemindUserID,RemindContactID,RemindState ".	
-					",(DATE_FORMAT(RemindLastDate,'%Y-%m-%d') < CURDATE()) as term ".
-					",(RemindLastDate - CURDATE()) as termDays ".
-				  	"FROM ".$this->prefDb."DmsEntry ".
-				  	"WHERE Archived = 0 AND Remind = 1 ".
-				  	"AND PermissionSet <= $this->perSet ".
-				  	"ORDER BY RemindLastDate,Title ";
-		$entry = null;
-		$showFolder = '';
-		$showBreads = false;
-		$pageTitle = '';
-		$template = 'list-entry-todo.tpl.php';
-		// Logování
-		$this->registry->getObject('log')->addMessage('Zobrazení seznamu všech aktivních úkolů.','DmsEntry','');
-		// Zobrazení výsledku 
-		$this->registry->getObject('document')->listDocuments($entry,$showFolder,$sql,$showBreads,$pageTitle,$template);
-	}	
-	
-    /**
-     * Zobrazení seznamu VŠECH vyřízených úkolů, tj. položky s Připomenutím označené jako vyřízeno
-     * @return void
-     */
-	private function listTodoClose()
-	{
-		$sql = "SELECT ID,Title,Name,Type,Url,Parent,ModifyDateTime,LOWER(FileExtension) as FileExtension ".
-					",IF(Remind=0,'0','1') as Remind,IF(RemindClose=0,'0','1') as RemindClose,RemindFromDate,RemindLastDate".
-					",Content,RemindResponsiblePerson,RemindUserID,RemindContactID,RemindState ".	
-					",(DATE_FORMAT(RemindLastDate,'%Y-%m-%d') < CURDATE()) as term ".
-					",(RemindLastDate - CURDATE()) as termDays ".
-				  	"FROM ".$this->prefDb."DmsEntry ".
-				  	"WHERE Archived = 0 AND RemindClose = 1 ".
-				  	"AND PermissionSet <= $this->perSet ".
-				  	"ORDER BY RemindLastDate,Title ";
-		$entry = null;
-		$showFolder = '';
-		$showBreads = false;
-		$pageTitle = '';
-		$template = 'list-entry-todoclose.tpl.php';
-		// Logování
-		$this->registry->getObject('log')->addMessage('Zobrazení seznamu všech vyřízených úkolů.','DmsEntry','');
 		// Zobrazení výsledku
-		$this->registry->getObject('document')->listDocuments($entry,$showFolder,$sql,$showBreads,$pageTitle,$template);
-	}	
-	
-    /**
-     * Zobrazení seznamu VŠECH NOVÝCH položek
-     * @return void
-     */
-	private function listNewDocuments( )
-	{
-		global $caption;		
-		require_once( FRAMEWORK_PATH . 'models/entry/model.php');
-		$this->model = new Entry( $this->registry,'' );
-		$entry = $this->model->getData();
-		$this->registry->setLevel(0);
-		$this->registry->setEntryNo(0);
-		$showFolder = false;
-    	$sql = "SELECT EntryNo, ID,Title,Name,Type,Url,Parent,ModifyDateTime,LOWER(FileExtension) as FileExtension ".
-					",IF(Remind=0,'0','1') as Remind,IF(RemindClose=0,'0','1') as RemindClose,RemindFromDate,RemindLastDate".
-					",Content,RemindResponsiblePerson,RemindUserID,RemindContactID,RemindState ".	
-				"FROM ".$this->prefDb."DmsEntry ".
-			   	"WHERE Archived = 0  ".
-					"AND PermissionSet <= $this->perSet ".
-				"ORDER BY EntryNo DESC ";
-		$showBreads = false;
-		$pageTitle = '<h3>'.$caption['NewDocument'].'</h3>';
-		$template = '';
-		$this->registry->getObject('template')->getPage()->addTag( 'sqlrequest', '' );
-		// Logování
-		$this->registry->getObject('log')->addMessage('Zobrazení seznamu nových souborů a složek','DmsEntry','');
-		// Zobrazení výsledku
-		$this->registry->getObject('document')->listDocuments($entry,$showFolder,$sql,$showBreads,$pageTitle,$template);
+		$this->registry->getObject('document')->listDocuments($entry,$showFolder,$sql,$showBreads,$template);
 	}	
 
-    /**
-     * Zobrazení seznamu VŠECH ARCHIVNÍCH položek
-     * @return void
-     */
-	private function listArchiveDocuments()
-	{
-		global $caption;		
-		require_once( FRAMEWORK_PATH . 'models/entry/model.php');
-		$this->model = new Entry( $this->registry,'' );
-		$entry = $this->model->getData();
-		$this->registry->setLevel(0);
-		$this->registry->setEntryNo(0);
-		$showFolder = false;
-    	$sql = "SELECT ID,Title,Name,Type,Url,Parent,ModifyDateTime,LOWER(FileExtension) as FileExtension ".
-				",IF(Remind=0,'0','1') as Remind,IF(RemindClose=0,'0','1') as RemindClose,RemindFromDate,RemindLastDate".
-				",Content,RemindResponsiblePerson,RemindUserID,RemindContactID,RemindState ".	
-				"FROM ".$this->prefDb."DmsEntry ".
-			   	"WHERE Archived = 1 AND Type = 30 ".
-			   	"AND PermissionSet <= $this->perSet ".
-			   	"ORDER BY Level,Parent,Type,LineNo" ;
-		$showBreads = false;
-		$pageTitle = '<h3>'.$caption['Archive'].'</h3>';
-		$template = 'list-entry-archive.tpl.php';
-		$this->registry->getObject('template')->getPage()->addTag( 'sqlrequest', '' );
-		// Logování
-		$this->registry->getObject('log')->addMessage('Zobrazení seznamu všech archivních souborů a složek','DmsEntry','');
-		// Zobrazení výsledku
-		$this->registry->getObject('document')->listDocuments($entry,$showFolder,$sql,$showBreads,$pageTitle,$template);
-	}	
 	
     /**
      * Zobrazení obsahu položky (souboru, složky, poznámky, apod.)
@@ -414,32 +292,10 @@ class Documentcontroller{
 		}
 		else
 		{
-			$this->documentNotFound();
+			$this->pageNotFound();
 		}
 	}	
 
-    /**
-     * Zobrazení obsahu položky typu soubor, poznámka s možnotí editace obsahu
-	 * @param String $ID = ID položky, která se bude editovat
-	 * @return void
-     */
-	private function editContentDocument( $ID )
-	{
-		require_once( FRAMEWORK_PATH . 'models/entry/model.php');
-		$this->model = new Entry( $this->registry, $ID );
-		if( $this->model->isValid() )
-		{
-			$entry = $this->model->getData();
-			// Logování
-			$this->registry->getObject('log')->addMessage("Zobrazení s editací obsahu".$entry['Name'],'DmsEntry',$ID);
-			// Zobrazení editace položky
-			$this->registry->getObject('document')->editDocument($entry,'');
-		}
-		else
-		{
-			$this->documentNotFound();
-		}
-	}	
 
     /**
      * Akce vyvolaná webovým formulářem, která uloží editované hodnoty položky a nastavuje připomenutí
@@ -461,6 +317,8 @@ class Documentcontroller{
 		{
 			$entry = $this->model->getData();
 			
+			$post = $_POST;
+			
 			if(isset($_POST['stornoRemind']))
 			{
 				$changes['Remind'] = '0';
@@ -469,35 +327,93 @@ class Documentcontroller{
 				$this->registry->getObject('log')->addMessage("Zobrazení a aktualizace dokumentu",'dmsentry',$ID);
 				$this->registry->getObject('db')->updateRecords('dmsentry',$changes, $condition);
 				$ID = $entry['Parent'];
-		}
+			}
 			elseif(isset($_POST['save']))
 			{
-				$newTitle = ($_POST['newTitle'] !== null) ? $_POST['newTitle'] : '';
-				$newUrl = ($_POST['newUrl'] !== null) ? $_POST['newUrl'] : '';
-				$newRemind = ($_POST['newRemind'] !== null) ? ($_POST['newRemind'] === '') ? '0' : '1' : '0';
-				$newRemindFromDate = ($_POST['newRemindFromDate'] !== '') ? $_POST['newRemindFromDate'] : 'NULL';
-				$newRemindLastDate = ($_POST['newRemindLastDate'] !== '') ? $_POST['newRemindLastDate'] : 'NULL';
-				$newRemindState = ($_POST['newRemindState'] !== '') ? $_POST['newRemindState'] : 'NULL';
-				$newRemindResponsiblePerson = ($_POST['newRemindResponsiblePerson'] !== '') ? $_POST['newRemindResponsiblePerson'] : '';
-				if ($newTitle)
+
+				$Title = isset($_POST['Title']) ? $_POST['Title'] : '';
+				$Url = isset($_POST['Url'] ) ? $_POST['Url'] : '';
+				$Content = isset($_POST['Content']) ? $_POST['Content'] : '';
+				
+				$Remind = (isset($_POST['Remind'])) ? (($_POST['Remind'] === '') ? '0' : '1') : '0';
+				$RemindClose = (isset($_POST['RemindClose'])) ? (($_POST['RemindClose'] === '') ? '0' : '1') : '0';
+
+				$RemindFromDate = isset($_POST['RemindFromDate']) ? ($_POST['RemindFromDate'] === '' ? 'NULL' : $_POST['RemindFromDate']): 'NULL';
+				$RemindLastDate = isset($_POST['RemindLastDate'] ) ? ($_POST['RemindLastDate'] === '' ? 'NULL' : $_POST['RemindFromDate']) : 'NULL';
+				$RemindState = isset($_POST['RemindState']) ? $_POST['RemindState'] : 'NULL';
+				$RemindResponsiblePerson = isset($_POST['RemindResponsiblePerson']) ? $_POST['RemindResponsiblePerson'] : '';
+				
+				$RemindContactID = isset($_POST['RemindContactID']) ? $_POST['RemindContactID'] : '';
+				$RemindResponsiblePerson = isset($_POST['RemindResponsiblePerson']) ? $_POST['RemindResponsiblePerson'] : '';
+				$RemindUserID = isset($_POST['RemindUserID']) ? $_POST['RemindUserID'] : '';
+				$RemindUserGroup = isset($_POST['RemindUserGroup']) ? $_POST['RemindUserGroup'] : 0;
+
+				if ($Title)
 				{
-					$newTitle = $this->registry->getObject('db')->sanitizeData($newTitle);
+					$Title = $this->registry->getObject('db')->sanitizeData($Title);
 					
 					// Update
-					$changes['Title'] = $newTitle;
-					$changes['Url'] = $newUrl;
-					$changes['Remind'] = $newRemind;
-					if($newRemind == '1')
-						$changes['RemindClose'] = '0';
-					$changes['RemindFromDate'] = $newRemindFromDate;
-					$changes['RemindLastDate'] = $newRemindLastDate;
-					$changes['RemindResponsiblePerson'] = $newRemindResponsiblePerson;
-					$changes['RemindState'] = $newRemindState;
+					$changes['Title'] = $Title;
+					$changes['Url'] = $Url;
+					$changes['Content'] = $Content;
+					$changes['Remind'] = $Remind;
+					$changes['RemindClose'] = $RemindClose;
+					if ($changes['RemindClose'] == '1'){
+						$changes['Remind'] = '0';
+					}else{
+						if($Remind == '1')
+							$changes['RemindClose'] = '0';
+						if ($RemindFromDate != 'NULL'){
+							$changes['RemindFromDate'] = $RemindFromDate;
+							$changes['Remind'] = '1';
+						}
+						if ($RemindLastDate != 'NULL')
+							$changes['RemindLastDate'] = $RemindLastDate;
+					}
+					if ($RemindResponsiblePerson != '')
+						$changes['RemindResponsiblePerson'] = $RemindResponsiblePerson;
+					if ($RemindContactID != '')
+						$changes['RemindContactID'] = $RemindContactID;
+					if ($RemindUserID != '')
+						$changes['RemindUserID'] = $RemindUserID;
+					if ($RemindUserGroup > 0)
+						$changes['RemindUserGroup'] = $RemindUserGroup;
+
+					$changes['RemindState'] = $RemindState;
 					$condition = "ID = '$ID'";
 					$this->registry->getObject('log')->addMessage("Zobrazení a aktualizace dokumentu",'dmsentry',$ID);
 					$this->registry->getObject('db')->updateRecords('dmsentry',$changes, $condition);
-				}
-				$ID = $entry['Parent'];
+
+					// Číslo jednací
+					$DocumentNo = isset($_POST['NewDocumentNo']) ? $_POST['NewDocumentNo'] : 'NONE';
+					if($DocumentNo !== 'NONE'){
+						$changes = array();
+						$changes['EntryID']	= $ID;
+
+						$this->registry->getObject('db')->initQuery('agenda');
+						$this->registry->getObject('db')->setFilter('ID',$DocumentNo);
+						if ($this->registry->getObject('db')->findFirst())
+						{
+							$agenda = $this->registry->getObject('db')->getResult();				
+							if($agenda['Description'] == '')
+								$changes['Description'] = $entry['Title'];
+						}
+						
+						$condition = "ID = '$DocumentNo'";
+						$this->registry->getObject('db')->updateRecords('agenda',$changes, $condition);
+					};
+
+					$searchText = isset($_POST['searchText'])? $_POST['searchText'] : '';
+					$searchType = isset($_POST['searchType'])? ($_POST['searchType'] == 'general' ? '' : 'dmsentry') : 'dmsentry';
+					if ($searchText != '{searchText}'){
+						require_once( FRAMEWORK_PATH . 'controllers/general/controller.php');
+						$general = new Generalcontroller( $this->registry, true );
+						$general->searchGlobal($searchText, $searchType);
+						return;
+					}
+				}else{
+					$ID = $entry['Parent'];
+				}				
 			}
 			elseif(isset($_POST['back']))			
 			{
@@ -506,65 +422,34 @@ class Documentcontroller{
 		}
 		else
 		{
-			$ID = '';
+			$this->pageNotFound();
+			return;
 		}
-		$this->listDocuments($ID);
+		$controller = isset($_POST['controller'])? $_POST['controller'] : 'document';
+		switch ($controller) {
+			case 'todo':
+				require_once( FRAMEWORK_PATH . 'controllers/todo/controller.php');
+				$todo = new Todocontroller( $this->registry, true );
+				$action = isset($_POST['controllerAction'])? $_POST['controllerAction'] : '';
+				switch ($action) {
+					case 'listTodo':
+						$todo->listTodo();
+						break;
+					case 'listMyTodo':
+						$todo->listMyTodo();
+						break;				
+					default:
+						# code...
+						break;
+				}				
+				break;
+			default:
+				// document
+				$this->listDocuments($ID);
+				break;
+		}	
 	}	
 
-    /**
-     * Akce vyvolaná webovým formulářem, která uloží editované hodnoty položky
-	 * Po dokončení se zobrazí seznam položek podle editované položky
-	 * @param String $ID = ID editované položky
-	 * @return void
-     */
-	private function saveContentDocument( $ID )
-	{
-		global $caption;
-
-		require_once( FRAMEWORK_PATH . 'models/entry/model.php');
-		$this->model = new Entry( $this->registry, $ID );
-		if( ($this->perSet > 0) AND $this->model->isValid() )
-		{
-			$entry = $this->model->getData();
-
-			// Update
-			$DocumentNo = isset($_POST['NewDocumentNo']) ? $_POST['NewDocumentNo'] : 'NONE';
-			$changes['Content'] = isset($_POST['Content']) ? $_POST['Content'] : '';
-			$changes['Title'] = isset($_POST['Title']) ? $_POST['Title'] : '';
-			$changes['Url'] = isset($_POST['Url']) ? $_POST['Url'] : '';
-			if(isset($_POST['Remind'] ))
-				$changes['Remind'] = ($_POST['Remind'] !== null) ? ($_POST['Remind'] === '') ? '0' : '1' : '0';
-			if(isset($_POST['RemindFromDate'] ))
-				$changes['RemindFromDate'] = ($_POST['RemindFromDate'] !== '') ? $_POST['RemindFromDate'] : 'NULL';
-			if(isset($_POST['RemindLastDate'] ))
-				$changes['RemindLastDate'] = ($_POST['RemindLastDate'] !== '') ? $_POST['RemindLastDate'] : 'NULL';
-			$changes['RemindResponsiblePerson'] = isset($_POST['RemindResponsiblePerson']) ? $_POST['RemindResponsiblePerson'] : '';
-			$changes['RemindState'] = isset($_POST['RemindState']) ? $_POST['RemindState'] : '';
-			$condition = "ID = '$ID'";
-			$this->registry->getObject('log')->addMessage("Aktualizace obsahu dokumentu",'dmsentry',$ID);
-			$this->registry->getObject('db')->updateRecords('dmsentry',$changes, $condition);
-
-			// Číslo jednací
-			if($DocumentNo !== 'NONE'){
-				$changes = array();
-				$changes['EntryID']	= $ID;
-
-				$this->registry->getObject('db')->initQuery('agenda');
-				$this->registry->getObject('db')->setFilter('ID',$DocumentNo);
-				if ($this->registry->getObject('db')->findFirst())
-				{
-					$agenda = $this->registry->getObject('db')->getResult();				
-					if($agenda['Description'] == '')
-						$changes['Description'] = $entry['Title'];
-				}
-				
-				$condition = "ID = '$DocumentNo'";
-				$this->registry->getObject('db')->updateRecords('agenda',$changes, $condition);
-			};
-
-		}
-		$this->listDocuments($ID);
-	}	
 
     /**
      * Akce vyvolaná webovým formulářem, která vytváří novou složku, blok nebo poznámku
@@ -574,11 +459,12 @@ class Documentcontroller{
      */
 	private function addFolder()
 	{
-		global $caption;
-		
+		global $caption, $deb;
+		$message = '';
+
 		if(! $this->registry->getObject('authenticate')->isAdmin())
 		{
-			$message = $caption['new_user_failed'];
+			$message = $caption['msg_unauthorized'];
 		}
 		else
 		{
@@ -615,9 +501,9 @@ class Documentcontroller{
 				}
 				if($action == 'addFolder')
 				{
-					$fileFullPath = $this->registry->getObject('fce')->ConvertToSharePathName( $fullName );
+					$fileFullPath = $this->registry->getObject('fce')->ConvertToSharePath( $fullName );
 					$fileFullPath .= $_POST['fld_name'];
-					$fullName  = $this->registry->getObject('fce')->ConvertToDirectoryPathName( $fileFullPath , false);
+					$fullName  = $this->registry->getObject('fce')->ConvertToDirectorySeparator( $fileFullPath , false);
 					$fileFullPath = $this->registry->getObject('file')->Convert2SystemCodePage($fileFullPath);
 					$fullName = $this->registry->getObject('file')->Convert2SystemCodePage($fullName);
 					if(!file_exists($fullName))
@@ -662,7 +548,6 @@ class Documentcontroller{
 						}				
 					}
 				}
-
 			}
 		}
 		$this->error($message);
@@ -769,7 +654,7 @@ class Documentcontroller{
 		}				
 		$this->error($message);
 	}
-		
+
 	/**
 	 * Interní funkce, která z pole webového formuláře typu upload filed, 
 	 * vytvoří seznam souborů, které se budou importova na server
@@ -807,35 +692,6 @@ class Documentcontroller{
 		{
 			$entry = $this->model->getData();
 			$this->registry->getObject('log')->addMessage("Zobrazení ".$entry['Name'],'DmsEntry',$ID);
-			return 'OK';
-		}
-		return 'Error';
-	}	
-
-    /**
-     * Webová služba 
-	 *  - mění stav položky typu "Připomenutí = ANO" na vyřešeno
-	 * @param String $ID = ID položky DMSEntry
-     * @return String = Návratová hodnota
-	 *                  => OK    = zápis proběhl korektně
-	 *                  => Error = zápis do logu skončil chybou
-     */
-	private function wsSetRemindEntry( $ID )
-	{
-		require_once( FRAMEWORK_PATH . 'models/entry/model.php');
-		$this->model = new Entry( $this->registry, $ID );
-		if( $this->model->isValid() )
-		{
-			$entry = $this->model->getData();
-			if ($entry['Remind'] == '1')
-			{
-				$changes['Remind'] = '0';
-				$changes['RemindClose'] = '1';
-				$this->registry->getObject('log')->addMessage("Úkol vyřízen",'dmsentry',$ID);
-				// Update
-				$condition = "ID = '$ID'";
-				$this->registry->getObject('db')->updateRecords('dmsentry',$changes, $condition);
-			}
 			return 'OK';
 		}
 		return 'Error';

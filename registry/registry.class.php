@@ -145,6 +145,8 @@ class Registry {
 		$user =  getenv("username");
 		$guid = self::getObject('fce')->GUID();
 
+		$rq = $_REQUEST;
+
 		$urldata = (isset($_REQUEST['page'])) ? $_REQUEST['page'] : '' ;
 		if (!$urldata)
 		{
@@ -160,19 +162,29 @@ class Registry {
 					$urldata = $_REQUEST['search'];
 					$urldata = "general/searchItem/$urldata"; 
 				}
+				elseif (isset($_REQUEST['searchglobal_x']))
+				{
+					$urldata = $_REQUEST['search'];
+					$urldata = "general/searchGlobal/$urldata"; 
+				}
 				else
 				{					
 					$urldata = '';
 				}
 			} 
-			elseif (isset($_REQUEST['searchitem']))
+			elseif (isset($_REQUEST['searchGlobal']))
 			{
-				$urldata = $_REQUEST['searchitem'];
+				$urldata = $_REQUEST['searchGlobal'];
+				$urldata = "general/searchGlobal/$urldata"; 
+			}
+			elseif (isset($_REQUEST['searchItem']))
+			{
+				$urldata = $_REQUEST['searchItem'];
 				$urldata = "general/searchItem/$urldata"; 
 			}
-			elseif (isset($_REQUEST['searchcontact']))
+			elseif (isset($_REQUEST['searchContact']))
 			{
-				$urldata = $_REQUEST['searchcontact'];
+				$urldata = $_REQUEST['searchContact'];
 				$urldata = "general/searchContact/$urldata"; 
 			}
 			else

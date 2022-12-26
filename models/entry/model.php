@@ -8,12 +8,12 @@ use phpDocumentor\Reflection\Types\Null_;
  * @version 1.0
  * @date    18.11.2018
  * 
- * Type: 10 - Header		položka      	   .... položka jako text v záhlaví (první část na stránce)
+ * Type: 10 - Header	položka      	   .... položka jako text v záhlaví (první část na stránce)
  * 	   	 20 - Folder 	obal (10,30,35,40) .... fyzický (soubory) i virtuální obsah
  * 	 	 25 - Block		obal (10,35,40)    .... virtuální obsah
  * 		 30 - File		položka            .... fyzický soubor
  * 		 35 - Note		položka            .... virtuální, jako odkaz, text, poznámka
- * 		 40 - Footer     položka			   .... položka jako text v zápatí (poslední část na stránce)
+ * 		 40 - Footer    položka			   .... položka jako text v zápatí (poslední část na stránce)
  *
  * Multimedia: 	image
  * 				audio
@@ -27,6 +27,7 @@ class Entry{
 	private $Level;
 	private $Parent;
 	private $Type;
+	private $DocumentType;
 	private $Multimedia;
 	private $LineNo;
 	private $Title;
@@ -50,6 +51,7 @@ class Entry{
 	private $RemindUserID;
 	private $RemindContactID;
 	private $RemindState;
+	private $RemindStateText;
 	private $Private;
 
 	private $ADocumentNo;
@@ -73,7 +75,7 @@ class Entry{
 		
 	public function __construct( Registry $registry, $id )
 	{
-		global $config;
+		global $config, $caption;
         $pref = $config['dbPrefix'];
 
 		$this->registry = $registry;
@@ -126,7 +128,32 @@ class Entry{
 				$this->RemindResponsiblePerson = $data['RemindResponsiblePerson'];
 				$this->RemindUserID = $data['RemindUserID'];
 				$this->RemindContactID = $data['RemindContactID'];
+
 				$this->RemindState = $data['RemindState'];
+				switch ($this->RemindState) {
+					case '00_new':
+						$this->RemindStateText = $caption['RemindState00'];
+						break;
+					case '10_process':
+						$this->RemindStateText = $caption['RemindState10'];
+						break;
+					case '20_wait':
+						$this->RemindStateText = $caption['RemindState20'];
+						break;
+					case '30_aprowed':
+						$this->RemindStateText = $caption['RemindState30'];
+						break;
+					case '40_storno':
+						$this->RemindStateText = $caption['RemindState40'];
+						break;
+					case '50_finish':
+						$this->RemindStateText = $caption['RemindState50'];
+						break;					
+					default:
+						$this->RemindStateText = '';
+						break;
+				}
+					
 				$this->Private = $data['Private'];
 								
 				$this->activeEntry = true;
@@ -212,6 +239,29 @@ class Entry{
 					$this->ACreateDate = $agenda['CreateDate'];
 					$this->AExecuteDate = $agenda['ExecuteDate'];
 				}
+				switch ($this->Type) {
+					case 10:
+						$this->DocumentType = 'Header';
+						break;
+					case 20:
+						$this->DocumentType = 'Folder';
+						break;
+					case 25:
+						$this->DocumentType = 'Block';
+						break;
+					case 30:
+						$this->DocumentType = 'File';
+						break;
+					case 35:
+						$this->DocumentType = 'Note';
+						break;
+					case 40:
+						$this->DocumentType = 'Footer';
+						break;
+					default:
+						$this->DocumentType = 'unknown';
+						break;
+				}
 			}
 		}
 		else
@@ -226,7 +276,20 @@ class Entry{
 		return $this->activeEntry;
 	}
 	
-	public function getData( $onlyCulons = false )
+	public function getEmpty()
+	{
+		$this->initNew();
+		$this->ModifyDateTime = '';
+		$this->CreateDate = '';
+		$this->NewEntry = 0;
+		$this->LastChange = '';
+		$this->RemindFromDate = '';
+		$this->RemindLastDate = '';
+		$entry = $this->getData();		
+		return $entry;
+	}
+
+	public function getData( $onlyCuloms = false )
 	{
 		$data = array();
 		foreach( $this as $field => $fdata )
@@ -236,7 +299,7 @@ class Entry{
 				$data[ $field ] = $fdata;
 			}
 		}
-		if ($onlyCulons)
+		if ($onlyCuloms)
 		{
 			unset($data['activeEntry']);
 			unset($data['breads']);

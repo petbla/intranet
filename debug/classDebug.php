@@ -8,10 +8,10 @@
  */
 class debug
 { /* Trace :
-  $levelNo = 0 ... no trace
-             1 ... trace INFO
-             4 ... trace INFO,TRACE
-             7 ... trace INFO,TRACE,ERROR
+  $levelDebug = 0 ... no trace
+                1 ... trace INFO
+                4 ... trace INFO,TRACE
+                7 ... trace INFO,TRACE,ERROR
 	*/ 
 	var $file;
 	var $fileName;
@@ -20,10 +20,12 @@ class debug
 	var $help = "Value for setup debug: info,trace,error";
 	var $sIP;
 	var $sSession;
+  var $isActive = false;
 
 	// constructor
 	function __construct($lt = '', $logFile = "logFile.txt") {
     $this->fileName = $logFile;
+    $this->levelDebug = $lt;
     $this->convertLevel($lt);       
 	}
 
@@ -32,6 +34,8 @@ class debug
   }
     
   public function info( $debugText) {
+    if (!$this->isActive)
+      exit;
     // level 1 = INFO      
     if ($this->levelNo >= 1) {      
   		if (is_array($debugText)){
@@ -47,6 +51,8 @@ class debug
 	} 
 	
 	public function trace( $debugText) { 
+    if (!$this->isActive)
+      exit;
     // level 4 = TRACE 
 		if ($this->levelNo >= 4) {
   		if (is_array($debugText)){
@@ -62,6 +68,8 @@ class debug
 	} 
 	
   public function error( $debugText) { 
+    if (!$this->isActive)
+      exit;
     // level 7 = ERROR 
 		if ($this->levelNo >= 7) {
   		if (is_array($debugText)){
@@ -76,11 +84,13 @@ class debug
     }	
   } 
 
-  public function setLevel( $level = 0 ){
-    $this->levelNo = $level;
+  public function active( $state = true ){
+    $this->isActive = $state;
   }
 
   public function show() {
+    if (!$this->isActive)
+      exit;
     if ($this->levelNo > 0) {
       if (rewind($this->file)){
         while (!feof($this->file)){
@@ -91,6 +101,8 @@ class debug
   }
   
 	public function alert( $debugText) { 
+    if (!$this->isActive)
+      exit;
     // Only for level 4 = TRACE and higher 
 		//if ($this->levelNo >= 4) {
       echo "<script language=javascript>alert('" . $debugText . "')</script>";	  
@@ -98,6 +110,8 @@ class debug
   }   
   
   public function clear() {
+    if (!$this->isActive)
+      exit;
     fclose($this->file);
     unlink($this->fileName);
   }
@@ -125,7 +139,7 @@ class debug
   }
   
   private function convertLevel($lt) {
-    switch (strtolower($lt)) {
+    switch ($lt) {
       case 'info':
         $this->levelNo = 1; 
         break;

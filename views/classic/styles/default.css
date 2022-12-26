@@ -14,35 +14,15 @@ p{
 p, li{
   line-height:20px;
 }
-
-/* Border radius */
-fieldset, legend{
-   border-radius: 10px;
-  /* KONEC: standardní */
-   /* ZAČÁTEK: Mozilla */
-   -moz-border-radius: 10px;
-  /* KONEC: Mozilla */
-   /* ZAČÁTEK: Webkit */
-   -webkit-border-radius: 10px;
-  /* KONEC: Webkit */
-
-  -moz-box-shadow: 3px 3px 5px #ccc;
-  -webkit-box-shadow: 3px 3px 5px #ccc;
-  -o-box-shadow: 3px 3px 5px #ccc;
-  box-shadow: 3px 3px 5px #ccc;
-  color: #808080;
+.blue{
+  color: blue;
 }
-input{
-   border-radius: 5px;
-  /* KONEC: standardní */
-   /* ZAČÁTEK: Mozilla */
-   -moz-border-radius: 5px;
-  /* KONEC: Mozilla */
-   /* ZAČÁTEK: Webkit */
-   -webkit-border-radius: 5px;
-  /* KONEC: Webkit */
-  color: #808080;
+.button{
+  text-decoration: none;
 }
+
+/* Fieldset */
+
 h1, .actions img{
   vertical-align: middle;
 }
@@ -84,8 +64,8 @@ span.email a:hover, span.phone a:hover{
  */ 
 header#page_header{
   width:100%;
-  background-color: #eeeeee ;
-  height: 180px;
+  background-color: #ffffff ;
+  height: 160px;
 }
 /* Login info bar */
 header#page_header p{
@@ -106,36 +86,48 @@ header#page_header h2{
 /* BAR menu */
 header#page_header nav{
   margin-top: 45px;
-  background-color: #dadada;
+  background-color: #65a2f163;
+  border-bottom: 1px solid #000;
 }
 
 header#page_header nav ul{
   list-style: none;
-  padding: 5px 0;
+  padding: 2px 0;
   margin: -20px 0 0 300px; 
 }
-header#page_header img{
+header#page_header img.imageLogo{
   padding: 10px;
   margin: 15px;
   float: left;
 }
+header#page_header img.logout:hover, .action, .pointer:hover {
+  cursor: pointer;
+}
+header#page_header #loginform{
+  margin-top: 70px;
+  margin-right: 20px;
+  float: right;
+}
 
 #page_header nav ul li, footer#page_footer nav ul li{
-  top: 20px;
   padding:0;
   margin: 0 20px 0 0;
   display:inline;
 }
+#page_header nav ul li a.active{
+  color: #0000ff;
+}
+
 #page_header nav a{
   font-family: Century-gothic, Calibri, Arial, sans-serif; 
-  font-size: 20px;
+  font-size: 22px;
   font-weight:normal;
   text-decoration: none;
   padding: 0 10px;
-  color: #808080;
+  color: black;
 }
 #page_header nav a:hover{
-  color: #000;
+  background-color:#99c5ff;
 }
 span#UserName{
   color: #000;
@@ -184,10 +176,10 @@ section#navigate ul li{
   border-bottom: 1px solid #dadada;
 }
 section#navigate ul li.active{
-  background-color: #337AB7;
+  background-color: #C3DBFA;
 }
 section#navigate ul li.active a{
-  color: #ffffff;
+  color: blue;
 }
 section#navigate ul li a.EntryType25{
   color: blue;
@@ -293,16 +285,25 @@ div#breads a:hover{
 div#insertDocument{
   text-align: left;
 }
+div#newcardID{
+  margin: 10px auto;
+  font-family: Century-gothic, Calibri, Arial, sans-serif; 
+  font-size: 18px;
+}
 
-div#DocumentItems td a, div#DocumentItems td{
+div#DocumentItems{
+  margin: 10px auto;
+}
+div#DocumentItems td a, div#DocumentItems td,
+div#ListItems td a, div#ListItems td{
   font-family: Century-gothic, Calibri, Arial, sans-serif; 
   font-size: 18px;
   font-weight:normal;
   text-decoration: none;
   padding: 4px 0;
-  color: brown; 
 }
-div#DocumentItems a:hover{
+div#DocumentItems a:hover,
+div#ListItems a:hover{
   color: rgb(9, 13, 221); 
   text-decoration: underline;
 }
@@ -319,20 +320,29 @@ div#DocumentItems td.column{
   padding-right: 5px;
 }
 
+div#ListItems{
+  margin: 10px auto;
+}
 div#ListItems td{
   font-family: Arial, sans-serif, Calibri; 
-  font-size: 12px;
+  font-size: 14px;
   font-weight:normal;
   text-decoration: none;
   padding: 6px 0;
-  color: black;  
 }
 div#ListItems td.col_fullname{
+  padding-left: 10px;
+}
+div#ListItems td.col_title{
   padding-left: 10px;
 }
 div#ListItems td.col_link {
   text-decoration: underline;
   color: #0000ff;
+}
+
+div#ListItems table.sub1 td{
+  border: 1p solid #000;
 }
 
 div#FolderItems ul li{
@@ -428,32 +438,46 @@ div#pagecounter a span strong{
 /* END Page Counter */
 
 /* Search menu */
-div#searchForm{
+#searchForm{
   text-align: left;
-  height: 40px;
+  height: 24px;
   margin: 10px 10px 20px 10px;
   padding: 0;
 }
-div#searchForm label{
-  font-size: 18px;
-  padding: 0 10px 0 0;
-}
-input#search{
-  font-size: 18px;
+#searchForm input{
+  font-size: 12px;
+  float: left;
+  height: 20px;
   padding: 10px 5px;
   margin: 0;
-  width: 70%;
-} 
-input#submit{
-  padding: 0;
+  padding: 4px;
   vertical-align: middle;
+} 
+
+span.action_close, div#ListItems td a.action_button, .action_button{
+  margin: 0;
+  padding: 0 10px;
+  border: 1px solid black;
+  background-color: #07cf8c;
+  font-size: 16px;
+  font-weight: bold;
+  color: black;
+  text-decoration: none;
+  border-radius: 3px;
 }
+a.action_button:hover{
+  text-decoration: none;
+}
+.action_close:hover{
+  cursor: pointer;
+}
+
 .action{
   border: 1px solid #808080;
   background-color: #dadada;
   color: #808080;
-  margin: 2px 0px;
-  padding: 5px;
+  margin: 20px;
+  padding: 2px;
   text-decoration: none;
   border-radius: 3px;
 }
@@ -533,8 +557,8 @@ th, td{
 }
 /* TABLE Header */
 th{
-  background-color: #000; 
-  color: #fff;
+  background-color: #07CF8C; 
+  color: #000;
   font-size: 15px; 
   text-align: left;
 }
@@ -554,46 +578,47 @@ div#admin table{
   text-align: center;
 } 
 div#admin td{
-  width: 50%; 
   background-color: #ff9;
-  padding: 20px 0;
+  padding: 2px;
+  text-align: left;
+  font-size: 14px;
   border: 1px solid #337AB7;
 }
+div#admin td.title{
+  text-align: center;
+  padding: 10px;
+  font-size: 20px;
+}
+div#admin th.caption{
+  color:black;
+  background-color: #07cf8c;
+  font-size: 14px;
+}
+div#admin td.name{
+  width: 20%;
+  padding: 5px;
+}
+div#admin td.value{
+  width: auto;
+  font-weight: bold;
+}
+div#admin td.value-small{
+    font-size: 12px;
+}
+div#admin td.action{
+  width: 10%;
+  font-weight: bold;
+}
+div#admin td input,
+div#admin td span{
+  margin: 2px 5px;
+  width: 90%;
+}
+
 div#admin a{
   text-decoration: none;
 }
 
-div#users table{
-  width: 80%; 
-  margin: 16px 0;
-  border: 1px solid #337AB7;
-  font-size: 14px; 
-  text-align: left;
-}
-div#users th{
-  background-color: #337AB7;
-}
-div#users td{
-  padding: 5px;
-}
-div#users .form-style-user{
-  margin:30px;
-  width: 50%;
-	padding: 20px 12px 10px 20px;
-	font: 13px "Lucida Sans Unicode", "Lucida Grande", sans-serif;
-}
-div#users .form-style-user li {
-	padding: 0;
-	display: block;
-	list-style: none;
-	margin: 10px 0 0 0;
-}
-div#users .form-style-user label{
-	margin:0 0 3px 0;
-	padding:0px;
-	display:block;
-	font-weight: bold;
-}
 div#actionpanel{
   color: #808080;
   font-size: 12px;
@@ -618,26 +643,6 @@ div#actionpanel td{
 }
 div#actionpanel td.alignleft{
   text-align: left;
-}
-
-div#editcard table{ 
-  width: 40%; 
-  border-collapse: collapse;
-  font-size: 14px; 
-} 
-div#editcard  td{ 
-  padding: 10px;
-  border: none;
-  font-family: arial;
-}
-div#editcard  td.label{ 
-  background-color: #fff;
-  width: 30%; 
-  font-size: 13px;
-}
-div#editcard  td.value{ 
-  padding-left: 10px;
-  font-weight: bold;
 }
 
 
@@ -717,105 +722,105 @@ div#editwindow .required{
 	font-weight:normal;
 }
 
-/* Contact CARD */
+/* Form  - CARD */
 
-.edit-card {
-	margin:20px auto;
-	max-width: 400px;
-	padding: 20px 12px 10px 20px;
+div#DocumentItems table.edit-card{
+	margin: 0;
+	padding: 0;
+	width: 100%;
   font: 13px "Lucida Sans Unicode", "Lucida Grande", sans-serif;
-  background-color: #ffc;
+  border: 1px solid black;
+  border-collapse: collapse;
+  background-color: #2196F3;
+} 
+div#DocumentItems table.edit-card tr{ 
+  padding: 0;
+  margin: 0;
 }
-.edit-card li {
-	padding: 10px;
-	display: block;
-	list-style: none;
-	margin: 10px 0 0 0;
+div#DocumentItems table.edit-card td, div#DocumentItems table.edit-card td a{ 
+  padding: 2px 10px;
+  border: none;
+  vertical-align: top;
+  font: 20px "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+  color: #000;
 }
-.edit-card label{
-	margin:0 0 3px 0;
-	padding:0px;
-	display:block;
-	font-weight: bold;
+div#DocumentItems table.edit-card td{ 
+  border: 1px solid white;
 }
-.edit-card input[type=text], 
-.edit-card input[type=date],
-.edit-card input[type=datetime],
-.edit-card input[type=number],
-.edit-card input[type=search],
-.edit-card input[type=time],
-.edit-card input[type=url],
-.edit-card input[type=email],
-textarea, 
-select{
-	box-sizing: border-box;
-	-webkit-box-sizing: border-box;
-	-moz-box-sizing: border-box;
-	border:1px solid #BEBEBE;
-	padding: 7px;
-	margin:0px;
-  transition: all 0.30s ease-in-out;
-  -webkit-transition: all 0.30s ease-in-out;
-	-moz-transition: all 0.30s ease-in-out;
-	-ms-transition: all 0.30s ease-in-out;
-	-o-transition: all 0.30s ease-in-out;
-	outline: none;	
+
+
+div#DocumentItems table.edit-card label.title{
+  font-size: 12px;
+  font-weight: bold;
 }
-.edit-card input[type=text]:focus, 
-.edit-card input[type=date]:focus,
-.edit-card input[type=datetime]:focus,
-.edit-card input[type=number]:focus,
-.edit-card input[type=search]:focus,
-.edit-card input[type=time]:focus,
-.edit-card input[type=url]:focus,
-.edit-card input[type=email]:focus,
-.edit-card textarea:focus, 
-.edit-card select:focus{
-	-moz-box-shadow: 0 0 8px #88D5E9;
-	-webkit-box-shadow: 0 0 8px #88D5E9;
-	box-shadow: 0 0 8px #88D5E9;
-	border: 1px solid #88D5E9;
+div#DocumentItems table.edit-card span.action,
+div#DocumentItems table.edit-card input.action,
+div#DocumentItems table.edit-card td.label{ 
+  font-size: 14px;
+  font-weight: bold;
 }
-.edit-card .value{
-	width: 100%;
+div#DocumentItems table.edit-card input.value,
+div#DocumentItems table.edit-card textarea.value,
+div#DocumentItems table.edit-card option.value,
+div#DocumentItems table.edit-card span.value,
+div#DocumentItems table.edit-card td.value{ 
+  padding: 2px;
+  font-size: 12px;
 }
-.edit-card .field-select{
-	width: 100%;
-}
-.edit-card .field-textarea{
-	height: 100px;
-}
-.edit-card input[type=submit], .edit-card input[type=button]{
-	background: #4B99AD;
-	padding: 8px 15px 8px 15px;
-	border: none;
-	color: #fff;
-}
-.edit-card input[type=submit]:hover, .edit-card input[type=button]:hover{
-	background: #4691A4;
-	box-shadow:none;
-	-moz-box-shadow:none;
-	-webkit-box-shadow:none;
-}
-.edit-card .required{
-	color:red;
-}
-.col_function,
-.col_email{
-  width: 200px;
-}
-.col_email,
-.col_note{
+
+div#DocumentItems td.value a.col_email{
   width: 300px;
+}
+
+.edit-card tr:nth-of-type(even){
+  background-color: #06f5a5;
+}
+.edit-card tr:nth-of-type(odd) {
+  background-color: #06f5a5;
+}
+ 
+.col_function,
+.col_lastname,
+.col_email{
+  width: 300px;
+}
+.col_fileext{
+  width: 50px;
+}
+.col_filename{
+  width: 600px;
 }
 .col_fullname,
 .col_company,
+.col_web,
 .col_phone{
   width: 700px;
+}
+.col_name{
+  width: 300px;
+}
+.col_text{
+  font-size: 20px;
+}
+.col_address{
+  width: 370px;
+}
+.col_documentno{
+  font-size: 14px;
+  font-weight: bold;
+  color:#808080;
+  width: 200px;
+}
+.col_code{
+  width: 100px;
+}
+.col_title{
+  width: 100px;
 }
 .col_action{
   width: 100px;
   text-align: left;
+  vertical-align: text-top;
 }
 .col_action img{
   cursor: pointer;
@@ -829,8 +834,16 @@ select{
   text-decoration: underline;
   color: #0000ff;
 }
+.col_date{
+  font-size: 12px;
+  font-weight: bold;
+  color:#808080;
+}
 .col_note{
-  font-size: 30px;
+  width: 700px;
+}
+.center{
+  text-align: center;
 }
 .version{
   font-size: 11px;
@@ -838,11 +851,9 @@ select{
 }
 .quickChoice{
   font-size: 12px;
-  text-align: center;
 }
 .quickChoice b{
   font-size: 14px;
-  text-align: center;
 }
 .quickChoice u{
   cursor: pointer;
@@ -855,10 +866,37 @@ select{
   color: blue;
   text-decoration: none;
 }
+.table-child{
+  border: 1px solid #000;
+}
 pre.content{
   background-color: #eeeeee;
   font-family: Arial, Helvetica, sans-serif;
   font-size: 14px;
   padding: 10px;
   border: 1px solid #000;
+}
+.formlabel{
+  width: 30px;
+  color:#0000ff;
+}
+.error{
+  color: black;
+  background-color: red;
+  border: 3px solid black;
+  padding: 5px 10px;
+  margin-bottom: 10px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: bold;
+}
+.message{
+  color: black;
+  background-color: rgb(241, 241, 202);
+  border: 3px solid black;
+  padding: 5px 10px;
+  margin-bottom: 10px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: bold;
 }

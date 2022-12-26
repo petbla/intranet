@@ -1,8 +1,5 @@
-<form action="index.php?page=logout" method="post">
-  <ul>
-    <li class="item">
-      {lbl_Logged}{UserName}
-      <input type="submit" name="logout" class="action" value=" {lbl_SingOff} " />
-    </li>
-  </ul>
-</form>
+<span class="item">{lbl_Logged}{UserName}</span>&nbsp;
+<a href="index.php?page=logout"> 
+  <img src="views/classic/images/icon/logout.png" title="{lbl_SingOff}"/>
+</a> 
+

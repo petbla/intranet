@@ -8,6 +8,8 @@ class Admincontroller {
 
 	private $registry;
 	private $urlBits;
+	private $message;
+	private $errorMessage;
 	
 	public function __construct( Registry $registry, $directCall )
 	{
@@ -26,19 +28,6 @@ class Admincontroller {
 		{
 			$urlBits = $this->registry->getURLBits();    
 			$params = $this->registry->getURLParam();
-			$ID = '';
-			if ($params !== '')
-			{
-				$params = explode('&',$params);
-				if (isset($params[1]))
-				{
-					$arr = explode('=',$params[1]);
-					if($arr[0] == 'ID')
-					{
-						$ID = $arr[1];
-					}
-				}
-			}
 
 			if( isset( $urlBits[1] ) )
 			{		
@@ -48,75 +37,154 @@ class Admincontroller {
 						if ( $this->registry->getObject('authenticate')->isAdmin())
 						{
 							$this->updateDmsStore();
-							return;
 						}
+						break;
 					case 'users':
 						if ( $this->registry->getObject('authenticate')->isAdmin())
 						{
 							$this->listUsers();
-							return;
 						}
-					case 'newuser':
+						break;
+					case 'user':
 						if ( $this->registry->getObject('authenticate')->isAdmin())
-						{
-							$this->newUser();
-							return;
+						{							
+							$action = isset($urlBits[2]) ? $urlBits[2] : '';
+							$action = isset($_POST["action"]) ? $_POST["action"] : $action;
+							switch ($action) {
+								case 'add':
+									$this->addUser();
+									break;
+								case 'modify':
+									$UserID = isset($_POST["ID"]) ? $_POST["ID"] : '';
+									$this->modifyUser($UserID);
+									break;								
+								case 'delete':
+									$UserID = isset($urlBits[3]) ? $urlBits[3] : '';
+									$this->deleteUser($UserID);
+									break;								
+								default:
+							}
 						}
-					case 'adduser':
-						if ( $this->registry->getObject('authenticate')->isAdmin())
-						{
-							$this->addUser();
-							return;
-						}
-					case 'deleteuser':
-						if ( $this->registry->getObject('authenticate')->isAdmin())
-						{
-							$this->deleteUser($ID);
-							return;
-						}
-					case 'modifyuser':
-						if ( $this->registry->getObject('authenticate')->isAdmin())
-						{
-							$this->modifyUser($ID);
-							return;
-						}
+						break;
 					case 'log':
 						if ( $this->registry->getObject('authenticate')->isAdmin())
 						{
 							$this->showLog();
-							return;
 						}
-					case 'portalList':
+						break;
+					case 'listPortal':
 						if ( $this->registry->getObject('authenticate')->isAdmin())
 						{
-							$this->portalList();
-							return;
+							$this->listPortal();
 						}
+						break;
+					case 'setup':
+						if ( $this->registry->getObject('authenticate')->isAdmin())
+						{
+							$this->listSetup();
+						}
+						break;
 					case 'setPortal':
 						if ( $this->registry->getObject('authenticate')->isAdmin())
 						{
 							if( isset( $urlBits[2] ) ){
 								$this->setPortal($urlBits[2]);
 							}								
-							return;
 						}
+						break;
+					default:
+						$this->error($caption['msg_unauthorized']);		
+						break;
 				}
-			}
-			else
-			{
-				if ( $this->registry->getObject('authenticate')->isAdmin())
-				{
-					$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'admin.tpl.php', 'footer.tpl.php');
-					return;
-				}
+			}else{
+				$this->build('admin.tpl.php');
 			}
 		}
-		$message = $caption['msg_unauthorized'];
-		$this->registry->getObject('template')->getPage()->addTag('message',$message);
-		// Search BOX
-		$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
-		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page.tpl.php', 'footer.tpl.php');
 	}
+
+    /**
+     * Sestavení stránky
+     * @return void
+     */
+	private function build( $template = 'page.tpl.php')
+	{
+		// Category Menu
+		$this->createCategoryMenu();
+
+		// Page message
+		$this->registry->getObject('template')->getPage()->addTag('message',$this->message);
+		$this->registry->getObject('template')->getPage()->addTag('errorMessage',$this->errorMessage);
+
+		// Build page
+		$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
+		$this->registry->getObject('template')->addTemplateBit('categories', 'categorymenu-admin.tpl.php');
+		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', $template, 'footer.tpl.php');
+	}
+
+    /**
+     * Zobrazení chybové stránky, pokud kontakt nebyl nalezem 
+     * @return void
+     */
+	private function pageNotFound()
+	{
+		$this->error("Stránka nenalezena");
+	}
+
+    /**
+     * Zobrazení chybové stránky s uživatelským textem
+	 * @param String $message = text zobrazen jako chyba
+     * @return void
+     */
+	private function error( $message )
+	{
+		$this->errorMessage = $message;
+		$this->build();
+	}
+
+    /**
+	 * Generování menu
+	 * @return void
+	 */
+	public function createCategoryMenu()
+    {
+		global $config;
+		$urlBits = $this->registry->getURLBits();
+		$typeID = isset( $urlBits[1]) ? $urlBits[1] : '';
+
+		$rec['idCat'] = 'setup';
+		$rec['titleCat'] = 'Nastavení';
+		$rec['activeCat'] = $rec['idCat'] == $typeID ? 'active' : '';
+		$rec['script'] = '';
+		$table[] = $rec;
+
+		$rec['idCat'] = 'users';
+		$rec['titleCat'] = 'Uživatelé';
+		$rec['activeCat'] = $rec['idCat'] == $typeID ? 'active' : '';
+		$rec['script'] = '';
+		$table[] = $rec;
+
+        $rec['idCat'] = 'update';
+		$rec['titleCat'] = 'Synchronizace';
+		$rec['activeCat'] = $rec['idCat'] == $typeID ? 'active' : '';
+		$rec['script'] = "onclick='return ConfirmAction();'";
+		$table[] = $rec;
+		$rec['script'] = '';
+
+        $rec['idCat'] = 'log';
+		$rec['titleCat'] = 'Log';
+		$rec['activeCat'] = $rec['idCat'] == $typeID ? 'active' : '';
+		$rec['script'] = '';
+		$table[] = $rec;
+
+        $rec['idCat'] = 'listPortal';
+		$rec['titleCat'] = 'Portál';
+		$rec['activeCat'] = $rec['idCat'] == $typeID ? 'active' : '';
+		$rec['script'] = '';
+		$table[] = $rec;
+
+		$cache = $this->registry->getObject('db')->cacheData( $table );
+		$this->registry->getObject('template')->getPage()->addTag( 'categoryList', array( 'DATA', $cache ) );
+    }
 
 	/**
 	 * Akce volaná z webové stránky,
@@ -128,10 +196,40 @@ class Admincontroller {
 		global $caption, $config;
 	    $this->urlBits = $this->registry->getURLBits();
 		$files = $this->registry->getObject('file')->synchroRoot();
-		// Search BOX
-		$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
-		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page.tpl.php', 'footer.tpl.php');
-		$this->registry->getObject('template')->getPage()->addTag('message',$caption['msg_updateFinished']);
+
+		$this->message = $caption['msg_updateFinished'];
+		$this->build();
+	}
+
+	/**
+	 * Zobrazení nastavení
+	 * @return void
+	 */
+	private function listSetup()
+	{
+		global $config;
+		$pref = $config['dbPrefix'];
+
+		$this->registry->getObject('db')->initQuery('setup');
+		$this->registry->getObject('db')->findFirst();
+		$setup = $this->registry->getObject('db')->getResult();
+		$setup['Separator'] = DIRECTORY_SEPARATOR;
+		if ($config['synchroFolderonOpen'] === true){
+			$setup['synchroFolderonOpen'] = 'ano';
+		}else{
+			$setup['synchroFolderonOpen'] = 'ne';
+		};
+		$setup['CurrentUser'] = get_current_user();
+		$this->registry->getObject('template')->dataToTags( $setup, 's_' );
+
+		$this->registry->getObject('db')->initQuery('source','*',false);
+		$this->registry->getObject('db')->findSet();
+		$source = $this->registry->getObject('db')->getResult();
+		$cache = $this->registry->getObject('db')->cacheData($source);
+		
+		$this->registry->getObject('template')->getPage()->addTag( 'portalList', array('DATA', $cache));
+
+		$this->build('admin-setup.tpl.php');		
 	}
 
 	/**
@@ -141,25 +239,45 @@ class Admincontroller {
 	private function listUsers()
 	{
 		global $config;
-        $pref = $config['dbPrefix'];
+		$pref = $config['dbPrefix'];
 
+		// List users
 		$sql = "SELECT u.ID, u.Name, u.FullName, u.PermissionSet, p.Name as Role, u.Close ".
 		       "FROM ".$pref."user u, ".$pref."permissionset p ".
-		       "WHERE u.PermissionSet = p.Level";
+		       "WHERE u.PermissionSet = p.Level and u.Close = 0";
 		$cache = $this->registry->getObject('db')->cacheQuery( $sql );
 		if (!$this->registry->getObject('db')->isEmpty( $cache ))
 		{
 			$this->registry->getObject('template')->getPage()->addTag( 'UserList', array( 'SQL', $cache ) );   
 		}
+
+		// Form add user
+		$sql = "SELECT * FROM ".$pref."permissionset";
+		$cache = $this->registry->getObject('db')->cacheQuery( $sql );
+		
+		$this->registry->getObject('template')->getPage()->addTag( 'PermissionSet', array( 'SQL', $cache ) ); 
+		$this->build('admin-users.tpl.php');
+	}
+
+	/**
+	 * Zobrazení seznamu portálů jako menu pro výběr
+	 * @return void
+	 */
+	private function listPortal()
+	{
+		$sql = "SELECT * FROM source";
+		$cache = $this->registry->getObject('db')->cacheQuery( $sql );
+		if (!$this->registry->getObject('db')->isEmpty( $cache ))
+		{
+			$this->registry->getObject('template')->getPage()->addTag( 'PortalItems', array( 'SQL', $cache ) );   
+			$this->build('portal-list.tpl.php');
+		}
 		else
 		{
-			$this->registry->getObject('template')->getPage()->AddTag('ID','');
-			$this->registry->getObject('template')->getPage()->AddTag('Name','');
-			$this->registry->getObject('template')->getPage()->AddTag('FullName','');
-			$this->registry->getObject('template')->getPage()->AddTag('PermissionSet','');
-		}
-		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'admin-users.tpl.php', 'footer.tpl.php');		
+			$this->pageNotFound();
+		}		
 	}
+
 
 	/**
 	 * Zobrazení všech položek logu
@@ -173,62 +291,18 @@ class Admincontroller {
 		$sql = "SELECT * ".
 		       "FROM ".$pref."log ".
 		       "ORDER BY EntryNo DESC";
-		// Zobrazení seznamu
-		$this->listResult($sql, '', 'LogList', 'log-list.tpl.php');		
-	}
-
-	/**
-	 * Zobrazení požadovaního seznamu které současně 
-	 * zajistí zobrazení stránkování s možností výběru stránek a listování v nich
-	 * @param String $sql = sestavený kompletní SQL dotaz
-	 * @param String $pageLink
-	 * @param String $SQLDataElement
-	 * @param String $template
-	 * @return void
-	 */
-	private function listResult( $sql, $pageLink , $SQLDataElement, $template )
-	{
-		global $config;
-
-		// Stránkování
-		$cacheFull = $this->registry->getObject('db')->cacheQuery( $sql );
-		$records = $this->registry->getObject('db')->numRowsFromCache( $cacheFull );
-		$pageCount = (int) ($records / $config['maxVisibleItem']);
-		$pageCount = ($records > $pageCount * $config['maxVisibleItem']) ? $pageCount + 1 : $pageCount;  
-		$pageNo = ( isset($_GET['p'])) ? $_GET['p'] : 1;
-		$pageNo = ($pageNo > $pageCount) ? $pageCount : $pageNo;
-		$pageNo = ($pageNo < 1) ? 1 : $pageNo;
-		$fromItem = (($pageNo - 1) * $config['maxVisibleItem']);    
-		$navigate = $this->registry->getObject('template')->NavigateElement( $pageNo, $pageCount ); 
-		$this->registry->getObject('template')->getPage()->addTag( 'navigate_menu', $navigate );
-		$sql .= " LIMIT $fromItem," . $config['maxVisibleItem']; 
-		$cache = $this->registry->getObject('db')->cacheQuery( $sql );
-		if (!$this->registry->getObject('db')->isEmpty( $cache )){
-			$this->registry->getObject('template')->getPage()->addTag( $SQLDataElement, array( 'SQL', $cache ) );
-			$this->registry->getObject('template')->getPage()->addTag( 'pageLink', $pageLink );
-			$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', $template, 'footer.tpl.php');			
-		}
-		else
-		{
-			$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page-notfound.tpl.php', 'footer.tpl.php');			
-		}
-		// Search BOX
-		$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
-    }	
-
-	/**
-	 * Zobrazení stránky s webovým formulářem pro založení nového uživatele
-	 * @return void
-	 */
-	private function newUser()
-	{
-		global $config;
-		$pref = $config['dbPrefix'];
 		
-		$sql = "SELECT * FROM ".$pref."permissionset";
+		// Group records by Page
+		$sql = $this->registry->getObject('db')->getSqlByPage( $sql );
+		// Save SQL result to $cache (array type) AND modify record
 		$cache = $this->registry->getObject('db')->cacheQuery( $sql );
-		$this->registry->getObject('template')->getPage()->addTag( 'PermissionSet', array( 'SQL', $cache ) ); 
-		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'admin-users-new.tpl.php', 'footer.tpl.php');		
+			   
+		if ($this->registry->getObject('db')->isEmpty( $cache )){
+			$this->pageNotFound();
+		}else{
+			$this->registry->getObject('template')->getPage()->addTag( 'LogList', array( 'SQL', $cache ) );        						
+			$this->build( 'log-list.tpl.php' );
+		}
 	}
 
 	/**
@@ -239,44 +313,78 @@ class Admincontroller {
 	{
 		global $caption;
 		
-		$message = $caption['new_user_failed'];
+		$this->errorMessage = $caption['new_user_failed'];
 
-		if (isset($_POST['usr_name']) && isset($_POST['usr_perset']) && isset($_POST['usr_psw1']) && isset($_POST['usr_psw2']))
+		if (isset($_POST['Name']) && isset($_POST['PerSet']) && isset($_POST['Psw1']) && isset($_POST['Psw2']))
 		{
-			$name = $_POST['usr_name'];
-			$fullname = $_POST['usr_fullname'];
+			$name = $_POST['Name'];
+			$fullname = $_POST['FullName'];
 			$name = $this->registry->getObject('db')->sanitizeData($name);
 			$fullname = $this->registry->getObject('db')->sanitizeData($fullname);
-			$perset = $_POST['usr_perset'];
-			$psw = ($_POST['usr_psw1'] === $_POST['usr_psw2']) ? $_POST['usr_psw1'] : '';
+			$perset = $_POST['PerSet'];
+			$psw = ($_POST['Psw1'] === $_POST['Psw2']) ? $_POST['Psw1'] : '';
 			if ($psw != '')
 			{
 				$psw = md5($psw);
 				
 				// Check if not exists users yet
-				$isFirst = false;
 				$this->registry->getObject('db')->initQuery('user');
+				$isFirst = $this->registry->getObject('db')->isEmpty();
+
+				$this->registry->getObject('db')->initQuery('user');
+				$this->registry->getObject('db')->setFilter('Name',$name);
 				if ($this->registry->getObject('db')->isEmpty()){
-					$isFirst = true;
-				}
 
-				// Insert to Databáze
-				$data['ID'] = $this->registry->getObject('fce')->GUID();
-				$data['Name'] = $name;
-				$data['FullName'] = $fullname;
-				$data['Password'] = $psw;
-				$data['PermissionSet'] = $isFirst ? 9 : $perset;
-				if ($this->registry->getObject('db')->insertRecords('user',$data))
-				{
-					$message = $caption['new_user_created'];
+					// Insert to Databáze
+					$data['ID'] = $this->registry->getObject('fce')->GUID();
+					$data['Name'] = $name;
+					$data['FullName'] = $fullname;
+					$data['Password'] = $psw;
+					$data['PermissionSet'] = $isFirst ? 9 : $perset;
+					if ($this->registry->getObject('db')->insertRecords('user',$data))
+					{
+						$this->message = $caption['new_user_created'];
+					}
+				}else{
+					$this->errorMessage = "Uživatel $name již existuje";
 				}
-
 			}
 		}
-		// Search BOX
-		$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
-		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page.tpl.php', 'footer.tpl.php');
-		$this->registry->getObject('template')->getPage()->addTag('message',$message);
+		$this->listUsers();
+	}
+
+	/**
+	 * Editace uživatele
+	 * @return void
+	 */
+	private function modifyUser( $ID )
+	{
+		$Name = isset($_POST['Name']) ? $_POST['Name'] : '';
+		if ($Name == ''){
+			$this->error('Login musí být vyplněn!');
+			return;
+		};
+		$fullname = isset($_POST['FullName']) ? $_POST['FullName'] : '';
+		if ($Name == ''){
+			$this->error('Jnémo uživatele  musí být vyplněno!');
+			return;
+		};
+		if ($_POST['Psw1'] === $_POST['Psw2']){
+			$psw = ($_POST['Psw1'] === $_POST['Psw2']) ? $_POST['Psw1'] : '';
+		}else{
+			$this->error('Kontrola hesla neodpovídá zadanému heslu.!');
+			return;
+		}
+
+		// Update
+		$changes = array();
+		$changes['Name'] = $Name;
+		$changes['FullName'] = $fullname;
+		$changes['Password'] = $psw;
+		$changes['PermissionSet'] =  $_POST['PerSet'];
+		$condition = "ID = '$ID'";
+		$this->registry->getObject('db')->updateRecords('user',$changes, $condition);
+		$this->listUsers();
 	}
 
 	/**
@@ -287,28 +395,42 @@ class Admincontroller {
 	 * @return void
 	 */
 	private function deleteUser( $ID )
-	{
+	{		
 		global $config, $caption;
         $pref = $config['dbPrefix'];
 
+		if ($ID == "")
+			return;
+
 		$UserID = $this->registry->getObject('authenticate')->getUserID();
 		$userName = $this->registry->getObject('authenticate')->getUserName();
-		if ($UserID == $ID)
-		{
-			$message = 'Nelze odstranit Sám Sebe - aktuálně přihlášeného uživatele.';
-			// Search BOX
-			$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
-			$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page.tpl.php', 'footer.tpl.php');
-			$this->registry->getObject('template')->getPage()->addTag('message',$message);
-			}
-		else
-		{
-			$condition = "ID = '$ID'";
-			$data['Close'] = 1;
-			$this->registry->getObject('log')->addMessage("Uzavření uživatele",'user',$ID);
-			$this->registry->getObject('db')->updateRecords('user',$data,$condition);			
-			$this->listUsers();
+
+		switch (true) {
+			case ($UserID == $ID):
+				$this->Message = 'Nelze odstranit aktuálně přihlášeného uživatele.';		
+				break;
+			case $this->isUserUsed($ID):
+				$this->Message = 'Uživatel se již přihlásil, nelze jej odstranit.';
+				break;
+			default:
+				$condition = "ID = '$ID'";
+				$data['Close'] = 1;
+				$this->registry->getObject('log')->addMessage("Uzavření uživatele ID = $ID",'user',$ID);
+				$this->registry->getObject('db')->updateRecords('user',$data,$condition);			
 		}
+		$this->listUsers();
+	}
+
+	/**
+	 * Kontrola, zde byl již použit LOGIN uživatele
+	 * @param	$UserID
+	 * @return	$isUsed - false/true
+	 */
+	function isUserUsed( $UserID )
+	{
+		$this->registry->getObject('db')->initQuery('log');
+		$this->registry->getObject('db')->setFilter('UserID',$UserID);
+		return ($this->registry->getObject('db')->findFirst());
 	}
 
 	/**
@@ -334,27 +456,6 @@ class Admincontroller {
 	}
 
 	/**
-	 * Zobrazení seznamu portálů jako menu pro výběr
-	 * @return void
-	 */
-	private function portalList()
-	{
-		$sql = "SELECT * FROM source";
-		$cache = $this->registry->getObject('db')->cacheQuery( $sql );
-		if (!$this->registry->getObject('db')->isEmpty( $cache ))
-		{
-			$this->registry->getObject('template')->getPage()->addTag( 'PortalItems', array( 'SQL', $cache ) );   
-			$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'portal-list.tpl.php', 'footer.tpl.php');
-		}
-		else
-		{
-			$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', 'page-notfound.tpl.php', 'footer.tpl.php');
-		}
-		// Search BOX
-		$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
-	}
-
-	/**
 	 * Nastavení portálu dle výběru
 	 * @param Integer $EntryNo = číslo pložky portálu
 	 * @return void
@@ -362,7 +463,7 @@ class Admincontroller {
 	private function setPortal( $EntryNo )
 	{
 		$this->registry->getObject('db')->setPortal( $EntryNo );
-		$this->portalList();
+		$this->listPortal();
 	}
 }
 ?>

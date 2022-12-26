@@ -17,7 +17,9 @@
       <p>
         {dateText}
         <br/>
-        -------------------------------------------------
+        -------------------------------------------------<br>
+        {logininfo}<br>
+        {loginform}
         <!--
         // TODO: Tento kód zpomalil systém
         <br/>
@@ -29,50 +31,27 @@
         </script>
         -->
       </p>
-      <img src="views/classic/images/logo.png" border="0" alt="" title="{cfg_compName}">
-      <h1>{compName}</h1>
-      <h2>{lbl_DmsLabel}</h2>
+      <img src="views/classic/images/logo.png" border="0" alt="" title="{cfg_compName}" class="imageLogo">
+      <h1>{lbl_DmsLabel} - {compName}</h1>
       <nav>
         <ul>
-          <li><a href="index.php?page=document/listTodo">{lbl_Todos}</a></li>
-          <li><a href="index.php?page=document/listTodoClose">{lbl_RemindClosed}</a></li>
+          <li><a href="index.php?page=todo/inbox">{lbl_Todos}</a></li>
           <li><a href="index.php?page=document/list">{lbl_Documents}</a></li>
           <li><a href="index.php?page=agenda/type/list">{lbl_Agenda}</a></li>
-          {newsBarMenuItem}
-          {archiveBarMenuItem}
+          <li><a href="index.php?page=zob/electionperiod">{lbl_ZOB}</a></li>
           {contactBarMenuItem}
           {calendarBarMenuItem}
           {adminBarMenuItem}
-          {portalBarMenuItem}
         </ul>
       </nav>
     </header>
     
     <div id="envelope">
-      <section id="panel_left">      
-        <section id="login">
-          <form action="/prihlaseni" method="post">
-            <fieldset>
-              <legend>{lbl_SingUp}</legend>
-              <ol>
-                <li>
-                  <label>Login</label>
-                  <input id="username" type="text" name="username" autocomplete="on">
-                </li>
-                <li>
-                  <label>{lbl_Password}</label>
-                  <input id="psw" type="password" name="psw" value="" autocomplete="off"/>
-                </li>
-                <li><input type="submit" value="{lbl_SingUp}"></li>
-              </ol>
-            </fieldset>
-          </form>
-        </section>
-        
+      <section id="panel_left">             
         <section id="navigate" nav role="navigation">
+          {search}
           <nav>
-          {categories}
-          {loginform}
+          {categories}          
           </nav>
         </section>
         

@@ -14,9 +14,11 @@ require_once('_private/config.php');
 /**
  *  Web setting
  */ 
-$config['skin']             = 'classic';
+$config['skin']             = 'classic';   // classic,modern
+//$config['skin']             = 'modern';   // classic,modern
+
 $config['metakeywords']		= '';
-$config['Copyright']        = '&copy; DMS 2020';
+$config['Copyright']        = '&copy; DMS 2022';
 
 $registry->storeSetting('lang','cs');
 require_once('lang/'.$registry->getSetting('lang').'.php');
@@ -32,6 +34,7 @@ $registry->storeObject('document', 'document');
 $registry->storeObject('file','file');
 $registry->storeObject('upgrade','upgrademanagement');
 $registry->storeObject('log','login');
+$registry->storeObject('core','core');
 
 /**
  *  PEAR modul and set library
@@ -42,7 +45,7 @@ ini_set('include_path',ini_get('include_path').PATH_SEPARATOR.'../'.PATH_SEPARAT
 /**
  *  Setting System Information
  */
-$registry->storeSetting('view','classic');
+$registry->storeSetting('view',$config['skin']);
 $registry->storeSetting('skin', $config['skin']);
 $registry->storeSetting('sitename',$config['sitename']);
 $registry->storeSetting('siteshortname', $config['siteshortname']);

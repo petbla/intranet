@@ -49,7 +49,7 @@ $caption['home_page']      = 'Úvodní strana';
  */
 $caption['SingUp'] =         'Přihlášení';
 $caption['Logged'] =         'Přihlášen: ';
-$caption['SingOff'] =        'Odhlásit';
+$caption['SingOff'] =        'Odhlášení';
 $caption['Password'] =       'Heslo';
 $caption['searchLabel'] =    'Najít';
 $caption['search'] =         'Vyhledat';
@@ -79,7 +79,7 @@ $caption['File'] =           'Soubor';
 $caption['Files'] =          'Soubory';
 $caption['Add_file'] =       'Přidat soubor';
 $caption['Date'] =           'Datum';
-$caption['Title'] =          'Titulek';
+$caption['Title'] =          'Titul';
 $caption['FileExtension'] =  'Typ souboru';
 $caption['Description'] =    'Popis';
 $caption['Name'] =           'Název';
@@ -91,13 +91,16 @@ $caption['Synchronize'] =    'Synchronizace';
 $caption['Document'] =       'Dokument';
 $caption['Documents'] =      'Dokumenty';
 $caption['DocumentNo'] =     'Číslo jednací';
+$caption['Code'] =           'Kód';
 $caption['Agenda'] =         'Evidence';
+$caption['ZOB'] =            'Zápisy obce';
 $caption['Created'] =        'Vytvořeno';
 $caption['Modified'] =       'Změněno';
 $caption['News'] =           'Novinky';
 $caption['Archive'] =        'Archív';
 $caption['Contacts'] =       'Kontakty';
-$caption['Label'] =          'Štítek (skupina)';
+$caption['Label'] =          'Skupina';
+$caption['ChoiceGroup'] =    'Nastavení skupiny';
 $caption['choiceAction'] =   '--vybrat--';
 $caption['Remind'] =         'Připomenutí';
 $caption['RemindFromDate'] = 'Připomenout';
@@ -107,6 +110,9 @@ $caption['NoSeries'] =       'Číselná řada';
 $caption['LastNo'] =         'Poslední číslo';
 $caption['CreateDate'] =     'Datum vytvoření';
 $caption['ExecuteDate'] =    'Datum vyřízení';
+$caption['Close'] =          'Zavřít';
+$caption['CloseCard'] =      'Uzavřít kartu';
+$caption['Actual'] =         'Aktuální';
 
 $caption['RemindState'] =    'Stav';
 $caption['RemindState00'] = '';
@@ -162,7 +168,7 @@ $caption['createNewFolBlo'] ='Vytvořit novou složku / blok';
 $caption['newFolder'] =      'Nová složka';
 $caption['folderName'] =     'Název složky';
 $caption['folderBlocName'] = 'Název složky/bloku';
-$caption['PlaceText'] =      'Zadejte text...';
+$caption['PlaceText'] =      'Vyhledat text...';
 $caption['View'] =           'Náhled';
 $caption['Import'] =         'Import';
 $caption['ImportNote'] =     'Import poznámek';
@@ -172,8 +178,7 @@ $caption['Export'] =         'Export';
 $caption['Error'] =          'Chyba';
 $caption['Days'] =           'Dní';
 $caption['State'] =          'Stav';
-$caption['SearchDoc'] =      'Najít dokument';
-$caption['SearchCont'] =     'Najít kontakt';
+$caption['SearchTooltip'] =  'Peohledat dokumenty a kontakty';
 $caption['hidehandled'] =    'Skrýt vyřízené';
 $caption['NewAgenda'] =      'Vytvořit nový dokument evidence';
 
@@ -182,7 +187,7 @@ $caption['NewAgenda'] =      'Vytvořit nový dokument evidence';
  * Messages
  */
 $caption['msg_updateFinished'] =   'Aktualizace databáze dokončena';
-$caption['msg_unauthorized'] =     'Nedostatečné oprávnění k provedení akce';
+$caption['msg_unauthorized'] =     'Nedostatečné oprávnění k provedení akce. Kontaktujte správce systému.';
 $caption['msg_maxLenghtPsw4'] =    'Délka hesla musí být minimálně 4 znaky.';
 $caption['msg_PageNotFound'] =     'Stránka nenalezena';
 $caption['msg_error404'] =         'Stránku, o který máte zájem, se nám bohužel nepodařilo najít. Vraťte se prosím zpět na úvodní stránku a zkuste to znovu.';
@@ -201,4 +206,41 @@ $caption['msg_SetRemind'] =        'Označení položky jako vyřízené.';
 $caption['ImmportContactsCsv'] =   'Import kontaktů z Excelu (CSV)';
 $caption['ImportNotesCsv'] =       'Import poznámek z Excelu (CSV)';
 
+/**
+ * ZOB - Zápisy Obce
+ */
+
+ $caption['electionperiod'] =           'Volební období';  
+ $caption['meetingtype'] =              'Typ jednání';  
+ $caption['Members'] =                  'Počet členů';  
+ $caption['member'] =                   'Člen jednání';  
+ $caption['MemberType'] =               'Typ člena';  
+ $caption['Chairman'] =                 'Předseda';  
+ $caption['Member'] =                   'Člen';  
+ $caption['RecorderBy'] =               'Zapisovatel';  
+ $caption['VerifierBy'] =               'Ověřovatel';  
+ $caption['Mayor'] =                    'Starosta';  
+ $caption['DeputyMayor'] =              'Místostarosta';  
+ $caption['Councilor'] =                'Radní';  
+ $caption['Representative'] =           'Zastupitel';  
+ $caption['EntryNo'] =                  'Číslo';  
+ $caption['AtDate'] =                   'Termín';  
+ $caption['MeetingPlace'] =             'Místo';  
+ $caption['PostedUpDate'] =             'Vyvěšeno';  
+ $caption['PostedDownDate'] =           'Sňato';  
+ $caption['State'] =                    'Stav';  
+ $caption['RecorderAtDate'] =           'Zapsáno dne';  
+ $caption['LineType'] =                 'Typ';  
+ $caption['LineNo'] =                   'Číslo';  
+ $caption['MeetingPointText'] =         'Bod jednání';  
+ $caption['MeetingNo'] =                'Číslo zápisu';  
+ $caption['DocumentTyp'] =              'Typ dokumentu';  
+ $caption['Settlement'] =               'Vyřízení';  
+ $caption['SettlementType'] =           'Způsob vyřízení';  
+ $caption['AddToFolder'] =              'Zařadit do složky';  
+ $caption['Folder'] =                   'Složka';  
+ $caption['ShowFolder'] =               'Zobrazit složku';  
+ $caption['Choice'] =                   'Vybrat';  
+ $caption['Storno'] =                   'Zpět';  
+ 
 ?>
