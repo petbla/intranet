@@ -17,6 +17,13 @@ p, li{
 .blue{
   color: blue;
 }
+.big{
+  font-weight: bold;
+  font-size: 16px;
+}
+.bold{
+  font-weight: bold;
+}
 .button{
   text-decoration: none;
 }
@@ -298,7 +305,6 @@ div#DocumentItems td a, div#DocumentItems td,
 div#ListItems td a, div#ListItems td{
   font-family: Century-gothic, Calibri, Arial, sans-serif; 
   font-size: 18px;
-  font-weight:normal;
   text-decoration: none;
   padding: 4px 0;
 }
@@ -333,7 +339,9 @@ div#ListItems td{
 div#ListItems td.col_fullname{
   padding-left: 10px;
 }
-div#ListItems td.col_title{
+div#ListItems td.col_title,
+div#DocumentItems td.col_title{
+  font-size: 12px;
   padding-left: 10px;
 }
 div#ListItems td.col_link {
@@ -741,7 +749,7 @@ div#DocumentItems table.edit-card td, div#DocumentItems table.edit-card td a{
   padding: 2px 10px;
   border: none;
   vertical-align: top;
-  font: 20px "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+  font: 14px "Lucida Sans Unicode", "Lucida Grande", sans-serif;
   color: #000;
 }
 div#DocumentItems table.edit-card td{ 
@@ -765,7 +773,12 @@ div#DocumentItems table.edit-card option.value,
 div#DocumentItems table.edit-card span.value,
 div#DocumentItems table.edit-card td.value{ 
   padding: 2px;
-  font-size: 12px;
+  font-size: 14px;
+}
+div#DocumentItems table.edit-card textarea.value{
+  padding: 5px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 16px;
 }
 
 div#DocumentItems td.value a.col_email{
@@ -813,6 +826,9 @@ div#DocumentItems td.value a.col_email{
 }
 .col_code{
   width: 100px;
+}
+.col_code200{
+  width: 200px;
 }
 .col_title{
   width: 100px;

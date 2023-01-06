@@ -44,9 +44,11 @@ function setValue(attName,attValue,keyWord,value){
             break;
     }
 }
-function ConfirmDelete(){
+function ConfirmDelete(msg = ''){
     var opt;
-    opt = confirm("Skutečně chete odstranit položku?");
+    if(msg == '')
+        msg = "Skutečně chete odstranit položku?";
+    opt = confirm(msg);
     if (opt === false){
         return false;
     }

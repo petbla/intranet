@@ -31,8 +31,10 @@ var fld_handled;
 var fld_webroot;
 var activeElectionPeriod;
 var activeMemberType;
+var activeMeetingLine;
 var a_inbox;
 var meetings;
+var meetinglines;
 
 
 // ----------------------------------------------------------------------------------------
@@ -53,6 +55,7 @@ deleteEntryType20 = document.querySelectorAll('#DeleteEntryType20');
 items = document.querySelectorAll('[dmsClassName="item"]');
 contacts = document.querySelectorAll('[dmsClassName="contact"]');
 meetings = document.querySelectorAll('[dmsClassName="meeting"]');
+meetinglines = document.querySelectorAll('[dmsClassName="meetingline"]');
 entriesType35 = document.querySelectorAll('a[entrytype="35"]');
 sqlrequest = document.querySelector('#sqlrequest');
 a_entry = document.querySelectorAll('[a_type="entry"]');
@@ -68,6 +71,7 @@ grouplistnewcontact = document.querySelector( '[id="grouplistnewcontact"]' );
 
 activeElectionPeriod = document.getElementById('activeElectionPeriod');
 activeMemberType = document.getElementById('activeMemberType');
+activeMeetingLine = document.getElementById('activeMeetingLine');
 
 // ----------------------------------------------------------------------------------------
 // Functions
@@ -326,7 +330,20 @@ if(meetings){
             var card;
             // Show card
             card = document.querySelector('[id="editMeetingCard' + e.target.id + '"]' );
-            card.style.display = 'block';
+            if(card)
+                card.style.display = 'block';
+        }
+    })
+}
+
+if(meetinglines){
+    meetinglines.forEach(function(meetingline){
+        meetingline.onclick = function (e) {
+            var card;
+            // Show card
+            card = document.getElementById('editMeetingLine' + e.target.id);
+            if(card)
+                card.style.display = 'block';
         }
     })
 }
@@ -649,23 +666,37 @@ if(fld_webroot){
 if(activeElectionPeriod){
     var ElectionPeriodID, e;
     ElectionPeriodID = activeElectionPeriod.getAttribute('value');
-    e = document.getElementById('meetingtypeCard' + ElectionPeriodID);
-    if(e)
-        e.style.display = 'block'; 
-    e = document.getElementById('MeetingTypeID' + ElectionPeriodID);
-    if(e)
-        e.setAttribute('value',ElectionPeriodID);
+    if(ElectionPeriodID > 0){
+        e = document.getElementById('meetingtypeCard' + ElectionPeriodID);
+        if(e)
+            e.style.display = 'block'; 
+        e = document.getElementById('MeetingTypeID' + ElectionPeriodID);
+        if(e)
+            e.setAttribute('value',ElectionPeriodID);
+    }
 }
 
 if(activeMemberType){
     var MemberTypeID, e;
     MemberTypeID = activeMemberType.getAttribute('value');
-    e = document.getElementById('memberCard' + MemberTypeID);
-    if(e)
-        e.style.display = 'block'; 
-    e = document.getElementById('MemberID' + MemberTypeID);
-    if(e)
-        e.setAttribute('value',MemberTypeID);
+    if(MemberTypeID > 0){
+        e = document.getElementById('memberCard' + MemberTypeID);
+        if(e)
+            e.style.display = 'block'; 
+        e = document.getElementById('MemberID' + MemberTypeID);
+        if(e)
+            e.setAttribute('value',MemberTypeID);
+    }
+}
+
+if(activeMeetingLine){
+    var MeetingLineID, e;
+    MeetingLineID = activeMeetingLine.getAttribute('value');
+    if(MeetingLineID > 0){
+        e = document.getElementById('editMeetingLine' + MeetingLineID);
+        if(e)
+            e.style.display = 'block'; 
+    }
 }
 
 if(a_inbox){
@@ -787,5 +818,44 @@ function validateCheckbox( e ){
         e.setAttribute('value',1);
     }else{
         e.setAttribute('value',0);
+    }
+}
+
+function validateCheckboxVote( e, MeetingLineID ){
+    if (e.checked) {
+        e.setAttribute('value',1);
+        document.getElementById('fieldVoteFor' + MeetingLineID).disabled = false;
+        document.getElementById('fieldVoteAgainst' + MeetingLineID).disabled = false;
+        document.getElementById('fieldVoteDelayed' + MeetingLineID).disabled = false;
+    }else{
+        e.setAttribute('value',0);
+        document.getElementById('fieldVoteFor' + MeetingLineID).value = 0;
+        document.getElementById('fieldVoteAgainst' + MeetingLineID).value = 0;
+        document.getElementById('fieldVoteDelayed' + MeetingLineID).value = 0;
+        document.getElementById('fieldVoteFor' + MeetingLineID).disabled = true;
+        document.getElementById('fieldVoteAgainst' + MeetingLineID).disabled = true;
+        document.getElementById('fieldVoteDelayed' + MeetingLineID).disabled = true;
+    }
+}
+
+function saveFormMeetingLine(MeetingLineID){
+    var e;
+    e = document.forms['MeetingLineID' + MeetingLineID];
+    if(e)
+        e.submit();
+}
+
+function allowDrop(ev) {
+    ev.preventDefault();
+}
+function dragattachment(ev){
+    ev.dataTransfer.setData("text",ev.target.getAttribute('AttachmentID'));
+}
+function dropattachment(ev){
+    ev.preventDefault();
+    var AttachmentID = ev.dataTransfer.getData("text");
+    var MeetingLineID = ev.target.getAttribute("MeetingLineID");
+    if(MeetingLineID){
+        window.open("index.php?page=zob/meetingattachment/assign/" + AttachmentID + "/" + MeetingLineID ,"_self")
     }
 }

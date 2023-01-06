@@ -30,8 +30,11 @@
                                 <label class="title">{lbl_AtDate}</label>
                             </td>
                             <td style="border:0;">
-                                <input type="date" class="value" name="AtDate" value="{AtDate}" AtDateID="{MeetingID}"/><br>
+                                <input type="date" class="value" name="AtDate" value="{AtDate}" AtDateID="{MeetingID}"/>
+                                &nbsp;
+                                <input type="time" class="value" name="AtTime" value="{AtTime}" AtDateID="{MeetingID}"/><br>
                                 <input type="hidden" name="oldAtDate" value="{AtDate}" oldAtDateID="{MeetingID}"/>
+                                <input type="hidden" name="oldAtTime" value="{AtTime}" oldAtDateID="{MeetingID}"/>
                             </td>
                         </tr>
                         <tr>

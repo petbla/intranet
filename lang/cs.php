@@ -242,5 +242,15 @@ $caption['ImportNotesCsv'] =       'Import poznámek z Excelu (CSV)';
  $caption['ShowFolder'] =               'Zobrazit složku';  
  $caption['Choice'] =                   'Vybrat';  
  $caption['Storno'] =                   'Zpět';  
+ $caption['attachment'] =               'příloha';  
+ $caption['Attachment'] =               'Příloha';  
+ $caption['Presenter'] =                'Předkladatel';  
+ $caption['Content'] =                  'Obsah';  
+ $caption['Discussion'] =               'Diskuze';  
+ $caption['DraftResolution'] =          'Návrh usnesení';  
+ $caption['Vote'] =                     'Hlasování';  
+ $caption['VoteFor'] =                  'Pro';  
+ $caption['VoteAgainst'] =              'Proti';  
+ $caption['VoteDelayed'] =              'Zdržel se';  
  
 ?>

@@ -18,7 +18,7 @@
     {breads}
     </div>
     <form action="index.php?page=todo/inbox/folder" method="post">
-        <table style="width:50%;">
+        <table style="width:70%;">
             <tr>
                 <td>
                     Vytvořit
@@ -34,7 +34,7 @@
                     <a href="index.php?page=todo/inbox/folder/select/{InboxID}/{ID}">{Title}</a>
                 </td>
                 <td>
-                    <a href="index.php?page=todo/inbox/folder/set/{InboxID}/{ID}" class="action_button">Vybrat</a>
+                    <a href="index.php?page=todo/inbox/folder/set/{InboxID}/{ID}" class="action_button">Vložit do složky</a>
                     <input type="submit" name="storno" class="action_button" value="{lbl_Storno}">
                 </td>
             </tr>

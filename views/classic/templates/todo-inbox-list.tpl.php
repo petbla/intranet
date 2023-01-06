@@ -33,7 +33,9 @@
             <td class="col_text">
                 <span class="pointer" url="{SourceUrl}" onClick = "modifyTodoInbox('{InboxID}');" >{Title}</span>
             </td>            
-            <td class="col_text">{MeetingNo}</td>
+            <td class="col_text">
+            <a href="index.php?page=zob/meetingline/list/{MeetingID}">{MeetingNo}</a>
+            </td>
             <td class="col_text">{CreateDate}</td>
         </tr>
         <tr>

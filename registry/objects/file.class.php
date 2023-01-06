@@ -9,6 +9,8 @@
 
 class file {
 
+  private $lastError;
+
   public function __construct( $registry ) 
   {
     $this->registry = $registry;
@@ -189,10 +191,22 @@ class file {
     $data['Title'] = $this->registry->getObject('db')->sanitizeData($item['Title']); 
     $data['Name'] = $this->registry->getObject('db')->sanitizeData($item['Name']);
     $data['FileExtension'] = $item['Extension'];
-    $data['ModifyDateTime'] = date("Y-m-d H:i:s", filemtime($item['WinFullName'])); // datum a čas změny
+    if(file_exists($item['WinFullName'])){
+      $data['ModifyDateTime'] = date("Y-m-d H:i:s", filemtime($item['WinFullName'])); // datum a čas změny
+    }else{
+      $data['ModifyDateTime'] = date("Y-m-d H:i:s"); 
+    }
     $data['PermissionSet'] = 1;
     $data['Url'] = '';
     $data['Multimedia'] = $this->getMultimediaType(strtolower($data['FileExtension']));
+
+    if ($data['Type'] == 20){
+      $dirPath = $this->getFileRoot().$item['Name'];
+      if(!file_exists($dirPath)){
+        mkdir($dirPath);
+      }
+    }
+
     $this->registry->getObject('db')->insertRecords( 'DmsEntry', $data );
     $this->registry->getObject('db')->findFirst();
     $entry = $this->registry->getObject('db')->getResult();
@@ -251,6 +265,70 @@ class file {
     return $data['ID'];
   }
   
+  public function addFile( $SourcePath, $parentEntryNo, $filename, $title )
+	{
+		global $config;
+
+    $parentEntry = $this->getEntry($parentEntryNo);
+    if ($parentEntry == NULL){
+      $this->lastError = "Cílová složky EntryNo=$parentEntryNo neexistuje.";
+      return null;
+    }      
+    
+    if ($parentEntry['Type'] != 20){
+      $this->lastError = "Cíl kopie musí být složka.";
+      return null;
+    }      
+    
+    if (!file_exists($SourcePath)){
+      $this->lastError = "Zdrojový soubor $SourcePath nenalezen.";
+      return null;
+    }
+       
+    $SourcePath =  $this->Convert2SystemCodePage($SourcePath);
+    $Extension = pathinfo($SourcePath,PATHINFO_EXTENSION);
+    
+    $Path = $this->registry->getObject('fce')->ConvertToDirectorySeparator( $parentEntry['Name'],true );
+		$Name = $Path.$filename;
+    
+    // Copy file from source to Parentfolder-destination  
+    $root = str_replace('http:','',$this->getFileRoot());
+    $FullName =  $root.$Name.'.'.$Extension;
+    $FullName =  $this->Convert2SystemCodePage($FullName);
+
+    if (file_exists($FullName)){
+      $this->lastError = "Cílový soubor $FullName již existuje. Zadejte jinmý název.";
+      return null;
+    }
+
+    try {
+      copy($SourcePath, $FullName); 
+      if (!file_exists($FullName)){
+        $this->lastError = "Kopie z $SourcePath do $FullName skončil chybou.";
+        return null;
+      }
+      if(!unlink($SourcePath)){ 
+        $this->errorMessage = "Původní soubor $SourcePath nelze odstranit. Musí být odstraněn ručně.";
+      }
+
+    } catch (Exception $e) {
+      $copyError = 'Kopírování skončilo chybou: ' + $e->getMessage();
+      $this->lastError = $copyError;
+    };
+    if($this->lastError != '')
+      return null;
+
+    // Insert new entry  
+    $FullName = $this->registry->getObject('fce')->ConvertToDirectorySeparator( $FullName,false );
+    $FullName =  $this->Convert2SystemCodePage($FullName);
+
+    $EntryNo = $this->findItem($FullName);
+    $entry = $this->getEntry($EntryNo); 
+    $entry['DestinationPath'] = $this->registry->getObject('db')->sanitizeData($config['webroot'].$Name.'.'.$Extension);
+  
+    return $entry;
+	}
+
   public function newNote ( $parentEntry )
 	{
 		// Insert NEW Note
@@ -327,7 +405,7 @@ class file {
     $item['WinItem'] = '';
     $item['WinParent'] = '';
     $item['Extension'] = '';
-
+    
     $item['Name'] = $this->registry->getObject('fce')->ConvertToDirectorySeparator( $name,false );    
     // => Stavby RD\RD Šáchovi 313\Šáchovi - Vyjádření k PD.docx
 
@@ -426,19 +504,28 @@ class file {
     }
   }
 
+  public function getEntry( $EntryNo )
+  {
+    $entry = null;
+    $this->registry->getObject('db')->initQuery('DmsEntry','');
+    $this->registry->getObject('db')->setCondition("EntryNo = $EntryNo");
+    if( $this->registry->getObject('db')->findFirst())
+    {
+      $entry = $this->registry->getObject('db')->getResult();
+    }
+    return $entry;
+  }
+
   public function getEntryById( $ID )
   {
+    $entry = null;
     $this->registry->getObject('db')->initQuery('DmsEntry','');
     $this->registry->getObject('db')->setCondition("ID='$ID'");
     if( $this->registry->getObject('db')->findFirst())
     {
       $entry = $this->registry->getObject('db')->getResult();
-      return $entry;
     }
-    else
-    {
-      return null;
-    }
+    return $entry;
   }
 
   public function Convert2SystemCodePage( $sourceText )
@@ -488,5 +575,10 @@ class file {
 
     $root  = $this->registry->getObject('fce')->ConvertToDirectorySeparator( $root );
     return $root;
+  }
+
+  public function getLastError()
+  {
+    return $this->lastError;
   }
 }
