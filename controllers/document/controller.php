@@ -543,7 +543,7 @@ class Documentcontroller{
 							$parentEntry = $this->model->getData();
 							$ID = $this->registry->getObject('file')->newNote( $parentEntry );
 							$this->registry->getObject('log')->addMessage("Vytvořena nová poznámka",'dmsentry',$ID);
-							$this->editContentDocument($ID);
+							//$this->editContentDocument($ID);
 							return;
 						}				
 					}

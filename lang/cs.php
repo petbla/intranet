@@ -252,5 +252,6 @@ $caption['ImportNotesCsv'] =       'Import poznámek z Excelu (CSV)';
  $caption['VoteFor'] =                  'Pro';  
  $caption['VoteAgainst'] =              'Proti';  
  $caption['VoteDelayed'] =              'Zdržel se';  
+ $caption['Present'] =                  'Přítomno členů';  
  
 ?>

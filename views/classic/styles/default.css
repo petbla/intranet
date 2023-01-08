@@ -326,6 +326,14 @@ div#DocumentItems td.column{
   padding-right: 5px;
 }
 
+div#DocumentItems table.table-child-adv tr:nth-of-type(even){
+  background-color: #f1f1f1;
+}
+div#DocumentItems table.table-child-adv tr:nth-of-type(odd) {
+  background-color:#f1f1f1;
+}
+
+
 div#ListItems{
   margin: 10px auto;
 }

@@ -1,5 +1,14 @@
-<h1>{Header}</h1>
-<a href ="index.php?page=zob/meeting/list/{MeetingTypeID}" class="button"><span class="action_close">{lbl_Close}</span></a>
+<h1 id="header">{Header}</h1>
+<p>
+    <a href="index.php?page=zob/adv/{MeetingID}" title="Zápis jednání"><img src="views/classic/images/nav/meeting48.png" /></a>
+    <img src="views/classic/images/nav/line48.png"/>
+    <a href="index.php?page=zob/xxx" title="Prezentace"><img src="views/classic/images/nav/present48.png" /></a>        
+    <img src="views/classic/images/nav/line48.png"/>
+    <a href="index.php?page=zob/xxx" title="Tisk zápisu"><img src="views/classic/images/nav/printZ48.png" /></a>
+    <img src="views/classic/images/nav/line48.png"/>
+    <a href="index.php?page=zob/xxx" title="Tisk usnesení"><img src="views/classic/images/nav/printU48.png" /></a>
+</p>
+<a href="index.php?page=zob/meeting/list/{MeetingTypeID}" id="closePage" class="button"><span class="action_close">{lbl_Close}</span></a>
 <div id="DocumentItems">
     <p id="pageMessage" class="message" onClick="this.style.display = 'none';" >{message}</p>
     <script>
@@ -30,7 +39,7 @@
                 <img src="views/classic/images/icon/attachment.png" title="{lbl_attachment}" MeetingLineID="{MeetingLineID}"/>
                 <small>(<b>{Attachments}</b>)</small>
             </td>
-            <td class="col_code200" MeetingLineID="{MeetingLineID}">
+            <td class="col_code200" MeetingLineID="{MeetingLineID}" onClick="document.getElementById('editMeetingLine{MeetingLineID}').style.display='block';">
                 <span MeetingLineID="{MeetingLineID}">
                 {LineType}&nbsp;&nbsp;&nbsp;
                 </span>
@@ -42,7 +51,7 @@
                     <a href="index.php?page=zob/meetingline/movedown/{MeetingID}/{MeetingLineID}"><img src="views/classic/images/icon/movedown.png" title="Posun bodu dolů"/></a>
                 </span>
             </td>
-            <td colspan="2" class="value {bold}" MeetingLineID="{MeetingLineID}">{Title}</td>
+            <td colspan="2" class="value {bold}" MeetingLineID="{MeetingLineID}" onClick="document.getElementById('editMeetingLine{MeetingLineID}').style.display='block';">{Title}</td>
         </tr>
         <tr>
         </tr>
@@ -89,6 +98,8 @@
         </form>
     </table>
 </div>
+<a href="#header" class="button"><span class="action_close">Nahorů</span></a>
+<a href="index.php?page=zob/meeting/list/{MeetingTypeID}" class="button"><span class="action_close">{lbl_Close}</span></a>
 <h2 ondrop="dropattachment(event)" ondragover="allowDrop(event)" MeetingLineID="0">
     <img src="views/classic/images/icon/attachment.png" title="{lbl_attachment}" style="width:24px;"/>
     Přílohy jednání
@@ -133,3 +144,6 @@
         </form>
     </table>
 </div>
+<a href="#header" class="button"><span class="action_close">Nahorů</span></a>
+<a href="index.php?page=zob/meeting/list/{MeetingTypeID}" class="button"><span class="action_close">{lbl_Close}</span></a>
+<script>window.location = "#page_header";</script>

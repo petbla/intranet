@@ -29,11 +29,11 @@
                 <a href="index.php?page=zob/meeting/delete/{MeetingTypeID}/{MeetingID}"><img src="views/classic/images/icon/delete.png" title="{lbl_Delete}" onclick="return ConfirmDelete();"/></a>
                 <a href="index.php?page=zob/meetingline/list/{MeetingID}"><img src="views/classic/images/icon/lines.png" title="Body jednání"/></a>
             </td>
-            <td class="col_text"><img src="views/classic/images/icon/remind0{Actual}.png" alt="{lbl_Actual}"/></td>
-            <td class="col_text">{EntryNo}/{Year}</td>
-            <td class="col_text">{AtDate_view}</td>
-            <td class="col_text">{PostedUpDate_view}</td>
-            <td colspan="2" class="col_text">{PostedDownDate_view}</td>
+            <td class="col_text" onclick="window.location='index.php?page=zob/meetingline/list/{MeetingID}';"><img src="views/classic/images/icon/remind0{Actual}.png" alt="{lbl_Actual}"/></td>
+            <td class="col_text" onclick="window.location='index.php?page=zob/meetingline/list/{MeetingID}';">{EntryNo}/{Year}</td>
+            <td class="col_text" onclick="window.location='index.php?page=zob/meetingline/list/{MeetingID}';">{AtDate_view}</td>
+            <td class="col_text" onclick="window.location='index.php?page=zob/meetingline/list/{MeetingID}';">{PostedUpDate_view}</td>
+            <td colspan="2" class="col_text" onclick="window.location='index.php?page=zob/meetingline/list/{MeetingID}';">{PostedDownDate_view}</td>
         </tr>
         <tr>
         </tr>

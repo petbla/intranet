@@ -829,12 +829,21 @@ function validateCheckboxVote( e, MeetingLineID ){
         document.getElementById('fieldVoteDelayed' + MeetingLineID).disabled = false;
     }else{
         e.setAttribute('value',0);
-        document.getElementById('fieldVoteFor' + MeetingLineID).value = 0;
-        document.getElementById('fieldVoteAgainst' + MeetingLineID).value = 0;
-        document.getElementById('fieldVoteDelayed' + MeetingLineID).value = 0;
-        document.getElementById('fieldVoteFor' + MeetingLineID).disabled = true;
-        document.getElementById('fieldVoteAgainst' + MeetingLineID).disabled = true;
-        document.getElementById('fieldVoteDelayed' + MeetingLineID).disabled = true;
+        
+        e = document.getElementById('fieldVoteFor' + MeetingLineID);
+        e.value = 0;
+        e.disabled = true;
+        wsUpdate(e);
+
+        e = document.getElementById('fieldVoteAgainst' + MeetingLineID);
+        e.value = 0;
+        e.disabled = true;
+        wsUpdate(e);
+
+        e = document.getElementById('fieldVoteDelayed' + MeetingLineID);
+        e.value = 0;
+        e.disabled = true;
+        wsUpdate(e);
     }
 }
 
@@ -857,5 +866,14 @@ function dropattachment(ev){
     var MeetingLineID = ev.target.getAttribute("MeetingLineID");
     if(MeetingLineID){
         window.open("index.php?page=zob/meetingattachment/assign/" + AttachmentID + "/" + MeetingLineID ,"_self")
+    }
+}
+
+function dropattachmentadv(ev){
+    ev.preventDefault();
+    var AttachmentID = ev.dataTransfer.getData("text");
+    var MeetingLineID = ev.target.getAttribute("MeetingLineID");
+    if(MeetingLineID){
+        window.open("index.php?page=zob/adv/meetingattachment/assign/" + AttachmentID + "/" + MeetingLineID ,"_self")
     }
 }

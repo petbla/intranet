@@ -64,15 +64,29 @@ class Zobcontroller{
 						$action = isset($_POST["action"]) ? $_POST["action"] : $action;						
 						$this->meetingline($action);
 						break;
-					case 'manage':
-						$action = isset($urlBits[2]) ? $urlBits[2] : '';
-						$action = isset($_POST["action"]) ? $_POST["action"] : $action;						
-						$this->manage($action);
-						break;
 					case 'meetingattachment':
 						$action = isset($urlBits[2]) ? $urlBits[2] : '';
 						$action = isset($_POST["action"]) ? $_POST["action"] : $action;						
 						$this->meetingattachment($action);
+						break;
+					case 'manage':
+						$action = isset($urlBits[2]) ? $urlBits[2] : '';
+						$action = isset($_POST["action"]) ? $_POST["action"] : $action;						
+
+						require_once( FRAMEWORK_PATH . 'controllers/zob/manage.php');
+						$manage = new Zobmanage( $this->registry, false );					
+						$manage->manage($action);
+						break;
+					case 'adv':
+						$action = isset($urlBits[2]) ? $urlBits[2] : '';
+						require_once( FRAMEWORK_PATH . 'controllers/zob/advance.php');
+						$adv = new Zobadvance( $this->registry, false );					
+						$adv->main($action);
+						break;
+					case 'ws':
+						$action = isset($urlBits[2]) ? $urlBits[2] : '';
+						$result = $this->ws($action);
+						exit($result);		
 						break;
 					default:
 						$this->pageNotFound();
@@ -81,27 +95,12 @@ class Zobcontroller{
 			}
 		}
 	}
-
-    /**
-     * Sestavení stránky pro TISK
-     * @return void
-     */
-	private function print( $content = '', $template = 'print-body.tpl.php' )
-	{
-		// Page message
-		$this->registry->getObject('template')->getPage()->addTag('message',$this->message);
-		$this->registry->getObject('template')->getPage()->addTag('errorMessage',$this->errorMessage);
-		$this->registry->getObject('template')->getPage()->addTag('content',$content);
-
-		// Build page
-		$this->registry->getObject('template')->buildFromTemplates('print-header.tpl.php', $template , 'print-footer.tpl.php');
-	}
 	
     /**
      * Sestavení stránky
      * @return void
      */
-	private function build( $template = 'page.tpl.php' )
+	public function build( $template = 'page.tpl.php' )
 	{
 		// Category Menu
 		$this->createCategoryMenu();
@@ -120,7 +119,7 @@ class Zobcontroller{
      * Zobrazení chybové stránky, pokud agenda nebyla nalezem 
      * @return void
      */
-	private function pageNotFound()
+	public function pageNotFound()
 	{
 		// Logování
 		$this->error("Pokus o zobrazení neznámé agendy");
@@ -131,7 +130,7 @@ class Zobcontroller{
 	 * @param String $message = text zobrazen jako chyba
      * @return void
      */
-	private function error( $message )
+	public function error( $message )
 	{
 		// Logování
 		$this->registry->getObject('log')->addMessage("Chyba: $message",'agenda','');		
@@ -634,55 +633,35 @@ class Zobcontroller{
 		$this->listMeetingLine( $MeetingID , $MeetingLineID );
 	}
 
-	/**
-	 * Správa dat a modulu
-	 * @return void
-	 */
-	private function manage( $action )
-	{
-		global $config, $caption;
-		$urlBits = $this->registry->getURLBits();     
-		$MeetingLineID = 0;
-		$MeetingID = 0;
-
-		switch ($action) {
-			case 'importMeeting':
-				$this->importMeeting();
-				return;
-			case 'deleteAllMeeting':
-				$this->deleteAllMeeting();
-				break;
-		}
-		$this->listElectionPeriod();
-	}
-
 	private function addMeeting($MeetingTypeID){
 		$EntryNo = $this->geNextMeetingEntryNo( $MeetingTypeID );				
 		$meetingtype = $this->getMeetingtype($MeetingTypeID);
-	
+		$isTemplate = $this->isElectionperiodTemplate( $meetingtype['ElectionPeriodID'] );
+
 		// Data z formuláře
 		$AtDate = isset($_POST['AtDate']) ? $_POST['AtDate'] : null;
 		$AtDate = $AtDate != '' ? $AtDate : null;
-		$AtTime = isset($_POST['AtTime']) ? $_POST['AtTime'] : null;
 		if($AtDate)
 			$Year = $this->registry->getObject('core')->formatDate($AtDate,'Y');
 		else
 			$Year = 0;
-		$MeetingPlace = isset($_POST['MeetingPlace']) ? $_POST['MeetingPlace'] : '';
 		$PostedUpDate = isset($_POST['PostedUpDate']) ? $_POST['PostedUpDate'] : '';
 		$PostedUpDate = $PostedUpDate != '' ? $PostedUpDate : null;
 		$PostedDownDate = isset($_POST['PostedDownDate']) ? $_POST['PostedDownDate'] : '';
 		$PostedDownDate = $PostedDownDate != '' ? $PostedDownDate : null;
-		$State = isset($_POST['State']) ? $_POST['State'] : '';
-		$RecorderAtDate = isset($_POST['RecorderAtDate']) ? $_POST['RecorderAtDate'] : '';
-		$RecorderAtDate = $RecorderAtDate != '' ? $RecorderAtDate : null;
-		$RecorderBy = isset($_POST['RecorderBy']) ? $_POST['RecorderBy'] : '';
-		$VerifierBy1 = isset($_POST['VerifierBy1']) ? $_POST['VerifierBy1'] : '';
-		$VerifierBy2 = isset($_POST['VerifierBy2']) ? $_POST['VerifierBy2'] : '';
-		$Close =  0;
 
-		$isTemplate = $this->isElectionperiodTemplate( $meetingtype['ElectionPeriodID'] );
-		
+		if(!$isTemplate){
+			$meetingTemplate = $this->getMeetingTemplate($meetingtype['MeetingName']);
+			$MeetingPlace = $meetingTemplate['MeetingPlace'];
+			$RecorderBy = $meetingTemplate['RecorderBy'];
+			$AtTime = $meetingTemplate['AtTime'];
+		}else{
+			$MeetingPlace = '';
+			$RecorderBy = '';
+			$AtTime = '00:00';
+		}
+		$Close =  0;
+	
 		$data = array();
 		
 		// Pole editace šablony
@@ -697,15 +676,9 @@ class Zobcontroller{
 			$data['AtDate'] = $AtDate;
 			$data['PostedUpDate'] = $PostedUpDate;
 			$data['PostedDownDate'] = $PostedDownDate;
-			$data['State'] = $State;
-			$data['RecorderAtDate'] = $RecorderAtDate;
-			$data['VerifierBy1'] = $VerifierBy1;
-			$data['VerifierBy2'] = $VerifierBy2;
 			$data['Close'] = $Close;
-		}
-
-		// Check Template
-		if ($isTemplate){
+		}else{
+			// Check Template
 			if ($data['EntryNo'] <> 1){
 				$this->errorMessage = "Šablona jednání může mít jen jeden vzorový zápis";
 				return false;					
@@ -732,7 +705,7 @@ class Zobcontroller{
 		return true;
 	}	
 
-	private function addMeetingline($MeetingID)
+	public function addMeetingline($MeetingID)
 	{
 		IF(!$MeetingID)
 			return false;
@@ -760,14 +733,7 @@ class Zobcontroller{
 		// Data z FORMuláře
 		$data = array();
 		$data['LineType'] = isset($_POST['LineType']) ? $_POST['LineType'] : '';
-		$data['PresenterID'] = isset($_POST['PresenterID']) ? $this->registry->getObject('db')->sanitizeData($_POST['PresenterID']) : '';
 		$data['Title'] = isset($_POST['Title']) ? $this->registry->getObject('db')->sanitizeData($_POST['Title']) : '';
-		$data['Content'] = isset($_POST['Content']) ? $this->registry->getObject('db')->sanitizeData($_POST['Content']) : '';
-		$data['Discussion'] = isset($_POST['Discussion']) ? $this->registry->getObject('db')->sanitizeData($_POST['Discussion']) : '';
-		$data['Vote'] = isset($_POST['Vote']) ? $_POST['Vote'] : 0;
-		$data['VoteFor'] = isset($_POST['VoteFor']) ? (int) $_POST['VoteFor'] : 0;
-		$data['VoteAgainst'] = isset($_POST['VoteAgainst']) ? (int) $_POST['VoteAgainst'] : 0;
-		$data['VoteDelayed'] = isset($_POST['VoteDelayed']) ? (int) $_POST['VoteDelayed'] : 0;
 
 		// Kontroly
 		if($meeting['Close'] == 1){
@@ -817,46 +783,7 @@ class Zobcontroller{
 		return true;
 	}	
 
-	private function deleteAllMeeting(){
-		$this->registry->getObject('db')->initQuery('electionperiod');
-		$this->registry->getObject('db')->setCondition("PeriodName like '<%>'");
-		if ($this->registry->getObject('db')->findFirst()){
-			$electionperiod = $this->registry->getObject('db')->getResult();
-			$ElectionPeriodID = $electionperiod['ElectionPeriodID'];
-		}
-		$this->registry->getObject('db')->initQuery('meetingtype');
-		$this->registry->getObject('db')->setCondition("ElectionPeriodID <> $ElectionPeriodID");
-		if ($this->registry->getObject('db')->findSet()){
-			$meetingtypes = $this->registry->getObject('db')->getResult();	
-			foreach ($meetingtypes as $meetingtype){
-				$MeetingTypeID = $meetingtype['MeetingTypeID'];
-				$this->registry->getObject('db')->initQuery('meeting');
-				$this->registry->getObject('db')->setCondition("MeetingTypeID = $MeetingTypeID");
-				if ($this->registry->getObject('db')->findSet()){
-					$meetings = $this->registry->getObject('db')->getResult();
-					foreach ($meetings as $meeting){
-						$MeetingID = $meeting['MeetingID'];
-						$this->registry->getObject('db')->initQuery('meetingline');
-						$this->registry->getObject('db')->setCondition("MeetingID = $MeetingID");
-						if ($this->registry->getObject('db')->findSet()){
-							$meetinglines = $this->registry->getObject('db')->getResult();
-							foreach ($meetinglines as $meetingline){
-								$MeetingLineID = $meetingline['MeetingLineID'];
-								$condition = "MeetingLineID = $MeetingLineID";
-								$this->registry->getObject('db')->deleteRecords('meetingattachment',$condition);
-							}
-						}								
-						$condition = "MeetingID = $MeetingID";
-						$this->registry->getObject('db')->deleteRecords('meetingline',$condition);
-					}
-				}
-				$condition = "MeetingTypeID = $MeetingTypeID";
-				$this->registry->getObject('db')->deleteRecords('meeting',$condition);
-			}
-		}
-	}
-
-	private function deleteMeetingline($MeetingLineID)
+	public function deleteMeetingline($MeetingLineID)
 	{
 		if((int) $MeetingLineID == 0)
 			return false;
@@ -926,6 +853,7 @@ class Zobcontroller{
 		$PostedDownDate = isset($_POST['PostedDownDate']) ? $_POST['PostedDownDate'] : $meeting['PostedDownDate'];
 		$PostedDownDate = $PostedDownDate != '' ? $PostedDownDate : null;
 		$State = isset($_POST['State']) ? $_POST['State'] : $meeting['State'];
+		$Present = isset($_POST['Present']) ? $_POST['Present'] : $meeting['Present'];
 		$RecorderAtDate = isset($_POST['RecorderAtDate']) ? $_POST['RecorderAtDate'] : $meeting['RecorderAtDate'];
 		$RecorderAtDate = $RecorderAtDate != '' ? $RecorderAtDate : null;
 		$RecorderBy = isset($_POST['RecorderBy']) ? $_POST['RecorderBy'] : $meeting['RecorderBy'];
@@ -969,6 +897,7 @@ class Zobcontroller{
 		$data['MeetingPlace'] = $MeetingPlace;
 		$data['RecorderBy'] = $RecorderBy;
 		$data['AtTime'] = $AtTime;
+		$data['Present'] = $Present;
 
 		if (!$isTemplate){
 			$data['Year'] = $Year;
@@ -988,7 +917,7 @@ class Zobcontroller{
 		return true;
 	}	
 
-	private function modifyMeetingline($MeetingLineID)
+	public function modifyMeetingline($MeetingLineID)
 	{	
 		IF(!$MeetingLineID)
 			return false;
@@ -1052,7 +981,7 @@ class Zobcontroller{
 		return true;
 	}
 
-	private function assignMeetingattachment( $AttachmentID, $MeetingLineID ){
+	public function assignMeetingattachment( $AttachmentID, $MeetingLineID ){
 		if(!$AttachmentID)
 			return false;
 			
@@ -1101,7 +1030,7 @@ class Zobcontroller{
      * Zobrazení seznam volebních období
      * @return void
      */
-	private function listElectionperiod( $activeElectionPeriodID = 0, $activeMemberTypeID = 0 )
+	public function listElectionperiod( $activeElectionPeriodID = 0, $activeMemberTypeID = 0 )
 	{
 		global $caption,$deb;		
 
@@ -1181,7 +1110,7 @@ class Zobcontroller{
      * Zobrazení seznam zápisů jednání
      * @return void
      */
-	private function listMeeting( $MeetingTypeID )
+	public function listMeeting( $MeetingTypeID )
 	{
 
 		// Zápis z jednání
@@ -1238,7 +1167,20 @@ class Zobcontroller{
      * Zobrazení seznamu bodů jednání
      * @return void
      */
-	private function listMeetingLine( $MeetingID , $activeMeetingLineID = 0 )
+	public function listMeetingLine( $MeetingID , $activeMeetingLineID = 0 )
+	{
+		$this->setDatasetMeetingLine($MeetingID, $activeMeetingLineID);
+		
+		$this->registry->getObject('template')->addTemplateBit('editdMeetingLine', 'zob-meetingline-edit.tpl.php');
+
+		$this->build('zob-meetingline-list.tpl.php');
+	}
+
+	 /**
+     * Zobrazení seznamu bodů jednání
+     * @return void
+     */
+	public function setDatasetMeetingLine( $MeetingID , $activeMeetingLineID = 0 )
 	{
 		$meeting = $this->getMeeting($MeetingID);
 		$MeetingTypeID = $meeting['MeetingTypeID'];
@@ -1268,8 +1210,6 @@ class Zobcontroller{
 					$meetingline['Presenter'] = '';
 				$meetingline['Attachments'] = $this->countRec('meetingattachment','MeetingLineID = '.$meetingline['MeetingLineID']);
 				$meetingline['bold'] = $meetingline['LineType'] == 'Podbod' ? '' : 'bold';
-
-
 				$meetinglines[] = $meetingline;
 			}
 			$cache = $this->registry->getObject('db')->cacheData( $meetinglines );
@@ -1316,9 +1256,6 @@ class Zobcontroller{
 		$this->registry->getObject('template')->getPage()->addTag( 'MeetingID', $MeetingID );						
 		$this->registry->getObject('template')->getPage()->addTag( 'MeetingTypeID', $MeetingTypeID );						
 		$this->registry->getObject('template')->getPage()->addTag( 'activeMeetingLineID', $activeMeetingLineID );				
-		$this->registry->getObject('template')->addTemplateBit('editdMeetingLine', 'zob-meetingline-edit.tpl.php');
-
-		$this->build('zob-meetingline-list.tpl.php');
 	}
 
 	public function isElectionperiodTemplate ( $ElectionPeriodID )
@@ -1694,209 +1631,7 @@ class Zobcontroller{
 		return ($result['pocet'] > 0);		
 	}
 
-	private function importMeeting(){
-		$content = "";
-		$filename = "files/ImportMeeting.csv";
-
-		if(!file_exists($filename)){
-			$this->errorMessage = "Soubor $filename nebyl nalezen.";
-			$this->print();
-			return;
-		}
-		
-		$electionperiod = $this->getActualElectionperiod();
-		if(!$electionperiod){
-			$this->errorMessage = "Není nastaveno výchozí volební období..";
-			$this->print();
-			return;
-		}
-		$ElectionPeriodID = $electionperiod['ElectionPeriodID'];
-		$verifier = 0;
-		$MeetingID = 0;
-		$MeetingLineID = 0;
-
-		// Read file
-		$file =  fopen( $filename, 'r' );
-		while(!feof($file)) {
-		
-			$line = fgets($file);
-			if($line){
-				$field = explode(';',$line);
-				$type = count($field)>1 ? $field[0] : '';
-				switch ($type) {
-					case 'J':
-						# Hlavička jednání
-						$meeting = null;
-						$meetingline = null;
-						$MeetingName = '';
-						$verifier = 0;
-						switch ($field[1]){
-							case 'Z':
-								$MeetingName = 'Zastupitelstvo';
-								break;
-							case 'R':
-								$MeetingName = 'Rada';
-								break;
-							case 'S':
-								$MeetingName = 'Stavební komise';
-								break;
-							default:
-								$this->errorMessage = "Neočekávaný typ jednání '".$field[1]."'";
-								$this->print();
-								return;
-						}
-						$EntryNo = $field[2];
-						$Year = date('Y', strtotime($field[4]));
-
-						$meeting = array();
-						$meeting['EntryNo'] = $EntryNo;
-						$meeting['Present'] = (int) $field[3];
-						$meeting['AtDate'] = $this->text2Date($field[4]);
-						$meeting['Year'] = $Year;
-						$meeting['AtTime'] = date('H:i', strtotime($field[5]));
-						$meeting['PostedUpDate'] = $this->text2Date($field[6]);
-						$meeting['PostedDownDate'] = $this->text2Date($field[7]);
-
-						$this->registry->getObject('db')->initQuery('meetingtype');
-						$this->registry->getObject('db')->setFilter('ElectionPeriodID',$ElectionPeriodID);
-						$this->registry->getObject('db')->setFilter('MeetingName',$MeetingName);
-						if(!$this->registry->getObject('db')->findFirst()){
-							$this->errorMessage = "Typ jednání $MeetingName pro volební období ".$electionperiod['PeriodName']." není definováno.";
-							$this->print();
-							return;
-						}
-						$meetingtype = $this->registry->getObject('db')->getResult();
-						$meetingTemplate = $this->getMeetingTemplate($MeetingName);
-						if($meetingTemplate){
-							$meeting['MeetingPlace'] = $meetingTemplate['MeetingPlace'];
-						}
-						$MeetingTypeID = $meetingtype['MeetingTypeID'];
-						$meeting['MeetingTypeID'] = $MeetingTypeID;
-						$meeting['Close'] = 1;
-
-						$this->registry->getObject('db')->initQuery('meeting');
-						$this->registry->getObject('db')->setFilter('MeetingTypeID',$MeetingTypeID);
-						$this->registry->getObject('db')->setFilter('EntryNo',$EntryNo);
-						if($this->registry->getObject('db')->findFirst()){
-							$this->errorMessage = "Jednání typu $MeetingName číslo $EntryNo/$Year již existuje.";
-							$this->print();
-							return;					
-						}
-						$this->registry->getObject('db')->insertRecords('meeting',$meeting);
-						$this->registry->getObject('db')->initQuery('meeting');
-						$this->registry->getObject('db')->setFilter('MeetingTypeID',$MeetingTypeID);
-						$this->registry->getObject('db')->setFilter('EntryNo',$EntryNo);
-						$this->registry->getObject('db')->findFirst();
-						$meeting = $this->registry->getObject('db')->getResult();
-						$MeetingID = $meeting['MeetingID'];
-
-						$line = $MeetingID;
-
-						break;
-					case 'V':
-						$verifier += 1;
-						$data = null;
-						switch ($verifier){
-							case 1:	
-								$data['VerifierBy1'] = $field[1];
-							case 2:	
-								$data['VerifierBy2'] = $field[1];
-						}
-						if($data){
-							$condition = "MeetingID = $MeetingID";
-							$this->registry->getObject('db')->updateRecords('meeting',$data,$condition);
-						}
-						break;
-					case 'D':
-						$data = null;
-						$data['RecorderAtDate'] = $this->text2Date($field[1]);
-						if($data){
-							$condition = "MeetingID = $MeetingID";
-							$this->registry->getObject('db')->updateRecords('meeting',$data,$condition);
-						}
-						break;
-					case 'Z':
-						$data = null;
-						$data['RecorderBy'] = trim($field[1]);
-						if($data){
-							$condition = "MeetingID = $MeetingID";
-							$this->registry->getObject('db')->updateRecords('meeting',$data,$condition);
-						}
-						break;
-					case 'B':
-						$data = null;
-						$data['MeetingID'] = $MeetingID;
-						$data['LineNo'] = (int) $field[1];
-						$data['LineType'] = 'Bod';
-						$data['Title'] = $this->registry->getObject('db')->sanitizeData(trim($field[2]));
-						$this->registry->getObject('db')->insertRecords('meetingline',$data);
-						break;
-					case 'T':
-						$data = null;
-						$data['MeetingID'] = $MeetingID;
-						$data['LineNo'] = (int) $field[1];
-						$data['LineType'] = 'Doplňující bod';
-						$data['Title'] = $this->registry->getObject('db')->sanitizeData(trim($field[2]));
-						$this->registry->getObject('db')->insertRecords('meetingline',$data);
-						break;
-					case 'P':
-						preg_match("/(\d+)(\D+)/", $field[1], $arr);
-						$LineNo = (int) $arr[1];
-						$data = null;
-						$data['MeetingID'] = $MeetingID;
-						$data['LineNo'] = $LineNo;
-						$data['LineType'] = 'Podbod';
-						$data['Title'] = $this->registry->getObject('db')->sanitizeData($arr[2].") ".trim($field[2]));
-						$this->registry->getObject('db')->insertRecords('meetingline',$data);
-						break;
-					case 'O':
-						preg_match("/(\d+)(\D*)/", $field[1], $arr);
-						$LineNo = (int) $arr[1];
-						$par = $arr[2] != '' ? $arr[2].")" : null;
-
-						$this->registry->getObject('db')->initQuery('meetingline');
-						$this->registry->getObject('db')->setFilter('MeetingID',$MeetingID);
-						$this->registry->getObject('db')->setFilter('LineNo',$LineNo);
-						if($par)
-							$this->registry->getObject('db')->setCondition("Title like '".$par."%'");
-						$this->registry->getObject('db')->findFirst();
-						$meetingline = $this->registry->getObject('db')->getResult();
-						$MeetingLineID = $meetingline['MeetingLineID'];
-
-						$data = null;
-						$data['Content'] = $this->registry->getObject('db')->sanitizeData(trim($field[2]));
-						$condition = "MeetingLineID = $MeetingLineID";
-						$this->registry->getObject('db')->updateRecords('meetingline',$data,$condition);
-						break;
-					case 'H':
-						$line = preg_replace('/\s/',"",$field[1]);
-						$arr = explode(':',$line);
-						$data = null;		
-						$data['Vote'] = 1;
-						$data['VoteFor'] = (int) $arr[1];
-						$data['VoteAgainst'] = (int) $arr[2];
-						$data['VoteDelayed'] = (int) $arr[3];
-						$condition = "MeetingLineID = $MeetingLineID";
-						$this->registry->getObject('db')->updateRecords('meetingline',$data,$condition);
-						break;
-					default:
-						$meetingline = $this->getMeetingline($MeetingLineID);
-						$data = null;
-						$data['Content'] = $meetingline['Content']."\n".$this->registry->getObject('db')->sanitizeData($line);
-						$condition = "MeetingLineID = $MeetingLineID";
-						$this->registry->getObject('db')->updateRecords('meetingline',$data,$condition);
-						break;
-				}
-			}
-			$content .= $line."<br>";
-			
-		  }		
-		fclose( $file );
-	
-		$this->print($content);
-	}
-
-	private function text2Date($text){
+	public function text2Date($text){
 		$text = trim($text);
 		$arr = explode('.',$text);
 		if($arr[2] < 100)
@@ -1904,5 +1639,126 @@ class Zobcontroller{
 		$text = $arr[0].".".$arr[1].".".$arr[2];
 		$date = date('Y-m-d', strtotime($text));
 		return $date;
+	}
+
+	private function ws($action){
+		$urlBits = $this->registry->getURLBits();     
+		$result = 'OK';
+
+		switch($action){
+			case 'getvalue':
+				# URL: zob/ws/getvalue/<table>/<ID>/<FieldName>
+				$table = strtolower(isset($urlBits[3]) ? $urlBits[3] : ''); 
+				$ID = isset($urlBits[4]) ? $urlBits[4] : 0; 
+				$field = isset($urlBits[5]) ? $urlBits[5] : '';
+				$value = '';
+				if($table == '')
+					$value = '<NULL>';
+				if($ID == 0)
+					$value = '<NULL>';
+				if($field == '')
+					$value = '<NULL>';
+				if($value == ''){
+					$pkField = $this->getFieldPK($table);
+					if($pkField){
+						$this->registry->getObject('db')->initQuery($table);
+						$this->registry->getObject('db')->setCondition("$pkField = $ID");
+						if ($this->registry->getObject('db')->findFirst()){
+							$result = $this->registry->getObject('db')->getResult();
+							$value =  isset($result[$field]) ? $result[$field] : '<NULL>';
+						}else
+							$value = '<NULL>';
+					}else
+						$value = '<NULL>';
+				}
+				return $value;
+			case 'upd':
+				# URL: zob/ws/upd/<table>/<ID>/<FieldName>/<FieldValue>
+				$table = strtolower(isset($urlBits[3]) ? $urlBits[3] : ''); 
+				$ID = isset($urlBits[4]) ? $urlBits[4] : 0; 
+				$field = isset($urlBits[5]) ? $urlBits[5] : '';
+				$value = isset($_POST['value']) ? $_POST['value'] : '';
+				if($table == '')
+					$result = 'Error: Table is not specified';
+				if($ID == 0)
+					$result = 'Error: Meeting line not specified';
+				if($field == '')
+					$result = 'Error: Field not specified';
+				if($result == 'OK'){
+					$data = array();
+					switch ($table) {
+						case 'meetingline':
+							switch ($field) {
+								case 'VoteFor':
+								case 'VoteAgainst':
+								case 'VoteDelayed':
+									$meetingline = $this->getMeetingline($ID);
+									$meeting = $this->getMeeting($meetingline['MeetingID']);
+									$value = (int) $value;									
+									$total = $meetingline['VoteFor'] + $meetingline['VoteAgainst'] + $meetingline['VoteDelayed'];
+									if($value > 0)
+										switch ($field) {
+											case 'VoteFor':
+												$total = $value + $meetingline['VoteAgainst'] + $meetingline['VoteDelayed'];
+												break;
+											case 'VoteAgainst':
+												$total = $meetingline['VoteFor'] + $value + $meetingline['VoteDelayed'];
+												break;
+											case 'VoteDelayed':
+												$total = $meetingline['VoteFor'] + $meetingline['VoteAgainst'] + $value;
+												break;
+										}
+										if($total > $meeting['Present'])
+											$result = "Počet hlasujících nesouhlasí, maximální počet přítomných členů je ".$meeting['Present'];
+									$data[$field] = $value;
+									break;
+								case 'Vote':
+									if($value == 1){
+										$meetingline = $this->getMeetingline($ID);
+										$meeting = $this->getMeeting($meetingline['MeetingID']);
+										$data['VoteFor'] = $meeting['Present'];
+										$data['VoteAgainst'] = "0";
+										$data['VoteDelayed'] = "0";										
+									}
+									$data[$field] = $value;
+									break;
+								case 'Presenter':
+									if($value == '')
+										$data['PresenterID'] = '00000000-0000-0000-0000-000000000000';
+									else{
+										$contact = $this->getContactByName($value);
+										if($contact){
+											$data['PresenterID'] = $contact['ID'];
+										}else{
+											$result = "Předkladatel $value nebyl nalezen v kontaktech.";
+											return $result;
+										}
+									}
+									break;
+								default:
+									$data[$field] = $value;
+							}
+							
+							$condition = "MeetingLineID = $ID";
+							$this->registry->getObject('db')->updateRecords($table,$data,$condition);
+							break;						
+						default:
+							# code...
+							break;
+					}
+				};
+				break;
+		};
+		return $result;
+	}
+
+	private function getFieldPK($table){
+		switch (strtolower($table)) {	
+			case 'meeting':
+				return 'MeetingID';
+			case 'meetingline':
+				return 'MeetingLineID';
+		}
+		return null;
 	}
 }

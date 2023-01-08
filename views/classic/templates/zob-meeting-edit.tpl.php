@@ -48,10 +48,10 @@
                         </tr>
                         <tr>
                             <td style="border:0;">
-                                <label class="title">{lbl_State}</label><br>
+                                <label class="title">{lbl_Present}</label><br>
                             </td>
                             <td style="border:0;">
-                                <input type="text" class="value" name="State" value="{State}" StateID="{MeetingID}"/><br>
+                                <input type="text" class="value" name="Present" value="{Present}" StateID="{MeetingID}"/><br>
                                 <input type="hidden" name="oldState" value="{State}" oldStateID="{MeetingID}"/>
                             </td>
                         </tr>

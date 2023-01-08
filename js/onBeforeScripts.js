@@ -67,11 +67,75 @@ function ConfirmUnlink(){
         return false;
     }
 }
+var jojo = "99";
+function wsRefreshField(table,ID,name) {
+    const Http = new XMLHttpRequest();
+    var val = null;
+    var url;
+    url = window.location.origin + window.location.pathname;
+    url = url + '?page=zob/ws/getvalue/' + table + '/' + ID + '/' + name;
+    Http.onreadystatechange = function(){
+        val = this.responseText;
+        if(val == '<NULL>'){ 
+            val = null;
+        }
+        document.getElementById('field' + name + ID).value = val;
+    }    
+    Http.open("POST", url, true);
+    Http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    Http.send();
+}
 
-function wsLogContactView(ID,siteurl) {
+function wsRefreshMeetingline(e) {
+    var table,pkID,name,value;
+    name = e.getAttribute('name');
+    if(e){
+        table = 'meetingline'; 
+        pkID = e.getAttribute('pkID');        
+        console.log(name);
+        if(name == 'Title')
+            document.getElementById('fieldTitle' + pkID).innerText = e.value
+        value = wsRefreshField(table,pkID,'VoteFor');        
+        value = wsRefreshField(table,pkID,'VoteAgainst');
+        value = wsRefreshField(table,pkID,'VoteDelayed');
+    }
+}
+
+function wsUpdate(e) {
     const Http = new XMLHttpRequest();
     var url;
-    url= siteurl + 'index.php?page=contact/WS/logView/' + ID;
+    var table,pkID,name,newvalue;
+    var err,response;
+    url = window.location.origin + window.location.pathname;
+    if(e){
+        table = e.getAttribute('table'); 
+        pkID = e.getAttribute('pkID');
+        name = e.getAttribute('name'); 
+        newvalue = e.value; 
+        url = url + '?page=zob/ws/upd/' + table + '/' + pkID + '/' + name;
+        Http.open("POST", url, true);
+        Http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        Http.send("value=" + newvalue);
+        Http.onreadystatechange=(e)=>{
+            response = Http.responseText;
+            if((response == 'OK' ) || (response == '' )){
+                console.log(response)      
+            }else{
+                err = document.getElementById('pageErrorMesage');
+                if(err){
+                    err.innerText = response;
+                    err.style.display = 'block';
+                }
+            }
+        }    
+    }
+}
+
+function wsLogContactView(ID) {
+    const Http = new XMLHttpRequest();
+    var url;
+    url = window.location.origin + window.location.pathname;
+    url= url + '?page=contact/WS/logView/' + ID;
     Http.open("GET", url);
     Http.send();
     Http.onreadystatechange=(e)=>{
@@ -79,10 +143,11 @@ function wsLogContactView(ID,siteurl) {
     }
 }
 
-function wsLogDocumentView(ID,siteurl) {
+function wsLogDocumentView(ID) {
     const Http = new XMLHttpRequest();
     var url;
-    url = siteurl + 'index.php?page=document/WS/logView/' + ID;
+    url = window.location.origin + window.location.pathname;
+    url = url + '?page=document/WS/logView/' + ID;
     Http.open("GET", url);
     Http.send();
     Http.onreadystatechange = (e) => {
@@ -90,32 +155,31 @@ function wsLogDocumentView(ID,siteurl) {
     };
 }
 
-function wsSetRemindEntry(ID,siteurl,BaseUrl) {
+function wsSetRemindEntry(ID,BaseUrl) {
     const Http = new XMLHttpRequest();
     var url, result;
-    url = siteurl + 'index.php?page=todo/WS/setRemind/' + ID;
+    url = window.location.origin + window.location.pathname;
+    url = url + '?page=todo/WS/setRemind/' + ID;
     Http.open("GET", url);
     Http.send();
     Http.onreadystatechange = (e) => {
         result = Http.responseText;
         if(result == 'OK'){
-            console.log('url: ',window.location);
-            window.location = siteurl + 'index.php?page=/' + BaseUrl;
+            window.location = url + '?page=/' + BaseUrl;
         }       
     };
 }
 
-function wsUnlinkAgenda(AgendaID,siteurl,BaseUrl) {
+function wsUnlinkAgenda(AgendaID,BaseUrl) {
     const Http = new XMLHttpRequest();
     var url, result;
-    url = siteurl + 'index.php?page=agenda/WS/unlink/' + AgendaID;
+    url = url + '?page=agenda/WS/unlink/' + AgendaID;
     Http.open("GET", url);
     Http.send();
     Http.onreadystatechange = (e) => {
         result = Http.responseText;
         if(result == 'OK'){
-            console.log('url: ',window.location);
-            window.location = siteurl + 'index.php?page=/' + BaseUrl;
+            window.location = url + '?page=/' + BaseUrl;
         }
     };
 }
