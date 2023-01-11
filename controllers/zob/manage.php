@@ -58,14 +58,16 @@ class Zobmanage {
 	}
 
 	private function deleteAllMeeting(){
-		$this->registry->getObject('db')->initQuery('electionperiod');
-		$this->registry->getObject('db')->setCondition("PeriodName like '<%>'");
-		if ($this->registry->getObject('db')->findFirst()){
-			$electionperiod = $this->registry->getObject('db')->getResult();
-			$ElectionPeriodID = $electionperiod['ElectionPeriodID'];
+		$electionperiod = $this->zob->getActualElectionperiod();
+		if(!$electionperiod){
+			$this->errorMessage = "Není nastaveno výchozí volební období..";
+			$this->print();
+			return;
 		}
+		$ElectionPeriodID = $electionperiod['ElectionPeriodID'];
+
 		$this->registry->getObject('db')->initQuery('meetingtype');
-		$this->registry->getObject('db')->setCondition("ElectionPeriodID <> $ElectionPeriodID");
+		$this->registry->getObject('db')->setCondition("ElectionPeriodID = $ElectionPeriodID");
 		if ($this->registry->getObject('db')->findSet()){
 			$meetingtypes = $this->registry->getObject('db')->getResult();	
 			foreach ($meetingtypes as $meetingtype){
@@ -97,15 +99,6 @@ class Zobmanage {
 	}
 
 	private function importMeeting(){
-		$content = "";
-		$filename = "files/ImportMeeting.csv";
-
-		if(!file_exists($filename)){
-			$this->errorMessage = "Soubor $filename nebyl nalezen.";
-			$this->print();
-			return;
-		}
-		
 		$electionperiod = $this->zob->getActualElectionperiod();
 		if(!$electionperiod){
 			$this->errorMessage = "Není nastaveno výchozí volební období..";
@@ -116,6 +109,17 @@ class Zobmanage {
 		$verifier = 0;
 		$MeetingID = 0;
 		$MeetingLineID = 0;
+		$lastType = '';
+
+		$content = "";
+		$filename = 'files/ImportMeeting'.$electionperiod['PeriodName'].'.csv';
+
+		if(!file_exists($filename)){
+			$this->errorMessage = "Soubor $filename nebyl nalezen.";
+			$this->print();
+			return;
+		}
+		
 
 		// Read file
 		$file =  fopen( $filename, 'r' );
@@ -200,9 +204,9 @@ class Zobmanage {
 						$data = null;
 						switch ($verifier){
 							case 1:	
-								$data['VerifierBy1'] = $field[1];
+								$data['VerifierBy1'] = trim($field[1]);
 							case 2:	
-								$data['VerifierBy2'] = $field[1];
+								$data['VerifierBy2'] = trim($field[1]);
 						}
 						if($data){
 							$condition = "MeetingID = $MeetingID";
@@ -226,47 +230,75 @@ class Zobmanage {
 						}
 						break;
 					case 'B':
+						# B;8;Text
+						# B;9-1;Text
 						$data = null;
 						$data['MeetingID'] = $MeetingID;
-						$data['LineNo'] = (int) $field[1];
-						$data['LineType'] = 'Bod';
+						$arr = explode('-',trim($field[1]));
+						$data['LineNo'] = (int) $arr[0];
+						$data['LineNo2'] = isset($arr[1]) ? (int) $arr[1] : 0;
+						$data['LineType'] = isset($arr[1]) ? 'Podbod' : 'Bod';
 						$data['Title'] = $this->registry->getObject('db')->sanitizeData(trim($field[2]));
 						$this->registry->getObject('db')->insertRecords('meetingline',$data);
 						break;
 					case 'T':
 						$data = null;
 						$data['MeetingID'] = $MeetingID;
-						$data['LineNo'] = (int) $field[1];
+						$data['LineNo'] = (int) trim($field[1]);
+						$data['LineNo2'] = 0;
 						$data['LineType'] = 'Doplňující bod';
 						$data['Title'] = $this->registry->getObject('db')->sanitizeData(trim($field[2]));
 						$this->registry->getObject('db')->insertRecords('meetingline',$data);
 						break;
 					case 'P':
-						preg_match("/(\d+)(\D+)/", $field[1], $arr);
-						$LineNo = (int) $arr[1];
+						# P;9-1;Text
 						$data = null;
 						$data['MeetingID'] = $MeetingID;
-						$data['LineNo'] = $LineNo;
-						$data['LineType'] = 'Podbod';
-						$data['Title'] = $this->registry->getObject('db')->sanitizeData($arr[2].") ".trim($field[2]));
+						$arr = explode('-',trim($field[1]));
+						$data['LineNo'] = (int) $arr[0];
+						$data['LineNo2'] = isset($arr[1]) ? (int) $arr[1] : 0;
+						$data['LineType'] = isset($arr[1]) ? 'Podbod' : 'Bod';
+						$data['Title'] = $this->registry->getObject('db')->sanitizeData(trim($field[2]));
 						$this->registry->getObject('db')->insertRecords('meetingline',$data);
 						break;
 					case 'O':
-						preg_match("/(\d+)(\D*)/", $field[1], $arr);
-						$LineNo = (int) $arr[1];
-						$par = $arr[2] != '' ? $arr[2].")" : null;
-
+						$arr = explode('-',trim($field[1]));
+						$LineNo = (int) $arr[0];
+						$LineNo2 = isset($arr[1]) ? (int) $arr[1] : null;
 						$this->registry->getObject('db')->initQuery('meetingline');
 						$this->registry->getObject('db')->setFilter('MeetingID',$MeetingID);
 						$this->registry->getObject('db')->setFilter('LineNo',$LineNo);
-						if($par)
-							$this->registry->getObject('db')->setCondition("Title like '".$par."%'");
-						$this->registry->getObject('db')->findFirst();
+						if($LineNo2)
+							$this->registry->getObject('db')->setFilter('LineNo2',$LineNo2);
+						if(!$this->registry->getObject('db')->findFirst()){
+							$this->errorMessage = "Bod programu $LineNo.$LineNo2 nenalezen.";
+							$this->print();
+							return;
+						}
 						$meetingline = $this->registry->getObject('db')->getResult();
 						$MeetingLineID = $meetingline['MeetingLineID'];
-
+						
+						$text = isset($field[2]) ? trim($field[2]) : '';
+						if($text == ""){
+							$this->errorMessage = "Obsah bodu $LineNo.$LineNo2 není vyplněn, nebo struktura dat obsahuje chybu.";
+							$this->print();
+							return;
+						};
+						
+						if($text[0] == '-')
+							$text = substr($text,1);
 						$data = null;
-						$data['Content'] = $this->registry->getObject('db')->sanitizeData(trim($field[2]));
+						$data['Content'] = $this->registry->getObject('db')->sanitizeData($text);
+						$condition = "MeetingLineID = $MeetingLineID";
+						$this->registry->getObject('db')->updateRecords('meetingline',$data,$condition);
+						break;
+					case 'U':
+					case 'I':
+						$text = trim($field[1]);
+						if($text[0] == '-')
+							$text = substr($text,1);
+						$data = null;
+						$data['Content'] = $this->registry->getObject('db')->sanitizeData($text);
 						$condition = "MeetingLineID = $MeetingLineID";
 						$this->registry->getObject('db')->updateRecords('meetingline',$data,$condition);
 						break;
@@ -284,11 +316,28 @@ class Zobmanage {
 					default:
 						$meetingline = $this->zob->getMeetingline($MeetingLineID);
 						$data = null;
+						switch ($lastType) {
+							case 'O':
+								$field = 'Content';
+								break;
+							case 'I':
+								$field = 'Discussion';
+								break;
+							case 'U':
+								$field = 'DraftResolution';
+								break;
+							default:
+								$this->errorMessage = "Navazující text '$line' nelze přiřadit předchozímu řádku typu '$lastType'.";
+								$this->print();
+								return;
+						}
 						$data['Content'] = $meetingline['Content']."\n".$this->registry->getObject('db')->sanitizeData($line);
 						$condition = "MeetingLineID = $MeetingLineID";
 						$this->registry->getObject('db')->updateRecords('meetingline',$data,$condition);
+						$type = $lastType;
 						break;
 				}
+				$lastType = $type;
 			}
 			$content .= $line."<br>";
 			

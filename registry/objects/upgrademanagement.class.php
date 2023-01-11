@@ -4,7 +4,7 @@
  *
  * @author  Petr Blažek
  * @version 1.0
- * @date    06.01.2019
+ * @date    10.1.2023
  */
 
 class upgrademanagement {
@@ -12,6 +12,7 @@ class upgrademanagement {
     private $version;
     private $PK;
     private $newInit = false;
+    private $registry;
 
     public function __construct( $registry ) 
     {
@@ -264,358 +265,27 @@ class upgrademanagement {
         }
         if ($this->version === '2.21') 
         {
-            // upgrade to 2.22
-            $this->upgrade_222('2.22');
-        }
-        if ($this->version === '2.22') 
-        {
-            // upgrade to 2.23
-            $this->upgrade_223('2.23');
-        }
-        if ($this->version === '2.23') 
-        {
-            // upgrade to 2.24
-            $this->upgrade_224('2.24');
-        }
-        if ($this->version === '2.24') 
-        {
-            // upgrade to 2.25
-            $this->upgrade_225('2.25');
-        }
-        if ($this->version === '2.25') 
-        {
-            // upgrade to 2.26
-            $this->upgrade_226('2.26');
-        }
-        if ($this->version === '2.26') 
-        {
-            // upgrade to 2.27
-            $this->upgrade_227('2.27');
-        }
-        if ($this->version === '2.27') 
-        {
-            // upgrade to 2.28
-            $this->upgrade_228('2.28');
-        }
-        if ($this->version === '2.28') 
-        {
-            // upgrade to 2.29
-            $this->upgrade_229('2.29');
-        }
-        if ($this->version === '2.29') 
-        {
-            // upgrade to 2.30
-            $this->upgrade_230('2.30');
-        }
-        if ($this->version === '2.30') 
-        {
-            // upgrade to 2.31
-            $this->upgrade_231('2.31');
-        }
-        if ($this->version === '2.31') 
-        {
-            // upgrade to 2.32
-            $this->upgrade_232('2.32');
-        }
-        if ($this->version === '2.32') 
-        {
-            // upgrade to 2.33
-            $this->upgrade_233('2.33');
-        }
-        if ($this->version === '2.33') 
-        {
-            // upgrade to 2.34
-            $this->upgrade_234('2.34');
-        }
-        if ($this->version === '2.34') 
-        {
-            // upgrade to 2.35
-            $this->upgrade_235('2.35');
-        }
-        if ($this->version === '2.35') 
-        {
-            // upgrade to 2.36
-            $this->upgrade_236('2.36');
-        }
-        if ($this->version === '2.36') 
-        {
-            // upgrade to 2.37
-            $this->upgrade_237('2.37');
-        }
-        if ($this->version === '2.37') 
-        {
-            // upgrade to 2.38
-            $this->upgrade_238('2.38');
-        }
-        if ($this->version === '2.38') 
-        {
-            // upgrade to 2.39
-            $this->upgrade_239('2.39');
-        }
-        if ($this->version === '2.39') 
-        {
             // upgrade to 2.40
-            $this->upgrade_240('2.40');
+            $this->upgrade_222('2.40');
+        }
+        if ($this->version === '2.40') 
+        {
+            // upgrade to 2.41
+            $this->upgrade_241('2.41');
         }
     }
 
-    private function upgrade_Pattrern($upVer)
-    {
-        global $config;
-        $pref = $config['dbPrefix'];
-
-        $sql = "ALTER TABLE `".$pref."meeting`".
-                " CHANGE `AtDate` `AtDate` date DEFAULT NULL";
-        $this->registry->getObject('db')->executeQuery( $sql );
-        
-        $this->setNewVersion($upVer);
-    }
-
-    private function upgrade_240($upVer)
-    {
-        global $config;
-        $pref = $config['dbPrefix'];
-
-        $sql = "ALTER TABLE `".$pref."meeting`".
-                " ADD `Present` int(11) NULL DEFAULT 0";
-        $this->registry->getObject('db')->executeQuery( $sql );
-        
-        $this->setNewVersion($upVer);
-    }
-
-    private function upgrade_239($upVer)
-    {
-        global $config;
-        $pref = $config['dbPrefix'];
-
-        $sql = "ALTER TABLE `".$pref."meeting`".
-            " ADD `AtTime` time NULL ";
-        $this->registry->getObject('db')->executeQuery( $sql );
-        
-        $sql = "ALTER TABLE `".$pref."meetingline`".
-            " ADD `Title2` varchar(250) COLLATE utf8_czech_ci DEFAULT ''";
-        $this->registry->getObject('db')->executeQuery( $sql );
-        
-        $this->setNewVersion($upVer);
-    }    
-
-    private function upgrade_238($upVer)
-    {
-        global $config;
-        $pref = $config['dbPrefix'];
-
-        $sql = "ALTER TABLE `".$pref."meetingattachment`".
-            " ADD `InboxID` int(11) NULL DEFAULT 0";
-        $this->registry->getObject('db')->executeQuery( $sql );
-        
-        $this->setNewVersion($upVer);
-    }    
-
-    private function upgrade_237($upVer)
-    {
-        global $config;
-        $pref = $config['dbPrefix'];
-
-        $sql = "ALTER TABLE `".$pref."meetingattachment`".
-                " ADD `MeetingID` int(11) NULL DEFAULT 0";
-        $this->registry->getObject('db')->executeQuery( $sql );
-        
-        $this->setNewVersion($upVer);
-    }    
-
-    private function upgrade_236($upVer)
-    {
-        global $config;
-        $pref = $config['dbPrefix'];
-
-        $sql = "ALTER TABLE `".$pref."dmsentry`".
-                " CHANGE `Url` `Url` varchar(250) CHARACTER SET utf8 COLLATE utf8_czech_ci DEFAULT ''";
-
-        $this->registry->getObject('db')->executeQuery( $sql );
-        
-        $this->setNewVersion($upVer);
-    }
-
-    private function upgrade_235($upVer)
-    {
-        global $config;
-        $pref = $config['dbPrefix'];
-
-        $sql = "ALTER TABLE `".$pref."inbox`".
-                " ADD `SourceUrl` varchar(250) NULL DEFAULT ''";
-        $this->registry->getObject('db')->executeQuery( $sql );
-        
-        $this->setNewVersion($upVer);
-    }
-
-    private function upgrade_234($upVer)
-    {
-        global $config;
-        $pref = $config['dbPrefix'];
-
-        $sql = "ALTER TABLE `".$pref."inbox`".
-                " ADD `MeetingID` int(11) NULL DEFAULT 0".
-                " ,ADD `Modified` tinyint(1) NULL DEFAULT 0";
-        $this->registry->getObject('db')->executeQuery( $sql );
-        
-        $this->setNewVersion($upVer);
-    }
-
-    private function upgrade_233($upVer)
-    {
-        global $config;
-        $pref = $config['dbPrefix'];
-
-        $sql = "CREATE TABLE IF NOT EXISTS `".$pref."inbox` (
-            `InboxID` int(11) NOT NULL AUTO_INCREMENT,
-            `SourcePath` varchar(250) COLLATE utf8_czech_ci DEFAULT '',
-            `DestinationPath` varchar(250) COLLATE utf8_czech_ci DEFAULT '',
-            `DmsEntryID` varchar(36) DEFAULT '00000000-0000-0000-0000-000000000000',
-            `Title` varchar(100) COLLATE utf8_czech_ci DEFAULT '',
-            `CreateDate` datetime NULL ,            
-            `SettlementDate` datetime NULL,                        
-            `Close` int(11) NULL DEFAULT 0,
-            `AssignedUserID` varchar(36) DEFAULT '00000000-0000-0000-0000-000000000000',
-            PRIMARY KEY (`InboxID`)
-            ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci";
-        $this->registry->getObject('db')->executeQuery( $sql );
-        
-        $this->setNewVersion($upVer);
-    }
-
-    private function upgrade_232($upVer)
-    {
-        global $config;
-        $pref = $config['dbPrefix'];
-
-        $sql = "ALTER TABLE `".$pref."meetingline`".
-                " ADD `LineType` varchar(20) NULL DEFAULT ''";
-        $this->registry->getObject('db')->executeQuery( $sql );
-        
-        $this->setNewVersion($upVer);
-    }
-
-    private function upgrade_231($upVer)
-    {
-        global $config;
-        $pref = $config['dbPrefix'];
-
-        $sql = "ALTER TABLE `".$pref."meeting`".
-                " ADD `Close` tinyint(1) NULL DEFAULT 0";
-        $this->registry->getObject('db')->executeQuery( $sql );
-        
-        $this->setNewVersion($upVer);
-    }
-
-    private function upgrade_230($upVer)
-    {
-        global $config;
-        $pref = $config['dbPrefix'];
-
-        $sql = "ALTER TABLE `".$pref."meeting`".
-                " ADD `Actual` tinyint(1) NULL DEFAULT 0";
-        $this->registry->getObject('db')->executeQuery( $sql );
-        
-        $this->setNewVersion($upVer);
-    }
-
-    private function upgrade_229($upVer)
-    {
-        global $config;
-        $pref = $config['dbPrefix'];
-
-        $sql = "ALTER TABLE `".$pref."meeting`".
-                " CHANGE `AtDate` `AtDate` date DEFAULT NULL";
-        $this->registry->getObject('db')->executeQuery( $sql );
-        
-        $sql = "ALTER TABLE `".$pref."meeting`".
-                " CHANGE `PostedUpDate` `PostedUpDate` date DEFAULT NULL";
-        $this->registry->getObject('db')->executeQuery( $sql );
-        
-        $sql = "ALTER TABLE `".$pref."meeting`".
-                " CHANGE `PostedDownDate` `PostedDownDate` date DEFAULT NULL";
-        $this->registry->getObject('db')->executeQuery( $sql );
-        
-        $sql = "ALTER TABLE `".$pref."meeting`".
-                " CHANGE `RecorderAtDate` `RecorderAtDate` date DEFAULT NULL";
-        $this->registry->getObject('db')->executeQuery( $sql );
-        
-        $this->setNewVersion($upVer);
-    }
-
-    private function upgrade_228($upVer)
-    {
-        global $config;
-        $pref = $config['dbPrefix'];
-
-        $sql = "ALTER TABLE `".$pref."meeting`".
-                " ADD `Year` int(11) DEFAULT 0";
-        $this->registry->getObject('db')->executeQuery( $sql );
-        
-        $this->setNewVersion($upVer);
-    }
-
-    private function upgrade_227($upVer)
-    {
-        global $config;
-        $pref = $config['dbPrefix'];
-
-        $sql = "ALTER TABLE `".$pref."meeting`".
-                " ADD `RecorderBy` varchar(36) DEFAULT '00000000-0000-0000-0000-000000000000'".
-                ", ADD `VerifierBy1` varchar(36) DEFAULT '00000000-0000-0000-0000-000000000000'".
-                ", ADD `VerifierBy2` varchar(36) DEFAULT '00000000-0000-0000-0000-000000000000'";
-        $this->registry->getObject('db')->executeQuery( $sql );
-        
-        $this->setNewVersion($upVer);
-    }
-
-    private function upgrade_226($upVer)
-    {
-        global $config;
-        $pref = $config['dbPrefix'];
-
-        $sql = "CREATE TABLE IF NOT EXISTS `".$pref."meetinglinepage` (
-            `PaggeID` int(11) NOT NULL AUTO_INCREMENT,
-            `MeetingLineID` int(11) NOT NULL,
-            `Order` int(11) DEFAULT 0,
-            `Content` varchar(5000) COLLATE utf8_czech_ci DEFAULT '',
-            `ImageURL` varchar(250) COLLATE utf8_czech_ci DEFAULT '',
-            `ImageWidth` int(11) DEFAULT 0,
-            `ImageHeight` int(11) DEFAULT 0,
-            PRIMARY KEY (`PaggeID`)
-            ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci";
-        $this->registry->getObject('db')->executeQuery( $sql );
-        
-        $this->setNewVersion($upVer);
-    }
-
-    private function upgrade_225($upVer)
-    {
-        $this->setNewVersion($upVer);
-    }
-
-    private function upgrade_224($upVer)
-    {
-        global $config;
-        $pref = $config['dbPrefix'];
-
-        // upgrade table 'electionperiod'
-        $sql = "ALTER TABLE `".$pref."electionperiod`".
-                " ADD `Actual` tinyint DEFAULT 0";
-        $this->registry->getObject('db')->executeQuery( $sql );
-
-        $this->setNewVersion($upVer);
-    }
-
-    private function upgrade_223($upVer)
+    private function upgrade_241($upVer)
     {
 		global $config;
         $pref = $config['dbPrefix'];
+
 
         // New Tables for Meeting Agend
         $sql = "CREATE TABLE IF NOT EXISTS `".$pref."electionperiod` (
             `ElectionPeriodID` int(11) NOT NULL AUTO_INCREMENT,
             `PeriodName` varchar(250) COLLATE utf8_czech_ci DEFAULT '',
+            `Actual` tinyint DEFAULT 0',
             PRIMARY KEY (`ElectionPeriodID`)
             ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci";
         $this->registry->getObject('db')->executeQuery( $sql );
@@ -637,30 +307,61 @@ class upgrademanagement {
             PRIMARY KEY (`MemberID`)
             ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci";
         $this->registry->getObject('db')->executeQuery( $sql );
-
+        
+        $sql = "CREATE TABLE IF NOT EXISTS `".$pref."inbox` (
+            `InboxID` int(11) NOT NULL AUTO_INCREMENT,
+            `SourcePath` varchar(250) COLLATE utf8_czech_ci DEFAULT '',
+            `DestinationPath` varchar(250) COLLATE utf8_czech_ci DEFAULT '',
+            `DmsEntryID` varchar(36) DEFAULT '00000000-0000-0000-0000-000000000000',
+            `MeetingID` int(11) NULL DEFAULT 0,
+            `Title` varchar(100) COLLATE utf8_czech_ci DEFAULT '',
+            `SourceUrl` varchar(250) NULL DEFAULT '',
+            `CreateDate` datetime NULL ,            
+            `SettlementDate` datetime NULL,                        
+            `Modified` tinyint(1) NULL DEFAULT 0,
+            `Close` int(11) NULL DEFAULT 0,
+            `AssignedUserID` varchar(36) DEFAULT '00000000-0000-0000-0000-000000000000',
+            PRIMARY KEY (`InboxID`)
+            ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci";
+        $this->registry->getObject('db')->executeQuery( $sql );
+      
         $sql = "CREATE TABLE IF NOT EXISTS `".$pref."meeting` (
             `MeetingID` int(11) NOT NULL AUTO_INCREMENT,
             `MeetingTypeID` int(11) NOT NULL,
+            `ElectionPeriodID` int(11) DEFAULT 0,
             `EntryNo` int(11) DEFAULT 0,
-            `AtDate` datetime NULL,            
+            `AtDate` date DEFAULT NULL,
+            `AtTime` time NULL,
+            `Year` int(11) DEFAULT 0,
+            `Present` int(11) NULL DEFAULT 0,
             `MeetingPlace` varchar(100) COLLATE utf8_czech_ci DEFAULT '',
-            `PostedUpDate` datetime NULL,            
-            `PostedDownDate` datetime NULL,            
+            `PostedUpDate` date DEFAULT NULL,
+            `PostedDownDate` date DEFAULT NULL,          
             `State` varchar(20) COLLATE utf8_czech_ci DEFAULT '',
-            `RecorderAtDate` datetime NULL,            
-            PRIMARY KEY (`MeetingID`)
+            `RecorderAtDate` date DEFAULT NULL,
+            `Actual` tinyint(1) NULL DEFAULT 0,
+            `Close` tinyint(1) NULL DEFAULT 0,        
+            `RecorderBy` varchar(36) DEFAULT '00000000-0000-0000-0000-000000000000',
+            `VerifierBy1` varchar(36) DEFAULT '00000000-0000-0000-0000-000000000000',
+            `VerifierBy2` varchar(36) DEFAULT '00000000-0000-0000-0000-000000000000',
+        PRIMARY KEY (`MeetingID`)
             ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci";
         $this->registry->getObject('db')->executeQuery( $sql );
 
         $sql = "CREATE TABLE IF NOT EXISTS `".$pref."meetingline` (
             `MeetingLineID` int(11) NOT NULL AUTO_INCREMENT,
             `MeetingID` int(11) NOT NULL,
+            `MeetingTypeID` int(11) DEFAULT 0,
+            `ElectionPeriodID` int(11) DEFAULT 0,
+            `LineType` varchar(20) NULL DEFAULT '',
             `LineNo` int(11) NOT NULL,
+            `LineNo2` int(11) NOT NULL,
             `PresenterID` varchar(36) DEFAULT '00000000-0000-0000-0000-000000000000',
             `Title` varchar(100) COLLATE utf8_czech_ci DEFAULT '',
+            `Title2` varchar(250) COLLATE utf8_czech_ci DEFAULT '',
             `Content` varchar(5000) COLLATE utf8_czech_ci DEFAULT '',
             `Discussion` varchar(5000) COLLATE utf8_czech_ci DEFAULT '',
-            `DraftResolution` varchar(5000) COLLATE utf8_czech_ci DEFAULT '',
+            `DraftResolution` varchar(5000) COLLATE utf8_czech_ci DEFAULT '',            
             `Vote` tinyint DEFAULT 0,
             `VoteFor` int(11) DEFAULT 0,
             `VoteAgainst` int(11) DEFAULT 0,
@@ -669,9 +370,54 @@ class upgrademanagement {
             ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci";
         $this->registry->getObject('db')->executeQuery( $sql );
 
+        $sql = "CREATE TABLE IF NOT EXISTS `".$pref."meetinglinecontent` (
+            `ContentID` int(11) NOT NULL AUTO_INCREMENT,
+            `MeetingLineID` int(11) DEFAULT 0,
+            `MeetingID` int(11) DEFAULT 0,
+            `MeetingTypeID` int(11) DEFAULT 0,
+            `LineNo` int(11) NOT NULL,
+            `Content` varchar(5000) COLLATE utf8_czech_ci DEFAULT '',
+            `Discussion` varchar(5000) COLLATE utf8_czech_ci DEFAULT '',
+            `DraftResolution` varchar(5000) COLLATE utf8_czech_ci DEFAULT '',            
+            `Vote` tinyint DEFAULT 0,
+            `VoteFor` int(11) DEFAULT 0,
+            `VoteAgainst` int(11) DEFAULT 0,
+            `VoteDelayed` int(11) DEFAULT 0,
+            PRIMARY KEY (`ContentID`)
+            ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci";
+        $this->registry->getObject('db')->executeQuery( $sql );
+
+        $sql = "CREATE TABLE IF NOT EXISTS `".$pref."meetingattachment` (
+            `AttachmentID` int(11) NOT NULL AUTO_INCREMENT,
+            `MeetingLineID` int(11) NOT NULL,
+            `MeetingID` int(11) NULL DEFAULT 0,            
+            `Description` varchar(100) COLLATE utf8_czech_ci DEFAULT '',
+            `Content` varchar(5000) COLLATE utf8_czech_ci DEFAULT '',
+            `URL` varchar(250) COLLATE utf8_czech_ci DEFAULT '',
+            `InboxID` int(11) NULL DEFAULT 0,
+            PRIMARY KEY (`AttachmentID`)
+            ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci";
+        $this->registry->getObject('db')->executeQuery( $sql );
+
+        $sql = "CREATE TABLE IF NOT EXISTS `".$pref."meetinglinepage` (
+            `PageID` int(11) NOT NULL AUTO_INCREMENT,
+            `MeetingLineID` int(11) NOT NULL,
+            `MeetingID` int(11) DEFAULT 0,
+            `MeetingTypeID` int(11) DEFAULT 0,
+            `Order` int(11) DEFAULT 0,
+            `Content` varchar(5000) COLLATE utf8_czech_ci DEFAULT '',
+            `ImageURL` varchar(250) COLLATE utf8_czech_ci DEFAULT '',
+            `ImageWidth` int(11) DEFAULT 0,
+            `ImageHeight` int(11) DEFAULT 0,
+            PRIMARY KEY (`PageID`)
+            ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci";
+        $this->registry->getObject('db')->executeQuery( $sql );
+
         $sql = "CREATE TABLE IF NOT EXISTS `".$pref."meetinglinetask` (
             `TaskID` int(11) NOT NULL AUTO_INCREMENT,
-            `PointID` int(11) NOT NULL,
+            `MeetingLineID` int(11) NOT NULL,
+            `MeetingID` int(11) DEFAULT 0,
+            `MeetingTypeID` int(11) DEFAULT 0,
             `ContactID` varchar(36) DEFAULT '00000000-0000-0000-0000-000000000000',
             `Description` varchar(100) COLLATE utf8_czech_ci DEFAULT '',
             `Content` varchar(5000) COLLATE utf8_czech_ci DEFAULT '',
@@ -680,17 +426,12 @@ class upgrademanagement {
             PRIMARY KEY (`TaskID`)
             ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci";
         $this->registry->getObject('db')->executeQuery( $sql );
+               
+        $sql = "ALTER TABLE `".$pref."dmsentry`".
+                " CHANGE `Url` `Url` varchar(250) CHARACTER SET utf8 COLLATE utf8_czech_ci DEFAULT ''";
 
-        $sql = "CREATE TABLE IF NOT EXISTS `".$pref."meetingattachment` (
-            `AttachmentID` int(11) NOT NULL AUTO_INCREMENT,
-            `MeetingLineID` int(11) NOT NULL,
-            `Description` varchar(100) COLLATE utf8_czech_ci DEFAULT '',
-            `Content` varchar(5000) COLLATE utf8_czech_ci DEFAULT '',
-            `URL` varchar(250) COLLATE utf8_czech_ci DEFAULT '',
-            PRIMARY KEY (`AttachmentID`)
-            ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci";
         $this->registry->getObject('db')->executeQuery( $sql );
-
+                
         $this->setNewVersion($upVer);
     }
 

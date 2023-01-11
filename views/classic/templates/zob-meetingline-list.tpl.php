@@ -47,7 +47,7 @@
             <td class="col_code200" MeetingLineID="{MeetingLineID}">
                 <span MeetingLineID="{MeetingLineID}">
                     <a href="index.php?page=zob/meetingline/moveup/{MeetingID}/{MeetingLineID}"><img src="views/classic/images/icon/moveup.png" title="Posun bodu nahorů"/></a>
-                    &nbsp;{EntryNo}/{Year}/<b>{LineNo}</b>&nbsp;
+                    &nbsp;{EntryNo}/{Year}/<b>{LineNo}{LineNo2}</b>&nbsp;
                     <a href="index.php?page=zob/meetingline/movedown/{MeetingID}/{MeetingLineID}"><img src="views/classic/images/icon/movedown.png" title="Posun bodu dolů"/></a>
                 </span>
             </td>

@@ -9,6 +9,8 @@ class Zobcontroller{
 	private $registry;
 	private $message;
 	private $errorMessage;
+	private $perSet;
+	private $prefDb;
 
 	/**
 	 * @param Registry $registry 
@@ -278,10 +280,8 @@ class Zobcontroller{
 	 */
 	private function meetingtype( $action )
 	{
-		global $config, $caption;
 		$urlBits = $this->registry->getURLBits();     
 
-		$post = $_POST;
 		$ElectionPeriodID = isset($_POST["ElectionPeriodID"]) ? $_POST["ElectionPeriodID"] : '';
 		switch ($action) {
 			case 'modify':
@@ -412,10 +412,8 @@ class Zobcontroller{
 	 */
 	private function member( $action )
 	{
-		global $config, $caption;
 		$urlBits = $this->registry->getURLBits();     
 
-		$post = $_POST;
 		$MeetingTypeID = isset($_POST["MeetingTypeID"]) ? $_POST["MeetingTypeID"] : '';
 		$MeetingTypeID = isset($urlBits[4]) ? $urlBits[4] : $MeetingTypeID;
 
@@ -510,7 +508,6 @@ class Zobcontroller{
 	 */
 	private function meeting( $action )
 	{
-		global $config, $caption;
 		$urlBits = $this->registry->getURLBits();     
 
 		switch ($action) {
@@ -545,7 +542,6 @@ class Zobcontroller{
 	 */
 	private function meetingattachment( $action )
 	{
-		global $config, $caption;
 		$urlBits = $this->registry->getURLBits();     
 		$MeetingID = 0;
 		$MeetingLineID = 0;
@@ -581,11 +577,11 @@ class Zobcontroller{
 	 */
 	private function meetingline( $action )
 	{
-		global $config, $caption;
 		$urlBits = $this->registry->getURLBits();     
 		$MeetingLineID = 0;
 		$MeetingID = 0;
 
+		$post = $_POST;
 		switch ($action) {
 			case 'moveup':
 				$MeetingID = isset($urlBits[3]) ? $urlBits[3] : null;
@@ -666,14 +662,15 @@ class Zobcontroller{
 		
 		// Pole editace šablony
 		$data['MeetingTypeID'] = $MeetingTypeID;
+		$data['ElectionPeriodID'] = $meetingtype['ElectionPeriodID'];
 		$data['EntryNo'] = $EntryNo;
+		$data['AtTime'] = $AtTime;
 		$data['MeetingPlace'] = $MeetingPlace;
 		$data['RecorderBy'] = $RecorderBy;
-		$data['AtTime'] = $AtTime;
 
 		if (!$isTemplate){
-			$data['Year'] = $Year;
 			$data['AtDate'] = $AtDate;
+			$data['Year'] = $Year;
 			$data['PostedUpDate'] = $PostedUpDate;
 			$data['PostedDownDate'] = $PostedDownDate;
 			$data['Close'] = $Close;
@@ -725,6 +722,8 @@ class Zobcontroller{
 			foreach($meetingTemplate as $data){
 				$data['MeetingLineID'] = null;
 				$data['MeetingID'] = $MeetingID;
+				$data['MeetingTypeID'] = $meeting['MeetingTypeID'];
+				$data['ElectionPeriodID'] = $meeting['ElectionPeriodID'];
 				$this->registry->getObject('db')->insertRecords('meetingline',$data);
 			}
 			return true;
@@ -754,10 +753,14 @@ class Zobcontroller{
 		}
 
 		$data['MeetingID'] = $MeetingID;
+		$data['MeetingTypeID'] = $meeting['MeetingTypeID'];
+		$data['ElectionPeriodID'] = $meeting['ElectionPeriodID'];
 		if($data['LineType'] == 'Podbod'){
 			$data['LineNo'] = $this->getLastMeetinglineLineNo( $MeetingID );
+			$data['LineNo2'] = $this->getNextMeetinglineLineNo2( $MeetingID, $data['LineNo'] );
 		}else
 			$data['LineNo'] = $this->getNextMeetinglineLineNo( $MeetingID );
+			$data['LineNo2'] = 0;
 		$this->registry->getObject('db')->insertRecords('meetingline',$data);
 
 		return true;
@@ -835,10 +838,7 @@ class Zobcontroller{
 		if($meeting == null)
 			return false;
 		$EntryNo = $meeting['EntryNo'];
-		
-		$MeetingTypeID = $meeting['MeetingTypeID'];
-		$meetingtype = $this->getMeetingtype($MeetingTypeID);
-		
+
 		// Data z formuláře
 		$AtDate = isset($_POST['AtDate']) ? $_POST['AtDate'] : $meeting['AtDate'];
 		$AtDate = $AtDate != '' ? $AtDate : null;
@@ -886,29 +886,31 @@ class Zobcontroller{
 				return false;
 			};
 		}
-		$isTemplate = $this->isElectionperiodTemplate( $meetingtype['ElectionPeriodID'] );
+		$isTemplate = $this->isElectionperiodTemplate( $meeting['ElectionPeriodID'] );
 
 		// Inicializace zánamu pro modifikaci
 		$data = array();
 		
 		// Pole editace šablony
-		$data['MeetingTypeID'] = $MeetingTypeID;
+		$data['MeetingTypeID'] = $meeting['MeetingTypeID'];
+		$data['ElectionPeriodID'] = $meeting['ElectionPeriodID'];
 		$data['EntryNo'] = $EntryNo;
-		$data['MeetingPlace'] = $MeetingPlace;
-		$data['RecorderBy'] = $RecorderBy;
 		$data['AtTime'] = $AtTime;
 		$data['Present'] = $Present;
+		$data['MeetingPlace'] = $MeetingPlace;
+		$data['RecorderBy'] = $RecorderBy;
 
 		if (!$isTemplate){
-			$data['Year'] = $Year;
 			$data['AtDate'] = $AtDate;
+			$data['Year'] = $Year;
 			$data['PostedUpDate'] = $PostedUpDate;
 			$data['PostedDownDate'] = $PostedDownDate;
 			$data['State'] = $State;
 			$data['RecorderAtDate'] = $RecorderAtDate;
+			$data['Actual'] = $meeting['Actual'];
+			$data['Close'] = $Close;
 			$data['VerifierBy1'] = $VerifierBy1;
 			$data['VerifierBy2'] = $VerifierBy2;
-			$data['Close'] = $Close;
 		}
 
 		// Uložení záznamu
@@ -923,26 +925,21 @@ class Zobcontroller{
 			return false;
 		
 		$meetingline = $this->getMeetingline($MeetingLineID);
-		$MeetingID = $meetingline['MeetingID'];
-		$meeting = $this->getMeeting($MeetingID);
-		if($meeting){
-			$meetingtype = $this->getMeetingtype($meeting['MeetingTypeID']);
-			if($meetingtype)
-				$electionperiod = $this->getElectionperiod($meetingtype['ElectionPeriodID']);
-		}
+		$meeting = $this->getMeeting($meetingline['MeetingID']);
+		$meetingtype = $this->getMeetingtype($meeting['MeetingTypeID']);
 
 
 		// Data z FORMuláře
-		$post = $_POST;
 		$data = array();
-		$data['LineType'] = isset($_POST['LineType']) ? $_POST['LineType'] : $meetingline['LineType'];
+		$data['LineType'] = isset($_POST['LineType']) ? $_POST['LineType'] : $meetingline['LineType'];		
 		$data['Title'] = isset($_POST['Title']) ? $this->registry->getObject('db')->sanitizeData($_POST['Title']) : $meetingline['Title'];
+		$data['Title2'] = isset($_POST['Title2']) ? $this->registry->getObject('db')->sanitizeData($_POST['Title2']) : $meetingline['Title2'];
 		$data['Content'] = isset($_POST['Content']) ? $this->registry->getObject('db')->sanitizeData($_POST['Content']) : $meetingline['Content'];
 		$data['Discussion'] = isset($_POST['Discussion']) ? $this->registry->getObject('db')->sanitizeData($_POST['Discussion']) : $meetingline['Discussion'];
 		$data['Vote'] = isset($_POST['Vote']) ? $_POST['Vote'] : $meetingline['Vote'];
 		$data['VoteFor'] = isset($_POST['VoteFor']) ? (int) $_POST['VoteFor'] : $meetingline['VoteFor'];
 		$data['VoteAgainst'] = isset($_POST['VoteAgainst']) ? (int) $_POST['VoteAgainst'] : $meetingline['VoteAgainst'];
-		$data['VoteDelayed'] = isset($_POST['VoteDelayed']) ? (int) $_POST['VoteDelayed'] : $meetingline['VoteDelayed'];
+		$data['VoteDelayed'] = isset($_POST['VoteDelayed']) ? (int) $_POST['VoteDelayed'] : $meetingline['VoteDelayed'];	
 		$Presenter = isset($_POST['Presenter']) ? $_POST['Presenter'] : '';
 
 		// Kontroly
@@ -998,8 +995,10 @@ class Zobcontroller{
 		$toLine = $fromMeetingline['LineNo'] + $step;
 
 		$meeting = $this->getMeeting($fromMeetingline['MeetingID']);
-		if($meeting['Close'] == 1)
+		if($meeting['Close'] == 1){
+			$this->errorMessage = 'Nelze měnit pořadí uzavřeného zápisu jednání.';
 			return;				
+		}
 
 		// Kontrola z prvního řádku výš (což nelze)
 		if($toLine == 0)
@@ -1210,6 +1209,10 @@ class Zobcontroller{
 					$meetingline['Presenter'] = '';
 				$meetingline['Attachments'] = $this->countRec('meetingattachment','MeetingLineID = '.$meetingline['MeetingLineID']);
 				$meetingline['bold'] = $meetingline['LineType'] == 'Podbod' ? '' : 'bold';
+				if($meetingline['LineNo2'] <> '0')
+					$meetingline['LineNo2'] = ".".$meetingline['LineNo2'];
+				else
+					$meetingline['LineNo2'] = '';
 				$meetinglines[] = $meetingline;
 			}
 			$cache = $this->registry->getObject('db')->cacheData( $meetinglines );
@@ -1588,6 +1591,15 @@ class Zobcontroller{
 		return $result['LineNo'] + 1;				
 	}
 
+	public function getNextMeetinglineLineNo2( $MeetingID , $LineNo)
+	{
+		$sql = "SELECT max(LineNo) as LineNo2 FROM ".$this->prefDb."meetingline WHERE MeetingID = $MeetingID AND LineNo = $LineNo";
+		$cache = $this->registry->getObject('db')->cacheQuery( $sql );	
+		$this->registry->getObject('db')->findFirst( $cache );
+		$result = $this->registry->getObject('db')->resultsFromCache( $cache );
+		return $result['LineNo2'] + 1;				
+	}
+
 	public function getLastMeetinglineLineNo( $MeetingID )
 	{
 		$sql = "SELECT max(LineNo) as LineNo FROM ".$this->prefDb."meetingline WHERE MeetingID = $MeetingID";
@@ -1632,6 +1644,8 @@ class Zobcontroller{
 	}
 
 	public function text2Date($text){
+		if($text == "")
+			return null;
 		$text = trim($text);
 		$arr = explode('.',$text);
 		if($arr[2] < 100)
