@@ -293,12 +293,20 @@ class Zobmanage {
 						$this->registry->getObject('db')->updateRecords('meetingline',$data,$condition);
 						break;
 					case 'U':
+						$text = trim($field[1]);
+						if($text[0] == '-')
+							$text = substr($text,1);
+						$data = null;
+						$data['DraftResolution'] = $this->registry->getObject('db')->sanitizeData($text);
+						$condition = "MeetingLineID = $MeetingLineID";
+						$this->registry->getObject('db')->updateRecords('meetingline',$data,$condition);
+						break;
 					case 'I':
 						$text = trim($field[1]);
 						if($text[0] == '-')
 							$text = substr($text,1);
 						$data = null;
-						$data['Content'] = $this->registry->getObject('db')->sanitizeData($text);
+						$data['Discussion'] = $this->registry->getObject('db')->sanitizeData($text);
 						$condition = "MeetingLineID = $MeetingLineID";
 						$this->registry->getObject('db')->updateRecords('meetingline',$data,$condition);
 						break;
@@ -331,9 +339,12 @@ class Zobmanage {
 								$this->print();
 								return;
 						}
-						$data['Content'] = $meetingline['Content']."\n".$this->registry->getObject('db')->sanitizeData($line);
-						$condition = "MeetingLineID = $MeetingLineID";
-						$this->registry->getObject('db')->updateRecords('meetingline',$data,$condition);
+						$line = trim($line);
+						if($line != ""){
+							$data[$field] = $meetingline[$field]."\n".$this->registry->getObject('db')->sanitizeData($line);
+							$condition = "MeetingLineID = $MeetingLineID";
+							$this->registry->getObject('db')->updateRecords('meetingline',$data,$condition);
+						};
 						$type = $lastType;
 						break;
 				}

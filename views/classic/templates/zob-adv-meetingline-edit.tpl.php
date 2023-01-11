@@ -67,7 +67,11 @@
                     <img src="views/classic/images/icon/arrowdone.png" id="arrowdoneDiscussion{MeetingLineID}" title="Rozbalit" onClick="document.getElementById('fieldDiscussion{MeetingLineID}').style.display = 'block'; this.style.display='none';document.getElementById('arrowupDiscussion{MeetingLineID}').style.display='';"/>
                     <img src="views/classic/images/icon/arrowup.png" id="arrowupDiscussion{MeetingLineID}" title="Sbalit" onClick="document.getElementById('fieldDiscussion{MeetingLineID}').style.display = 'none'; this.style.display='none';document.getElementById('arrowdoneDiscussion{MeetingLineID}').style.display='';" style="display:none;"/>
                     <br>                   
-                    <textarea  id="fieldDiscussion{MeetingLineID}" name="Discussion" rows="3" cols="160" value="" class="value par" style="display:none;" pkID="{MeetingLineID}" table="meetingline" onchange="wsUpdate(this);">{Discussion}</textarea>
+                    <textarea  id="fieldDiscussion{MeetingLineID}" name="Discussion" rows="3" cols="160" value="" class="value par" pkID="{MeetingLineID}" table="meetingline" onchange="wsUpdate(this);">{Discussion}</textarea>
+                    <script>
+                        if('{Discussion}' =='')
+                            document.getElementById('fieldDiscussion{MeetingLineID}').style.display = 'none';
+                    </script>
                 </td>
             </tr>
             <tr>
@@ -77,7 +81,11 @@
                     <img src="views/classic/images/icon/arrowdone.png" id="arrowdoneDraftResolution{MeetingLineID}" title="Rozbalit" onClick="document.getElementById('fieldDraftResolution{MeetingLineID}').style.display = 'block'; this.style.display='none';document.getElementById('arrowupDraftResolution{MeetingLineID}').style.display='';"/>
                     <img src="views/classic/images/icon/arrowup.png" id="arrowupDraftResolution{MeetingLineID}" title="Sbalit" onClick="document.getElementById('fieldDraftResolution{MeetingLineID}').style.display = 'none'; this.style.display='none';document.getElementById('arrowdoneDraftResolution{MeetingLineID}').style.display='';" style="display:none;"/>
                     <br>                   
-                    <textarea  id="fieldDraftResolution{MeetingLineID}" name="DraftResolution" rows="3" cols="160" value="" class="value par" style="display:none;" pkID="{MeetingLineID}" table="meetingline" onchange="wsUpdate(this);">{DraftResolution}</textarea>
+                    <textarea  id="fieldDraftResolution{MeetingLineID}" name="DraftResolution" rows="3" cols="160" value="" class="value par" pkID="{MeetingLineID}" table="meetingline" onchange="wsUpdate(this);">{DraftResolution}</textarea>
+                    <script>
+                        if('{DraftResolution}' == '')
+                            document.getElementById('fieldDraftResolution{MeetingLineID}').style.display = 'none';
+                    </script>
                 </td>
             </tr>
         </form>
