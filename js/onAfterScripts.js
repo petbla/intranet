@@ -821,30 +821,30 @@ function validateCheckbox( e ){
     }
 }
 
-function validateCheckboxVote( e, MeetingLineID ){
+function validateCheckboxVote( e, ID ){
+    var ee, table;
+    table = e.getAttribute('table');
     if (e.checked) {
         e.setAttribute('value',1);
-        document.getElementById('fieldVoteFor' + MeetingLineID).disabled = false;
-        document.getElementById('fieldVoteAgainst' + MeetingLineID).disabled = false;
-        document.getElementById('fieldVoteDelayed' + MeetingLineID).disabled = false;
+        document.getElementById(table + 'VoteFor' + ID).disabled = false;
+        document.getElementById(table + 'VoteAgainst' + ID).disabled = false;
+        document.getElementById(table + 'VoteDelayed' + ID).disabled = false;
     }else{
         e.setAttribute('value',0);
         
-        e = document.getElementById('fieldVoteFor' + MeetingLineID);
-        e.value = 0;
-        e.disabled = true;
-        wsUpdate(e);
+        ee = document.getElementById(table + 'VoteFor' + ID);
+        ee.value = 0;
+        ee.disabled = true;
 
-        e = document.getElementById('fieldVoteAgainst' + MeetingLineID);
-        e.value = 0;
-        e.disabled = true;
-        wsUpdate(e);
+        ee = document.getElementById(table + 'VoteAgainst' + ID);
+        ee.value = 0;
+        ee.disabled = true;
 
-        e = document.getElementById('fieldVoteDelayed' + MeetingLineID);
-        e.value = 0;
-        e.disabled = true;
-        wsUpdate(e);
+        ee = document.getElementById(table + 'VoteDelayed' + ID);
+        ee.value = 0;
+        ee.disabled = true;
     }
+    wsUpdate(e);    
 }
 
 function saveFormMeetingLine(MeetingLineID){
@@ -875,5 +875,24 @@ function dropattachmentadv(ev){
     var MeetingLineID = ev.target.getAttribute("MeetingLineID");
     if(MeetingLineID){
         window.open("index.php?page=zob/adv/meetingattachment/assign/" + AttachmentID + "/" + MeetingLineID ,"_self")
+    }
+}
+
+autosize();
+function autosize(){
+    var text = $('.autosize');
+
+    text.each(function(){
+        $(this).attr('rows',1);
+        resize($(this));
+    });
+
+    text.on('input', function(){
+        resize($(this));
+    });
+    
+    function resize ($text) {
+        $text.css('height', 'auto');
+        $text.css('height', $text[0].scrollHeight+'px');
     }
 }

@@ -30,7 +30,7 @@
             <td class="col_action">
                 <img src="views/classic/images/icon/modify.png" alt="{lbl_edit}" onClick = "modifyZobElectionPeriod('{ElectionPeriodID}','{PeriodName}','{Actual}','modify');"/>
                 <a href="index.php?page=zob/electionperiod/delete/{ElectionPeriodID}"><img src="views/classic/images/icon/delete.png" alt="{lbl_delete}" id="{ElectionPeriodID}" onclick="return ConfirmDelete();"/></a>
-                <img src="views/classic/images/icon/arrowdone.png" alt="Typ jednání" onClick="document.getElementById('meetingtypeCard{ElectionPeriodID}').style.display = 'block';"/>
+                <img src="views/classic/images/icon/arrowdown.png" alt="Typ jednání" onClick="document.getElementById('meetingtypeCard{ElectionPeriodID}').style.display = 'block';"/>
             </td>
             <td class="col_text">
                 {PeriodName}

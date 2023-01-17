@@ -10,14 +10,13 @@ B;8;Schválení podání výběrového řízení na nákup dopravního automobil
 B;9;Schválení zpracování energetické koncepce obce Mistřice
 B;10;Schválení veřejnoprávní smlouvy 
 B;11;Schválení smlouvy o zřízení VB
-B;12;Žádosti 
-B;12a;Žádosti Mateřské školy Mistřice
-B;12b;Žádosti Základní školy Mistřice 
-B;12c;Žádost o příspěvek stavebníkům na novostavbu
-P;13; – Podání žádosti na výstavbu Sociálního bydlení v obci Mistřice
-P;14; – Seznámení zastupitelů s kauzou MAXELL Reality s.r.o.
-P;15; – MESOH schválení vyhodnocení roku 2022 a poplatky na rok 2023
-P;16; – Organizační řád obce  
+B;12;Žádosti Základní školy Mistřice
+P;12-1;Žádosti Mateřské školy Mistřice
+P;12-2;Žádost o příspěvek stavebníkům na novostavbu
+T;13;Podání žádosti na výstavbu Sociálního bydlení v obci Mistřice
+T;14;Seznámení zastupitelů s kauzou MAXELL Reality s.r.o.
+T;15;MESOH schválení vyhodnocení roku 2022 a poplatky na rok 2023
+T;16;Organizační řád obce  
 B;17;Diskuse
 B;18;Závěr    
 O;1;Schůzi zastupitelstva obce zahájil v 19.00 starosta obce. Přivítal všechny přítomné a seznámil je s programem.
@@ -79,6 +78,34 @@ O;11; – Zastupitelstvo obce projednalo a schválilo:
 H;        pro: 14		proti: 0		zdržel se: 0
 U;Zastupitelstvo obce schvaluje Smlouvu o zřízení věcného břemene „Mistřice, Vašíček p. č. 4639, k. smyčka NN“.       
 Zastupitelstvo obce schvaluje Smlouvu o smlouvě budoucí o zřízení VB „Javorovec, Hubáček č. p. 443, kabel NN“ 
+O;12;Základní škola Mistřice žádá o
+      – neinvestiční příspěvek ve výši 1 000 000,-Kč na pokrytí 
+provozních nákladů pro rok 2023. Příloha 5  
+H;        pro: 8 		proti: 6		zdržel se: 0
+C;                  – přijetí daru ve výši 15 000,-Kč. Příloha 6 
+H;        pro: 14 		proti: 0		zdržel se: 0
+U;Zastupitelstvo obce schvaluje přijetí daru ve výši 15 000,-Kč 
+C;                  – o souhlas zřizovatele s realizací projektu „Šablony I v ZŠ Mistřice“. Příloha 7
+H;        pro: 14 		proti: 0		zdržel se: 0
+U;Zastupitelstvo obce schvaluje realizaci projektu „Šablony I v ZŠ Mistřice“, reg. č. CZ.02.02.XX/00/22 002/0003086
+O;12-1; – Žádosti:
+Mateřská škola Mistřice žádá o
+                – navýšení neinvestičního příspěvku ve výši 125 000,-Kč dorovnání energií a                                   
+                   platů nepedagogických pracovníků. Příloha 2  
+H;        pro: 14 		proti: 0		zdržel se: 0
+U;Zastupitelstvo obce schvaluje navýšení neinvestičního příspěvku o 125 000,-Kč na dorovnání 
+energií a platů nepedagogických pracovníků v Mateřské škole Mistřice  
+C;                – neinvestiční příspěvek ve výši 1 000 000,-Kč na pokrytí provozních nákladů. 
+                   Zastupitelstvo schvaluje 950 000,- Kč pro rok 2023. Příloha 3  
+H;        pro: 14 		proti: 0		zdržel se: 0
+U;Zastupitelstvo obce schvaluje neinvestiční příspěvek ve výši 1 000 000,-Kč na pokrytí provozních nákladů pro rok 2023 v Základní škola Mistřice 
+Zastupitelstvo obce schvaluje neinvestiční příspěvek ve výši 950 000,-Kč na pokrytí provozních nákladů v roce 2023
+C;     – revitalizaci areálu školní zahrady a prostranství před MŠ. Zastupitelstvo navrhuje  
+        předložení cenové nabídky. 
+     – rekonstrukci nákladních výtahů a prostorů výdeje jídla Příloha 4
+O;12-2;Zastupitelstvo obce projednalo žádost manželů Dagmar a Antonín Vašíčkovi o příspěvek na novostavbu. Byla splněna podmínka, zastupitelstvo schvaluje.  
+H;        pro: 14		proti: 0		zdržel se: 0
+U;Zastupitelstvo obce schvaluje příspěvek na novostavbu Dagmar a Antonín Vašíčkovi.
 O;13;– Zastupitelstvo obce projednalo a schválilo souhlas s projektem předkládaným do 25. 
          výzvy IROP – Sociální bydlení – SC 4.2 (MRR/PR) a jeho realizací na území obce.
 H;        pro: 14		proti: 0		zdržel se: 0

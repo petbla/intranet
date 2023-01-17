@@ -1158,7 +1158,7 @@ class Zobcontroller{
 		}
 		$this->registry->getObject('template')->getPage()->addTag( 'MeetingTypeID', $MeetingTypeID );						
 		$this->registry->getObject('template')->addTemplateBit('editdMeetingCard', 'zob-meeting-edit.tpl.php');
-
+		
 		$this->build('zob-meeting-list.tpl.php');
 	}
 
@@ -1194,12 +1194,10 @@ class Zobcontroller{
 			$○r .= ' (šablona)';
 
 		// Body zápisu z jednání
-		$sql = "SELECT * FROM ".$this->prefDb."meetingline WHERE MeetingID = $MeetingID ORDER BY LineNo";
-		$sql = $this->registry->getObject('db')->getSqlByPage( $sql );
-		$cache = $this->registry->getObject('db')->cacheQuery( $sql );			
-		if(!$this->registry->getObject('db')->isEmpty( $cache )){
-			$meetinglines = array();
-			while( $meetingline = $this->registry->getObject('db')->resultsFromCache( $cache ) )
+		$meetinglines = $this->readMeetingLines($MeetingID);
+		if($meetinglines){
+			$meetinglines2 = array();
+			foreach($meetinglines as $meetingline)
 			{
 				$meetingline['dmsClassName'] = 'meetingline';
 				$contact = $this->getContactByID($meetingline['PresenterID']);
@@ -1213,11 +1211,45 @@ class Zobcontroller{
 					$meetingline['LineNo2'] = ".".$meetingline['LineNo2'];
 				else
 					$meetingline['LineNo2'] = '';
-				$meetinglines[] = $meetingline;
+				
+				$meetingline['isContent'] = $meetingline['Content'] == '' ? 0 : 1;
+				$meetingline['isDiscussion'] = $meetingline['Discussion'] == '' ? 0 : 1;
+				$meetingline['isDraftResolution'] = $meetingline['DraftResolution'] == '' ? 0 : 1;
+
+				// Content of meetingline
+				$meetinglinecontents = $this->readMeetingLineContents($meetingline['MeetingLineID']);
+				if($meetinglinecontents){
+					$meetingline['isNextContent'] = 1;
+				}else{
+					$meetingline['isNextContent'] = 0;
+				}									
+
+				$meetinglines2[] = $meetingline;
 			}
-			$cache = $this->registry->getObject('db')->cacheData( $meetinglines );
+			$cache = $this->registry->getObject('db')->cacheData( $meetinglines2 );	
 			$this->registry->getObject('template')->getPage()->addTag( 'meetinglineList', array( 'DATA', $cache ) );
 			$this->registry->getObject('template')->getPage()->addTag( 'isEmpty', 0 );				
+
+			foreach($meetinglines as $meetingline){
+				$meetinglinecontents = $this->readMeetingLineContents($meetingline['MeetingLineID']);
+				if($meetinglinecontents){
+					$meetinglinecontents2 = array();
+					foreach($meetinglinecontents as $meetinglinecontent){
+						foreach($meetinglinecontent as $key => $value){
+							$rec['con_'.$key] = $value;
+			
+						}
+						$rec['con_isContent'] = $rec['con_Content'] == '' ? 0 : 1;
+						$rec['con_isDiscussion'] = $rec['con_Discussion'] == '' ? 0 : 1;
+						$rec['con_isDraftResolution'] = $rec['con_DraftResolution'] == '' ? 0 : 1;
+						$meetinglinecontents2[] = $rec;
+					}
+					$cache = $this->registry->getObject('db')->cacheData( $meetinglinecontents2 );
+					$this->registry->getObject('template')->getPage()->addTag( 'meetinglinecontent'.$meetingline['MeetingLineID'], array( 'DATA', $cache ) );
+					$meetingline['isNextContent'] = 1;
+				}	
+			}
+
 
 			foreach($meetinglines as $meetingline){
 				$sql = "SELECT * FROM ".$this->prefDb."meetingattachment WHERE MeetingID = $MeetingID AND MeetingLineID = ".$meetingline['MeetingLineID'];
@@ -1412,6 +1444,16 @@ class Zobcontroller{
 		return $meetingline;
 	}
 
+	public function readMeetingLineContents ( $MeetingLineID  )
+	{
+		$meetinglinecontent = null;
+		$this->registry->getObject('db')->initQuery('meetinglinecontent');
+		$this->registry->getObject('db')->setFilter('MeetingLineID',$MeetingLineID);
+		$this->registry->getObject('db')->setOrderBy('LineNo');
+		if ($this->registry->getObject('db')->findSet())
+			$meetinglinecontent = $this->registry->getObject('db')->getResult();			
+		return $meetinglinecontent;
+	}
 
 	public function getElectionperiod ($ElectionPeriodID )
 	{
@@ -1532,6 +1574,16 @@ class Zobcontroller{
 		return $meetingline;
 	}
 
+	public function getMeetinglinecontent ( $ContentID )
+	{
+		$meetinglinecontent = null;
+		$this->registry->getObject('db')->initQuery('meetinglinecontent');
+		$this->registry->getObject('db')->setFilter('ContentID',$ContentID);
+		if ($this->registry->getObject('db')->findFirst())
+			$meetinglinecontent = $this->registry->getObject('db')->getResult();			
+		return $meetinglinecontent;
+	}
+
 	public function getMeetingattachment ( $AttachmentID )
 	{
 		$meetingattachment = null;
@@ -1573,6 +1625,19 @@ class Zobcontroller{
 		return $contact;
 	}
 
+	public function getValue( $table, $pkID, $field )
+	{
+		$value = null;
+		$pk = $this->getFieldPK($table);
+		$this->registry->getObject('db')->initQuery($table);
+		$this->registry->getObject('db')->setFilter($pk,$pkID);
+		if ($this->registry->getObject('db')->findFirst()){
+			$rec = $this->registry->getObject('db')->getResult();
+			$value = isset($rec[$field]) ? $rec[$field] : null;
+		}			
+		return $value;
+	}
+
 	public function geNextMeetingEntryNo( $MeetingTypeID )
 	{
 		$sql = "SELECT max(EntryNo) as EntryNo FROM ".$this->prefDb."meeting WHERE MeetingTypeID = $MeetingTypeID";
@@ -1598,6 +1663,15 @@ class Zobcontroller{
 		$this->registry->getObject('db')->findFirst( $cache );
 		$result = $this->registry->getObject('db')->resultsFromCache( $cache );
 		return $result['LineNo2'] + 1;				
+	}
+
+	public function getNextMeetinglineContentLineNo( $MeetingLineID )
+	{
+		$sql = "SELECT max(LineNo) as LineNo FROM ".$this->prefDb."meetinglinecontent WHERE MeetingLineID = $MeetingLineID ";
+		$cache = $this->registry->getObject('db')->cacheQuery( $sql );	
+		$this->registry->getObject('db')->findFirst( $cache );
+		$result = $this->registry->getObject('db')->resultsFromCache( $cache );
+		return $result['LineNo'] + 1;				
 	}
 
 	public function getLastMeetinglineLineNo( $MeetingID )
@@ -1676,7 +1750,7 @@ class Zobcontroller{
 					$pkField = $this->getFieldPK($table);
 					if($pkField){
 						$this->registry->getObject('db')->initQuery($table);
-						$this->registry->getObject('db')->setCondition("$pkField = $ID");
+						$this->registry->getObject('db')->setFilter($pkField,$ID);
 						if ($this->registry->getObject('db')->findFirst()){
 							$result = $this->registry->getObject('db')->getResult();
 							$value =  isset($result[$field]) ? $result[$field] : '<NULL>';
@@ -1686,6 +1760,34 @@ class Zobcontroller{
 						$value = '<NULL>';
 				}
 				return $value;
+			case 'copyfrom':
+				# URL: zob/ws/copyfrom/<table>/<ID>/<FieldName>/<fromFieldName>
+				$table = strtolower(isset($urlBits[3]) ? $urlBits[3] : ''); 
+				$ID = isset($urlBits[4]) ? $urlBits[4] : 0; 
+				$field = isset($urlBits[5]) ? $urlBits[5] : '';
+				$fieldFrom = isset($urlBits[6]) ? $urlBits[6] : '';
+				if($table == '')
+					$result = 'Error: Table is not specified';
+				if($ID == 0)
+					$result = 'Error: Meeting line not specified';
+				if($field == '')
+					$result = 'Error: Field not specified';
+				if($fieldFrom == '')
+					$result = 'Error: Field from not specified';
+				if($table == 'meetingline'){
+					$meetingline = $this->getMeetingline($ID);
+					$meeting = $this->getMeeting($meetingline['MeetingID']);
+					if($meeting['Close'] == 1)
+						$result = 'Nelze editovat uzavřený zápis jednání;';
+				}
+				if($result == 'OK'){
+					$data = array();
+					$data[$field] = $this->getValue( $table, $ID, $fieldFrom);  
+					$pk = $this->getFieldPK($table);
+					$condition = "`$pk` = $ID";
+					$this->registry->getObject('db')->updateRecords($table,$data,$condition);
+				}
+				break;
 			case 'upd':
 				# URL: zob/ws/upd/<table>/<ID>/<FieldName>/<FieldValue>
 				$table = strtolower(isset($urlBits[3]) ? $urlBits[3] : ''); 
@@ -1702,59 +1804,111 @@ class Zobcontroller{
 					$data = array();
 					switch ($table) {
 						case 'meetingline':
-							switch ($field) {
-								case 'VoteFor':
-								case 'VoteAgainst':
-								case 'VoteDelayed':
-									$meetingline = $this->getMeetingline($ID);
-									$meeting = $this->getMeeting($meetingline['MeetingID']);
-									$value = (int) $value;									
-									$total = $meetingline['VoteFor'] + $meetingline['VoteAgainst'] + $meetingline['VoteDelayed'];
-									if($value > 0)
-										switch ($field) {
-											case 'VoteFor':
-												$total = $value + $meetingline['VoteAgainst'] + $meetingline['VoteDelayed'];
-												break;
-											case 'VoteAgainst':
-												$total = $meetingline['VoteFor'] + $value + $meetingline['VoteDelayed'];
-												break;
-											case 'VoteDelayed':
-												$total = $meetingline['VoteFor'] + $meetingline['VoteAgainst'] + $value;
-												break;
-										}
-										if($total > $meeting['Present'])
-											$result = "Počet hlasujících nesouhlasí, maximální počet přítomných členů je ".$meeting['Present'];
-									$data[$field] = $value;
-									break;
-								case 'Vote':
-									if($value == 1){
-										$meetingline = $this->getMeetingline($ID);
-										$meeting = $this->getMeeting($meetingline['MeetingID']);
-										$data['VoteFor'] = $meeting['Present'];
-										$data['VoteAgainst'] = "0";
-										$data['VoteDelayed'] = "0";										
-									}
-									$data[$field] = $value;
-									break;
-								case 'Presenter':
-									if($value == '')
-										$data['PresenterID'] = '00000000-0000-0000-0000-000000000000';
-									else{
-										$contact = $this->getContactByName($value);
-										if($contact){
-											$data['PresenterID'] = $contact['ID'];
+							$meetingline = $this->getMeetingline($ID);
+							$meeting = $this->getMeeting($meetingline['MeetingID']);
+							if($meeting['Close'] == 1){
+								$result = 'Nelze editovat uzavřený zápis jednání;';
+							}else{
+								switch ($field) {
+									case 'VoteFor':
+									case 'VoteAgainst':
+									case 'VoteDelayed':
+										$value = (int) $value;									
+										$total = $meetingline['VoteFor'] + $meetingline['VoteAgainst'] + $meetingline['VoteDelayed'];
+										if($value > 0)
+											switch ($field) {
+												case 'VoteFor':
+													$total = $value + $meetingline['VoteAgainst'] + $meetingline['VoteDelayed'];
+													break;
+												case 'VoteAgainst':
+													$total = $meetingline['VoteFor'] + $value + $meetingline['VoteDelayed'];
+													break;
+												case 'VoteDelayed':
+													$total = $meetingline['VoteFor'] + $meetingline['VoteAgainst'] + $value;
+													break;
+											}
+											if($total > $meeting['Present'])
+												$result = "Počet hlasujících nesouhlasí, maximální počet přítomných členů je ".$meeting['Present'];
+										$data[$field] = $value;
+										break;
+									case 'Vote':
+										if($value == 1){
+											$data['VoteFor'] = $meeting['Present'];
+											$data['VoteAgainst'] = "0";
+											$data['VoteDelayed'] = "0";										
 										}else{
-											$result = "Předkladatel $value nebyl nalezen v kontaktech.";
-											return $result;
+											$data['VoteFor'] = '0';
+											$data['VoteAgainst'] = "0";
+											$data['VoteDelayed'] = "0";										
 										}
-									}
-									break;
-								default:
-									$data[$field] = $value;
+										$data[$field] = $value;
+										break;
+									case 'Presenter':
+										if($value == '')
+											$data['PresenterID'] = '00000000-0000-0000-0000-000000000000';
+										else{
+											$contact = $this->getContactByName($value);
+											if($contact){
+												$data['PresenterID'] = $contact['ID'];
+											}else{
+												$result = "Předkladatel $value nebyl nalezen v kontaktech.";
+												return $result;
+											}
+										}
+										break;
+									default:
+										$data[$field] = $value;
+								}
+								$condition = "MeetingLineID = $ID";
+								$this->registry->getObject('db')->updateRecords($table,$data,$condition);
 							}
-							
-							$condition = "MeetingLineID = $ID";
-							$this->registry->getObject('db')->updateRecords($table,$data,$condition);
+							break;						
+						case 'meetinglinecontent':
+							$meetinglinecontent = $this->getMeetinglinecontent($ID);
+							$meeting = $this->getMeeting($meetinglinecontent['MeetingID']);
+							if($meeting['Close'] == 1){
+								$result = 'Nelze editovat uzavřený zápis jednání;';
+							}else{
+								switch ($field) {
+									case 'VoteFor':
+									case 'VoteAgainst':
+									case 'VoteDelayed':
+										$value = (int) $value;									
+										$total = $meetinglinecontent['VoteFor'] + $meetinglinecontent['VoteAgainst'] + $meetinglinecontent['VoteDelayed'];
+										if($value > 0)
+											switch ($field) {
+												case 'VoteFor':
+													$total = $value + $meetinglinecontent['VoteAgainst'] + $meetinglinecontent['VoteDelayed'];
+													break;
+												case 'VoteAgainst':
+													$total = $meetinglinecontent['VoteFor'] + $value + $meetinglinecontent['VoteDelayed'];
+													break;
+												case 'VoteDelayed':
+													$total = $meetinglinecontent['VoteFor'] + $meetinglinecontent['VoteAgainst'] + $value;
+													break;
+											}
+											if($total > $meeting['Present'])
+												$result = "Počet hlasujících nesouhlasí, maximální počet přítomných členů je ".$meeting['Present'];
+										$data[$field] = $value;
+										break;
+									case 'Vote':
+										if($value == 1){
+											$data['VoteFor'] = $meeting['Present'];
+											$data['VoteAgainst'] = "0";
+											$data['VoteDelayed'] = "0";										
+										}else{
+											$data['VoteFor'] = '0';
+											$data['VoteAgainst'] = "0";
+											$data['VoteDelayed'] = "0";										
+										}
+										$data[$field] = $value;
+										break;
+									default:
+										$data[$field] = $value;
+								}
+								$condition = "ContentID = $ID";
+								$this->registry->getObject('db')->updateRecords($table,$data,$condition);
+							}
 							break;						
 						default:
 							# code...
@@ -1772,6 +1926,8 @@ class Zobcontroller{
 				return 'MeetingID';
 			case 'meetingline':
 				return 'MeetingLineID';
+			case 'meetinglinecontent':
+				return 'ContentID';
 		}
 		return null;
 	}

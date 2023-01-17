@@ -27,7 +27,7 @@
                             <label class="col_title">{lbl_Title}</label>
                         </td>
                         <td>
-                            <input type="Text" id="fieldTitle{MeetingLineID}" name="Title" class="col_fullname" value="{Title}">
+                            <input type="Text" id="meetinglineTitle{MeetingLineID}" name="Title" class="col_fullname" value="{Title}">
                         </td>
                     </tr>
                     <tr>
@@ -35,7 +35,7 @@
                             <label class="col_title">{lbl_Presenter}</label>
                         </td>
                         <td>
-                            <input type="Text" id="fieldPresenter{MeetingLineID}" name="Presenter" class="col_name" value="{Presenter}">
+                            <input type="Text" id="meetinglinePresenter{MeetingLineID}" name="Presenter" class="col_name" value="{Presenter}">
                         </td>
                     </tr>
                     <tr>
@@ -43,25 +43,25 @@
                             <label class="col_title">{lbl_Vote}</label>
                         </td>
                         <td>
-                            <input type="checkbox" id="fieldVote{MeetingLineID}" name="Vote" value="{Vote}" onClick = "validateCheckboxVote( this, {MeetingLineID} );"><br>
-                            <label class="col_title">{lbl_VoteFor}</label>&nbsp;<input type="text" id="fieldVoteFor{MeetingLineID}" name="VoteFor" value="{VoteFor}" class="col_code">
+                            <input type="checkbox" id="meetinglineVote{MeetingLineID}" name="Vote" table="meetingline" value="{Vote}" onClick = "validateCheckboxVote( this, {MeetingLineID} );"><br>
+                            <label class="col_title">{lbl_VoteFor}</label>&nbsp;<input type="text" id="meetinglineVoteFor{MeetingLineID}" name="VoteFor" value="{VoteFor}" class="col_code">
                             &nbsp;&nbsp;&nbsp;
-                            <label class="col_title">{lbl_VoteAgainst}</label>&nbsp;<input type="text" id="fieldVoteAgainst{MeetingLineID}" name="VoteAgainst" value="{VoteAgainst}" class="col_code">
+                            <label class="col_title">{lbl_VoteAgainst}</label>&nbsp;<input type="text" id="meetinglineVoteAgainst{MeetingLineID}" name="VoteAgainst" value="{VoteAgainst}" class="col_code">
                             &nbsp;&nbsp;&nbsp;
-                            <label class="col_title">{lbl_VoteDelayed}</label>&nbsp;<input type="text" id="fieldVoteDelayed{MeetingLineID}" name="VoteDelayed" value="{VoteDelayed}" class="col_code">
+                            <label class="col_title">{lbl_VoteDelayed}</label>&nbsp;<input type="text" id="meetinglineVoteDelayed{MeetingLineID}" name="VoteDelayed" value="{VoteDelayed}" class="col_code">
                             <script>
                                 var e;
-                                e = document.getElementById('fieldVote{MeetingLineID}');
+                                e = document.getElementById('meetinglineVote{MeetingLineID}');
                                 if(e){
                                     if(e.getAttribute('value') == '1' ){
                                         e.checked = true;
-                                        document.getElementById('fieldVoteFor{MeetingLineID}').disabled = false;
-                                        document.getElementById('fieldVoteAgainst{MeetingLineID}').disabled = false;
-                                        document.getElementById('fieldVoteDelayed{MeetingLineID}').disabled = false;
+                                        document.getElementById('meetinglineVoteFor{MeetingLineID}').disabled = false;
+                                        document.getElementById('meetinglineVoteAgainst{MeetingLineID}').disabled = false;
+                                        document.getElementById('meetinglineVoteDelayed{MeetingLineID}').disabled = false;
                                     }else{
-                                        document.getElementById('fieldVoteFor{MeetingLineID}').disabled = true;
-                                        document.getElementById('fieldVoteAgainst{MeetingLineID}').disabled = true;
-                                        document.getElementById('fieldVoteDelayed{MeetingLineID}').disabled = true;
+                                        document.getElementById('meetinglineVoteFor{MeetingLineID}').disabled = true;
+                                        document.getElementById('meetinglineVoteAgainst{MeetingLineID}').disabled = true;
+                                        document.getElementById('meetinglineVoteDelayed{MeetingLineID}').disabled = true;
                                     }
                                 }
                             </script>
@@ -81,25 +81,25 @@
             <tr>
                 <td>
                     <label class="col_title big">{lbl_Content}</label><br>                   
-                    <textarea  id="fieldContent{MeetingLineID}" name="Content" rows="10" cols="140" value="" class="value" onchange="saveFormMeetingLine('{MeetingLineID}');">{Content}</textarea>
+                    <textarea  id="meetinglineContent{MeetingLineID}" name="Content" rows="10" cols="140" value="" class="value" onchange="saveFormMeetingLine('{MeetingLineID}');">{Content}</textarea>
                 </td>
             </tr>
             <tr>
                 <td>
                     <label class="col_title big">{lbl_Discussion}</label>
-                    <img src="views/classic/images/icon/arrowdone.png" id="arrowdoneDiscussion{MeetingLineID}" title="Rozbalit" onClick="document.getElementById('fieldDiscussion{MeetingLineID}').style.display = 'block'; this.style.display='none';document.getElementById('arrowupDiscussion{MeetingLineID}').style.display='';"/>
-                    <img src="views/classic/images/icon/arrowup.png" id="arrowupDiscussion{MeetingLineID}" title="Sbalit" onClick="document.getElementById('fieldDiscussion{MeetingLineID}').style.display = 'none'; this.style.display='none';document.getElementById('arrowdoneDiscussion{MeetingLineID}').style.display='';" style="display:none;"/>
+                    <img src="views/classic/images/icon/arrowdown.png" id="arrowdownDiscussion{MeetingLineID}" title="Rozbalit" onClick="document.getElementById('meetinglineDiscussion{MeetingLineID}').style.display = 'block'; this.style.display='none';document.getElementById('arrowupDiscussion{MeetingLineID}').style.display='';"/>
+                    <img src="views/classic/images/icon/arrowup.png" id="arrowupDiscussion{MeetingLineID}" title="Sbalit" onClick="document.getElementById('meetinglineDiscussion{MeetingLineID}').style.display = 'none'; this.style.display='none';document.getElementById('arrowdownDiscussion{MeetingLineID}').style.display='';" style="display:none;"/>
                     <br>                   
-                    <textarea  id="fieldDiscussion{MeetingLineID}" name="Discussion" rows="10" cols="140" value="" class="value" onchange="saveFormMeetingLine('{MeetingLineID}');" style="display:none;">{Discussion}</textarea>
+                    <textarea  id="meetinglineDiscussion{MeetingLineID}" name="Discussion" rows="10" cols="140" value="" class="value" onchange="saveFormMeetingLine('{MeetingLineID}');" style="display:none;">{Discussion}</textarea>
                 </td>
             </tr>
             <tr>
                 <td>
                     <label class="col_title big">{lbl_DraftResolution}</label>
-                    <img src="views/classic/images/icon/arrowdone.png" id="arrowdoneDraftResolution{MeetingLineID}" title="Rozbalit" onClick="document.getElementById('fieldDraftResolution{MeetingLineID}').style.display = 'block'; this.style.display='none';document.getElementById('arrowupDraftResolution{MeetingLineID}').style.display='';"/>
-                    <img src="views/classic/images/icon/arrowup.png" id="arrowupDraftResolution{MeetingLineID}" title="Sbalit" onClick="document.getElementById('fieldDraftResolution{MeetingLineID}').style.display = 'none'; this.style.display='none';document.getElementById('arrowdoneDraftResolution{MeetingLineID}').style.display='';" style="display:none;"/>
+                    <img src="views/classic/images/icon/arrowdown.png" id="arrowdownDraftResolution{MeetingLineID}" title="Rozbalit" onClick="document.getElementById('meetinglineDraftResolution{MeetingLineID}').style.display = 'block'; this.style.display='none';document.getElementById('arrowupDraftResolution{MeetingLineID}').style.display='';"/>
+                    <img src="views/classic/images/icon/arrowup.png" id="arrowupDraftResolution{MeetingLineID}" title="Sbalit" onClick="document.getElementById('meetinglineDraftResolution{MeetingLineID}').style.display = 'none'; this.style.display='none';document.getElementById('arrowdownDraftResolution{MeetingLineID}').style.display='';" style="display:none;"/>
                     <br>                   
-                    <textarea  id="fieldDraftResolution{MeetingLineID}" name="DraftResolution" rows="10" cols="140" value="" class="value" onchange="saveFormMeetingLine('{MeetingLineID}');" style="display:none;">{DraftResolution}</textarea>
+                    <textarea  id="meetinglineDraftResolution{MeetingLineID}" name="DraftResolution" rows="10" cols="140" value="" class="value" onchange="saveFormMeetingLine('{MeetingLineID}');" style="display:none;">{DraftResolution}</textarea>
                 </td>
             </tr>
         </table>
@@ -138,9 +138,9 @@
                 <input type="text" id="fielDescription{MeetingLineID}" class="value col_fullname" name="Description" value="" placeholder autofocus/>
             </td>
             <td>
-                <input type="hidden" id="fieldAttMeetingID{MeetingLineID}" name="MeetingID" value="{MeetingID}">
-                <input type="hidden" id="fieldAttMeetingLineID{MeetingLineID}" name="MeetingLineID" value="{MeetingLineID}">
-                <input type="hidden" id="fieldAttAction{MeetingLineID}" name="action" value="add">
+                <input type="hidden" id="meetinglineAttMeetingID{MeetingLineID}" name="MeetingID" value="{MeetingID}">
+                <input type="hidden" id="meetinglineAttMeetingLineID{MeetingLineID}" name="MeetingLineID" value="{MeetingLineID}">
+                <input type="hidden" id="meetinglineAttAction{MeetingLineID}" name="action" value="add">
                 <input type="submit" name="submitEditCard" class="action_button" value="{lbl_Save}">
             </td>
         </tr>

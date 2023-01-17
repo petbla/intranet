@@ -37,8 +37,8 @@
                     <a href="index.php?page=zob/adv/meetingline/movedown/{MeetingID}/{MeetingLineID}"><img src="views/classic/images/icon/movedown.png" title="Posun bodu dolů"/></a>
                 </span>
             </td>
-            <td colspan="2" class="value {bold}" MeetingLineID="{MeetingLineID}">
-                <span id="fieldTitle{MeetingLineID}" style="font-size:24px;">{Title}</span>
+            <td colspan="2" >
+                
             </td>
             <td class="col_action">
                 <a href="index.php?page=zob/adv/meetingline/delete/{MeetingID}/{MeetingLineID}">
@@ -90,4 +90,16 @@
         </form>
     </table>
 </div>
-<script>window.location = "#header";</script>
+<script>
+    var anchor;
+    var e;
+    anchor = 'xx';
+    e = document.getElementById('pageErrorMesage');
+    if(e.innerHTML == '')
+       anchor = '{anchor}';       
+    if(document.getElementById(anchor)) 
+      anchor = '#' + anchor;
+    else
+      anchor = '#header'; 
+    window.location = anchor;
+</script>

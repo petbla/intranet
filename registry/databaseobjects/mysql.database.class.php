@@ -7,7 +7,9 @@
  * @date    5.7.2011 
  */
 class mysqldatabase {
-	
+
+  private $registry;
+  
 	/**
 	 * Debug SQL query
 	 * Logování SQL dotazů do logFile.txt

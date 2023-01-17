@@ -52,13 +52,17 @@ function ConfirmDelete(msg = ''){
     if (opt === false){
         return false;
     }
+    return true;
 }
-function ConfirmAction(){
+function ConfirmAction(msg = ''){
     var opt;
-    opt = confirm("Chcete spustit akci?");
+    if(msg == '')
+        msg = "Chcete spustit akci?";
+    opt = confirm(msg);
     if (opt === false){
         return false;
     }
+    return true;
 }
 function ConfirmUnlink(){
     var opt;
@@ -66,20 +70,21 @@ function ConfirmUnlink(){
     if (opt === false){
         return false;
     }
+    return true;
 }
-var jojo = "99";
-function wsRefreshField(table,ID,name) {
+
+function wsRefreshField(table,ID,field) {
     const Http = new XMLHttpRequest();
     var val = null;
     var url;
     url = window.location.origin + window.location.pathname;
-    url = url + '?page=zob/ws/getvalue/' + table + '/' + ID + '/' + name;
+    url = url + '?page=zob/ws/getvalue/' + table + '/' + ID + '/' + field;
     Http.onreadystatechange = function(){
         val = this.responseText;
         if(val == '<NULL>'){ 
             val = null;
         }
-        document.getElementById('field' + name + ID).value = val;
+        document.getElementById(table + field + ID).value = val;
     }    
     Http.open("POST", url, true);
     Http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -87,32 +92,39 @@ function wsRefreshField(table,ID,name) {
 }
 
 function wsRefreshMeetingline(e) {
-    var table,pkID,name,value;
-    name = e.getAttribute('name');
+    var table,pkID,value;
     if(e){
         table = 'meetingline'; 
         pkID = e.getAttribute('pkID');        
-        console.log(name);
-        if(name == 'Title')
-            document.getElementById('fieldTitle' + pkID).innerText = e.value
-        value = wsRefreshField(table,pkID,'VoteFor');        
-        value = wsRefreshField(table,pkID,'VoteAgainst');
-        value = wsRefreshField(table,pkID,'VoteDelayed');
+        wsRefreshField(table,pkID,'VoteFor');        
+        wsRefreshField(table,pkID,'VoteAgainst');
+        wsRefreshField(table,pkID,'VoteDelayed');
+    }
+}
+
+function wsRefreshMeetinglinecontent(e) {
+    var table,pkID,value;
+    if(e){
+        table = 'meetinglinecontent'; 
+        pkID = e.getAttribute('pkID');        
+        wsRefreshField(table,pkID,'VoteFor');        
+        wsRefreshField(table,pkID,'VoteAgainst');
+        wsRefreshField(table,pkID,'VoteDelayed');
     }
 }
 
 function wsUpdate(e) {
     const Http = new XMLHttpRequest();
     var url;
-    var table,pkID,name,newvalue;
+    var table,pkID,field,newvalue;
     var err,response;
     url = window.location.origin + window.location.pathname;
     if(e){
         table = e.getAttribute('table'); 
         pkID = e.getAttribute('pkID');
-        name = e.getAttribute('name'); 
+        field = e.getAttribute('name'); 
         newvalue = e.value; 
-        url = url + '?page=zob/ws/upd/' + table + '/' + pkID + '/' + name;
+        url = url + '?page=zob/ws/upd/' + table + '/' + pkID + '/' + field;
         Http.open("POST", url, true);
         Http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         Http.send("value=" + newvalue);
@@ -125,6 +137,41 @@ function wsUpdate(e) {
                 if(err){
                     err.innerText = response;
                     err.style.display = 'block';
+                    window.location = "#header";
+                }
+            }
+        }    
+    }
+}
+
+function wsCopyFrom(e) {
+    const Http = new XMLHttpRequest();
+    var url;
+    var table,pkID,field,fieldfrom;
+    var err,response;
+    if(!ConfirmAction('Zkopírovat obsah?'))
+        return;
+    url = window.location.origin + window.location.pathname;
+    if(e){
+        table = e.getAttribute('table'); 
+        pkID = e.getAttribute('pkID');
+        field = e.getAttribute('name'); 
+        fieldfrom = e.getAttribute('namefrom'); 
+        url = url + '?page=zob/ws/copyfrom/' + table + '/' + pkID + '/' + field + '/' + fieldfrom;
+        Http.open("POST", url, true);
+        Http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        Http.send();
+        Http.onreadystatechange=(e)=>{
+            response = Http.responseText;
+            if(response == 'OK' ){
+                console.log(response);
+                window.location.reload();      
+            }else{
+                err = document.getElementById('pageErrorMesage');
+                if(err){
+                    err.innerText = response;
+                    err.style.display = 'block';
+                    window.location = "#header";
                 }
             }
         }    

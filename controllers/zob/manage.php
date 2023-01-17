@@ -86,6 +86,7 @@ class Zobmanage {
 								$MeetingLineID = $meetingline['MeetingLineID'];
 								$condition = "MeetingLineID = $MeetingLineID";
 								$this->registry->getObject('db')->deleteRecords('meetingattachment',$condition);
+								$this->registry->getObject('db')->deleteRecords('meetinglinecontent',$condition);
 							}
 						}								
 						$condition = "MeetingID = $MeetingID";
@@ -107,9 +108,12 @@ class Zobmanage {
 		}
 		$ElectionPeriodID = $electionperiod['ElectionPeriodID'];
 		$verifier = 0;
+		$MeetingTypeID = 0;
 		$MeetingID = 0;
 		$MeetingLineID = 0;
+		$ContentID = 0;
 		$lastType = '';
+		$lastOC = '';
 
 		$content = "";
 		$filename = 'files/ImportMeeting'.$electionperiod['PeriodName'].'.csv';
@@ -178,6 +182,7 @@ class Zobmanage {
 						}
 						$MeetingTypeID = $meetingtype['MeetingTypeID'];
 						$meeting['MeetingTypeID'] = $MeetingTypeID;
+						$meeting['ElectionPeriodID'] = $ElectionPeriodID;
 						$meeting['Close'] = 1;
 
 						$this->registry->getObject('db')->initQuery('meeting');
@@ -234,6 +239,8 @@ class Zobmanage {
 						# B;9-1;Text
 						$data = null;
 						$data['MeetingID'] = $MeetingID;
+						$data['MeetingTypeID'] = $MeetingTypeID;
+						$data['ElectionPeriodID'] = $ElectionPeriodID;
 						$arr = explode('-',trim($field[1]));
 						$data['LineNo'] = (int) $arr[0];
 						$data['LineNo2'] = isset($arr[1]) ? (int) $arr[1] : 0;
@@ -244,6 +251,8 @@ class Zobmanage {
 					case 'T':
 						$data = null;
 						$data['MeetingID'] = $MeetingID;
+						$data['MeetingTypeID'] = $MeetingTypeID;
+						$data['ElectionPeriodID'] = $ElectionPeriodID;
 						$data['LineNo'] = (int) trim($field[1]);
 						$data['LineNo2'] = 0;
 						$data['LineType'] = 'Doplňující bod';
@@ -254,6 +263,8 @@ class Zobmanage {
 						# P;9-1;Text
 						$data = null;
 						$data['MeetingID'] = $MeetingID;
+						$data['MeetingTypeID'] = $MeetingTypeID;
+						$data['ElectionPeriodID'] = $ElectionPeriodID;
 						$arr = explode('-',trim($field[1]));
 						$data['LineNo'] = (int) $arr[0];
 						$data['LineNo2'] = isset($arr[1]) ? (int) $arr[1] : 0;
@@ -291,15 +302,42 @@ class Zobmanage {
 						$data['Content'] = $this->registry->getObject('db')->sanitizeData($text);
 						$condition = "MeetingLineID = $MeetingLineID";
 						$this->registry->getObject('db')->updateRecords('meetingline',$data,$condition);
+						$lastOC = $type;
 						break;
+					case 'C':
+						$text = isset($field[1]) ? trim($field[1]) : '';
+						$data = null;
+						$data['MeetingLineID'] = $MeetingLineID;
+						$data['MeetingID'] = $MeetingID;
+						$data['MeetingTypeID'] = $MeetingTypeID;
+						$ContentLineNo = $this->zob->getNextMeetinglineContentLineNo( $MeetingLineID );
+						$data['LineNo'] = $ContentLineNo;
+						$data['Content'] = $this->registry->getObject('db')->sanitizeData($text);
+						$this->registry->getObject('db')->insertRecords('meetinglinecontent',$data);
+
+						$this->registry->getObject('db')->initQuery('meetinglinecontent');
+						$this->registry->getObject('db')->setFilter('MeetingLineID',$MeetingLineID);
+						$this->registry->getObject('db')->setFilter('LineNo',$ContentLineNo);
+						$this->registry->getObject('db')->findFirst();
+						$meetinglinecontent = $this->registry->getObject('db')->getResult();
+						$ContentID = $meetinglinecontent['ContentID'];					
+						
+						$lastOC = $type;
+						break;						
 					case 'U':
 						$text = trim($field[1]);
 						if($text[0] == '-')
 							$text = substr($text,1);
 						$data = null;
 						$data['DraftResolution'] = $this->registry->getObject('db')->sanitizeData($text);
-						$condition = "MeetingLineID = $MeetingLineID";
-						$this->registry->getObject('db')->updateRecords('meetingline',$data,$condition);
+						if($lastOC == 'O'){
+							$condition = "MeetingLineID = $MeetingLineID";
+							$table = 'meetingline';
+						}else{
+							$condition = "ContentID = $ContentID";
+							$table = 'meetinglinecontent';
+						}
+						$this->registry->getObject('db')->updateRecords($table,$data,$condition);
 						break;
 					case 'I':
 						$text = trim($field[1]);
@@ -307,8 +345,14 @@ class Zobmanage {
 							$text = substr($text,1);
 						$data = null;
 						$data['Discussion'] = $this->registry->getObject('db')->sanitizeData($text);
-						$condition = "MeetingLineID = $MeetingLineID";
-						$this->registry->getObject('db')->updateRecords('meetingline',$data,$condition);
+						if($lastOC == 'O'){
+							$condition = "MeetingLineID = $MeetingLineID";
+							$table = 'meetingline';
+						}else{
+							$condition = "ContentID = $ContentID";
+							$table = 'meetinglinecontent';
+						}
+						$this->registry->getObject('db')->updateRecords($table,$data,$condition);
 						break;
 					case 'H':
 						$line = preg_replace('/\s/',"",$field[1]);
@@ -318,14 +362,21 @@ class Zobmanage {
 						$data['VoteFor'] = (int) $arr[1];
 						$data['VoteAgainst'] = (int) $arr[2];
 						$data['VoteDelayed'] = (int) $arr[3];
-						$condition = "MeetingLineID = $MeetingLineID";
-						$this->registry->getObject('db')->updateRecords('meetingline',$data,$condition);
+						if($lastOC == 'O'){
+							$condition = "MeetingLineID = $MeetingLineID";
+							$table = 'meetingline';
+						}else{
+							$condition = "ContentID = $ContentID";
+							$table = 'meetinglinecontent';
+						}
+						$this->registry->getObject('db')->updateRecords($table,$data,$condition);
 						break;
 					default:
 						$meetingline = $this->zob->getMeetingline($MeetingLineID);
 						$data = null;
 						switch ($lastType) {
 							case 'O':
+							case 'C':
 								$field = 'Content';
 								break;
 							case 'I':
@@ -342,8 +393,14 @@ class Zobmanage {
 						$line = trim($line);
 						if($line != ""){
 							$data[$field] = $meetingline[$field]."\n".$this->registry->getObject('db')->sanitizeData($line);
-							$condition = "MeetingLineID = $MeetingLineID";
-							$this->registry->getObject('db')->updateRecords('meetingline',$data,$condition);
+							if($lastOC == 'O'){
+								$condition = "MeetingLineID = $MeetingLineID";
+								$table = 'meetingline';
+							}else{
+								$condition = "ContentID = $ContentID";
+								$table = 'meetinglinecontent';
+							}
+							$this->registry->getObject('db')->updateRecords($table,$data,$condition);
 						};
 						$type = $lastType;
 						break;

@@ -17,10 +17,6 @@ p, li{
 .blue{
   color: blue;
 }
-.par{
-  font-size: 16px;
-  font-family: Arial, "MS Trebuchet", sans-serif;
-}
 .big{
   font-weight: bold;
   font-size: 16px;
@@ -694,10 +690,6 @@ div#editwindow label > span{
 	font-size: 13px;
 	text-shadow: 1px 1px 1px #fff;
 }
-div#editwindow textarea{
-	width:250px;
-	height:100px;
-}
 div#editwindow input[type=text],
 div#editwindow input[type=date],
 div#editwindow input[type=datetime],
@@ -706,8 +698,7 @@ div#editwindow input[type=search],
 div#editwindow input[type=time],
 div#editwindow input[type=url],
 div#editwindow input[type=email],
-div#editwindow select, 
-div#editwindow textarea{
+div#editwindow select{
 	border-radius: 3px;
 	-webkit-border-radius: 3px;
 	-moz-border-radius: 3px;
@@ -780,14 +771,13 @@ div#DocumentItems table.edit-card td.label{
   font-weight: bold;
 }
 div#DocumentItems table.edit-card input.value,
-div#DocumentItems table.edit-card textarea.value,
 div#DocumentItems table.edit-card option.value,
 div#DocumentItems table.edit-card span.value,
 div#DocumentItems table.edit-card td.value{ 
   padding: 2px;
   font-size: 14px;
 }
-div#DocumentItems table.edit-card textarea.value{
+div#DocumentItems table.edit-card{
   padding: 5px;
   font-family: Arial, Helvetica, sans-serif;
   font-size: 16px;
@@ -796,22 +786,28 @@ div#DocumentItems table.edit-card textarea.value{
 div#DocumentItems td.value a.col_email{
   width: 300px;
 }
-
 div#DocumentItems textarea{
-  overflow-y: scroll;
+	background: #fff;
+	color: #000;
+	padding: 5px 8px 5px 8px;
+	width:90%;
+  font-size: 16px;
+  font-family: Arial, "MS Trebuchet", sans-serif;
+  min-height: 70px;
+	border: 1px solid #FFC2DC;
   border-radius: 3px;
 	-webkit-border-radius: 3px;
 	-moz-border-radius: 3px;
-	border: 1px solid #FFC2DC;
-	outline: none;
-	color: #000;
-	padding: 5px 8px 5px 8px;
 	box-shadow: inset 1px 1px 4px #FFD5E7;
 	-moz-box-shadow: inset 1px 1px 4px #FFD5E7;
 	-webkit-box-shadow: inset 1px 1px 4px #FFD5E7;
-	background: #fff;
-	width:80%;
 }
+
+.autosize {
+  resize: none;
+  overflow: hidden;
+}
+
 
 .edit-card tr:nth-of-type(even){
   background-color: #06f5a5;

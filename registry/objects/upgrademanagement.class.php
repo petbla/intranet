@@ -107,7 +107,7 @@ class upgrademanagement {
             // contact
             $sql = "CREATE TABLE IF NOT EXISTS `".$pref."contact` (
                 `ID` varchar(36) COLLATE utf8_czech_ci NOT NULL DEFAULT '00000000-0000-0000-0000-000000000000',
-                `FullName` varchar(85) COLLATE utf8_czech_ci NOT NULL,
+                `FullName` varchar(85) COLLATE utf8_czech_ci DEFAULT '',
                 `FirstName` varchar(30) COLLATE utf8_czech_ci DEFAULT NULL,
                 `LastName` varchar(30) COLLATE utf8_czech_ci DEFAULT NULL,
                 `Title` varchar(20) COLLATE utf8_czech_ci DEFAULT NULL,
@@ -285,7 +285,7 @@ class upgrademanagement {
         $sql = "CREATE TABLE IF NOT EXISTS `".$pref."electionperiod` (
             `ElectionPeriodID` int(11) NOT NULL AUTO_INCREMENT,
             `PeriodName` varchar(250) COLLATE utf8_czech_ci DEFAULT '',
-            `Actual` tinyint DEFAULT 0',
+            `Actual` tinyint DEFAULT 0,
             PRIMARY KEY (`ElectionPeriodID`)
             ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci";
         $this->registry->getObject('db')->executeQuery( $sql );

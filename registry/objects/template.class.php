@@ -10,6 +10,7 @@
 class template {
 
 	private $page;
+  private $registry;
 	
 	/**
  	 * Připojí soubor s definicí třídy page a vytvoří instanci této třídy, která bude sloužit pro správu obsahu a struktury stránky
@@ -61,7 +62,8 @@ class template {
     {
 	    $templateContent = file_get_contents( $template );
 	    $newContent = str_replace( '{' . $tag . '}', $templateContent, $this->page->getContent() );
-	    $this->page->setContent( $newContent );
+	    
+      $this->page->setContent( $newContent );
     }
   } // end function replaceBits
   
@@ -239,51 +241,7 @@ class template {
     $this->parseTitle();             // Načte titulek nastavený v objektu stránky a vloží ho do pohledu
   } // end function parseOutput
 
-  public function getPageCounter( $iActualPage, $iCount ){
-  global $config;
-
-    $iMax = $config['maxVisibleLines'];
-
-    // Page Navigator
-    $sPageNavigator = "";      
-    $iPages = $iCount / $iMax;
-    $iPages = (int) $iPages; 
-    if (($iCount % $iMax) > 0)
-      $iPages++;
-    
-    if ($iPages > 1){
-      $sPageNavigator = "&nbsp;&nbsp;";
-      if ($iActualPage > 1){
-        $sPageNavigator .= "<a href=\"?page=1\">&nbsp;<img src=\"files/image/navigate/firstpage.png\" title=\"$caption[first]\" alt=\"$caption[first]\"/>&nbsp;</a>";
-        $iPageNo = $iActualPage - 1;
-        $sPageNavigator .= $tpl->tbHtml( $sFile, 'PAGE_PREV'); 
-      }
-      
-      if ($iPages > 7){
-        $iPageNo = (($iActualPage - 4) < 1) ? 1 : $iActualPage - 4;
-        $iPages = (($iActualPage + 7) > $iPages) ? $iPages : $iActualPage + 7; 
-      }else{
-        $iPageNo=1;
-      }
-      
-      for ($iPageNo; $iPageNo<=$iPages; $iPageNo++){
-        if ($iPageNo == $iActualPage)         
-          $sPageNavigator .= $tpl->tbHtml( $sFile, 'PAGE_ACTUAL');
-        else
-          $sPageNavigator .= $tpl->tbHtml( $sFile, 'PAGE_LINK');
-        if ($iPageNo < $iPages) 
-          $sPageNavigator .= "|";
-      }  
-      if ($iActualPage < $iPages){
-        $iPageNo = $iActualPage + 1;
-        $sPageNavigator .= $tpl->tbHtml( $sFile, 'PAGE_NEXT');     
-        $iPageNo = $iPages; 
-        $sPageNavigator .= $tpl->tbHtml( $sFile, 'PAGE_LAST');
-      } 
-    }
-    return $sPageNavigator;  
-  }
-  
+ 
   public function NavigateElement( $pageNo, $countPage ){
     global $caption;
     

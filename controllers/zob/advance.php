@@ -10,6 +10,8 @@ class Zobadvance {
     private $zob;
 	private $message;
 	private $errorMessage;
+	private $MeetingID;
+	private $anchor;
     
     /**
 	 * @param Registry $registry 
@@ -36,6 +38,11 @@ class Zobadvance {
                 $action = isset($urlBits[3]) ? $urlBits[3] : '';
                 $action = isset($_POST["action"]) ? $_POST["action"] : $action;						
                 $this->meetingline($action);
+                break;
+            case 'meetinglinecontent':
+                $action = isset($urlBits[3]) ? $urlBits[3] : '';
+                $action = isset($_POST["action"]) ? $_POST["action"] : $action;						
+                $this->meetinglinecontent($action);
                 break;
             case 'meetingattachment':
                 $action = isset($urlBits[3]) ? $urlBits[3] : '';
@@ -64,6 +71,7 @@ class Zobadvance {
         // Page message
 		$this->registry->getObject('template')->getPage()->addTag('message',$this->message);
 		$this->registry->getObject('template')->getPage()->addTag('errorMessage',$this->errorMessage);
+		$this->registry->getObject('template')->getPage()->addTag('anchor',$this->anchor);
 
 		// Build page
 		$this->registry->getObject('template')->buildFromTemplates('print-header.tpl.php', $template , 'print-footer.tpl.php');
@@ -119,6 +127,32 @@ class Zobadvance {
 				return;
 		}		
         $this->MeetingID = $MeetingID;        
+	}
+
+	/**
+	 * Modifikace tabulky meetinglinecontent
+	 * @return void
+	 */
+	private function meetinglinecontent( $action )
+	{
+		$urlBits = $this->registry->getURLBits();     
+		$MeetingID = 0;
+		$MeetingLineID = 0;
+		switch ($action) {
+			case 'add':
+				$MeetingLineID = isset($urlBits['4']) ? $urlBits['4'] : 0;
+				$meetingline = $this->zob->getMeetingline($MeetingLineID);
+				$MeetingID = $meetingline['MeetingID'];
+
+				$data['MeetingLineID'] = $MeetingLineID;
+				$data['MeetingID'] = $MeetingID;
+				$data['MeetingTypeID'] = $meetingline['MeetingTypeID'];
+				$data['LineNo'] = $this->zob->getNextMeetinglineContentLineNo($MeetingLineID);
+				$this->registry->getObject('db')->insertRecords('meetinglinecontent',$data);
+				$this->anchor = "anchor".$MeetingLineID;
+				break;
+		}
+		$this->MeetingID = $MeetingID;
 	}
 
 	/**
