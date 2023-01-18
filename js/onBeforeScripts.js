@@ -78,7 +78,7 @@ function wsRefreshField(table,ID,field) {
     var val = null;
     var url;
     url = window.location.origin + window.location.pathname;
-    url = url + '?page=zob/ws/getvalue/' + table + '/' + ID + '/' + field;
+    url = url + '?page=general/ws/getValue/' + table + '/' + ID + '/' + field;
     Http.onreadystatechange = function(){
         val = this.responseText;
         if(val == '<NULL>'){ 
@@ -124,7 +124,7 @@ function wsUpdate(e) {
         pkID = e.getAttribute('pkID');
         field = e.getAttribute('name'); 
         newvalue = e.value; 
-        url = url + '?page=zob/ws/upd/' + table + '/' + pkID + '/' + field;
+        url = url + '?page=general/ws/upd/' + table + '/' + pkID + '/' + field;
         Http.open("POST", url, true);
         Http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         Http.send("value=" + newvalue);
@@ -144,7 +144,7 @@ function wsUpdate(e) {
     }
 }
 
-function wsCopyFrom(e) {
+function wscopyFrom(e) {
     const Http = new XMLHttpRequest();
     var url;
     var table,pkID,field,fieldfrom;
@@ -157,7 +157,7 @@ function wsCopyFrom(e) {
         pkID = e.getAttribute('pkID');
         field = e.getAttribute('name'); 
         fieldfrom = e.getAttribute('namefrom'); 
-        url = url + '?page=zob/ws/copyfrom/' + table + '/' + pkID + '/' + field + '/' + fieldfrom;
+        url = url + '?page=general/ws/copyFrom/' + table + '/' + pkID + '/' + field + '/' + fieldfrom;
         Http.open("POST", url, true);
         Http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         Http.send();

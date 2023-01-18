@@ -10,6 +10,7 @@ class Todocontroller{
 	private $perSet;
 	private $prefDb;
 	private $message;
+	private $model;
 	private $errorMessage;
 
 	/**
@@ -67,8 +68,13 @@ class Todocontroller{
 								$InboxID = isset($urlBits[4]) ? $urlBits[4] : '';
 								$InboxID = isset($_POST['InboxID']) ? $_POST['InboxID'] : $InboxID;
 								$ParentID = isset($urlBits[5]) ? $urlBits[5] : '';
-								$ParentID = isset($_POST['ID']) ? $_POST['ID'] : $ParentID;		
-								$this->inboxMoveToFolder($action, $InboxID, $ParentID);
+								$ParentID = isset($_POST['ID']) ? $_POST['ID'] : $ParentID;
+								$parententry = $this->getDmsentryByID($ParentID);
+								if($parententry)
+									$ParentEntryNo = $parententry['EntryNo'];
+								else
+									$ParentEntryNo = 0;
+								$this->inboxMoveToFolder($action, $InboxID, $ParentEntryNo);
 								break;
 							case 'refresh':
 								$this->inboxRefresh();
@@ -631,74 +637,70 @@ class Todocontroller{
 
 		// Provedení akce k vyřízení dokumentu
 		if($SettlementType != ''){
-			// Zařazení dokumentu do příloh jednání
-			if($inbox['MeetingID'] == 0){
-				require_once( FRAMEWORK_PATH . 'controllers/zob/controller.php');
-				$zob = new Zobcontroller( $this->registry, true );
-			
-				$meeting = $zob->getActualMeeting($SettlementType);					
-				if($meeting){
-					// Pokud dokument nebyl ještě zařazen do složky, tak se nyní přesune do 
-					// výchozí složky podkladů jednání
-					// <rootZOB>/_<MeetingName>/<PeriodName>/<EntryNo>/Přílohy
-					// Příklad: Obecní úřad/_Rada/2018-2022/10/Přílohy					 
-					if($inbox['DmsEntryID'] == '00000000-0000-0000-0000-000000000000'){
-						
-						$meetingtype = $zob->getMeetingtype($meeting['MeetingTypeID']);
-						$electionperiod = $zob->getElectionperiod($meetingtype['ElectionPeriodID']);
-						$parentFolder = $config['rootZOB']."/_".$meetingtype['MeetingName']."/";
-						$parentFolder .= $electionperiod['PeriodName']."/".$meeting['EntryNo']."/Přílohy";
-						$DmsParentEntryNo = $this->registry->getObject('file')->findItem( $parentFolder, true );
-						if($DmsParentEntryNo == 0 ){
-							$this->errorMessage = "Složka $parentFolder nebyla vytvořena, přesun dokumentu nelze dokončit.";
-							$this->build();
-							return;
-						}
+			switch ($SettlementType) {
+				case 'Úkol':
+					$this->message = "Přesun do úkolů není aktivní.";
+					$this->inboxList($InboxID);
+					return;	
+				case 'Storno':
+					$change['Close'] = 1;
+					$this->message = "Dokument byl přesunut do vyřízených..";
+					break;
+				default:
+					// Zařazení dokumentu do příloh jednání
+					if($inbox['MeetingID'] == 0){
+						require_once( FRAMEWORK_PATH . 'controllers/zob/controller.php');
+						$zob = new Zobcontroller( $this->registry, true );
+					
+						$meeting = $zob->getActualMeeting($SettlementType);					
+						if($meeting){
+							// Pokud dokument nebyl ještě zařazen do složky, tak se nyní přesune do 
+							// výchozí složky podkladů jednání
+							// <rootZOB>/_<MeetingName>/<PeriodName>/<EntryNo>/Přílohy
+							// Příklad: Obecní úřad/_Rada/2018-2022/10/Přílohy					 
+							if($inbox['DmsEntryID'] == '00000000-0000-0000-0000-000000000000'){
+								
+								$meetingtype = $zob->getMeetingtype($meeting['MeetingTypeID']);
+								$electionperiod = $zob->getElectionperiod($meetingtype['ElectionPeriodID']);
+								$parentFolder = $config['rootZOB']."/_".$meetingtype['MeetingName']."/";
+								$parentFolder .= $electionperiod['PeriodName']."/".$meeting['EntryNo']."/Přílohy";
+								$DmsParentEntryNo = $this->registry->getObject('file')->findItem( $parentFolder, true );
+								if($DmsParentEntryNo == 0 ){
+									$this->errorMessage = "Složka $parentFolder nebyla vytvořena, přesun dokumentu nelze dokončit.";
+									$this->build();
+									return;
+								}
 
-						//Přesun souboru do složky
-						$this->inboxMoveToFolder('set', $InboxID , $DmsParentEntryNo );
-						$inbox = $this->getInbox($InboxID);
-						if($inbox['DmsEntryID'] == '00000000-0000-0000-0000-000000000000'){
-							$this->errorMessage = "Dokument se nepodařilo přesunout.";
+								//Přesun souboru do složky
+								$this->inboxMoveToFolder('set', $InboxID , $DmsParentEntryNo );	
+								$inbox = $this->getInbox($InboxID);					
+								if($inbox['DmsEntryID'] == '00000000-0000-0000-0000-000000000000'){
+									$this->errorMessage = "Dokument se nepodařilo přesunout.";
+									$this->build();
+									return;
+								}
+							}
+
+							// Zápis odkazu na jednání do položky inboxu
+							$change['MeetingID'] = $meeting['MeetingID'];
+							$inbox['MeetingID'] = $meeting['MeetingID'];    // pro test, zde je položka kompletně vyřízena
+							
+							// Vytvoření položky přílohy jednání
+							$meetingattachment = array();
+							$meetingattachment['MeetingID'] = $meeting['MeetingID'];
+							$meetingattachment['Description'] = $Title;
+							$meetingattachment['MeetingLineID'] = 0;
+							$meetingattachment['InboxID'] = $InboxID;
+							$this->registry->getObject('db')->insertRecords('meetingattachment',$meetingattachment);
+
+						}else{
+							$this->errorMessage = "Nebyl nalezen aktivní zápis jednání $SettlementType. Vytořte zápis ručně a akci opakujte.";
 							$this->build();
 							return;
 						}
 					}
-
-					// Zápis odkazu na jednání do položky inboxu
-					$change['MeetingID'] = $meeting['MeetingID'];
-					$inbox['MeetingID'] = $meeting['MeetingID'];    // pro test, zde je položka kompletně vyřízena
-					
-					// Vytvoření položky přílohy jednání
-					$meetingattachment = array();
-					$meetingattachment['MeetingID'] = $meeting['MeetingID'];
-					$meetingattachment['Description'] = $Title;
-					$meetingattachment['MeetingLineID'] = 0;
-					$meetingattachment['InboxID'] = $InboxID;
-					$this->registry->getObject('db')->insertRecords('meetingattachment',$meetingattachment);
-
-				}else{
-					$this->errorMessage = 'Nebyl nalezen aktivní zápis jednání $SettlementType. Vytořte zápis ručně a akci opakujte.';
-					$this->build();
-					return;
-				}
-			}else{
-				// Byl vybrán způsob vyřízení, který není typu ZOB jednání 		
-				switch ($SettlementType) {
-					case 'Úkol':
-						$this->message = "Přesun do úkolů není aktivní.";
-						$this->inboxList($InboxID);
-						return;	
-					case 'Storno':
-						$this->message = "STORNO - označní dokladů jako neprojednávaného není aktivní.";
-						$this->inboxList($InboxID);
-						return;	
-				}
 			}
 		}
-
-		// Editace názvu
-		$change['Title'] = $this->registry->getObject('db')->sanitizeData($Title);
 		$change['Modified'] = 1;
 
 		// Test, zda bylo vyplněn způsob vyřízení a dokument byl přesunut
@@ -712,23 +714,6 @@ class Todocontroller{
 		$this->registry->getObject('db')->updateRecords('inbox',$change,$condition);
 
 		// Synchronizaci názvu z inboxu 
-		if($change['Title'] != $inbox['Title']){
-			
-			//  Do tabulky příloh jednání
-			if ($inbox['MeetingID'] > 0){
-				$meetingattachment = array();
-				$meetingattachment['Description'] = $change['Title'];
-				$this->registry->getObject('db')->updateRecords('meetingattachment',$meetingattachment,$condition);
-			}
-
-			// Do tabulky dokumentů
-			if($inbox['DmsEntryID'] != '00000000-0000-0000-0000-000000000000'){
-				$entry = array();
-				$entry['Title'] = $change['Title'];
-				$condition = "ID = '".$inbox['DmsEntryID']."'";
-				$this->registry->getObject('db')->updateRecords('dmsentry',$entry,$condition);
-			}
-		}
 		$this->inboxList($InboxID);
 	}
 
@@ -816,9 +801,9 @@ class Todocontroller{
 		// Najít ParentFolder - pokud byl zadán - a určit level složky pro výběr
 		$parentPath = '';
 		if ($DmsParentEntryNo != ''){
-			$parententry = $this->getDmsentry($DmsParentEntryNo );
+			$parententry = $this->getDmsentry( $DmsParentEntryNo );
 			if( $parententry ){
-				$parentPath .= $parententry['Name'];
+				$parentPath = $parentPath . $parententry['Name'];
 			}				
 		}
 		$breads = str_replace("\\"," => ",$parentPath);
@@ -897,12 +882,14 @@ class Todocontroller{
 	
 	public function inboxRefresh()	
 	{
+		global $config;
+
 		// DefaultAppPool => IIS AppPool\DefaultAppPool
 
 		//TODO: změnit nastavení
-		$inboxUrl = 'http://petbla:91/';
-		$inboxRoot = 'c:/Temp/Sken/';
-
+		$inboxUrl = $config['inboxUrl'];
+		$inboxRoot = $config['inboxRoot'];
+				
 		$this->registry->getObject('log')->addMessage("Přihlášený uživatel: ".get_current_user(),'inbox','');
 
 		$this->registry->getObject('db')->initQuery('inbox');

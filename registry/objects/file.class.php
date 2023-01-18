@@ -271,7 +271,7 @@ class file {
 
     $parentEntry = $this->getEntry($parentEntryNo);
     if ($parentEntry == NULL){
-      $this->lastError = "Cílová složky EntryNo=$parentEntryNo neexistuje.";
+      $this->lastError = "Cílová složka EntryNo='$parentEntryNo' neexistuje.";
       return null;
     }      
     
@@ -508,7 +508,7 @@ class file {
   {
     $entry = null;
     $this->registry->getObject('db')->initQuery('DmsEntry','');
-    $this->registry->getObject('db')->setCondition("EntryNo = $EntryNo");
+    $this->registry->getObject('db')->setCondition("EntryNo = '$EntryNo'");
     if( $this->registry->getObject('db')->findFirst())
     {
       $entry = $this->registry->getObject('db')->getResult();

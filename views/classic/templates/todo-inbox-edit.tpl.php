@@ -5,7 +5,7 @@
                 <label>{lbl_Title}</label>
             </td>
             <td>
-                <input type="text" id="fieldTitle{InboxID}" class="value col_fullname" name="Title" value="{Title}" autofocus required/>
+                <input type="text" class="value col_fullname" name="Title" value="{Title}" pkID="{InboxID}" table="inbox" onchange="wsUpdate(this);" autofocus required/>
             </td>
         </tr>
         <tr>

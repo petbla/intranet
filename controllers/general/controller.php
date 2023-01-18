@@ -66,6 +66,12 @@ class Generalcontroller {
 							return;
 						}
 						break;
+					case 'ws':
+							$action = isset($urlBits[2]) ? $urlBits[2] : '';
+							require_once( FRAMEWORK_PATH . 'controllers/general/ws.php');
+							$ws = new Generalws( $this->registry, false );					
+							$ws->main($action);
+							break;
 				}
 			}
 			$this->pageNotFound();

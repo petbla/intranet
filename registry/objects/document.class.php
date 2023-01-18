@@ -226,7 +226,7 @@ class document {
         $this->registry->getObject('template')->getPage()->addTag( 'categoryList', array( 'SQL', $cache ) );
     }
 
-    public function readFolders($ID)
+    public function readFolders($EntryNo)
     {
         global $config;
         $dmsentry = null;
@@ -235,7 +235,7 @@ class document {
         $perSet = $this->registry->getObject('authenticate')->getPermissionSet();
         
 
-        $entry = $this->getDmsentry($ID);
+        $entry = $this->getDmsentry($EntryNo);
         if( $entry ){   
             $level = $entry['Level'] + 1;    
             $parent = $entry['EntryNo'];
@@ -254,12 +254,12 @@ class document {
         return $dmsentry;
     }
 
-	private function getDmsentry($ID)
+	private function getDmsentry($EntryNo)
 	{
 		$entry = null;
-        if($ID != ''){
+        if($EntryNo > 0){
             $this->registry->getObject('db')->initQuery('dmsentry');
-            $this->registry->getObject('db')->setFilter('ID',$ID);
+            $this->registry->getObject('db')->setFilter('EntryNo',$EntryNo);
             if ($this->registry->getObject('db')->findFirst())
                 $entry = $this->registry->getObject('db')->getResult();			
         }

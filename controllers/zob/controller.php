@@ -85,11 +85,6 @@ class Zobcontroller{
 						$adv = new Zobadvance( $this->registry, false );					
 						$adv->main($action);
 						break;
-					case 'ws':
-						$action = isset($urlBits[2]) ? $urlBits[2] : '';
-						$result = $this->ws($action);
-						exit($result);		
-						break;
 					default:
 						$this->pageNotFound();
 						break;
@@ -1392,6 +1387,16 @@ class Zobcontroller{
 		return $meeting;
 	}
 	
+	public function getInbox ( $InboxID )
+	{
+		$inbox = null;
+		$this->registry->getObject('db')->initQuery('inbox');
+		$this->registry->getObject('db')->setFilter('InboxID',$InboxID);
+		if ($this->registry->getObject('db')->findFirst())
+			$inbox = $this->registry->getObject('db')->getResult();			
+		return $inbox;
+	}
+	
 	public function getMeetingNo ( $MeetingID , $withMeetingName = false)
 	{
 		$MeetingNo = '';
@@ -1465,19 +1470,6 @@ class Zobcontroller{
 		if ($this->registry->getObject('db')->findFirst())
 			$contact = $this->registry->getObject('db')->getResult();			
 		return $contact;
-	}
-
-	public function getValue( $table, $pkID, $field )
-	{
-		$value = null;
-		$pk = $this->getFieldPK($table);
-		$this->registry->getObject('db')->initQuery($table);
-		$this->registry->getObject('db')->setFilter($pk,$pkID);
-		if ($this->registry->getObject('db')->findFirst()){
-			$rec = $this->registry->getObject('db')->getResult();
-			$value = isset($rec[$field]) ? $rec[$field] : null;
-		}			
-		return $value;
 	}
 
 	public function geNextMeetingEntryNo( $MeetingTypeID )
@@ -1569,269 +1561,5 @@ class Zobcontroller{
 		$text = $arr[0].".".$arr[1].".".$arr[2];
 		$date = date('Y-m-d', strtotime($text));
 		return $date;
-	}
-
-	private function ws($action){
-		$urlBits = $this->registry->getURLBits();     
-		$result = 'OK';
-
-		switch($action){
-			case 'getvalue':
-				# URL: zob/ws/getvalue/<table>/<ID>/<FieldName>
-				$table = strtolower(isset($urlBits[3]) ? $urlBits[3] : ''); 
-				$ID = isset($urlBits[4]) ? $urlBits[4] : 0; 
-				$field = isset($urlBits[5]) ? $urlBits[5] : '';
-				$value = '';
-				if($table == '')
-					$value = '<NULL>';
-				if($ID == 0)
-					$value = '<NULL>';
-				if($field == '')
-					$value = '<NULL>';
-				if($value == ''){
-					$pkField = $this->getFieldPK($table);
-					if($pkField){
-						$this->registry->getObject('db')->initQuery($table);
-						$this->registry->getObject('db')->setFilter($pkField,$ID);
-						if ($this->registry->getObject('db')->findFirst()){
-							$result = $this->registry->getObject('db')->getResult();
-							$value =  isset($result[$field]) ? $result[$field] : '<NULL>';
-						}else
-							$value = '<NULL>';
-					}else
-						$value = '<NULL>';
-				}
-				return $value;
-			case 'copyfrom':
-				# URL: zob/ws/copyfrom/<table>/<ID>/<FieldName>/<fromFieldName>
-				$table = strtolower(isset($urlBits[3]) ? $urlBits[3] : ''); 
-				$ID = isset($urlBits[4]) ? $urlBits[4] : 0; 
-				$field = isset($urlBits[5]) ? $urlBits[5] : '';
-				$fieldFrom = isset($urlBits[6]) ? $urlBits[6] : '';
-				if($table == '')
-					$result = 'Error: Table is not specified';
-				if($ID == 0)
-					$result = 'Error: Meeting line not specified';
-				if($field == '')
-					$result = 'Error: Field not specified';
-				if($fieldFrom == '')
-					$result = 'Error: Field from not specified';
-				if($table == 'meetingline'){
-					$meetingline = $this->getMeetingline($ID);
-					$meeting = $this->getMeeting($meetingline['MeetingID']);
-					if($meeting['Close'] == 1)
-						$result = 'Nelze editovat uzavřený zápis jednání;';
-				}
-				if($result == 'OK'){
-					$data = array();
-					$data[$field] = $this->getValue( $table, $ID, $fieldFrom);  
-					$pk = $this->getFieldPK($table);
-					$condition = "`$pk` = $ID";
-					$this->registry->getObject('db')->updateRecords($table,$data,$condition);
-				}
-				break;
-			case 'upd':
-				# URL: zob/ws/upd/<table>/<ID>/<FieldName>/<FieldValue>
-				$table = strtolower(isset($urlBits[3]) ? $urlBits[3] : ''); 
-				$ID = isset($urlBits[4]) ? $urlBits[4] : 0; 
-				$field = isset($urlBits[5]) ? $urlBits[5] : '';
-				$value = isset($_POST['value']) ? $_POST['value'] : '';
-				if($table == '')
-					$result = 'Error: Table is not specified';
-				if($ID == 0)
-					$result = 'Error: Meeting line not specified';
-				if($field == '')
-					$result = 'Error: Field not specified';
-				if($result == 'OK'){
-					$data = null;
-					switch ($table) {
-						case 'meeting':
-							$meeting = $this->getMeeting($ID);
-							$isTemplate = $this->isElectionperiodTemplate( $meeting['ElectionPeriodID'] );
-							if($meeting['Close'] == 1){
-								$result = 'Nelze editovat uzavřený zápis jednání;';
-							}else{
-								switch ($field) {
-									case 'AtDate':
-										if(!$isTemplate){
-											$data[$field] = $value;
-											if($value)
-												$data['Year'] = $this->registry->getObject('core')->formatDate($value,'Y');
-										}
-										break;
-									case 'Close':
-										if(!$isTemplate){											
-											if ($meeting['AtDate'] ==null){
-												$result = "Nelze uzavřít jednání pokud není vyplnměn termín jednání.";
-											};
-											if ($meeting['MeetingPlace'] == ''){
-												$result = "Nelze uzavřít jednání pokud není vyplnměno místo jednání.";
-											};
-											if ($meeting['RecorderAtDate'] == null){
-												$result = "Nelze uzavřít jednání pokud není vyplnměn datum zápisu.";
-											};
-											if ($meeting['RecorderBy'] == ''){
-												$result = "Nelze uzavřít jednání pokud není vyplnměn zapisovatel.";
-											};
-											if ($this->countRec('meetingline','MeetingID = '.$meeting['MeetingID']) == 0){
-												$result = "Nelze uzavřít zápis jednání bez obsahu.";
-											}
-											if($result == 'OK')
-												$data[$field] = $value;
-										}
-										break;
-									case 'PostedUpDate':
-									case 'PostedDownDate':
-									case 'State':
-									case 'RecorderAtDate':
-									case 'VerifierBy1':
-									case 'VerifierBy2':
-										if(!$isTemplate)
-											$data[$field] = $value;
-										break;
-									default:
-										$data[$field] = $value;
-								}
-								$condition = "MeetingID = $ID";
-							}
-							break;							
-						case 'meetingline':
-							$meetingline = $this->getMeetingline($ID);
-							$meeting = $this->getMeeting($meetingline['MeetingID']);
-							$meetingtype = $this->getMeetingtype($meeting['MeetingTypeID']);
-
-							if($meeting['Close'] == 1){
-								$result = 'Nelze editovat uzavřený zápis jednání;';
-							}else{
-								switch ($field) {
-									case 'Title':
-										if($value == ''){
-											$result = 'Text bodu jednání musí být vyplněn.';
-										}
-										if($result == 'OK')
-											$data[$field] = $value;
-										break;
-									case 'VoteFor':
-									case 'VoteAgainst':
-									case 'VoteDelayed':
-										$value = (int) $value;									
-										$total = $meetingline['VoteFor'] + $meetingline['VoteAgainst'] + $meetingline['VoteDelayed'];
-										if($value > 0)
-											switch ($field) {
-												case 'VoteFor':
-													$total = $value + $meetingline['VoteAgainst'] + $meetingline['VoteDelayed'];
-													break;
-												case 'VoteAgainst':
-													$total = $meetingline['VoteFor'] + $value + $meetingline['VoteDelayed'];
-													break;
-												case 'VoteDelayed':
-													$total = $meetingline['VoteFor'] + $meetingline['VoteAgainst'] + $value;
-													break;
-											}
-										if($total > $meeting['Present'])
-											$result = "Počet hlasujících nesouhlasí, maximální počet přítomných členů je ".$meeting['Present'];
-										if($result == 'OK')
-											$data[$field] = $value;
-										break;
-									case 'Vote':
-										if($value == 1){
-											$data['VoteFor'] = $meeting['Present'];
-											$data['VoteAgainst'] = "0";
-											$data['VoteDelayed'] = "0";										
-										}else{
-											$data['VoteFor'] = '0';
-											$data['VoteAgainst'] = "0";
-											$data['VoteDelayed'] = "0";										
-										}
-										$data[$field] = $value;
-										break;
-									case 'Presenter':
-										if($value == '')
-											$data['PresenterID'] = '00000000-0000-0000-0000-000000000000';
-										else{
-											$contact = $this->getContactByName($value);
-											if($contact){
-												$data['PresenterID'] = $contact['ID'];
-											}else{
-												$result = "Předkladatel $value nebyl nalezen v kontaktech.";
-												return $result;
-											}
-										}
-										break;
-									default:
-										$data[$field] = $value;
-								}
-								$condition = "MeetingLineID = $ID";
-							}
-							break;						
-						case 'meetinglinecontent':
-							$meetinglinecontent = $this->getMeetinglinecontent($ID);
-							$meeting = $this->getMeeting($meetinglinecontent['MeetingID']);
-							if($meeting['Close'] == 1){
-								$result = 'Nelze editovat uzavřený zápis jednání;';
-							}else{
-								switch ($field) {
-									case 'VoteFor':
-									case 'VoteAgainst':
-									case 'VoteDelayed':
-										$value = (int) $value;									
-										$total = $meetinglinecontent['VoteFor'] + $meetinglinecontent['VoteAgainst'] + $meetinglinecontent['VoteDelayed'];
-										if($value > 0)
-											switch ($field) {
-												case 'VoteFor':
-													$total = $value + $meetinglinecontent['VoteAgainst'] + $meetinglinecontent['VoteDelayed'];
-													break;
-												case 'VoteAgainst':
-													$total = $meetinglinecontent['VoteFor'] + $value + $meetinglinecontent['VoteDelayed'];
-													break;
-												case 'VoteDelayed':
-													$total = $meetinglinecontent['VoteFor'] + $meetinglinecontent['VoteAgainst'] + $value;
-													break;
-											}
-										if($total > $meeting['Present'])
-											$result = "Počet hlasujících nesouhlasí, maximální počet přítomných členů je ".$meeting['Present'];
-										if($result == 'OK')
-											$data[$field] = $value;
-										break;
-									case 'Vote':
-										if($value == 1){
-											$data['VoteFor'] = $meeting['Present'];
-											$data['VoteAgainst'] = "0";
-											$data['VoteDelayed'] = "0";										
-										}else{
-											$data['VoteFor'] = '0';
-											$data['VoteAgainst'] = "0";
-											$data['VoteDelayed'] = "0";										
-										}
-										$data[$field] = $value;
-										break;
-									default:
-										$data[$field] = $value;
-								}
-								$condition = "ContentID = $ID";								
-							}
-							break;						
-						default:
-							# code...
-							break;
-					}
-					if(($result == 'OK') && $data)
-						$this->registry->getObject('db')->updateRecords($table,$data,$condition);
-				};
-				break;
-		};
-		return $result;
-	}
-
-	private function getFieldPK($table){
-		switch (strtolower($table)) {	
-			case 'meeting':
-				return 'MeetingID';
-			case 'meetingline':
-				return 'MeetingLineID';
-			case 'meetinglinecontent':
-				return 'ContentID';
-		}
-		return null;
 	}
 }

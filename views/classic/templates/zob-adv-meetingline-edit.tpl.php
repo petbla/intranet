@@ -54,7 +54,7 @@
                     <label class="col_title big">{lbl_DraftResolution}</label>
                     <img src="views/classic/images/icon/arrowdown.png" id="arrowdownDraftResolution{MeetingLineID}" title="Rozbalit" onClick="document.getElementById('meetinglineDraftResolution{MeetingLineID}').style.display = 'block'; this.style.display='none';document.getElementById('arrowupDraftResolution{MeetingLineID}').style.display='';" style="display:none;"/>
                     <img src="views/classic/images/icon/arrowup.png" id="arrowupDraftResolution{MeetingLineID}" title="Sbalit" onClick="document.getElementById('meetinglineDraftResolution{MeetingLineID}').style.display = 'none'; this.style.display='none';document.getElementById('arrowdownDraftResolution{MeetingLineID}').style.display='';"/>
-                    &nbsp;&nbsp;<img src="views/classic/images/icon/copyFrom.png" style="cursor: pointer;" title="Kopie obsahu" name="DraftResolution" namefrom="Content" table="meetingline" pkID="{MeetingLineID}" onClick="wsCopyFrom(this);"/>
+                    &nbsp;&nbsp;<img src="views/classic/images/icon/copyFrom.png" style="cursor: pointer;" title="Kopie obsahu" name="DraftResolution" namefrom="Content" table="meetingline" pkID="{MeetingLineID}" onClick="wscopyFrom(this);"/>
                     <br>                   
                     <textarea  id="meetinglineDraftResolution{MeetingLineID}" name="DraftResolution" rows="3" cols="160" value="" class="autosize par" pkID="{MeetingLineID}" table="meetingline" onchange="wsUpdate(this);">{DraftResolution}</textarea>
                     <script>
@@ -121,7 +121,7 @@
                     <label class="col_title big">{con_LineNo}) {lbl_DraftResolution}</label>
                     <img src="views/classic/images/icon/arrowdown.png" id="arrowdownDraftResolutionContent{con_ContentID}" title="Rozbalit" onClick="document.getElementById('meetinglinecontentDraftResolution{con_ContentID}').style.display = 'block'; this.style.display='none';document.getElementById('arrowupDraftResolutionContent{con_ContentID}').style.display='';" style="display:none;"/>
                     <img src="views/classic/images/icon/arrowup.png" id="arrowupDraftResolutionContent{con_ContentID}" title="Sbalit" onClick="document.getElementById('meetinglinecontentDraftResolution{con_ContentID}').style.display = 'none'; this.style.display='none';document.getElementById('arrowdownDraftResolutionContent{con_ContentID}').style.display='';"/>
-                    &nbsp;&nbsp;<img src="views/classic/images/icon/copyFrom.png" style="cursor: pointer;" title="Kopie obsahu" name="DraftResolution" namefrom="Content" table="meetinglinecontent" pkID="{con_ContentID}" onClick="wsCopyFrom(this);"/>
+                    &nbsp;&nbsp;<img src="views/classic/images/icon/copyFrom.png" style="cursor: pointer;" title="Kopie obsahu" name="DraftResolution" namefrom="Content" table="meetinglinecontent" pkID="{con_ContentID}" onClick="wscopyFrom(this);"/>
                     <br>                   
                     <textarea id="meetinglinecontentDraftResolution{con_ContentID}" name="DraftResolution" rows="3" cols="160" value="" class="autosize par" pkID="{con_ContentID}" table="meetinglinecontent" onchange="wsUpdate(this);">{con_DraftResolution}</textarea>
                     <script>
