@@ -40,7 +40,7 @@
                 <small>(<b>{Attachments}</b>)</small>
             </td>
             <td class="col_code200" MeetingLineID="{MeetingLineID}" onClick="document.getElementById('editMeetingLine{MeetingLineID}').style.display='block';">
-                <span MeetingLineID="{MeetingLineID}">
+                <span MeetingLineID="{MeetingLineID}" class="pointer">
                 {LineType}&nbsp;&nbsp;&nbsp;
                 </span>
             </td>
@@ -51,7 +51,7 @@
                     <a href="index.php?page=zob/meetingline/movedown/{MeetingID}/{MeetingLineID}"><img src="views/classic/images/icon/movedown.png" title="Posun bodu dolů"/></a>
                 </span>
             </td>
-            <td colspan="2" class="value {bold}" MeetingLineID="{MeetingLineID}" onClick="document.getElementById('editMeetingLine{MeetingLineID}').style.display='block';">{Title}</td>
+            <td colspan="2" class="value {bold} pointer" MeetingLineID="{MeetingLineID}" onClick="document.getElementById('editMeetingLine{MeetingLineID}').style.display='block';">{Title}</td>
         </tr>
         <tr>
         </tr>

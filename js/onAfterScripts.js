@@ -819,6 +819,7 @@ function validateCheckbox( e ){
     }else{
         e.setAttribute('value',0);
     }
+    wsUpdate(e);    
 }
 
 function validateCheckboxVote( e, ID ){
@@ -845,13 +846,6 @@ function validateCheckboxVote( e, ID ){
         ee.disabled = true;
     }
     wsUpdate(e);    
-}
-
-function saveFormMeetingLine(MeetingLineID){
-    var e;
-    e = document.forms['MeetingLineID' + MeetingLineID];
-    if(e)
-        e.submit();
 }
 
 function allowDrop(ev) {

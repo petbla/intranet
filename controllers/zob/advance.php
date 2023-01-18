@@ -110,14 +110,6 @@ class Zobadvance {
 				$MeetingLineID = isset($urlBits[5]) ? $urlBits[5] : null;
 				$this->zob->deleteMeetingline($MeetingLineID);
 				break;
-			case 'modify':
-				$MeetingLineID = isset($_POST["MeetingLineID"]) ? $_POST["MeetingLineID"] : $MeetingLineID;
-				$this->zob->modifyMeetingline($MeetingLineID);
-				$meetingline = $this->zob->getMeetingline($MeetingLineID);
-				if($meetingline){
-					$MeetingID = $meetingline['MeetingID'];
-				}
-				break;
 			case 'add':
 				$MeetingID = isset($_POST["MeetingID"]) ? $_POST["MeetingID"] : $MeetingID;
 				$this->zob->addMeetingline($MeetingID);
@@ -143,13 +135,17 @@ class Zobadvance {
 				$MeetingLineID = isset($urlBits['4']) ? $urlBits['4'] : 0;
 				$meetingline = $this->zob->getMeetingline($MeetingLineID);
 				$MeetingID = $meetingline['MeetingID'];
-
-				$data['MeetingLineID'] = $MeetingLineID;
-				$data['MeetingID'] = $MeetingID;
-				$data['MeetingTypeID'] = $meetingline['MeetingTypeID'];
-				$data['LineNo'] = $this->zob->getNextMeetinglineContentLineNo($MeetingLineID);
-				$this->registry->getObject('db')->insertRecords('meetinglinecontent',$data);
-				$this->anchor = "anchor".$MeetingLineID;
+				$meeting = $this->zob->getMeeting($MeetingID);
+				if ($meeting['Close'] == 1){
+					$this->errorMessage = 'Nelze editovat uzavřený zápis.';
+				}else{
+					$data['MeetingLineID'] = $MeetingLineID;
+					$data['MeetingID'] = $MeetingID;
+					$data['MeetingTypeID'] = $meetingline['MeetingTypeID'];
+					$data['LineNo'] = $this->zob->getNextMeetinglineContentLineNo($MeetingLineID);
+					$this->registry->getObject('db')->insertRecords('meetinglinecontent',$data);
+					$this->anchor = "anchor".$MeetingLineID;
+				}
 				break;
 		}
 		$this->MeetingID = $MeetingID;

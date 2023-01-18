@@ -1,6 +1,6 @@
 <fieldset style="padding:0; border:0;">
     <table>
-        <form id="MeetingLineID{MeetingLineID}" action="index.php?page=zob/adv/meetingline/modify" method="post">
+        <form id="MeetingLineID{MeetingLineID}" action="" method="post">
             <tr>
                 <td>
                     <a href="#header" class="button" title="Nahorů"><img src="views/classic/images/icon/arrowup.png"></a>                   

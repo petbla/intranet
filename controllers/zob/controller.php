@@ -511,13 +511,6 @@ class Zobcontroller{
 		$urlBits = $this->registry->getURLBits();     
 
 		switch ($action) {
-			case 'modify':
-				$MeetingID = isset($_POST["MeetingID"]) ? $_POST["MeetingID"] : '';
-				$meeting = $this->getMeeting($MeetingID);
-				if($meeting)
-					$MeetingTypeID = $meeting['MeetingTypeID'];
-				$this->modifyMeeting($MeetingID);
-				break;
 			case 'delete':
 				$MeetingID = isset($urlBits[4]) ? $urlBits[4] : '';
 				$meeting = $this->getMeeting($MeetingID);
@@ -605,14 +598,6 @@ class Zobcontroller{
 				$this->deleteMeetingline($MeetingLineID);
 				$MeetingLineID = 0;
 				break;
-			case 'modify':
-				$MeetingLineID = isset($_POST["MeetingLineID"]) ? $_POST["MeetingLineID"] : $MeetingLineID;
-				$this->modifyMeetingline($MeetingLineID);
-				$meetingline = $this->getMeetingline($MeetingLineID);
-				if($meetingline){
-					$MeetingID = $meetingline['MeetingID'];
-				}
-				break;
 			case 'add':
 				$MeetingID = isset($_POST["MeetingID"]) ? $_POST["MeetingID"] : $MeetingID;
 				$this->addMeetingline($MeetingID);
@@ -645,12 +630,14 @@ class Zobcontroller{
 		$PostedUpDate = $PostedUpDate != '' ? $PostedUpDate : null;
 		$PostedDownDate = isset($_POST['PostedDownDate']) ? $_POST['PostedDownDate'] : '';
 		$PostedDownDate = $PostedDownDate != '' ? $PostedDownDate : null;
+		$Present = '';
 
 		if(!$isTemplate){
 			$meetingTemplate = $this->getMeetingTemplate($meetingtype['MeetingName']);
 			$MeetingPlace = $meetingTemplate['MeetingPlace'];
 			$RecorderBy = $meetingTemplate['RecorderBy'];
 			$AtTime = $meetingTemplate['AtTime'];
+			$Present = $meetingTemplate['Present'];
 		}else{
 			$MeetingPlace = '';
 			$RecorderBy = '';
@@ -667,6 +654,7 @@ class Zobcontroller{
 		$data['AtTime'] = $AtTime;
 		$data['MeetingPlace'] = $MeetingPlace;
 		$data['RecorderBy'] = $RecorderBy;
+		$data['Present'] = $Present;
 
 		if (!$isTemplate){
 			$data['AtDate'] = $AtDate;
@@ -716,7 +704,7 @@ class Zobcontroller{
 			
 			$meetingTemplate = $this->readMeetingLinesFromTemplate( $meetingtype['MeetingName']);
 			if($meetingTemplate == null){
-				$this->errorMessage = 'Šablona pro jednání '.$meetingtype['MeetingName'].'nebyla nalezena.';
+				$this->errorMessage = 'Šablona pro jednání '.$meetingtype['MeetingName'].' nebyla nalezena.';
 				return false;
 			}
 			foreach($meetingTemplate as $data){
@@ -738,13 +726,6 @@ class Zobcontroller{
 		if($meeting['Close'] == 1){
 			$this->errorMessage = 'Nelze měnit zápis uzavřeného jednání.';
 			return false;
-		}
-
-		if($data['Vote'] == 1){
-			if(($data['VoteFor'] + $data['VoteAgainst'] + $data['VoteDelayed']) <> $meetingtype['Members']){
-				$this->errorMessage = 'Součet hlasování neodpovídá počtu členů ' . $meetingtype['Members'];
-				return false;
-			}
 		}
 
 		if($data['Title'] == ''){
@@ -832,151 +813,6 @@ class Zobcontroller{
 		}
 	}
 
-	private function modifyMeeting($MeetingID){
-
-		$meeting = $this->getMeeting($MeetingID);	
-		if($meeting == null)
-			return false;
-		$EntryNo = $meeting['EntryNo'];
-
-		// Data z formuláře
-		$AtDate = isset($_POST['AtDate']) ? $_POST['AtDate'] : $meeting['AtDate'];
-		$AtDate = $AtDate != '' ? $AtDate : null;
-		$AtTime = isset($_POST['AtTime']) ? $_POST['AtTime'] : $meeting['AtTime'];
-		if($AtDate)
-			$Year = $this->registry->getObject('core')->formatDate($AtDate,'Y');
-		else
-			$Year = 0;
-		$MeetingPlace = isset($_POST['MeetingPlace']) ? $_POST['MeetingPlace'] : $meeting['MeetingPlace'];
-		$PostedUpDate = isset($_POST['PostedUpDate']) ? $_POST['PostedUpDate'] : $meeting['PostedUpDate'];
-		$PostedUpDate = $PostedUpDate != '' ? $PostedUpDate : null;
-		$PostedDownDate = isset($_POST['PostedDownDate']) ? $_POST['PostedDownDate'] : $meeting['PostedDownDate'];
-		$PostedDownDate = $PostedDownDate != '' ? $PostedDownDate : null;
-		$State = isset($_POST['State']) ? $_POST['State'] : $meeting['State'];
-		$Present = isset($_POST['Present']) ? $_POST['Present'] : $meeting['Present'];
-		$RecorderAtDate = isset($_POST['RecorderAtDate']) ? $_POST['RecorderAtDate'] : $meeting['RecorderAtDate'];
-		$RecorderAtDate = $RecorderAtDate != '' ? $RecorderAtDate : null;
-		$RecorderBy = isset($_POST['RecorderBy']) ? $_POST['RecorderBy'] : $meeting['RecorderBy'];
-		$VerifierBy1 = isset($_POST['VerifierBy1']) ? $_POST['VerifierBy1'] : $meeting['VerifierBy1'];
-		$VerifierBy2 = isset($_POST['VerifierBy2']) ? $_POST['VerifierBy2'] : $meeting['VerifierBy2'];
-		$Close = isset($_POST['Close']) ? $_POST['Close'] : $meeting['Close'];
-
-		// Test uzavření jednání
-		if ($Close == 1){
-			if ($AtDate ==null){
-				$this->errorMessage = "Nelze uzavřít jednání pokud není vyplnměn termín jednání.";
-				return false;
-			};
-			if ($MeetingPlace == ''){
-				$this->errorMessage = "Nelze uzavřít jednání pokud není vyplnměno místo jednání.";
-				return false;
-			};
-			if ($RecorderAtDate == null){
-				$this->errorMessage = "Nelze uzavřít jednání pokud není vyplnměn datum zápisu.";
-				return false;
-			};
-			if ($RecorderBy == ''){
-				$this->errorMessage = "Nelze uzavřít jednání pokud není vyplnměn zapisovatel.";
-				return false;
-			};
-
-			//TODO-Kontrola zadaných bodů z jednání
-			if (true == true){
-				$this->errorMessage = "Nelze uzavřít jednání pokud nejsou vyplněny body jednání.";
-				return false;
-			};
-		}
-		$isTemplate = $this->isElectionperiodTemplate( $meeting['ElectionPeriodID'] );
-
-		// Inicializace zánamu pro modifikaci
-		$data = array();
-		
-		// Pole editace šablony
-		$data['MeetingTypeID'] = $meeting['MeetingTypeID'];
-		$data['ElectionPeriodID'] = $meeting['ElectionPeriodID'];
-		$data['EntryNo'] = $EntryNo;
-		$data['AtTime'] = $AtTime;
-		$data['Present'] = $Present;
-		$data['MeetingPlace'] = $MeetingPlace;
-		$data['RecorderBy'] = $RecorderBy;
-
-		if (!$isTemplate){
-			$data['AtDate'] = $AtDate;
-			$data['Year'] = $Year;
-			$data['PostedUpDate'] = $PostedUpDate;
-			$data['PostedDownDate'] = $PostedDownDate;
-			$data['State'] = $State;
-			$data['RecorderAtDate'] = $RecorderAtDate;
-			$data['Actual'] = $meeting['Actual'];
-			$data['Close'] = $Close;
-			$data['VerifierBy1'] = $VerifierBy1;
-			$data['VerifierBy2'] = $VerifierBy2;
-		}
-
-		// Uložení záznamu
-		$condition = "MeetingID = $MeetingID";
-		$this->registry->getObject('db')->updateRecords('meeting',$data,$condition);
-		return true;
-	}	
-
-	public function modifyMeetingline($MeetingLineID)
-	{	
-		IF(!$MeetingLineID)
-			return false;
-		
-		$meetingline = $this->getMeetingline($MeetingLineID);
-		$meeting = $this->getMeeting($meetingline['MeetingID']);
-		$meetingtype = $this->getMeetingtype($meeting['MeetingTypeID']);
-
-
-		// Data z FORMuláře
-		$data = array();
-		$data['LineType'] = isset($_POST['LineType']) ? $_POST['LineType'] : $meetingline['LineType'];		
-		$data['Title'] = isset($_POST['Title']) ? $this->registry->getObject('db')->sanitizeData($_POST['Title']) : $meetingline['Title'];
-		$data['Title2'] = isset($_POST['Title2']) ? $this->registry->getObject('db')->sanitizeData($_POST['Title2']) : $meetingline['Title2'];
-		$data['Content'] = isset($_POST['Content']) ? $this->registry->getObject('db')->sanitizeData($_POST['Content']) : $meetingline['Content'];
-		$data['Discussion'] = isset($_POST['Discussion']) ? $this->registry->getObject('db')->sanitizeData($_POST['Discussion']) : $meetingline['Discussion'];
-		$data['Vote'] = isset($_POST['Vote']) ? $_POST['Vote'] : $meetingline['Vote'];
-		$data['VoteFor'] = isset($_POST['VoteFor']) ? (int) $_POST['VoteFor'] : $meetingline['VoteFor'];
-		$data['VoteAgainst'] = isset($_POST['VoteAgainst']) ? (int) $_POST['VoteAgainst'] : $meetingline['VoteAgainst'];
-		$data['VoteDelayed'] = isset($_POST['VoteDelayed']) ? (int) $_POST['VoteDelayed'] : $meetingline['VoteDelayed'];	
-		$Presenter = isset($_POST['Presenter']) ? $_POST['Presenter'] : '';
-
-		// Kontroly
-		if($Presenter == '')
-			$data['PresenterID'] = '00000000-0000-0000-0000-000000000000';
-		else{
-			$contact = $this->getContactByName($Presenter);
-			if($contact){
-				$data['PresenterID'] = $contact['ID'];
-			}else{
-				$this->errorMessage = "Předkladatel $Presenter nebyl nalezen v kontaktech. Zadejte jej ručně a pak akci opakujte.";
-				return false;		
-			}
-		}
-
-		if($meeting['Close'] == 1){
-			$this->errorMessage = 'Nelze měnit zápis uzavřeného jednání.';
-			return false;	
-		}
-
-		if($data['Vote'] == 1){
-			if(($data['VoteFor'] + $data['VoteAgainst'] + $data['VoteDelayed']) <> $meetingtype['Members']){
-				$this->errorMessage = 'Součet hlasování neodpovídá počtu členů ' . $meetingtype['Members'];
-				return false;	
-			}
-		}
-
-		if($data['Title'] == ''){
-			$this->errorMessage = 'Text bodu jednání musí být vyplněn.';
-			return false;	
-		}
-
-		$condition = "MeetingLineID = $MeetingLineID";
-		$this->registry->getObject('db')->updateRecords('meetingline',$data,$condition);
-
-		return true;
-	}
 
 	public function assignMeetingattachment( $AttachmentID, $MeetingLineID ){
 		if(!$AttachmentID)
@@ -1259,10 +1095,16 @@ class Zobcontroller{
 		}else{
 			$this->registry->getObject('template')->getPage()->addTag( 'LineType', '' );				
 			$this->registry->getObject('template')->getPage()->addTag( 'LineNo', '' );				
+			$this->registry->getObject('template')->getPage()->addTag( 'LineNo2', '' );				
+			$this->registry->getObject('template')->getPage()->addTag( 'Presenter', '' );				
 			$this->registry->getObject('template')->getPage()->addTag( 'Title', '== Uložit první záznam, nebo Vložit ze šablony ==' );				
 			$this->registry->getObject('template')->getPage()->addTag( 'isEmpty', 1 );				
 			$this->registry->getObject('template')->getPage()->addTag( 'MeetingLineID', 0 );				
-			$this->registry->getObject('template')->getPage()->addTag( 'MeetingLineID', 0 );				
+			$this->registry->getObject('template')->getPage()->addTag( 'VoteFor', '' );				
+			$this->registry->getObject('template')->getPage()->addTag( 'VoteAgainst', '' );				
+			$this->registry->getObject('template')->getPage()->addTag( 'VoteDelayed', '' );				
+			$this->registry->getObject('template')->getPage()->addTag( 'Content', '' );				
+			$this->registry->getObject('template')->getPage()->addTag( 'Description', '' );				
 			$this->registry->getObject('template')->getPage()->addTag( 'Attachments', '' );				
 			//$this->registry->getObject('template')->getPage()->addTag( 'Description', '' );				
 		}
@@ -1801,15 +1643,74 @@ class Zobcontroller{
 				if($field == '')
 					$result = 'Error: Field not specified';
 				if($result == 'OK'){
-					$data = array();
+					$data = null;
 					switch ($table) {
-						case 'meetingline':
-							$meetingline = $this->getMeetingline($ID);
-							$meeting = $this->getMeeting($meetingline['MeetingID']);
+						case 'meeting':
+							$meeting = $this->getMeeting($ID);
+							$isTemplate = $this->isElectionperiodTemplate( $meeting['ElectionPeriodID'] );
 							if($meeting['Close'] == 1){
 								$result = 'Nelze editovat uzavřený zápis jednání;';
 							}else{
 								switch ($field) {
+									case 'AtDate':
+										if(!$isTemplate){
+											$data[$field] = $value;
+											if($value)
+												$data['Year'] = $this->registry->getObject('core')->formatDate($value,'Y');
+										}
+										break;
+									case 'Close':
+										if(!$isTemplate){											
+											if ($meeting['AtDate'] ==null){
+												$result = "Nelze uzavřít jednání pokud není vyplnměn termín jednání.";
+											};
+											if ($meeting['MeetingPlace'] == ''){
+												$result = "Nelze uzavřít jednání pokud není vyplnměno místo jednání.";
+											};
+											if ($meeting['RecorderAtDate'] == null){
+												$result = "Nelze uzavřít jednání pokud není vyplnměn datum zápisu.";
+											};
+											if ($meeting['RecorderBy'] == ''){
+												$result = "Nelze uzavřít jednání pokud není vyplnměn zapisovatel.";
+											};
+											if ($this->countRec('meetingline','MeetingID = '.$meeting['MeetingID']) == 0){
+												$result = "Nelze uzavřít zápis jednání bez obsahu.";
+											}
+											if($result == 'OK')
+												$data[$field] = $value;
+										}
+										break;
+									case 'PostedUpDate':
+									case 'PostedDownDate':
+									case 'State':
+									case 'RecorderAtDate':
+									case 'VerifierBy1':
+									case 'VerifierBy2':
+										if(!$isTemplate)
+											$data[$field] = $value;
+										break;
+									default:
+										$data[$field] = $value;
+								}
+								$condition = "MeetingID = $ID";
+							}
+							break;							
+						case 'meetingline':
+							$meetingline = $this->getMeetingline($ID);
+							$meeting = $this->getMeeting($meetingline['MeetingID']);
+							$meetingtype = $this->getMeetingtype($meeting['MeetingTypeID']);
+
+							if($meeting['Close'] == 1){
+								$result = 'Nelze editovat uzavřený zápis jednání;';
+							}else{
+								switch ($field) {
+									case 'Title':
+										if($value == ''){
+											$result = 'Text bodu jednání musí být vyplněn.';
+										}
+										if($result == 'OK')
+											$data[$field] = $value;
+										break;
 									case 'VoteFor':
 									case 'VoteAgainst':
 									case 'VoteDelayed':
@@ -1827,9 +1728,10 @@ class Zobcontroller{
 													$total = $meetingline['VoteFor'] + $meetingline['VoteAgainst'] + $value;
 													break;
 											}
-											if($total > $meeting['Present'])
-												$result = "Počet hlasujících nesouhlasí, maximální počet přítomných členů je ".$meeting['Present'];
-										$data[$field] = $value;
+										if($total > $meeting['Present'])
+											$result = "Počet hlasujících nesouhlasí, maximální počet přítomných členů je ".$meeting['Present'];
+										if($result == 'OK')
+											$data[$field] = $value;
 										break;
 									case 'Vote':
 										if($value == 1){
@@ -1860,7 +1762,6 @@ class Zobcontroller{
 										$data[$field] = $value;
 								}
 								$condition = "MeetingLineID = $ID";
-								$this->registry->getObject('db')->updateRecords($table,$data,$condition);
 							}
 							break;						
 						case 'meetinglinecontent':
@@ -1887,9 +1788,10 @@ class Zobcontroller{
 													$total = $meetinglinecontent['VoteFor'] + $meetinglinecontent['VoteAgainst'] + $value;
 													break;
 											}
-											if($total > $meeting['Present'])
-												$result = "Počet hlasujících nesouhlasí, maximální počet přítomných členů je ".$meeting['Present'];
-										$data[$field] = $value;
+										if($total > $meeting['Present'])
+											$result = "Počet hlasujících nesouhlasí, maximální počet přítomných členů je ".$meeting['Present'];
+										if($result == 'OK')
+											$data[$field] = $value;
 										break;
 									case 'Vote':
 										if($value == 1){
@@ -1906,14 +1808,15 @@ class Zobcontroller{
 									default:
 										$data[$field] = $value;
 								}
-								$condition = "ContentID = $ID";
-								$this->registry->getObject('db')->updateRecords($table,$data,$condition);
+								$condition = "ContentID = $ID";								
 							}
 							break;						
 						default:
 							# code...
 							break;
 					}
+					if(($result == 'OK') && $data)
+						$this->registry->getObject('db')->updateRecords($table,$data,$condition);
 				};
 				break;
 		};
