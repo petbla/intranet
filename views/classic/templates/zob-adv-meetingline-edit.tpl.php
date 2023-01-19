@@ -175,15 +175,20 @@
         </form>
         <tr>
             <td></td>
-            <td colspan="2">
+            <td id="attachments{MeetingLineID}" colspan="2">
                 <!-- START meetingattachmentList{MeetingLineID} -->
                 <span AttachmentID="{AttachmentID}" draggable="true" ondragstart="dragattachment(event)" class="blue">
                     <img src="views/classic/images/icon/attachment.png" title="{lbl_attachment}" style="width:24px;"/>
                     <a href="index.php?page=zob/meetingattachment/delete/{AttachmentID}"><img src="views/classic/images/icon/delete.png" title="{lbl_Delete}" onclick="return ConfirmDelete();"/></a>
-                    {Description}
+                    <a href="" SET_HREF id="{ID}" table="dmsentry" name="{Name}" type="{Type}" url="">{Description}</a>                    
                 </span>
+                <br>
                 <!-- END meetingattachmentList{MeetingLineID} -->
             </td>
+            <script>
+                if('{attachments}' == '0')
+                    document.getElementById('attachments{MeetingLineID}').style.display = 'none';
+            </script>
         </tr>
     </table>    
 </fieldset>

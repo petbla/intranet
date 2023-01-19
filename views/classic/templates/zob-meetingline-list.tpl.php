@@ -119,7 +119,7 @@
             </td>
             <td class="col_name">
                 <span>
-                    {Description}
+                    <a href="" SET_HREF id="{ID}" table="dmsentry" name="{Name}" type="{Type}" url="">{Description}</a>                
                 </span>
             </td>
             <td></td>

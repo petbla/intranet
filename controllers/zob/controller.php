@@ -1054,6 +1054,7 @@ class Zobcontroller{
 				}else{
 					$meetingline['isNextContent'] = 0;
 				}									
+				$meetingline['attachments'] = $this->countRec('meetingattachment',"MeetingLineID = ".$meetingline['MeetingLineID']);
 
 				$meetinglines2[] = $meetingline;
 			}
@@ -1084,8 +1085,28 @@ class Zobcontroller{
 
 			foreach($meetinglines as $meetingline){
 				$sql = "SELECT * FROM ".$this->prefDb."meetingattachment WHERE MeetingID = $MeetingID AND MeetingLineID = ".$meetingline['MeetingLineID'];
-				$cache = $this->registry->getObject('db')->cacheQuery( $sql );			
-				$this->registry->getObject('template')->getPage()->addTag( 'meetingattachmentList'.$meetingline['MeetingLineID'], array( 'SQL', $cache ) );
+				$cache = $this->registry->getObject('db')->cacheQuery( $sql );	
+				if(!$this->registry->getObject('db')->isEmpty( $cache )){
+					$meetingattachments = array();
+					while( $meetingattachment = $this->registry->getObject('db')->resultsFromCache( $cache ) )
+					{
+						$dmsentry = $this->getDmsentryByInboxID($meetingattachment['InboxID']);
+						if($dmsentry){
+							$meetingattachment['ID'] = $dmsentry['ID'];
+							$meetingattachment['Name'] = $dmsentry['Name'];
+							$meetingattachment['Type'] = $dmsentry['Type'];
+						}else{
+							$meetingattachment['ID'] = '';
+							$meetingattachment['Name'] = '';
+							$meetingattachment['Type'] = '';
+						}				
+						$meetingattachments[] = $meetingattachment;
+					}
+					$cache = $this->registry->getObject('db')->cacheData( $meetingattachments );
+					$this->registry->getObject('template')->getPage()->addTag( 'meetingattachmentList'.$meetingline['MeetingLineID'], array( 'DATA', $cache ) );
+				}
+						
+				
 			}
 		}else{
 			$this->registry->getObject('template')->getPage()->addTag( 'LineType', '' );				
@@ -1101,7 +1122,6 @@ class Zobcontroller{
 			$this->registry->getObject('template')->getPage()->addTag( 'Content', '' );				
 			$this->registry->getObject('template')->getPage()->addTag( 'Description', '' );				
 			$this->registry->getObject('template')->getPage()->addTag( 'Attachments', '' );				
-			//$this->registry->getObject('template')->getPage()->addTag( 'Description', '' );				
 		}
 
 		// Přílkohy jednání (bez přiřazení k řádku)
@@ -1111,8 +1131,16 @@ class Zobcontroller{
 			$meetingattachments = array();
 			while( $meetingattachment = $this->registry->getObject('db')->resultsFromCache( $cache ) )
 			{
-				# Code...
-				
+				$dmsentry = $this->getDmsentryByInboxID($meetingattachment['InboxID']);
+				if($dmsentry){
+					$meetingattachment['ID'] = $dmsentry['ID'];
+					$meetingattachment['Name'] = $dmsentry['Name'];
+					$meetingattachment['Type'] = $dmsentry['Type'];
+				}else{
+					$meetingattachment['ID'] = '';
+					$meetingattachment['Name'] = '';
+					$meetingattachment['Type'] = '';
+				}				
 				$meetingattachments[] = $meetingattachment;
 			}
 			$cache = $this->registry->getObject('db')->cacheData( $meetingattachments );
@@ -1470,6 +1498,23 @@ class Zobcontroller{
 		if ($this->registry->getObject('db')->findFirst())
 			$contact = $this->registry->getObject('db')->getResult();			
 		return $contact;
+	}
+
+	public function getDmsentryByInboxID ( $InboxID )
+	{
+		$inbox = null;
+		$dmsentry = null;
+		$this->registry->getObject('db')->initQuery('inbox');
+		$this->registry->getObject('db')->setFilter('InboxID',$InboxID);
+		if ($this->registry->getObject('db')->findFirst())
+			$inbox = $this->registry->getObject('db')->getResult();			
+		if($inbox){
+			$this->registry->getObject('db')->initQuery('dmsentry');
+			$this->registry->getObject('db')->setFilter('ID',$inbox['DmsEntryID']);
+			if ($this->registry->getObject('db')->findFirst())
+				$dmsentry = $this->registry->getObject('db')->getResult();			
+		}
+		return $dmsentry;		
 	}
 
 	public function geNextMeetingEntryNo( $MeetingTypeID )

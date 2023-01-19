@@ -40,7 +40,7 @@
         </tr>
     </table>
     <div id="actionpanel">
-        <img src="views/classic/images/icon/modify.png" dmsEntryType="{Type}" alt="{lbl_edit}" id="{ID}" dmsClassName="item" onclick="wsLogContactView('{ID}');" />
+        <img src="views/classic/images/icon/modify.png" dmsEntryType="{Type}" alt="{lbl_edit}" table='contact' id="{ID}" dmsClassName="item" onclick="wsLogView(this);" />
         <br />
         {editcard}
     </div>

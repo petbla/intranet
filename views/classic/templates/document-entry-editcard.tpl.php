@@ -31,7 +31,7 @@
                 <label class="title">{lbl_DocumentNo}</label>
                 <span class="value col_documentno" name="ADocumentNo" ADocumentNoID="{ID}">{ADocumentNo}</span>
 
-                <img src="views/classic/images/icon/unlink.png" style="cursor: pointer;" alt="Zrušit vazbu" title="Odebrat číslo jednací" onclick="wsUnlinkAgenda('{AgendaID}','{BaseUrl}');" />
+                <img src="views/classic/images/icon/unlink.png" style="cursor: pointer;" alt="Zrušit vazbu" title="Odebrat číslo jednací" onclick="wsUnlinkAgenda('{AgendaID}');" />
 
 
                 <input type="hidden" name="oldADocumentNo" value="{ADocumentNo}" oldADocumentNoID="{ID}">

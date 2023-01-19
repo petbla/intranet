@@ -8,6 +8,7 @@ class Generalws {
 	
     private $registry;
     private $zob;
+    private $contact;
 	private $table;
 	private $ID;
 	private $field;
@@ -18,10 +19,13 @@ class Generalws {
 	 */
 	public function __construct( Registry $registry )
 	{
-		require_once( FRAMEWORK_PATH . 'controllers/zob/controller.php');
 		$this->registry = $registry;
 
+		require_once( FRAMEWORK_PATH . 'controllers/zob/controller.php');
 		$this->zob = new Zobcontroller( $this->registry, false );					
+        
+		require_once( FRAMEWORK_PATH . 'controllers/contact/controller.php');
+		$this->contact = new Contactcontroller( $this->registry, false );					
         
     }
 
@@ -31,9 +35,9 @@ class Generalws {
 	 */
 	public function main( $action )
 	{
+		$this->result = 'OK';
 		if ($this->setParam()){
-			$this->result = 'OK';
-
+			// Action for element with <name==field>, <table==table name> , <kdID==primary Key>
 			switch ($action) {
 				case 'upd':
 					$this->update($action);
@@ -44,6 +48,19 @@ class Generalws {
 				case 'getValue':
 					$this->result = $this->getValue($this->field);
 					break;
+				case 'log':
+						$this->log($action);
+						break;
+				default:
+					$this->result = "ERROR: Action '$action' of modify database field is not specified. ";	
+			}
+		}else{
+			switch ($action) {
+				case 'log':
+					$this->log($action);
+					break;
+				default:
+					$this->result = "ERROR: Action '$action' is not specified. ";	
 			}
 		}
 		exit($this->result);
@@ -375,6 +392,22 @@ class Generalws {
 				$value = '<NULL>';
 		}
 		return $value;
+	}
+
+	private function log($action)
+	{
+		$ID = $this->ID;
+		$table = $this->table;
+		$message = null;
+		switch ($table) {	
+			case 'contact':
+				$contact = $this->contact->getContact($ID);
+				if($contact)
+					$message = "Zobrazení kontaktu. ".$contact['FullName'];
+				break;
+		}
+		if($message)
+			$this->registry->getObject('log')->addMessage($message,$table,$ID);
 	}
 
 	private function getFieldPK($table){

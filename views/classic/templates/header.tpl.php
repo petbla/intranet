@@ -7,6 +7,7 @@
     <link rel="stylesheet" type="text/css" href="views/classic/styles/slideshow.css"> 
     <script type="text/javascript" src="js/jquery.min.js"></script>
     <script type="text/javascript" src="js/onBeforeScripts.js"></script>
+    <script type="text/javascript" src="js/dbConnect.js"></script>
     <style>
       .mySlides {display:none}
     </style>
@@ -14,6 +15,7 @@
 
   <body>    
     <header id="page_header">
+      <div id="setup" webroot="{cfg_webroot}" style="display:none;"></div>
       <p>
         {dateText}
         <br/>

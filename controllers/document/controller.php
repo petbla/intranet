@@ -83,16 +83,6 @@ class Documentcontroller{
 						else
 							$this->error($caption['Error'].' - '.$caption['msg_unauthorized']);
 						break;
-					case 'WS':
-						// Je voláno jako XMLHttpRequest (function.js) a pouze loguje zobrazené položky
-						switch ($urlBits[2]) {
-							case 'logView':
-								$ID = isset($urlBits[3]) ? $urlBits[3] : '';
-								$result = $this->wsLogDocumentView($ID);
-								exit($result);		
-								break;
-						}
-						break;
 					default:
 						$this->pageNotFound();
 						break;
@@ -676,26 +666,6 @@ class Documentcontroller{
 		}
 		return $file_ary;
 	}
-
-    /**
-     * Webová služba - Logování akce prohlížení dokumentů
-     * @param String $ID = ID položky DMSEntry
-     * @return String = Návratová hodnota
-	 *                  => OK    = zápis proběhl korektně
-	 *                  => Error = zápis do logu skončil chybou
-     */
-	private function wsLogDocumentView( $ID )
-	{
-		require_once( FRAMEWORK_PATH . 'models/entry/model.php');
-		$this->model = new Entry( $this->registry, $ID );
-		if( $this->model->isValid() )
-		{
-			$entry = $this->model->getData();
-			$this->registry->getObject('log')->addMessage("Zobrazení ".$entry['Name'],'DmsEntry',$ID);
-			return 'OK';
-		}
-		return 'Error';
-	}	
 
 	/**
 	 * Akce vyvolaná z webového formuláře, která načte CSV soubor 

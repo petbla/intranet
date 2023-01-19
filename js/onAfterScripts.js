@@ -3,6 +3,9 @@
 // ----------------------------------------------------------------------------------------
 // Init variables
 // ----------------------------------------------------------------------------------------
+var setup;
+var link_element;
+
 var documentLink;
 var fileTitle, fileExtension;
 var linkTitle;
@@ -20,11 +23,7 @@ var entriesType35;
 var mouseFromX,mouseFromY;
 var activeForm;
 var sqlrequest;
-var a_entry;
-var a_agenda;
-var a_agendaPDF;
-var a_agendaUnlink;
-var a_agendaSourceFolder;
+
 var arrGroup = null;
 var grouplistnewcontact;
 var fld_handled;
@@ -58,11 +57,7 @@ meetings = document.querySelectorAll('[dmsClassName="meeting"]');
 meetinglines = document.querySelectorAll('[dmsClassName="meetingline"]');
 entriesType35 = document.querySelectorAll('a[entrytype="35"]');
 sqlrequest = document.querySelector('#sqlrequest');
-a_entry = document.querySelectorAll('[a_type="entry"]');
-a_agenda = document.querySelectorAll('[a_type="agenda"]');
-a_agendaPDF = document.querySelectorAll('[a_type="agendaPDF"]');
-a_agendaUnlink = document.querySelectorAll('[a_type="agendaUnlink"]');
-a_agendaSourceFolder = document.querySelectorAll('[a_type="agendaSourceFolder"]');
+
 a_inbox = document.querySelectorAll('[name="activeInbox"]');
 
 fld_handled = document.querySelector('#fld_handled');
@@ -463,132 +458,122 @@ formatElementClass('phone');
 formatElementClass('email');
 
 
-if(a_entry){
-    a_entry.forEach( function (entry) {
-        switch (entry.getAttribute('data-dms-entrytype')) {
-            case '30':
-                // File
-                var extension,id;
-                extension = entry.getAttribute('data-dms-extension');
-                if (isValidFileExtension(extension))
-                {
-                    var $url, $app;
-                    $url = entry.getAttribute('data-dms-server') + entry.getAttribute('data-dms-name');
-                    $app = getApplication(extension);
-                    entry.href = $app + $url;
-                    entry.target = '';
-                    if($app == '')
-                        entry.target = '_blank';
-                }
-                else
-                {
-                    id = entry.getAttribute('a_id');
-                    entry.href = 'index.php?page=document/view/' + id;
-                    entry.target = '';
+
+link_element = document.querySelectorAll('[SET_HREF]');
+if(link_element){
+    setup = document.getElementById('setup');
+    link_element.forEach( function (e) {
+        switch (e.getAttribute('table')) {
+            case 'dmsentry':
+                // <a href="" id="0828E65D-32A8-4E77-8BD8-C188AAB4DCAF" table="dmsentry" name="Obecní úřad\Reklama a grafika\POUKAZ.pdf" extension="pdf" type="30" onclick="wsLogView();">POUKAZ</a>
+                // <a href="" SET_HREF id="{ID}" table="dmsentry" name="{Name}" type="{Type}" url="{Url}" onclick="wsLogView();">{Title}</a>
+                switch (e.getAttribute('type')) {
+                    case '30':
+                        // File ()
+                        var name,extension,id;
+                        name = e.getAttribute('name')
+                        extension = name.split('.').pop();
+
+                        if (isValidFileExtension(extension))
+                        {
+                            var $url, $app;
+                            $url = setup.getAttribute('webroot') + name;
+                            $app = getApplication(extension);
+                            e.href = $app + $url;
+                            e.target = '';
+                            if($app == '')
+                                e.target = '_blank';
+                        }else{
+                            id = e.getAttribute('id');
+                            e.href = 'index.php?page=document/view/' + id;
+                            e.target = '';
+                        }
+                        break;
+                    case '35':
+                        // Note
+                        var url;
+                        url = e.getAttribute('url');
+                        if(url !== ''){
+                            e.href = 'http://' + url;
+                            e.target = '_blank';
+                        }else{
+                            e.href = 'index.php?page=document/view/' + e.getAttribute('id');
+                        }
+                        break;
+                    case '20':
+                    case '25':
+                        // Folder, Block
+                        e.href = 'index.php?page=document/list/' + e.getAttribute('id');
+                        e.target = '';
+                    default:
+                        break;
                 }
                 break;
-            case '35':
-                // Note
-                var url;
-                url = entry.getAttribute('data-dms-url');
-                if(url !== ''){
-                    entry.href = 'http://' + url;
-                    entry.target = '_blank';
-                }else{
-                    entry.href = 'index.php?page=document/view/' + entry.getAttribute('a_id');
+            case 'agenda':
+                // <td class="col_text" a_type="agenda" data-agenda-entryid="{EntryID}" data-dms-server="{cfg_webroot}" data-agenda-entryname="{Name}">{DocumentNo}</td>
+                // <td SET_HREF class="col_text" table="agenda" entryid="{EntryID}" name="{Name}">{DocumentNo}</td>
+                
+                var entryid,title,link,web,entryname;
+                var fileextension,entryname2,isChange;
+                entryid = e.getAttribute('entryid');
+                web = setup.getAttribute('webroot');
+                entryname = e.getAttribute('name');
+
+                if(entryid !== ''){
+                    switch (e.getAttribute('type')) {
+                        case 'DocumentNo':
+                            title = e.innerHTML;
+                            fileextension = entryname.split('.').pop();
+                            if (fileextension.toLowerCase() == 'pdf'){
+                                // Check to change to doc,docx,xls,xlsx
+                                entryname2 = entryname.replace('.' + fileextension,'.doc');
+                                isChange = doesFileExist(web + entryname2);
+                                if(!isChange){
+                                    entryname2 = entryname.replace('.' + fileextension,'.docx');
+                                    isChange = doesFileExist(web + entryname2);
+                                }
+                                if(!isChange){
+                                    entryname2 = entryname.replace('.' + fileextension,'.xls');
+                                    isChange = doesFileExist(web + entryname2);
+                                }
+                                if(!isChange){
+                                    entryname2 = entryname.replace('.' + fileextension,'.xlsx');
+                                    isChange = doesFileExist(web + entryname2);
+                                }
+                                if(isChange)
+                                    entryname = entryname2;
+                            }
+                            link = "<a href='" + web + entryname + "'  target='_blank'>" + title + "</a>";
+                            e.innerHTML = link;
+                            e.setAttribute('class','col_link');       
+                            break;
+                        case 'Unlink':
+                            e.innerHTML = '';
+                            break;
+                        case 'SourceFolder':
+                            e.href = 'index.php?page=document/list/' + entryid;
+                            e.innerHTML = "<img src='views/classic/images/icon/folder.png' />";                
+                            break;
+                        case 'PDF':
+                            var isPDF = false;           
+                            fileextension = entryname.split('.').pop();
+                            if (fileextension.toLowerCase() != 'pdf'){
+                                entryname = entryname.replace('.' + fileextension,'.pdf');
+                            }
+                            link = web + entryname;
+                            isPDF = doesFileExist(link);
+                            if (isPDF){
+                                e.href = link;
+                                e.innerHTML = "<img src='views/classic/images/icon/pdf.png' />";
+                            }                
+                            break;
+                        default:
+                            break;
+                    }
                 }
                 break;
-            case '20':
-            case '25':
-                // Folder, Block
-                entry.href = 'index.php?page=document/list/' + entry.getAttribute('a_id');
-                entry.target = '';
             default:
                 break;
-        }
-    })
-}
-
-if(a_agenda){
-    a_agenda.forEach( function (agenda) {
-        var entryid,title,link,web,entryname;
-        var fileextension,entryname2,isChange;
-        entryid = agenda.getAttribute('data-agenda-entryid');
-        web = agenda.getAttribute('data-dms-server');
-        entryname = agenda.getAttribute('data-agenda-entryname');
-        if(entryid !== ''){
-            title = agenda.innerHTML;
-            fileextension = entryname.split('.').pop();
-            if (fileextension.toLowerCase() == 'pdf'){
-                // Check to change to doc,docx,xls,xlsx
-                if(!isChange){
-                    entryname2 = entryname.replace('.' + fileextension,'.doc');
-                    isChange = doesFileExist(web + entryname2);
-                }
-                if(!isChange){
-                    entryname2 = entryname.replace('.' + fileextension,'.docx');
-                    isChange = doesFileExist(web + entryname2);
-                }
-                if(!isChange){
-                    entryname2 = entryname.replace('.' + fileextension,'.xls');
-                    isChange = doesFileExist(web + entryname2);
-                }
-                if(!isChange){
-                    entryname2 = entryname.replace('.' + fileextension,'.xlsx');
-                    isChange = doesFileExist(web + entryname2);
-                }
-                if(isChange)
-                    entryname = entryname2;
-            }
-            link = "<a href='" + web + entryname + "'  target='_blank'>" + title + "</a>";
-            agenda.innerHTML = link;
-            agenda.setAttribute('class','col_link');
-        }
-    })
-}
-if(a_agendaPDF){
-    a_agendaPDF.forEach( function (agenda) {
-        var entryid,href,web,entryname;
-        var fileextension,isPDF;
-        entryid = agenda.getAttribute('data-agenda-entryid');
-        web = agenda.getAttribute('data-dms-server');
-        entryname = agenda.getAttribute('data-agenda-entryname');
-        if(entryid !== ''){
-            isPDF = false;           
-            fileextension = entryname.split('.').pop();
-            if (fileextension.toLowerCase() != 'pdf'){
-                entryname = entryname.replace('.' + fileextension,'.pdf');
-            }
-            href = web + entryname;
-            isPDF = doesFileExist(href);
-            if (isPDF){
-                agenda.href = href;
-                agenda.innerHTML = "<img src='views/classic/images/icon/pdf.png' />";
-            }
-        }
-    })
-}
-
-if(a_agendaSourceFolder){
-    a_agendaSourceFolder.forEach( function (agenda) {
-        var entryid,href,web,entryname;
-        entryid = agenda.getAttribute('data-agenda-entryid');
-        web = agenda.getAttribute('data-dms-server');
-        entryname = agenda.getAttribute('data-agenda-entryname');
-        agenda.innerHTML = "X";
-        if(entryid !== ''){
-            agenda.href = 'index.php?page=document/list/' + entryid;
-            agenda.innerHTML = "<img src='views/classic/images/icon/folder.png' />";
-        };
-    })
-}
-
-if(a_agendaUnlink){
-    a_agendaUnlink.forEach( function (agenda) {
-        var entryid;
-        entryid = agenda.getAttribute('data-agenda-entryid');
-        if(entryid == ''){
-            agenda.innerHTML = '';
         }
     })
 }
@@ -732,13 +717,13 @@ function initForm(tag,id) {
     }
 }
 
-function doesFileExist(urlToFile) {
-    var xhr = new XMLHttpRequest();
+function doesFileExist(urlToFile) {  
     var response = $.ajax({
         url: urlToFile,
         type: 'HEAD',
         async: false
     }).status;
+    
     if (response != "200") {
         return false;
     } else {

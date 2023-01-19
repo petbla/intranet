@@ -10,6 +10,7 @@ class Contactcontroller {
 	private $urlBits;
 	private $message;
 	private $errorMessage;
+	private $model;
 	
 	public function __construct( Registry $registry, $directCall )
 	{
@@ -75,15 +76,6 @@ class Contactcontroller {
 						}
 						else
 							$this->error($caption['Error'].' - '.$caption['msg_unauthorized']);
-						break;
-					case 'WS':
-						switch ($urlBits[2]) {
-							case 'logView':
-								// Je voláno jako XMLHttpRequest (function.js) a pouze loguje zobrazené položky
-								$ID = isset($urlBits[3]) ? $urlBits[3] : '';
-								$this->wsLogContactView($ID);
-								break;
-						}
 						break;
 					case 'group':
 						$action = isset($urlBits[2]) ? $urlBits[2] : '';
@@ -770,22 +762,15 @@ class Contactcontroller {
 		return($FullName);
 	}
 
-  	/**
-     * Webová služba - Logování akce prohlížení kontaktů
-     * @param String $ID = ID kontaktu
-     * @return void;
-     */
-	private function wsLogContactView( $ID )
+	public function getContact ( $ID )
 	{
-		require_once( FRAMEWORK_PATH . 'models/contact/model.php');
-		$this->model = new Contact( $this->registry, $ID );
-		if( $this->model->isActive() )
-		{
-			$contact = $this->model->getData();
-			$this->registry->getObject('log')->addMessage("Zobrazení kontaktu. ".$contact['FullName'],'Contact',$ID);
-		}
-		print "<h1>Page Not Found.<h1>";
-		exit();		
-	}		
+		$contact = null;
+		$this->registry->getObject('db')->initQuery('contact');
+		$this->registry->getObject('db')->setFilter('ID',$ID);
+		if ($this->registry->getObject('db')->findFirst())
+			$contact = $this->registry->getObject('db')->getResult();			
+		return $contact;
+	}
+
 }
 ?>
