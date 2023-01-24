@@ -6,8 +6,7 @@
                 <input type="file" name="fileToUpload[]" id="fileToUpload" multiple class="action" >  
                 &nbsp;
                 <input type="image" src="views/classic/images/nav/upload.png" name="submit" id="submitAddFile">
-                <input type="hidden" name="path" value="{parentfoldername}">
-                <input type="hidden" name="ID" value="{parentID}">
+                <input type="hidden" name="ParentID" value="{parentID}">
             </form>
         </div>
     </td>

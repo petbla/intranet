@@ -3,18 +3,18 @@
         <table>
             <tr>
                 <td class="alignleft">
-                    <label for="fld_name">{lbl_Create}</label>                    
-                    <input type="text" name="fld_name" id="fld_name" placeholder="{lbl_folderBlocName}" title="{lbl_createNewFolBlo}">
+                    {lbl_Create}                    
+                    <div id="newDmsentryText" class="contentEditable" contentEditable="true"></div>
                 </td>
                 {addFolder}
                 <td>
-                    <input type="image" id="fld_newBlock" name="addBlock" src="views/classic/images/nav/addBlock.png" alt="{lbl_newBlock}">
+                    <img src="views/classic/images/nav/addBlock.png" parentID="{parentID}" alt="{lbl_newBlock}" onClick="wsDmsentry(this, 'Block');">
                     <br>
-                    <label for="fld_newBlock">{lbl_NewBlock}</label>
+                    {lbl_NewBlock}
                 </td><td>
-                    <input type="image" id="fld_newNote" name="addNote" src="views/classic/images/nav/addNote.png" alt="{lbl_newNote} (ALT + N)" title="Alt + n" accesskey="n">
+                    <img src="views/classic/images/nav/addNote.png" parentID="{parentID}" alt="{lbl_newNote}" onClick="wsDmsentry(this, 'Note');">
                     <br>
-                    <label for="fld_newNote">{lbl_NewNote}</label>
+                    {lbl_NewNote}
                 </td><td>
                     <img src="views/classic/images/nav/import.png" alt="{lbl_Import}" title="{lbl_Import}" onclick="importNoteCSV('{parentID}');">
                     <br>

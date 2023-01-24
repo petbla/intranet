@@ -348,7 +348,7 @@ class Generalcontroller {
 		while( $data = $this->registry->getObject('db')->getRows() )
 		{
 			$ext = strtolower($data['FileExtension']);
-			$img = substr($ext,0,3);
+			$img = $ext;
 			$filename = "views/classic/images/icon/$img.png";
 			$fullFilename = $_SERVER['DOCUMENT_ROOT'].'/intranet/'.$filename;
 			if (!(file_exists($fullFilename)))

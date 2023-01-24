@@ -186,6 +186,21 @@ function wsUnlinkAgenda(AgendaID) {
 // ************************************************************************************
 //    DATABASE functions - log event to the database 
 // ************************************************************************************
+function wsLogMessage(message) {
+    const Http = new XMLHttpRequest();
+    var url;
+
+    url = window.location.origin + window.location.pathname;
+    url= url + '?page=general/ws/log';
+    Http.open("POST", url, true);
+    Http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    Http.send("message=" + message);
+    Http.onreadystatechange=(e)=>{
+        response = Http.responseText;
+        console.log(Http.responseText)      
+    }
+}
+
 function wsLogView(e) {
     const Http = new XMLHttpRequest();
     var url;
@@ -196,6 +211,7 @@ function wsLogView(e) {
     url= url + '?page=general/ws/log/' + table + '/' + ID;
     Http.open("POST", url, true);
     Http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    Http.send();
     Http.onreadystatechange=(e)=>{
         response = Http.responseText;
         console.log(Http.responseText)      
@@ -209,10 +225,57 @@ function wsLogDocumentView(ID) {
     url= url + '?page=general/ws/log/dmsentry/' + ID;
     Http.open("POST", url, true);
     Http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    Http.send();
     Http.onreadystatechange=(e)=>{
         response = Http.responseText;
         console.log(Http.responseText)      
     }
 }
+
+// ************************************************************************************
+//    FILE functions - new dmsentry items
+//
+//    Required HTML elenets  :  parentID
+//    JS script              :  wsDmsentry(this);
+//    element with TEXT      :  id="newDmsentryText"
+//    element for whow ERROR :  id="pageErrorMesage"
+//    ID pro set position    :  id="header" 
+//    Http request           :  ?document/ws/newDmsentry/<action>/<parentID>/<name>
+//      - action             :  Block|Folder|Note
+// ************************************************************************************
+function wsDmsentry(e, action) {
+    const Http = new XMLHttpRequest();
+    var url;
+    var name, parentID;
+    var err,inText,response;
+    url = window.location.origin + window.location.pathname;
+    if(e){
+        inText = document.getElementById('newDmsentryText');
+        if(inText)
+            name = inText.innerHTML; 
+        console.log(name);
+        parentID = e.getAttribute('parentID');
+        url = url + '?page=document/ws/newDmsentry/' + action + '/' + parentID + '/' + name;
+        Http.open("POST", url, true);
+        Http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        Http.send();
+        Http.onreadystatechange=(e)=>{
+            response = Http.responseText;
+            if((response == 'OK' ) || (response == '' )){
+                console.log(response);
+                window.location.reload();      
+            }else{
+                err = document.getElementById('pageErrorMesage');
+                if(err){
+                    err.innerText = response;
+                    wsLogMessage(response);
+                    err.style.display = 'block';
+                    window.location = "#header";
+                }
+            }
+        }    
+    }
+}
+
 
 

@@ -54,9 +54,6 @@ class Documentcontroller{
 					case 'addFiles':
 						$this->addFiles();
 						break;
-					case 'addFolder':
-						$this->addFolder();
-						break;
 					case 'deleteFolder':
 						$ID = isset($urlBits[2]) ? $urlBits[2] : '';
 						$this->deleteFolder( $ID );
@@ -82,6 +79,17 @@ class Documentcontroller{
 						}
 						else
 							$this->error($caption['Error'].' - '.$caption['msg_unauthorized']);
+						break;
+					case 'ws':
+						switch ($urlBits[2]) {
+							case 'newDmsentry':
+								$ID = $this->newDmsentry();						
+								if($ID)
+									exit('OK');
+								else
+									exit($this->errorMessage);
+								break;
+						}
 						break;
 					default:
 						$this->pageNotFound();
@@ -442,105 +450,76 @@ class Documentcontroller{
 
 
     /**
-     * Akce vyvolaná webovým formulářem, která vytváří novou složku, blok nebo poznámku
-	 * Podle očekávané akce se po dokončení se zobrazí seznam položek nebo zobrazí zpráva
-	 * o výsledku akce
-	 * @return void
+     * Akce vyvolaná jako API rozhranní volané přes JavaScript a atributy elementu
+	 * vytváří novou složku, blok nebo poznámku
+	 * 
+	 * Api: document/ws/<action>/<type>/<parentID>/<name>
+	 * Api: document/ws/newDmsentry/<Block|Folder|Note>/<parentID>/<name>
+	 * 
+	 * @return $ID or null (and $this->errorMessage)
      */
-	private function addFolder()
+	private function newDmsentry()
 	{
-		global $caption, $deb;
-		$message = '';
+		global $config, $caption, $deb;
+		$this->errorMessage = '';
+		$ID = null;
 
-		if(! $this->registry->getObject('authenticate')->isAdmin())
-		{
-			$message = $caption['msg_unauthorized'];
+		$urlBits = $this->registry->getURLBits();     
+		$action = isset($urlBits[3]) ? $urlBits[3] : null;
+		if(!$action){
+			$this->errorMessage = 'ERROR: No action to create new dmsentry.';
+			return $ID;
 		}
-		else
-		{
-			$message = $caption['msg_folderNotCreated'];
-			$action = '';
-			foreach ($_POST as $key => $value) {
-				$pos = strpos($key,'Folder');
-				if($pos !== false)
-					$action = 'addFolder';
-				$pos = strpos($key,'Block');
-				if($pos !== false )
-					$action = 'addBlock';
-				$pos = strpos($key,'Note');
-				if($pos !== false )
-					$action = 'addNote';
-			}
-			if (isset($_POST['fld_name']) && ($_POST['fld_name'] !== "") && isset($_POST['root']))
-			{
-				$fullName = $_POST['root'];
-				if($action == 'addBlock')
+		$parentID = isset($urlBits[4]) ? $urlBits[4] : 0;
+		$parententry = $this->getDmsentryByID($parentID);
+		$Name = isset($urlBits[5]) ? $urlBits[5] : null;
+		if(!$Name) {
+			$this->errorMessage = 'ERROR: Name for new dmsentry must be input.';
+			return $ID;
+		}
+		if(! $this->registry->getObject('authenticate')->isAdmin()){
+			$this->errorMessage = 'ERROR: '.$caption['msg_unauthorized'];
+			return $ID;
+		}
+
+		$parentFullName = $config['fileroot'] . $this->registry->getObject('fce')->ConvertToDirectorySeparator( $parententry['Name'] , true);
+		switch ($action){
+			case 'Block':
+				$ID = $this->registry->getObject('file')->addBlock($parentFullName,$Name);
+				if($ID != '')
 				{
-					$item = $_POST['fld_name'];
-					$ID = $this->registry->getObject('file')->addBlock($fullName,$item);
-					if($ID !== '')
-					{
-						$this->registry->getObject('log')->addMessage("Vytvořen nový blok",'dmsentry',$ID);
-						$this->listDocuments($ID);
-						return;
-					}
-					else
-					{
-						$message = $caption['msg_blockNotCreated'];
-					}
+					$this->registry->getObject('log')->addMessage("Vytvořen nový blok",'dmsentry',$ID);					
+				}else{
+					$this->errorMessage = 'ERROR: '.$caption['msg_blockNotCreated'];
+					$ID = null;
 				}
-				if($action == 'addFolder')
+				break;
+			case 'Folder':
+				$fileFullName = "$parentFullName$Name";
+				if(!file_exists($fileFullName))
 				{
-					$fileFullPath = $this->registry->getObject('fce')->ConvertToSharePath( $fullName );
-					$fileFullPath .= $_POST['fld_name'];
-					$fullName  = $this->registry->getObject('fce')->ConvertToDirectorySeparator( $fileFullPath , false);
-					$fileFullPath = $this->registry->getObject('file')->Convert2SystemCodePage($fileFullPath);
-					$fullName = $this->registry->getObject('file')->Convert2SystemCodePage($fullName);
-					if(!file_exists($fullName))
-					{
-						try {
-							if(mkdir($fileFullPath, 0755, true))
-							{
-								// create succes
-								$EntryNo = $this->registry->getObject('file')->findItem($fullName);
-								$ID = $this->registry->getObject('file')->getIdByEntryNo($EntryNo);
-								$this->registry->getObject('log')->addMessage("Vytvořena nová složka",'dmsentry',$ID);
-								$this->listDocuments($ID);
-							}
-						} catch (Exception $e) {
-							$this->error('Složka nebyla vytvořena. Chyba: ' + $e->getMessage());
-						}
-						return;
-					}
-					else
-					{
-						$message = $caption['msg_folderExists'];
-					}
-				}
-			}
-			else
-			{
-				if($action == 'addNote')
-				{
-					// Create New Note
-					$parentID = isset($_POST['parentID']) ? $_POST['parentID'] : '';
-					if ($parentID !== '')
-					{
-						require_once( FRAMEWORK_PATH . 'models/entry/model.php');
-						$this->model = new Entry( $this->registry, $parentID );
-						if( ($this->perSet > 0) AND $this->model->isValid() )
+					try {
+						if(mkdir($fileFullName, 0755, true))
 						{
-							$parentEntry = $this->model->getData();
-							$ID = $this->registry->getObject('file')->newNote( $parentEntry );
-							$this->registry->getObject('log')->addMessage("Vytvořena nová poznámka",'dmsentry',$ID);
-							//$this->editContentDocument($ID);
-							return;
-						}				
+							// create succes
+							// $fullName = //petbla/c$/Users/petr/Desktop/OBECNTB/FileServer/Stavby RD/RD Šáchovi 313/Šáchovi - Vyjádření k PD.docx
+							$EntryNo = $this->registry->getObject('file')->findItem($fileFullName);
+							$ID = $this->registry->getObject('file')->getIdByEntryNo($EntryNo);
+							$this->registry->getObject('log')->addMessage("Vytvořena nová složka",'dmsentry',$ID);
+						}
+					} catch (Exception $e) {
+						$this->errorMessage = 'ERROR: Složka nebyla vytvořena. Chyba: ' + $e->getMessage();
 					}
 				}
-			}
+				break;
+			case 'Note':
+				$ID = $this->registry->getObject('file')->newNote( $parententry , $Name );
+				$this->registry->getObject('log')->addMessage("Vytvořena nová poznámka",'dmsentry',$ID);
+				break;
+			default:
+				$this->errorMessage = $caption['msg_folderExists'];
 		}
-		$this->error($message);
+		return $ID;
 	}
 
     /**
@@ -551,28 +530,34 @@ class Documentcontroller{
      */
 	private function addFiles( )
 	{
-		if(isset($_FILES["fileToUpload"]) && isset($_POST['path']) && isset($_POST["submit_x"]) && isset($_POST['ID']) ) {
-			$ID = $_POST['ID'];
-			$path = $_POST['path'];
-			$files = $_FILES['fileToUpload'];
-			if(!empty($files))
-			{
-				$files = $this->reArrayFiles($files);
-				foreach($files as $file)
+		global $config;
+		$ParentID = '';
+
+		if(isset($_FILES["fileToUpload"]) && isset($_POST["submit_x"]) && isset($_POST['ParentID']) ) {
+			$ParentID = $_POST['ParentID'];
+			$parententry = $this->getDmsentryByID($ParentID);
+			if ($parententry){
+
+				$path = $config['fileroot'] . str_replace('\\','/',$parententry['Name']) . '/';
+				$files = $_FILES['fileToUpload'];
+				if(!empty($files))
 				{
-					$target_file = $path . basename($file["name"]);
-					$target_file = $this->registry->getObject('file')->Convert2SystemCodePage($target_file);
-					try {
-						move_uploaded_file($file['tmp_name'],$target_file);
-						$EntryNo = $this->registry->getObject('file')->findItem($target_file);
-						$this->registry->getObject('log')->addMessage("Upload souboru EntryNo = $EntryNo do aktuální složky (dle ID)",'dmsentry',$ID);
-					} catch (Exception $e) {
-						$this->error('Soubor ' + $file["name"] + ' se nepodařilo načíst. Chyba: ' + $e->getMessage());
+					$files = $this->reArrayFiles($files);
+					foreach($files as $file)
+					{
+						$target_file = $path . basename($file["name"]);
+						try {
+							move_uploaded_file($file['tmp_name'],$target_file);
+							$EntryNo = $this->registry->getObject('file')->findItem($target_file);
+							$this->registry->getObject('log')->addMessage("Upload souboru EntryNo = $EntryNo do aktuální složky (dle ID)",'dmsentry',$ParentID);
+						} catch (Exception $e) {
+							$this->error('Soubor ' + $file["name"] + ' se nepodařilo načíst. Chyba: ' + $e->getMessage());
+						}
 					}
-				}
+				}	
 			}	
 		}
-		$this->listDocuments($ID);
+		$this->listDocuments($ParentID);
 	}
 
     /**
@@ -747,6 +732,30 @@ class Documentcontroller{
 			}
 		}
 		$this->listDocuments( $parentID );
+	}
+
+	private function getDmsentry($EntryNo)
+	{
+		$entry = null;
+        if($EntryNo > 0){
+            $this->registry->getObject('db')->initQuery('dmsentry');
+            $this->registry->getObject('db')->setFilter('EntryNo',$EntryNo);
+            if ($this->registry->getObject('db')->findFirst())
+                $entry = $this->registry->getObject('db')->getResult();			
+        }
+        return $entry;
+	}
+
+	private function getDmsentryByID($ID)
+	{
+		$entry = null;
+        if($ID != ''){
+            $this->registry->getObject('db')->initQuery('dmsentry');
+            $this->registry->getObject('db')->setFilter('ID',$ID);
+            if ($this->registry->getObject('db')->findFirst())
+                $entry = $this->registry->getObject('db')->getResult();			
+        }
+        return $entry;
 	}
 
 }

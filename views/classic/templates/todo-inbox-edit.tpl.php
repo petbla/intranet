@@ -5,7 +5,7 @@
                 <label>{lbl_Title}</label>
             </td>
             <td>
-                <input type="text" class="value col_fullname" name="Title" value="{Title}" pkID="{InboxID}" table="inbox" onchange="wsUpdate(this);" autofocus required/>
+                <input type="text" class="value col_fullname big" name="Title" value="{Title}" pkID="{InboxID}" table="inbox" onchange="wsUpdate(this);" autofocus required/>
             </td>
         </tr>
         <tr>
@@ -48,9 +48,25 @@
         </tr>
     </table>
 </form>
-<iframe id="viewDocument{InboxID}" src="{SourceUrl}" name="iframe_a" height="800px" width="100%" title="Dokument"></iframe>
+<iframe id="viewDocument{InboxID}" src="" name="iframe_a" height="800px" width="100%" title="Dokument"></iframe>
+<span id="attachmentDocument{InboxID}">
+    <img src="views/classic/images/icon/attachment.png" />
+    <a id="hreftDocument{InboxID}" href="{SourceUrl}">{Title}</a>
+</span>
 <script>
-    var opt,sel;
+    var opt,sel, app, e;
+    var frame,attach;
+    frame = document.getElementById('viewDocument{InboxID}');
+    attach = document.getElementById('attachmentDocument{InboxID}');
+    e = document.getElementById('hreftDocument{InboxID}');
+    if('{fileextension}' == 'pdf'){
+        frame.setAttribute('src','{SourceUrl}');
+        attach.style.display = 'none';
+    }else{
+        frame.style.display = 'none';
+        $app = getApplication('{fileextension}');
+        e.href = $app + '{SourceUrl}'; 
+    }
     if('{SelectMeetingTypeID}' != ''){
         opt = document.getElementById("opt{SelectMeetingTypeID}_{InboxID}");
         if(opt){

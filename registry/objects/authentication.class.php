@@ -9,6 +9,8 @@
 
 class authentication {
 
+	private $registry;
+	private $groups;
 	private $userID = '';
 	private $loggedIn = false;
 	private $admin = false;

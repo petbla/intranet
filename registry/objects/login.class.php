@@ -9,6 +9,7 @@
 class login
 {
   private $log;
+  private $registry;
    
   /*
    *  Class constructor 

@@ -8,7 +8,8 @@
  */
 class UsefulFunction {
 
-	
+  private $registry;
+
   public function __construct( Registry $registry )
 	{
 		$this->registry = $registry;
@@ -288,11 +289,7 @@ class UsefulFunction {
     $thousands = $amountBelowMillion / 1000; 
     $result = ""; 
 
-    if ($thousands <= 4) { 
-      $result .= $namesThousands[$thousands - 1] . $WordsSeparator; 
-    } else { 
-      $result .= AmmountWords($thousands) . $WordsSeparator.$namesThousands[strlen($namesThousands) - 1] . $WordsSeparator; 
-    } 
+    $result .= $namesThousands[$thousands - 1] . $WordsSeparator; 
     return $result; 
   } 
 

@@ -643,6 +643,7 @@ class Zobcontroller{
 		$data = array();
 		
 		// Pole editace šablony
+		$data['MeetingID'] = 0;
 		$data['MeetingTypeID'] = $MeetingTypeID;
 		$data['ElectionPeriodID'] = $meetingtype['ElectionPeriodID'];
 		$data['EntryNo'] = $EntryNo;
@@ -650,6 +651,8 @@ class Zobcontroller{
 		$data['MeetingPlace'] = $MeetingPlace;
 		$data['RecorderBy'] = $RecorderBy;
 		$data['Present'] = $Present;
+		$data['ParentID'] = '00000000-0000-0000-0000-000000000000';
+		$data['ParentID'] = $this->getMeetingParentID($data);
 
 		if (!$isTemplate){
 			$data['AtDate'] = $AtDate;
@@ -1154,6 +1157,7 @@ class Zobcontroller{
 		$this->registry->getObject('template')->getPage()->addTag( 'EntryNo', $EntryNo );						
 		$this->registry->getObject('template')->getPage()->addTag( 'Header', $○r );						
 		$this->registry->getObject('template')->getPage()->addTag( 'MeetingID', $MeetingID );						
+		$this->registry->getObject('template')->getPage()->addTag( 'ParentID', $meeting['ParentID'] );						
 		$this->registry->getObject('template')->getPage()->addTag( 'MeetingTypeID', $MeetingTypeID );						
 		$this->registry->getObject('template')->getPage()->addTag( 'activeMeetingLineID', $activeMeetingLineID );				
 	}
@@ -1517,6 +1521,26 @@ class Zobcontroller{
 		return $dmsentry;		
 	}
 
+	public function getDmsentryByID ( $ID )
+	{
+		$dmsentry = null;
+		$this->registry->getObject('db')->initQuery('dmsentry');
+		$this->registry->getObject('db')->setFilter('ID',$ID);
+		if ($this->registry->getObject('db')->findFirst())
+			$dmsentry = $this->registry->getObject('db')->getResult();			
+		return $dmsentry;		
+	}
+
+	public function getDmsentry ( $EntryNo )
+	{
+		$dmsentry = null;
+		$this->registry->getObject('db')->initQuery('dmsentry');
+		$this->registry->getObject('db')->setFilter('EntryNo',$EntryNo);
+		if ($this->registry->getObject('db')->findFirst())
+			$dmsentry = $this->registry->getObject('db')->getResult();			
+		return $dmsentry;		
+	}
+
 	public function geNextMeetingEntryNo( $MeetingTypeID )
 	{
 		$sql = "SELECT max(EntryNo) as EntryNo FROM ".$this->prefDb."meeting WHERE MeetingTypeID = $MeetingTypeID";
@@ -1560,6 +1584,38 @@ class Zobcontroller{
 		$this->registry->getObject('db')->findFirst( $cache );
 		$result = $this->registry->getObject('db')->resultsFromCache( $cache );
 		return $result['LineNo'] ;				
+	}
+
+	public function getMeetingParentID($meeting)
+	{
+		$ParerntEntryNo = $this->getMeetingParentEntryNo($meeting);
+		$parententry = $this->getDmsentry($ParerntEntryNo);
+		return $parententry['ID'];
+	}
+
+	public function getMeetingParentEntryNo($meeting)
+	{
+		global $config;
+		// Return existing
+		if($meeting['ParentID'] != '00000000-0000-0000-0000-000000000000'){
+			$parententry = $this->getDmsentryByID($meeting['ParentID']);
+			return $parententry['EntryNo'];
+		};
+
+		// Create FOLDER new
+		$meetingtype = $this->getMeetingtype($meeting['MeetingTypeID']);
+		$electionperiod = $this->getElectionperiod($meetingtype['ElectionPeriodID']);
+		$parentFolder = $config['rootZOB']."/_".$meetingtype['MeetingName']."/";
+		$parentFolder .= $electionperiod['PeriodName']."/".$meeting['EntryNo']."/Přílohy";
+		$DmsParentEntryNo = $this->registry->getObject('file')->findItem( $parentFolder, true );
+		if(($DmsParentEntryNo) && ($meeting['MeetingID'] > 0)){
+			$parententry = $this->getDmsentry($DmsParentEntryNo);
+			$change = array();
+			$change['ParentID'] = $parententry['ID'];
+			$condition = "MeetingID = ".$meeting['MeetingID'];
+			$this->registry->getObject('db')->updateRecords('meeting',$change,$condition);
+		}
+		return $DmsParentEntryNo;
 	}
 
 	public function setElectionperiodActive ( $ElectionPeriodID )

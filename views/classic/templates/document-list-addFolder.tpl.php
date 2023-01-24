@@ -1,5 +1,5 @@
 <td>
-    <input type="image" id="fld_newFolder" name="addFolder" src="views/classic/images/nav/addFolder.png" alt="{lbl_newFolder}">
+    <img src="views/classic/images/nav/addFolder.png" parentID="{parentID}" alt="{lbl_newFolder}" onClick="wsDmsentry(this, 'Folder');">
     <br>
-    <label for="fld_newFolder">{lbl_NewFolder}</label>
+    {lbl_NewFolder}
 </td>

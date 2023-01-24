@@ -660,11 +660,7 @@ class Todocontroller{
 							// Příklad: Obecní úřad/_Rada/2018-2022/10/Přílohy					 
 							if($inbox['DmsEntryID'] == '00000000-0000-0000-0000-000000000000'){
 								
-								$meetingtype = $zob->getMeetingtype($meeting['MeetingTypeID']);
-								$electionperiod = $zob->getElectionperiod($meetingtype['ElectionPeriodID']);
-								$parentFolder = $config['rootZOB']."/_".$meetingtype['MeetingName']."/";
-								$parentFolder .= $electionperiod['PeriodName']."/".$meeting['EntryNo']."/Přílohy";
-								$DmsParentEntryNo = $this->registry->getObject('file')->findItem( $parentFolder, true );
+								$DmsParentEntryNo = $zob->getMeetingParentEntryNo($meeting);
 								if($DmsParentEntryNo == 0 ){
 									$this->errorMessage = "Složka $parentFolder nebyla vytvořena, přesun dokumentu nelze dokončit.";
 									$this->build();
@@ -755,6 +751,9 @@ class Todocontroller{
 				}
 			}
 			
+			$arr = explode('.',$inbox['SourceUrl']);
+			$inbox['fileextension'] = is_array($arr) ? strtolower(array_pop($arr)) : '';
+
 			$MeetingID = $inbox['MeetingID'];
 			$inbox['ismeeting'] = $MeetingID == 0 ? 'no' : '';
 			$inbox['MeetingNo'] = $zob->getMeetingNo($MeetingID,true);
@@ -800,10 +799,12 @@ class Todocontroller{
 	{
 		// Najít ParentFolder - pokud byl zadán - a určit level složky pro výběr
 		$parentPath = '';
+		$ParentID = '';
 		if ($DmsParentEntryNo != ''){
 			$parententry = $this->getDmsentry( $DmsParentEntryNo );
 			if( $parententry ){
 				$parentPath = $parentPath . $parententry['Name'];
+				$ParentID = $parententry['ID'];
 			}				
 		}
 		$breads = str_replace("\\"," => ",$parentPath);
@@ -841,13 +842,13 @@ class Todocontroller{
 			case 'add':
 				$ParentID = isset($_POST['ParentID']) ? $_POST['ParentID'] : 0;
 				$name = isset($_POST['newFolder']) ? $_POST['newFolder'] : '';
-				
+				$parententry = $this->getDmsentry($ParentID);
+				$parentPath = $parententry['Name'];
+
 				if ($name != ""){
-					//TODO: založení nové složky
-					
 					// Virtuální položka "dmsentry"
-					//$fullname = "$parentPath\\$name"; 
-					//$entry = $this->registry->getObject('file')->getItemFromName( $fullname , $isDir = false);
+					$fullname = "$parentPath\\$name"; 
+					$entry = $this->registry->getObject('file')->getItemFromName( $fullname , true);
 					//TODO: Zápis $entry do tabulky dmsentry
 				}
 				break;			
@@ -872,7 +873,7 @@ class Todocontroller{
 				# 'list'
 				# Zobrazení stránky pro výběr složky
 				$this->registry->getObject('template')->getPage()->addTag( 'InboxID', $InboxID );							
-				$this->registry->getObject('template')->getPage()->addTag( 'ParentID', $DmsParentEntryNo );							
+				$this->registry->getObject('template')->getPage()->addTag( 'ParentID', $ParentID );							
 				$this->registry->getObject('template')->getPage()->addTag( 'breads', $breads );							
 				$this->build('todo-inbox-choicefolder.tpl.php');
 				return;
@@ -887,8 +888,8 @@ class Todocontroller{
 		// DefaultAppPool => IIS AppPool\DefaultAppPool
 
 		//TODO: změnit nastavení
-		$inboxUrl = $config['inboxUrl'];
-		$inboxRoot = $config['inboxRoot'];
+		$inboxWebroot = $config['inboxWebroot'];
+		$inboxFileroot = $config['inboxFileroot'];
 				
 		$this->registry->getObject('log')->addMessage("Přihlášený uživatel: ".get_current_user(),'inbox','');
 
@@ -907,15 +908,15 @@ class Todocontroller{
 			}
 		}
 
-		if ($handle = opendir($inboxRoot)) { 
+		if ($handle = opendir($inboxFileroot)) { 
 			while (false !== ($fileName = readdir($handle))) 
 			{ 
 				if ($fileName == '.' |0| $fileName == '..' | $fileName == 'web.config') 
 			  	{ 
 					continue; 
 			  	};
-			  	$fullItemPath = $inboxRoot.$fileName;
-			  	$url = $inboxUrl.$fileName;
+			  	$fullItemPath = $inboxFileroot.$fileName;
+			  	$url = $inboxWebroot.$fileName;
 				
 				// Windows Name
 				$SourcePath  = $this->registry->getObject('fce')->ConvertToDirectorySeparator( $fullItemPath,false );    // formát Xxxxx\Ddddd\Aaaaa

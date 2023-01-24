@@ -87,6 +87,32 @@ function isValidFileExtension(extension) {
     return (ext.indexOf(extension) >= 0)
 }
 
+function getApplication (extension)
+{
+    /**
+     * HELP
+     * https://docs.microsoft.com/en-us/office/client-developer/office-uri-schemes#sectionSection9
+     */
+    var app = '';
+    switch (extension) {
+        case 'xls':
+        case 'xlsx':
+        case 'csv':
+            app = "ms-excel:ofe|u|";
+            break;
+        case 'doc':
+        case 'docx':
+        case 'rtf':
+            app = "ms-word:ofe|u|";
+            break;
+        case 'ppt':
+        case 'pptx':
+            app = "ms-powerpoint:ofv|u|";
+            break;
+    }
+    return app;
+}
+
 function openFolder( folderpath )
 {
     var myshell = new ActiveXObject("WScript.shell");

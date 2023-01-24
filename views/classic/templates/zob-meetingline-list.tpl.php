@@ -112,33 +112,30 @@
             <th></th>
         </tr>
         <!-- START meetingattachmentListNo0 -->
-        <tr AttachmentID="{AttachmentID}" draggable="true" ondragstart="dragattachment(event)">      
+        <tr draggable="true" ondragstart="dragattachment(event)">      
             <td class="col_action">
                 <img src="views/classic/images/icon/modify.png" title="{lbl_edit}" id="{AttachmentID}" MeetingLineID="0" dmsClassName="{dmsClassName}""/>
                 <a href="index.php?page=zob/meetingattachment/delete/{AttachmentID}"><img src="views/classic/images/icon/delete.png" title="{lbl_Delete}" onclick="return ConfirmDelete();"/></a>
             </td>
             <td class="col_name">
                 <span>
-                    <a href="" SET_HREF id="{ID}" table="dmsentry" name="{Name}" type="{Type}" url="">{Description}</a>                
+                    <a href="" SET_HREF AttachmentID="{AttachmentID}" id="{ID}" table="dmsentry" name="{Name}" type="{Type}" url="">{Description}</a>                
                 </span>
             </td>
             <td></td>
         </tr>
         <!-- END meetingattachmentListNo0 -->
-        <form action="index.php?page=zob/meetingattachment"  method="post">
+        <form action="index.php?page=document/addFiles" method="POST" enctype="multipart/form-data">
             <tr>
                 <td>
                     <img src="views/classic/images/nav/addNew.png" alt="{lbl_New}" />                    
                 </td>
                 <td>
-                    <input type="text" id="fielDescription0" class="value col_fullname" name="Description" value="" placeholder autofocus/>
+                    <input type="file" name="fileToUpload[]" id="fileToUpload" multiple class="action" >  
                 </td>
                 <td>
-                    <input type="hidden" id="fieldAttMeetingID0" name="MeetingID" value="{MeetingID}">
-                    <input type="hidden" id="fieldAttMeetingLineID0" name="MeetingLineID" value="0">
-                    <input type="hidden" id="fieldAttAction0" name="action" value="add">
-                    <input type="submit" name="submitEditCard" class="action_button" value="{lbl_Save}">
-                    <input type="hidden" id="activeMeetingLine" name="activeMemberType" value="{activeMeetingLineID}">
+                    <input type="image" src="views/classic/images/nav/upload.png" name="submit" id="submitAddFile">
+                    <input type="hidden" name="ParentID" value="{ParentID}">
                 </td>
             </tr>
         </form>

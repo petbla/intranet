@@ -49,18 +49,19 @@ class Generalws {
 					$this->result = $this->getValue($this->field);
 					break;
 				case 'log':
-						$this->log($action);
+						$this->log();
 						break;
 				default:
-					$this->result = "ERROR: Action '$action' of modify database field is not specified. ";	
+					$this->result = "ERROR: Action '$action' is not specified. ";	
 			}
 		}else{
 			switch ($action) {
 				case 'log':
-					$this->log($action);
+					$this->log();
 					break;
 				default:
-					$this->result = "ERROR: Action '$action' is not specified. ";	
+					$message = isset($_POST['message']) ? $_POST['message'] : '';
+					$this->result = "ERROR: Action '$message' of modify database field is not specified. ";	
 			}
 		}
 		exit($this->result);
@@ -394,7 +395,7 @@ class Generalws {
 		return $value;
 	}
 
-	private function log($action)
+	private function log()
 	{
 		$ID = $this->ID;
 		$table = $this->table;
@@ -405,6 +406,9 @@ class Generalws {
 				if($contact)
 					$message = "Zobrazení kontaktu. ".$contact['FullName'];
 				break;
+			default:
+				$message = isset($_POST['message']) ? $_POST['message'] : '';
+				$message = $this->registry->getObject('db')->sanitizeData($message);
 		}
 		if($message)
 			$this->registry->getObject('log')->addMessage($message,$table,$ID);

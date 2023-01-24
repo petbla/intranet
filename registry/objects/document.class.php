@@ -12,6 +12,8 @@ class document {
     # Any private var
     # private $justProcessed = false;
 	
+    private $registry;
+    private $model;
     private $message = '';
     private $errorMessage = '';
 
@@ -40,7 +42,7 @@ class document {
     }
 
     //public function listDocuments( $sql, $entryNo, $pageLink , $isHeader, $isFolder, $isFiles, $isFooter, $breads, $template = 'document-list.tpl.php')
-    public function listDocuments( $entry, $showFolder, $sql, $showBreads, $template )
+    public function listDocuments( $parententry, $showFolder, $sql, $showBreads, $template )
 	{
 		global $config, $caption;
         $pref = $config['dbPrefix'];
@@ -64,10 +66,49 @@ class document {
             $this->registry->getObject('template')->getPage()->addTag( 'documentList', array( 'SQL', $cache2 ) );
             			
             while( $rec = $this->registry->getObject('db')->resultsFromCache( $cache ) )
-			{			
-                $this->model = new Entry( $this->registry, $rec['ID'] );
-                $entry = $this->model->getData();
-                        
+			{			                
+                $entry = $this->getDmsentryByID($rec['ID']);
+
+                $this->registry->getObject('db')->initQuery('agenda');
+                $this->registry->getObject('db')->setFilter('EntryID',$rec['ID'] );
+                if ($this->registry->getObject('db')->findFirst())
+                {
+                    $agenda = $this->registry->getObject('db')->getResult();
+                    $entry['ADocumentNo'] = $agenda['DocumentNo'];
+                    $entry['ADescription'] = $agenda['Description'];
+                    $entry['ACreateDate'] = $agenda['CreateDate'];
+                    $entry['AExecuteDate'] = $agenda['ExecuteDate'];
+                }else{
+                    $entry['ADocumentNo'] = '';
+                    $entry['ADescription'] = '';
+                    $entry['ACreateDate'] = '';
+                    $entry['AExecuteDate'] = '';
+                }
+            
+                switch ($entry['Type']) {
+                    case 10:
+                        $entry['DocumentType'] = 'Header';
+                        break;
+                    case 20:
+                        $entry['DocumentType'] = 'Folder';
+                        break;
+                    case 25:
+                        $entry['DocumentType'] = 'Block';
+                        break;
+                    case 30:
+                        $entry['DocumentType'] = 'File';
+                        break;
+                    case 35:
+                        $entry['DocumentType'] = 'Note';
+                        break;
+                    case 40:
+                        $entry['DocumentType'] = 'Footer';
+                        break;
+                    default:
+                        $entry['DocumentType'] = 'unknown';
+                        break;
+                }
+                    
                 $rec['ADocumentNo'] = $entry['ADocumentNo'];
                 $rec['CreateDate'] = $entry['CreateDate'];
 
@@ -96,8 +137,8 @@ class document {
         $this->addRemindState();
         
         // Breds navigation
-        if ($entry !== null)
-            $breads = $showBreads ? $entry['breads'] : '';
+        if ($parententry !== null)
+            $breads = $showBreads ? $parententry['breads'] : '';
         else
             $breads = $showBreads;
         $this->registry->getObject('template')->getPage()->addTag( 'breads', $breads );
@@ -132,11 +173,11 @@ class document {
             $this->registry->getObject('template')->addTemplateBit('addFiles', 'document-list-addfiles.tpl.php');
             $this->registry->getObject('template')->addTemplateBit('editcardFile', 'document-entry-editcard.tpl.php');
             $this->registry->getObject('template')->addTemplateBit('editIcon', 'document-list-actionicons.tpl.php');
-            if(($entry !== null) && ($entry['Type'] == 20))
+            if(($parententry !== null) && ($parententry['Type'] == 20))
                 $this->registry->getObject('template')->addTemplateBit('addFolder', 'document-list-addFolder.tpl.php');
             else
                 $this->registry->getObject('template')->getPage()->addTag( 'addFolder', '' );
-            if(($entry !== null) && ($entry['isImage'] == true))
+            if(($parententry !== null) && ($parententry['isImage'] == true))
                 $this->registry->getObject('template')->addTemplateBit('slideshow', 'document-list-slideshow.tpl.php');
             else
                 $this->registry->getObject('template')->getPage()->addTag( 'slideshow', '' );
@@ -152,7 +193,7 @@ class document {
         
         $mediaplayer = '';
         switch (true) {
-            case $entry['isAudio']:
+            case $parententry['isAudio']:
                 $this->registry->getObject('template')->addTemplateBit('mediaplayer', 'list-entry-mediaplayer-audio.tpl.php');
                 break;
             default:
@@ -166,9 +207,9 @@ class document {
         
         
         // Parent folder
-        if($entry !== null)
+        if($parententry !== null)
         {
-            $entryNo = $entry['EntryNo'];
+            $entryNo = $parententry['EntryNo'];
             if (isset($entryNo) != null)
             {
                 $parentPath = $config['fileroot'];
@@ -266,6 +307,17 @@ class document {
         return $entry;
 	}
     
+	private function getDmsentryByID($ID)
+	{
+		$entry = null;
+        $this->registry->getObject('db')->initQuery('dmsentry');
+        $this->registry->getObject('db')->setFilter('ID',$ID);
+        if ($this->registry->getObject('db')->findFirst()){
+            $entry = $this->registry->getObject('db')->getResult();			           
+        }
+        return $entry;
+	}
+    
     public function addIcons()
     {
         global $config;
@@ -276,7 +328,7 @@ class document {
         while( $data = $this->registry->getObject('db')->getRows() )
         {
             $ext = strtolower($data['FileExtension']);
-            $img = substr($ext,0,3);
+            $img = $ext;
             $filename = "views/classic/images/icon/$img.png";
             $fullFilename = $_SERVER['DOCUMENT_ROOT'].'/intranet/'.$filename;
             if (!(file_exists($fullFilename)))

@@ -160,32 +160,6 @@ function formatEmailTo (email)
     return(newemail);
 }
 
-function getApplication (extension)
-{
-    /**
-     * HELP
-     * https://docs.microsoft.com/en-us/office/client-developer/office-uri-schemes#sectionSection9
-     */
-    var app = '';
-    switch (extension) {
-        case 'xls':
-        case 'xlsx':
-        case 'csv':
-            app = "ms-excel:ofe|u|";
-            break;
-        case 'doc':
-        case 'docx':
-        case 'rtf':
-            app = "ms-word:ofe|u|";
-            break;
-        case 'ppt':
-        case 'pptx':
-            app = "ms-powerpoint:ofv|u|";
-            break;
-    }
-    return app;
-}
-
 function dragElement(elmnt) {
     var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
     var ID;
@@ -837,12 +811,14 @@ function allowDrop(ev) {
     ev.preventDefault();
 }
 function dragattachment(ev){
-    ev.dataTransfer.setData("text",ev.target.getAttribute('AttachmentID'));
+    var AttachmentID;
+    AttachmentID = ev.target.getAttribute('AttachmentID');
+    ev.dataTransfer.setData("text",AttachmentID);
 }
 function dropattachment(ev){
     ev.preventDefault();
     var AttachmentID = ev.dataTransfer.getData("text");
-    var MeetingLineID = ev.target.getAttribute("MeetingLineID");
+    var MeetingLineID = ev.target.getAttribute("MeetingLineID");    
     if(MeetingLineID){
         window.open("index.php?page=zob/meetingattachment/assign/" + AttachmentID + "/" + MeetingLineID ,"_self")
     }

@@ -21,11 +21,10 @@
         <table style="width:70%;">
             <tr>
                 <td>
-                    Vytvořit
-                    <input type="text" name="newFolder" class="value col_name" value="">
+                    Vytvořit<div id="newDmsentryText" class="contentEditable" contentEditable="true"></div>
                 </td>
                 <td>
-                    <input type="submit" name="add" class="action_button" value="{lbl_New}">
+                    <img src="views/classic/images/nav/addFolder.png" parentID="{ParentID}" alt="{lbl_newFolder}" onClick="wsDmsentry(this, 'Folder');">
                 </td>
             </tr>
             <!-- START listFolder -->

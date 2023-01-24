@@ -10,6 +10,9 @@
 class file {
 
   private $lastError;
+  private $registry;
+  private $model;
+  private $errorMessage;
 
   public function __construct( $registry ) 
   {
@@ -267,7 +270,7 @@ class file {
   
   public function addFile( $SourcePath, $parentEntryNo, $filename, $title )
 	{
-		global $config;
+	  global $config;
 
     $parentEntry = $this->getEntry($parentEntryNo);
     if ($parentEntry == NULL){
@@ -288,23 +291,23 @@ class file {
     $SourcePath =  $this->Convert2SystemCodePage($SourcePath);
     $Extension = pathinfo($SourcePath,PATHINFO_EXTENSION);
     
-    $Path = $this->registry->getObject('fce')->ConvertToDirectorySeparator( $parentEntry['Name'],true );
-		$Name = $Path.$filename;
+    $UrlParentPath = $this->registry->getObject('fce')->ConvertToDirectorySeparator( $parentEntry['Name'],true );
+		$UrlName = $UrlParentPath.$filename;
     
     // Copy file from source to Parentfolder-destination  
     $root = str_replace('http:','',$this->getFileRoot());
-    $FullName =  $root.$Name.'.'.$Extension;
-    $FullName =  $this->Convert2SystemCodePage($FullName);
+    $UrlFullFileName =  $root.$UrlName.'.'.$Extension;
+    $UrlFullFileName =  $this->Convert2SystemCodePage($UrlFullFileName);
 
-    if (file_exists($FullName)){
-      $this->lastError = "Cílový soubor $FullName již existuje. Zadejte jinmý název.";
+    if (file_exists($UrlFullFileName)){
+      $this->lastError = "Cílový soubor $UrlFullFileName již existuje. Zadejte jinmý název.";
       return null;
     }
 
     try {
-      copy($SourcePath, $FullName); 
-      if (!file_exists($FullName)){
-        $this->lastError = "Kopie z $SourcePath do $FullName skončil chybou.";
+      copy($SourcePath, $UrlFullFileName); 
+      if (!file_exists($UrlFullFileName)){
+        $this->lastError = "Kopie z $SourcePath do $UrlFullFileName skončil chybou.";
         return null;
       }
       if(!unlink($SourcePath)){ 
@@ -319,17 +322,19 @@ class file {
       return null;
 
     // Insert new entry  
-    $FullName = $this->registry->getObject('fce')->ConvertToDirectorySeparator( $FullName,false );
-    $FullName =  $this->Convert2SystemCodePage($FullName);
+    $UrlFullFileName = $this->registry->getObject('fce')->ConvertToDirectorySeparator( $UrlFullFileName,false );
+    $UrlFullFileName = $this->Convert2SystemCodePage($UrlFullFileName);
 
-    $EntryNo = $this->findItem($FullName);
+    $EntryNo = $this->findItem($UrlFullFileName);
     $entry = $this->getEntry($EntryNo); 
-    $entry['DestinationPath'] = $this->registry->getObject('db')->sanitizeData($config['webroot'].$Name.'.'.$Extension);
+
+    $UrlName = str_replace('\\','/',$UrlName);
+    $entry['DestinationPath'] = $this->registry->getObject('db')->sanitizeData($config['webroot'].$UrlName.'.'.$Extension);
   
     return $entry;
 	}
 
-  public function newNote ( $parentEntry )
+  public function newNote ( $parentEntry, $Title )
 	{
 		// Insert NEW Note
 		$data = array();
@@ -339,7 +344,7 @@ class file {
 		$data['Path'] = $this->registry->getObject('db')->sanitizeData($parentEntry['Name']);
 		$data['Type'] = 35;
 		$data['LineNo'] = $this->getNextLineNo($data['Parent']);
-		$data['Title'] = 'Nová poznámka'; 
+		$data['Title'] = $Title; 
 		$data['Name'] = $this->registry->getObject('db')->sanitizeData($data['Path'].DIRECTORY_SEPARATOR.$data['ID']);
 		$data['PermissionSet'] = $parentEntry['PermissionSet'];
     $data['Url'] = '';

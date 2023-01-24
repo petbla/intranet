@@ -32,7 +32,9 @@ class pdfdocument extends FPDF
   var $isHeader = false;  // Tisk záhlaví Header() dokumentu na každý list
   var $isFooter = false;  // Tisk patičky Footer() dokumentu na každý list
   var $reportTitle;       // Název tiskové sestavy  
-
+  var $registry;
+  var $pageNo;
+  
   public function __construct( $registry ) 
   {
 		$this->registry = $registry;
@@ -179,8 +181,6 @@ class pdfdocument extends FPDF
       case 'sek':
         $this->SetFont('calibri','',10);
         break;
-      default:
-        $this->_error('Unknown document type '.$documentType);
     }  // END switch
   }
   
