@@ -51,24 +51,6 @@
             <tr>
                 <td></td>
                 <td colspan="2">
-                    <label class="col_title big">{lbl_DraftResolution}</label>
-                    <img src="views/classic/images/icon/arrowdown.png" id="arrowdownDraftResolution{MeetingLineID}" title="Rozbalit" onClick="document.getElementById('meetinglineDraftResolution{MeetingLineID}').style.display = 'block'; this.style.display='none';document.getElementById('arrowupDraftResolution{MeetingLineID}').style.display='';" style="display:none;"/>
-                    <img src="views/classic/images/icon/arrowup.png" id="arrowupDraftResolution{MeetingLineID}" title="Sbalit" onClick="document.getElementById('meetinglineDraftResolution{MeetingLineID}').style.display = 'none'; this.style.display='none';document.getElementById('arrowdownDraftResolution{MeetingLineID}').style.display='';"/>
-                    &nbsp;&nbsp;<img src="views/classic/images/icon/copyFrom.png" style="cursor: pointer;" title="Kopie obsahu" name="DraftResolution" namefrom="Content" table="meetingline" pkID="{MeetingLineID}" onClick="wscopyFrom(this);"/>
-                    <br>                   
-                    <textarea  id="meetinglineDraftResolution{MeetingLineID}" name="DraftResolution" rows="3" cols="160" value="" class="autosize par" pkID="{MeetingLineID}" table="meetingline" onchange="wsUpdate(this);">{DraftResolution}</textarea>
-                    <script>
-                        if('{isDraftResolution}' == '0'){
-                            document.getElementById('meetinglineDraftResolution{MeetingLineID}').style.display = 'none';
-                            document.getElementById('arrowdownDraftResolution{MeetingLineID}').style.display='';
-                            document.getElementById('arrowupDraftResolution{MeetingLineID}').style.display='none';
-                        }
-                    </script>
-                </td>
-            </tr>
-            <tr>
-                <td></td>
-                <td colspan="2">
                     <label class="col_title">{lbl_Vote}</label>
                     <input type="checkbox" id="meetinglineVote{MeetingLineID}" name="Vote" value="{Vote}" pkID="{MeetingLineID}" table="meetingline" onClick = "validateCheckboxVote( this, {MeetingLineID} );wsRefreshMeetingline(this);">
                     <label class="col_title">{lbl_VoteFor}</label>&nbsp;<input type="text" id="meetinglineVoteFor{MeetingLineID}" name="VoteFor" value="{VoteFor}" class="col_code" pkID="{MeetingLineID}" table="meetingline" onchange="wsUpdate(this);wsRefreshMeetingline(this);">
@@ -90,6 +72,24 @@
                                 document.getElementById('meetinglineVoteAgainst{MeetingLineID}').disabled = true;
                                 document.getElementById('meetinglineVoteDelayed{MeetingLineID}').disabled = true;
                             }
+                        }
+                    </script>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td colspan="2">
+                    <label class="col_title big">{lbl_DraftResolution}</label>
+                    <img src="views/classic/images/icon/arrowdown.png" id="arrowdownDraftResolution{MeetingLineID}" title="Rozbalit" onClick="document.getElementById('meetinglineDraftResolution{MeetingLineID}').style.display = 'block'; this.style.display='none';document.getElementById('arrowupDraftResolution{MeetingLineID}').style.display='';" style="display:none;"/>
+                    <img src="views/classic/images/icon/arrowup.png" id="arrowupDraftResolution{MeetingLineID}" title="Sbalit" onClick="document.getElementById('meetinglineDraftResolution{MeetingLineID}').style.display = 'none'; this.style.display='none';document.getElementById('arrowdownDraftResolution{MeetingLineID}').style.display='';"/>
+                    &nbsp;&nbsp;<img src="views/classic/images/icon/copyFrom.png" style="cursor: pointer;" title="Kopie obsahu" name="DraftResolution" namefrom="Content" table="meetingline" pkID="{MeetingLineID}" onClick="wscopyFrom(this);"/>
+                    <br>                   
+                    <textarea  id="meetinglineDraftResolution{MeetingLineID}" name="DraftResolution" rows="3" cols="160" value="" class="autosize par" pkID="{MeetingLineID}" table="meetingline" onchange="wsUpdate(this);">{DraftResolution}</textarea>
+                    <script>
+                        if('{isDraftResolution}' == '0'){
+                            document.getElementById('meetinglineDraftResolution{MeetingLineID}').style.display = 'none';
+                            document.getElementById('arrowdownDraftResolution{MeetingLineID}').style.display='';
+                            document.getElementById('arrowupDraftResolution{MeetingLineID}').style.display='none';
                         }
                     </script>
                 </td>

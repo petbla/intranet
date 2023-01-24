@@ -181,10 +181,13 @@ class Zobmanage {
 							$meeting['MeetingPlace'] = $meetingTemplate['MeetingPlace'];
 						}
 						$MeetingTypeID = $meetingtype['MeetingTypeID'];
+						$meeting['MeetingID'] = 0;
 						$meeting['MeetingTypeID'] = $MeetingTypeID;
 						$meeting['ElectionPeriodID'] = $ElectionPeriodID;
 						$meeting['Close'] = 1;
-
+						$meeting['ParentID'] = '00000000-0000-0000-0000-000000000000';
+						$meeting['ParentID'] = $this->zob->getMeetingParentID($meeting);
+				
 						$this->registry->getObject('db')->initQuery('meeting');
 						$this->registry->getObject('db')->setFilter('MeetingTypeID',$MeetingTypeID);
 						$this->registry->getObject('db')->setFilter('EntryNo',$EntryNo);
@@ -372,7 +375,6 @@ class Zobmanage {
 						$this->registry->getObject('db')->updateRecords($table,$data,$condition);
 						break;
 					default:
-						$meetingline = $this->zob->getMeetingline($MeetingLineID);
 						$data = null;
 						switch ($lastType) {
 							case 'O':
@@ -392,11 +394,14 @@ class Zobmanage {
 						}
 						$line = trim($line);
 						if($line != ""){
-							$data[$field] = $meetingline[$field]."\n".$this->registry->getObject('db')->sanitizeData($line);
 							if($lastOC == 'O'){
+								$meetingline = $this->zob->getMeetingline($MeetingLineID);
+								$data[$field] = $meetingline[$field]."\n".$this->registry->getObject('db')->sanitizeData($line);
 								$condition = "MeetingLineID = $MeetingLineID";
 								$table = 'meetingline';
 							}else{
+								$meetinglinecontent = $this->zob->getMeetinglinecontent($ContentID);
+								$data[$field] = $meetinglinecontent[$field]."\n".$this->registry->getObject('db')->sanitizeData($line);
 								$condition = "ContentID = $ContentID";
 								$table = 'meetinglinecontent';
 							}

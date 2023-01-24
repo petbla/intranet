@@ -171,6 +171,7 @@ function wsSetRemindEntry(ID) {
 function wsUnlinkAgenda(AgendaID) {
     const Http = new XMLHttpRequest();
     var url, result;
+    url = window.location.origin + window.location.pathname;
     url = url + '?page=agenda/WS/unlink/' + AgendaID;
     Http.open("GET", url);
     Http.send();
