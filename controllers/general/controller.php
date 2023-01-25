@@ -373,7 +373,7 @@ class Generalcontroller {
 				$filename = 'views/classic/images/icon/file.png';
 			}
 			$icon = "<img src='$filename' />";
-			$this->registry->getObject('template')->getPage()->addTag( "iconFileDOCX", $icon );
+			$this->registry->getObject('template')->getPage()->addTag( "iconFile$ext", $icon );
 		}
 		$this->registry->getObject('template')->getPage()->addTag( "iconContact", "<img src='views/classic/images/icon/contact.png' />" );
 		$this->registry->getObject('template')->getPage()->addTag( "iconFolder", "<img src='views/classic/images/icon/folder.png' />" );
