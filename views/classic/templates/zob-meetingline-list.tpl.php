@@ -7,6 +7,8 @@
     <a href="index.php?page=zob/xxx" title="Tisk zápisu"><img src="views/classic/images/nav/printZ48.png" /></a>
     <img src="views/classic/images/nav/line48.png"/>
     <a href="index.php?page=zob/xxx" title="Tisk usnesení"><img src="views/classic/images/nav/printU48.png" /></a>
+    <img src="views/classic/images/nav/line48.png"/>
+    <a href="index.php?page=document/list/{ParentID}" title="Složka"><img src="views/classic/images/nav/folder48.png" /></a>
 </p>
 <a href="index.php?page=zob/meeting/list/{MeetingTypeID}" id="closePage" class="button"><span class="action_close">{lbl_Close}</span></a>
 <div id="DocumentItems">
@@ -47,7 +49,7 @@
             <td class="col_code200" MeetingLineID="{MeetingLineID}">
                 <span MeetingLineID="{MeetingLineID}">
                     <a href="index.php?page=zob/meetingline/moveup/{MeetingID}/{MeetingLineID}"><img src="views/classic/images/icon/moveup.png" title="Posun bodu nahorů"/></a>
-                    &nbsp;{EntryNo}/{Year}/<b>{LineNo}{LineNo2}</b>&nbsp;
+                    <b>{LineNo}{LineNo2}</b>&nbsp;
                     <a href="index.php?page=zob/meetingline/movedown/{MeetingID}/{MeetingLineID}"><img src="views/classic/images/icon/movedown.png" title="Posun bodu dolů"/></a>
                 </span>
             </td>

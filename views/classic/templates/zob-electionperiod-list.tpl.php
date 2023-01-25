@@ -18,6 +18,8 @@
         <a href="index.php?page=zob/manage/importMeeting" title="Import"><img src="views/classic/images/nav/import48.png" onclick="return ConfirmDelete('Provést import zápisů?');"/></a>
         <img src="views/classic/images/nav/line48.png"/>
         <a href="index.php?page=zob/manage/deleteAllMeeting" title="Import"><img src="views/classic/images/nav/delete48.png" onclick="return ConfirmDelete('Skutečně chtete provést výmaz všech zápisů (mimo šablon)?');"/></a>        
+        <img src="views/classic/images/nav/line48.png"/>
+        <a href="index.php?page=zob/manage/scanMeeting" title="Import"><img src="views/classic/images/nav/scanfolder48.png" /></a>        
     </p>
     <table>
         <tr>

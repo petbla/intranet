@@ -99,12 +99,12 @@
                 <td>               
                 </td>
                 <td colspan="2">
-                    <label class="col_title big">&nbsp;{EntryNo}/{Year}/{LineNo}{LineNo2}&nbsp;....{con_LineNo}) {lbl_Content}</label>
+                    <label class="col_title big">{LineNo}{LineNo2}&nbsp;.{con_LineNo}) {lbl_Content}</label>
                     <br>                   
                     <textarea  name="Content" rows="3" cols="160" value="" class="autosize par" pkID="{con_ContentID}" table="meetinglinecontent" onchange="wsUpdate(this);">{con_Content}</textarea>
                     <br>
 
-                    <label class="col_title big">{con_LineNo}) {lbl_Discussion}</label>
+                    <label class="col_title big">{LineNo}{LineNo2}&nbsp;.{con_LineNo}) {lbl_Discussion}</label>
                     <img src="views/classic/images/icon/arrowdown.png" id="arrowdownDiscussionContent{con_ContentID}" title="Rozbalit" onClick="document.getElementById('meetinglinecontentDiscussion{con_ContentID}').style.display = 'block'; this.style.display='none';document.getElementById('arrowupDiscussionContent{con_ContentID}').style.display='';" style="display:none;"/>
                     <img src="views/classic/images/icon/arrowup.png" id="arrowupDiscussionContent{con_ContentID}" title="Sbalit" onClick="document.getElementById('meetinglinecontentDiscussion{con_ContentID}').style.display = 'none'; this.style.display='none';document.getElementById('arrowdownDiscussionContent{con_ContentID}').style.display='';"/>
                     <br>                   
@@ -118,7 +118,7 @@
                     </script>
                     <br>
 
-                    <label class="col_title big">{con_LineNo}) {lbl_DraftResolution}</label>
+                    <label class="col_title big">{LineNo}{LineNo2}&nbsp;.{con_LineNo}) {lbl_DraftResolution}</label>
                     <img src="views/classic/images/icon/arrowdown.png" id="arrowdownDraftResolutionContent{con_ContentID}" title="Rozbalit" onClick="document.getElementById('meetinglinecontentDraftResolution{con_ContentID}').style.display = 'block'; this.style.display='none';document.getElementById('arrowupDraftResolutionContent{con_ContentID}').style.display='';" style="display:none;"/>
                     <img src="views/classic/images/icon/arrowup.png" id="arrowupDraftResolutionContent{con_ContentID}" title="Sbalit" onClick="document.getElementById('meetinglinecontentDraftResolution{con_ContentID}').style.display = 'none'; this.style.display='none';document.getElementById('arrowdownDraftResolutionContent{con_ContentID}').style.display='';"/>
                     &nbsp;&nbsp;<img src="views/classic/images/icon/copyFrom.png" style="cursor: pointer;" title="Kopie obsahu" name="DraftResolution" namefrom="Content" table="meetinglinecontent" pkID="{con_ContentID}" onClick="wscopyFrom(this);"/>

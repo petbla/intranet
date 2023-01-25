@@ -38,6 +38,9 @@ class Zobmanage {
 			case 'deleteAllMeeting':
 				$this->deleteAllMeeting();
 				break;
+			case 'scanMeeting':
+				$this->scanMeeting();
+				return;
 		}
 		$this->zob->listElectionPeriod();
 	}
@@ -99,7 +102,102 @@ class Zobmanage {
 		}
 	}
 
-	private function importMeeting(){
+	private function scanMeeting(){
+		global $config;
+
+		$fileroot = $config['fileroot'].$config['rootZOB'];
+		$content = '';
+
+		$electionperiod = $this->zob->getActualElectionperiod();
+		if(!$electionperiod){
+			$this->errorMessage = "Není nastaveno výchozí volební období..";
+			return;
+		}
+		$meetingtypes = $this->zob->readMeetingtypesByElectionperiodID($electionperiod['ElectionPeriodID']);
+		foreach($meetingtypes as $meetingtype)
+		{
+			$parentPath = $fileroot."/_".$meetingtype['MeetingName']."/".$electionperiod['PeriodName']."/";
+			
+			if(is_dir($parentPath)){
+				
+				
+				$content .= $meetingtype['MeetingName']."/".$electionperiod['PeriodName']."<br>";
+				$content .= $this->scanDirPath($meetingtype,0,$parentPath,'',true);
+
+			}					
+		};
+	
+		$this->print($content);
+		return;
+	}
+
+	private function scanDirPath($meetingtype,$EntryNo,$dirPath, $dirName = '', $topLevel){
+		$content = '';
+		if ($handle = opendir($dirPath)) { 
+			while (false !== ($fileName = readdir($handle))) 
+			{ 
+				if ($fileName == '.' |0| $fileName == '..') { 
+					continue; 
+				};
+			
+			
+				$fullFileName = $dirPath.$fileName;		// celá cesta k souboru nebo složce včetně rootu
+				
+				// Nyjvyšší úroveň jsou složky zápisů, co není číslo nás nezajímá
+				if($topLevel){					
+					$EntryNo = (int) $fileName;
+					if($EntryNo == 0)
+						return $content;
+					if (!is_dir($fullFileName))
+						continue;
+				}
+
+				// Název souboru s relativní cestou
+				$Name = ($topLevel) ? "" : ($dirName == "" ? "" : $dirName."/").$fileName;
+				$HtmlName = ($topLevel) ? "" : ($dirName == "" ? "" : $dirName."/")."<b>".$fileName."</b>";
+
+				if(is_dir($fullFileName)){
+					// Další složka => další analýza
+					$content .= $this->scanDirPath($meetingtype,$EntryNo,$fullFileName.'/', $Name,false);
+				}else{
+					// Soubor
+
+					// Pokud zápis ještě nebyl načten, pak se proveden impoert a zápisu do tabulek ZOB
+					if($fileName == ".meeting"){
+						// Tento nebude součástí příloh
+						$this->importMeeting($fullFileName);
+					}else{
+
+						$meeting = $this->zob->getMeetingByEntryNo($meetingtype, $EntryNo);
+						if($meeting == null)
+							continue;
+							
+						// Toto je příloha k založení 
+						$content .= $EntryNo." ===> ".$HtmlName."<br>";
+
+						//TODO - zde se bude zapisovat do příloh
+						
+					}
+				}
+				
+
+			/*
+			$fullItemPath = $directoryNamePath.$fileName;
+			$winFullItemPath = $this->Convert2SystemCodePage($fullItemPath);
+			$entryNo = $this->findItem($winFullItemPath);
+			if(is_dir($fullItemPath))
+			{ 
+				$directory_path = $fullItemPath.DIRECTORY_SEPARATOR; 
+				array_push($directories, $directory_path); 
+			} 
+			*/
+			} 
+			closedir($handle); 
+		} 
+		return $content;
+	}
+
+	private function importMeeting( $filename = '' ){
 		$electionperiod = $this->zob->getActualElectionperiod();
 		if(!$electionperiod){
 			$this->errorMessage = "Není nastaveno výchozí volební období..";
@@ -116,7 +214,8 @@ class Zobmanage {
 		$lastOC = '';
 
 		$content = "";
-		$filename = 'files/ImportMeeting'.$electionperiod['PeriodName'].'.csv';
+		if($filename == "")
+			$filename = 'files/ImportMeeting'.$electionperiod['PeriodName'].'.csv';
 
 		if(!file_exists($filename)){
 			$this->errorMessage = "Soubor $filename nebyl nalezen.";
@@ -192,8 +291,8 @@ class Zobmanage {
 						$this->registry->getObject('db')->setFilter('MeetingTypeID',$MeetingTypeID);
 						$this->registry->getObject('db')->setFilter('EntryNo',$EntryNo);
 						if($this->registry->getObject('db')->findFirst()){
-							$this->errorMessage = "Jednání typu $MeetingName číslo $EntryNo/$Year již existuje.";
-							$this->print();
+							//$this->errorMessage = "Jednání typu $MeetingName číslo $EntryNo/$Year již existuje.";
+							//$this->print();
 							return;					
 						}
 						$this->registry->getObject('db')->insertRecords('meeting',$meeting);

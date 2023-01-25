@@ -7,8 +7,8 @@
 class Zobcontroller{
 	
 	private $registry;
-	private $message;
-	private $errorMessage;
+	public $message;
+	public $errorMessage;
 	private $perSet;
 	private $prefDb;
 
@@ -1414,6 +1414,17 @@ class Zobcontroller{
 		$meeting = null;
 		$this->registry->getObject('db')->initQuery('meeting');
 		$this->registry->getObject('db')->setFilter('MeetingID',$MeetingID);
+		if ($this->registry->getObject('db')->findFirst())
+			$meeting = $this->registry->getObject('db')->getResult();			
+		return $meeting;
+	}
+	
+	public function getMeetingByEntryNo ( $meetingtype, $EntryNo )
+	{
+		$meeting = null;
+		$this->registry->getObject('db')->initQuery('meeting');
+		$this->registry->getObject('db')->setFilter('MeetingTypeID',$meetingtype['MeetingTypeID']);
+		$this->registry->getObject('db')->setFilter('EntryNo',$EntryNo);
 		if ($this->registry->getObject('db')->findFirst())
 			$meeting = $this->registry->getObject('db')->getResult();			
 		return $meeting;
