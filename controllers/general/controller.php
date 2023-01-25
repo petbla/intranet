@@ -167,6 +167,23 @@ class Generalcontroller {
 			$this->registry->getObject('db')->executeQuery($sql);
 		}
 
+		// Search in meeting
+		if (($table == '') || ($table == 'meeting')){
+				$sql = "INSERT INTO ".$pref."resultsearch (BatchID,CreateDate,Type,Description,ID) ".
+					"SELECT $batchID as BatchID, '$createDate' as CreateDate, ".
+						"'Meeting' as Type, CONCAT (mt.MeetingName,' ',m.EntryNo,'/',m.Year,': ',ml.Title, IFNULL(ml.Title2,'')) as Description,ml.MeetingLineID ".
+					"FROM ".$pref."meetingline as ml ".
+					"LEFT JOIN ".$pref."meeting as m ON ml.MeetingID = m.MeetingID ".
+					"LEFT JOIN ".$pref."meetingtype as mt ON ml.MeetingTypeID = mt.MeetingTypeID ".
+					"WHERE ".
+					"(Title like '%$searchText%') OR ".
+					"(Title2 like '%$searchText%') OR ".
+					"(Content like '%$searchText%') OR ".
+					"(Discussion like '%$searchText%') OR ".
+					"(DraftResolution like '%$searchText%')";
+			$this->registry->getObject('db')->executeQuery($sql);
+		}
+
 		// Search in contact
 		if (($table == '') || ($table == 'contact')){
 			$sql = "INSERT INTO ".$pref."resultsearch (BatchID,CreateDate,Type,Description,ID) ".
@@ -356,13 +373,14 @@ class Generalcontroller {
 				$filename = 'views/classic/images/icon/file.png';
 			}
 			$icon = "<img src='$filename' />";
-			$this->registry->getObject('template')->getPage()->addTag( "iconFile$ext", $icon );
+			$this->registry->getObject('template')->getPage()->addTag( "iconFileDOCX", $icon );
 		}
 		$this->registry->getObject('template')->getPage()->addTag( "iconContact", "<img src='views/classic/images/icon/contact.png' />" );
 		$this->registry->getObject('template')->getPage()->addTag( "iconFolder", "<img src='views/classic/images/icon/folder.png' />" );
 		$this->registry->getObject('template')->getPage()->addTag( "iconNote", "<img src='views/classic/images/icon/note.png' />" );
 		$this->registry->getObject('template')->getPage()->addTag( "iconBlock", "<img src='views/classic/images/icon/block.png' />" );
 		$this->registry->getObject('template')->getPage()->addTag( "iconAgenda", "<img src='views/classic/images/icon/agenda.png' />" );
+		$this->registry->getObject('template')->getPage()->addTag( "iconMeeting", "<img src='views/classic/images/icon/meeting.png' />" );
 
 		$this->build('search-list-result.tpl.php');
 

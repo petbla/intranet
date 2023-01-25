@@ -1093,7 +1093,7 @@ class Zobcontroller{
 					$meetingattachments = array();
 					while( $meetingattachment = $this->registry->getObject('db')->resultsFromCache( $cache ) )
 					{
-						$dmsentry = $this->getDmsentryByInboxID($meetingattachment['InboxID']);
+						$dmsentry = $this->getDmsentryByID($meetingattachment['DmsEntryID']);
 						if($dmsentry){
 							$meetingattachment['ID'] = $dmsentry['ID'];
 							$meetingattachment['Name'] = $dmsentry['Name'];
@@ -1134,7 +1134,7 @@ class Zobcontroller{
 			$meetingattachments = array();
 			while( $meetingattachment = $this->registry->getObject('db')->resultsFromCache( $cache ) )
 			{
-				$dmsentry = $this->getDmsentryByInboxID($meetingattachment['InboxID']);
+				$dmsentry = $this->getDmsentryByID($meetingattachment['DmsEntryID']);
 				if($dmsentry){
 					$meetingattachment['ID'] = $dmsentry['ID'];
 					$meetingattachment['Name'] = $dmsentry['Name'];
@@ -1479,6 +1479,17 @@ class Zobcontroller{
 		$meetingattachment = null;
 		$this->registry->getObject('db')->initQuery('meetingattachment');
 		$this->registry->getObject('db')->setFilter('AttachmentID',$AttachmentID);
+		if ($this->registry->getObject('db')->findFirst())
+			$meetingattachment = $this->registry->getObject('db')->getResult();			
+		return $meetingattachment;
+	}
+
+	public function getMeetingattachmentByDmsEntryID ( $MeetingID, $DmsEntryID )
+	{
+		$meetingattachment = null;
+		$this->registry->getObject('db')->initQuery('meetingattachment');
+		$this->registry->getObject('db')->setFilter('MeetingID',$MeetingID);
+		$this->registry->getObject('db')->setFilter('DmsEntryID',$DmsEntryID);
 		if ($this->registry->getObject('db')->findFirst())
 			$meetingattachment = $this->registry->getObject('db')->getResult();			
 		return $meetingattachment;

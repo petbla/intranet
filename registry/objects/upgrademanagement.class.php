@@ -278,6 +278,24 @@ class upgrademanagement {
             // upgrade to 2.42
             $this->upgrade_242('2.42');
         }
+        if ($this->version === '2.42') 
+        {
+            // upgrade to 2.43
+            $this->upgrade_243('2.43');
+        }
+    }
+
+    private function upgrade_243($upVer)
+    {
+		global $config;
+        $pref = $config['dbPrefix'];
+
+        // upgrade table 'meeting'
+        $sql = "ALTER TABLE ".$pref."meetingattachment".
+            " ADD `DmsEntryID` varchar(36) COLLATE utf8_czech_ci DEFAULT '00000000-0000-0000-0000-000000000000'";
+        $this->registry->getObject('db')->executeQuery( $sql );
+
+        $this->setNewVersion($upVer);
     }
 
     private function upgrade_242($upVer)

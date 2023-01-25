@@ -119,12 +119,11 @@
                 <img src="views/classic/images/icon/modify.png" title="{lbl_edit}" id="{AttachmentID}" MeetingLineID="0" dmsClassName="{dmsClassName}""/>
                 <a href="index.php?page=zob/meetingattachment/delete/{AttachmentID}"><img src="views/classic/images/icon/delete.png" title="{lbl_Delete}" onclick="return ConfirmDelete();"/></a>
             </td>
-            <td class="col_name">
+            <td colspan="2" class="col_name">
                 <span>
                     <a href="" SET_HREF AttachmentID="{AttachmentID}" id="{ID}" table="dmsentry" name="{Name}" type="{Type}" url="">{Description}</a>                
                 </span>
             </td>
-            <td></td>
         </tr>
         <!-- END meetingattachmentListNo0 -->
         <form action="index.php?page=document/addFiles" method="POST" enctype="multipart/form-data">

@@ -687,6 +687,7 @@ class Todocontroller{
 							$meetingattachment['Description'] = $Title;
 							$meetingattachment['MeetingLineID'] = 0;
 							$meetingattachment['InboxID'] = $InboxID;
+							$meetingattachment['DmsEntryID'] = $inbox['DmsEntryID'];
 							$this->registry->getObject('db')->insertRecords('meetingattachment',$meetingattachment);
 
 						}else{

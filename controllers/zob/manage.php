@@ -176,7 +176,22 @@ class Zobmanage {
 						$content .= $EntryNo." ===> ".$HtmlName."<br>";
 
 						//TODO - zde se bude zapisovat do příloh
-						
+
+						// Najít/vytvořit EntryNo
+						$dmsEntryNo = $this->registry->getObject('file')->findItem($fullFileName);
+						$dmsentry = $this->zob->getDmsentry($dmsEntryNo);
+						$DmsEntryID = $dmsentry['ID'];
+						if($dmsentry){
+							$meetingattachment = $this->zob->getMeetingattachmentByDmsEntryID ( $meeting['MeetingID'], $DmsEntryID );
+							if(!$meetingattachment){
+								$data = array();
+								$data['MeetinglineID'] = 0;
+								$data['MeetingID'] = $meeting['MeetingID'];
+								$data['Description'] = $Name;
+								$data['DmsEntryID'] = $DmsEntryID;	
+								$this->registry->getObject('db')->insertRecords('meetingattachment',$data);
+							}
+						}
 					}
 				}
 				
