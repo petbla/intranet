@@ -3858,3 +3858,20 @@
 [25-Jan-2023 23:55:07 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
 [25-Jan-2023 23:55:38 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
 [25-Jan-2023 23:55:54 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Jan-2023 23:57:10 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Jan-2023 23:57:10 Europe/Prague] PHP Fatal error:  Chyba při provádění dotazu a jeho ukládání do mezipaměti: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'AND MeetingLineID = 0' at line 1 in C:\inetpub\wwwroot\intranet\registry\databaseobjects\mysql.database.class.php on line 126
+[25-Jan-2023 23:57:10 Europe/Prague] PHP Stack trace:
+[25-Jan-2023 23:57:10 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[25-Jan-2023 23:57:10 Europe/Prague] PHP   2. Zobcontroller->__construct($registry = class Registry {  }, $directCall = TRUE) C:\inetpub\wwwroot\intranet\index.php:104
+[25-Jan-2023 23:57:10 Europe/Prague] PHP   3. Zobcontroller->meetingattachment($action = 'assign') C:\inetpub\wwwroot\intranet\controllers\zob\controller.php:72
+[25-Jan-2023 23:57:10 Europe/Prague] PHP   4. Zobcontroller->listMeetingLine($MeetingID = NULL, $activeMeetingLineID = 0) C:\inetpub\wwwroot\intranet\controllers\zob\controller.php:558
+[25-Jan-2023 23:57:10 Europe/Prague] PHP   5. Zobcontroller->setDatasetMeetingLine($MeetingID = NULL, $activeMeetingLineID = 0) C:\inetpub\wwwroot\intranet\controllers\zob\controller.php:1005
+[25-Jan-2023 23:57:10 Europe/Prague] PHP   6. mysqldatabase->cacheQuery($queryStr = 'SELECT * FROM mis_meetingattachment WHERE MeetingID =  AND MeetingLineID = 0') C:\inetpub\wwwroot\intranet\controllers\zob\controller.php:1132
+[25-Jan-2023 23:57:10 Europe/Prague] PHP   7. trigger_error($message = 'Chyba při provádění dotazu a jeho ukládání do mezipaměti: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near \'AND MeetingLineID = 0\' at line 1', $error_type = 256) C:\inetpub\wwwroot\intranet\registry\databaseobjects\mysql.database.class.php:126
+[25-Jan-2023 23:57:43 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Jan-2023 23:57:47 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Jan-2023 23:57:50 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Jan-2023 23:57:53 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Jan-2023 23:57:56 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Jan-2023 23:58:00 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Jan-2023 23:58:02 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
