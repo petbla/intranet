@@ -29,6 +29,7 @@ function wsUpdate(e) {
             if((response == 'OK' ) || (response == '' )){
                 console.log(response)      
             }else{
+                console.log(response);
                 err = document.getElementById('pageErrorMesage');
                 if(err){
                     err.innerText = response;

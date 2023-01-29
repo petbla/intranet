@@ -9,6 +9,7 @@ function setValue(attName,attValue,keyWord,value){
             d = new Date();
             d.setDate(d.getDate() + value);
             input.value = d.toJSON().slice(0, 10);
+            wsUpdate(input);
             console.log(input);
             break;
     }

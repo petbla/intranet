@@ -487,15 +487,15 @@ if(link_element){
                 // <td class="col_text" a_type="agenda" data-agenda-entryid="{EntryID}" data-dms-server="{cfg_webroot}" data-agenda-entryname="{Name}">{DocumentNo}</td>
                 // <td SET_HREF class="col_text" table="agenda" entryid="{EntryID}" name="{Name}">{DocumentNo}</td>
                 
-                var entryid,title,link,web,entryname;
+                var entryid,title,link,web,entryname,id;
                 var fileextension,entryname2,isChange;
                 entryid = e.getAttribute('entryid');
                 web = setup.getAttribute('webroot');
                 entryname = e.getAttribute('name');
 
-                if(entryid !== ''){
-                    switch (e.getAttribute('type')) {
-                        case 'DocumentNo':
+                switch (e.getAttribute('type')) {
+                    case 'DocumentNo':
+                        if(entryid !== ''){
                             title = e.innerHTML;
                             fileextension = entryname.split('.').pop();
                             if (fileextension.toLowerCase() == 'pdf'){
@@ -520,15 +520,24 @@ if(link_element){
                             link = "<a href='" + web + entryname + "'  target='_blank'>" + title + "</a>";
                             e.innerHTML = link;
                             e.setAttribute('class','col_link');       
-                            break;
-                        case 'Unlink':
-                            e.innerHTML = '';
-                            break;
-                        case 'SourceFolder':
+                        };
+                        break;
+                    case 'odkaz':
+                        if(entryid != ""){
+                            id = e.getAttribute('id');    
+                            e.href = "index.php?page=agenda/unlink/" + id;    
+                        }else{
+                            e.style.display = 'none';
+                        }
+                        break;
+                    case 'SourceFolder':
+                        if(entryid !== ''){
                             e.href = 'index.php?page=document/list/' + entryid;
                             e.innerHTML = "<img src='views/classic/images/icon/folder.png' />";                
-                            break;
-                        case 'PDF':
+                        }
+                        break;
+                    case 'PDF':
+                        if(entryid !== ''){
                             var isPDF = false;           
                             fileextension = entryname.split('.').pop();
                             if (fileextension.toLowerCase() != 'pdf'){
@@ -540,10 +549,10 @@ if(link_element){
                                 e.href = link;
                                 e.innerHTML = "<img src='views/classic/images/icon/pdf.png' />";
                             }                
-                            break;
-                        default:
-                            break;
-                    }
+                        }                
+                        break;
+                    default:
+                        break;
                 }
                 break;
             default:

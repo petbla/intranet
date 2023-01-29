@@ -55,13 +55,15 @@ class Generalws {
 					$this->result = "ERROR: Action '$action' is not specified. ";	
 			}
 		}else{
-			switch ($action) {
-				case 'log':
-					$this->log();
-					break;
-				default:
-					$message = isset($_POST['message']) ? $_POST['message'] : '';
-					$this->result = "ERROR: Action '$message' of modify database field is not specified. ";	
+			if($this->result == 'OK'){
+				switch ($action) {
+					case 'log':
+						$this->log();
+						break;
+					default:
+						$message = isset($_POST['message']) ? $_POST['message'] : '';
+						$this->result = "ERROR: Action '$message' of modify database field is not specified. ";	
+				}
 			}
 		}
 		exit($this->result);
@@ -79,7 +81,7 @@ class Generalws {
 			$this->result = 'ERROR: Table not specific.';
 			return false;
 		}
-		if($this->ID == 0){
+		if($this->ID == ''){
 			$this->result = 'ERROR: ID not specific.';
 			return false;
 		}
@@ -97,6 +99,9 @@ class Generalws {
 	{
 		$value = isset($_POST['value']) ? $_POST['value'] : '';
 		switch ($this->table) {
+			case 'dmsentry':
+				$this->updateDmsentry($value);
+				break;
 			case 'inbox':
 				$this->updateInbox($value);
 				break;
@@ -113,7 +118,7 @@ class Generalws {
 				$data = null;
 				$data[$this->field] = $value;
 				$pk = $this->getFieldPK($this->table);
-				$condition = "`$pk` = ".$this->ID;
+				$condition = "`$pk` = '".$this->ID."'";
 				if($this->result == 'OK') 
 					$this->registry->getObject('db')->updateRecords($this->table,$data,$condition);	
 				break;
@@ -312,6 +317,35 @@ class Generalws {
 		$condition = "ContentID = $ID";								
 		if(($this->result == 'OK') && $data)
 			$this->registry->getObject('db')->updateRecords($this->table,$data,$condition);	
+	}
+
+	private function updateDmsentry($value)
+	{
+		$dmsentry = $this->zob->getDmsentryByID($this->ID);
+		$data = null;
+		$ID = $this->ID;
+
+		switch ($this->field) {
+			case 'Title':
+				$data[$this->field] = $value;
+
+				if($value != $dmsentry['Title']){
+					$condition = "DmsEntryID = '$ID'";
+					//  Do tabulky příloh jednání
+					$meetingattachment = array();
+					$meetingattachment['Description'] = $value;
+					$this->registry->getObject('db')->updateRecords('meetingattachment',$meetingattachment,$condition);
+		
+					// Do tabulky Inboxu
+					$inbox = array();
+					$inbox['Title'] = $value;
+					$this->registry->getObject('db')->updateRecords('inbox',$inbox,$condition);
+				}
+				break;
+		}
+		$condition = "ID = '$ID'";
+		if(($this->result == 'OK') && $data)
+			$this->registry->getObject('db')->updateRecords($this->table,$data,$condition);
 	}
 
 	private function updateInbox($value)

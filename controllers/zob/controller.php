@@ -1031,8 +1031,16 @@ class Zobcontroller{
 		$meetinglines = $this->readMeetingLines($MeetingID);
 		if($meetinglines){
 			$meetinglines2 = array();
+			$printLineNo = 0;
 			foreach($meetinglines as $meetingline)
 			{
+				if($meetingline['LineType'] == 'Bod'){
+					$printLineNo += 1;
+					$meetingline['PrintLineNo'] = $printLineNo; 
+				}else{
+					$meetingline['PrintLineNo'] = $printLineNo;
+				}
+				
 				$meetingline['dmsClassName'] = 'meetingline';
 				$contact = $this->getContactByID($meetingline['PresenterID']);
 				if($contact)

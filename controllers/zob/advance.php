@@ -32,6 +32,7 @@ class Zobadvance {
 		$urlBits = $this->registry->getURLBits();     
 		$MeetingLineID = 0;
 		$MeetingID = 0;
+		$template = '';
 
 		switch ($action) {
             case 'meetingline':
@@ -49,13 +50,17 @@ class Zobadvance {
                 $action = isset($_POST["action"]) ? $_POST["action"] : $action;						
                 $this->meetingattachment($action);
                 break;
+            case 'print':
+                $action = isset($urlBits[3]) ? $urlBits[3] : '';
+                $template = $this->print($action);
+                break;
         default:
                 $MeetingID = isset($urlBits[2]) ? (int) $urlBits[2] : null;
                 if($MeetingID){
                     $this->MeetingID = $MeetingID;
                 }
         }
-        $this->build();            
+        $this->build($template);            
 	}
 
     /**
@@ -75,6 +80,33 @@ class Zobadvance {
 
 		// Build page
 		$this->registry->getObject('template')->buildFromTemplates('print-header.tpl.php', $template , 'print-footer.tpl.php');
+	}
+
+	/**
+	 * Tisk dokumentů jednání
+	 * URL: zob/adv/print/invitation/<MeetingID>
+	 * @return void
+	 */
+	private function print( $action )
+	{
+		global $config, $caption;
+		$urlBits = $this->registry->getURLBits();
+		$template = '';     
+		$MeetingID = $urlBits[4];
+		$meeting = $this->zob->getMeeting($MeetingID);
+		if(!$meeting){
+			$this->errorMessage = 'ERROR: Nezadáno číslo jednání nebo jednání $MeetingID neexistuje.';
+			return;
+		}
+
+		switch ($action) {
+			case 'invitation':
+				# code
+				$template = 'zob-print-invitation.tpl.php';
+				break; 
+		}
+		$this->MeetingID = $MeetingID;
+		return $template;
 	}
 
 	/**

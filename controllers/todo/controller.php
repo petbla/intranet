@@ -642,7 +642,7 @@ class Todocontroller{
 					$this->message = "Přesun do úkolů není aktivní.";
 					$this->inboxList($InboxID);
 					return;	
-				case 'Storno':
+				case 'Vyřízeno':
 					$change['Close'] = 1;
 					$this->message = "Dokument byl přesunut do vyřízených..";
 					break;
@@ -776,7 +776,7 @@ class Todocontroller{
 			$electionperiod = $zob->getActualElectionperiod();
 			$meetingtype = $zob->readMeetingtypesByElectionperiodID($electionperiod['ElectionPeriodID']);
 			$meetingtype[] = array('MeetingName' => 'Úkol');
-			$meetingtype[] = array('MeetingName' => 'Storno');
+			$meetingtype[] = array('MeetingName' => 'Vyřízeno');
 			$meetingtype[] = array('MeetingName' => '');
 				
 			foreach ($result as $inbox) {
