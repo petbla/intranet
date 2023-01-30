@@ -32,7 +32,7 @@ class Zobadvance {
 		$urlBits = $this->registry->getURLBits();     
 		$MeetingLineID = 0;
 		$MeetingID = 0;
-		$template = '';
+		$template = 'zob-adv-meetingline-list.tpl.php';
 
 		switch ($action) {
             case 'meetingline':
