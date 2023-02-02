@@ -38,6 +38,17 @@ class Zobmanage {
 			case 'deleteAllMeeting':
 				$this->deleteAllMeeting();
 				break;
+			case 'backupElectionPeriod':
+				$ElectionPeriodID = isset($urlBits[3]) ? $urlBits[3] : 0;
+				$this->backupElectionPeriod($ElectionPeriodID);
+				break;
+			case 'backupMeeting':
+				$MeetingID = isset($urlBits[3]) ? $urlBits[3] : 0;
+				$this->backupMeeting($MeetingID);
+				break;
+			case 'backupContact':
+				$this->backupContact();
+				break;
 			case 'scanMeeting':
 				$this->scanMeeting();
 				return;
@@ -60,6 +71,139 @@ class Zobmanage {
 		$this->registry->getObject('template')->buildFromTemplates('print-header.tpl.php', $template , 'print-footer.tpl.php');
 	}
 
+	private function backupElectionPeriod($ElectionPeriodID = 0){
+		global $config;
+		$pref = $config['dbPrefix'];
+
+		if($ElectionPeriodID == 0)
+			$electionperiod = $this->zob->getActualElectionperiod();
+		else
+			$electionperiod = $this->zob->getElectionperiod($ElectionPeriodID);
+		if(!$electionperiod){
+			$this->errorMessage = "Není nastaveno výchozí volební období..";
+			$this->print();
+			return; 
+		}
+		$ElectionPeriodID = $electionperiod['ElectionPeriodID'];
+		$condition = "ElectionPeriodID = $ElectionPeriodID";
+		$filename = $electionperiod['PeriodName'];
+		header('Content-Type: text/csv; charset=utf-8');
+		header("Content-Disposition: attachment; filename=$filename.csv");
+		
+		// Create stream
+		$output = fopen("php://output","w");		
+		// Export tables
+		$this->exportTable($output, $pref.'electionperiod',$condition);
+		$this->exportTable($output, $pref.'meetingtype',$condition);
+		$meetingtypes = $this->zob->readMeetingtypesByElectionperiodID($ElectionPeriodID);
+		foreach($meetingtypes as $meetingtype){
+			$MeetingTypeID = $meetingtype['MeetingTypeID'];
+			$condition = "MeetingTypeID = $MeetingTypeID";
+			$this->exportTable($output, $pref.'member',$condition);
+		}
+		$meetings = $this->zob->readMeetingByElectionperiodID($ElectionPeriodID);
+		foreach($meetings as $meeting){
+			$this->exportTableMeeting ($output, $meeting['MeetingID'] );
+		}
+		// Close strem and download
+		fclose($output);
+		exit;
+		// Backup - EXPORT dat
+		/**
+		 * Export record of DMS
+		 *  - agenda
+		 *  - agendatype
+		 *  - contact
+		 *  - contactgroup
+		 *  - dmsentry
+		 *  - inbox
+		 *  - user
+		 *  - permissionset
+		 *  - setup
+		 *  - source
+		 */
+
+	}
+
+	private function backupContact(){
+		global $config;
+		$pref = $config['dbPrefix'];
+
+		$filename = 'contacts';
+		$condition = '';
+		
+		header('Content-Type: text/csv; charset=utf-8');
+		header("Content-Disposition: attachment; filename=$filename.csv");
+		// Create stream
+		$output = fopen("php://output","w");		
+		// Export tables
+		$this->exportTable($output, $pref.'contact',$condition);
+		// Close and download stream
+		fclose($output);
+		exit;
+	}
+
+	private function backupMeeting($MeetingID = 0){
+		if ($MeetingID == 0){
+			$filename = 'meetings';
+		}else{
+			$meeting = $this->zob->getMeeting($MeetingID);
+			$meetingtype = $this->zob->getMeetingtype($meeting['MeetingTypeID']);
+			$filename = $meetingtype['MeetingName'].'-'.$meeting['EntryNo'].'-'.$meeting['Year'];
+		};
+		header('Content-Type: text/csv; charset=utf-8');
+		header("Content-Disposition: attachment; filename=$filename.csv");
+		
+		// Create stream
+		$output = fopen("php://output","w");		
+		// Export tables
+		$this->exportTableMeeting ($output, $MeetingID );
+		// Close and download stream
+		fclose($output);
+		exit;
+	}
+	
+	private function exportTableMeeting ($output, $MeetingID = 0 ){
+		global $config;
+		$pref = $config['dbPrefix'];
+		$condition = $MeetingID != 0 ? "MeetingID = $MeetingID" : '';
+
+		$this->exportTable($output, $pref.'meeting',$condition);
+		$this->exportTable($output, $pref.'meetingline',$condition);
+		$this->exportTable($output, $pref.'meetinglinecontent',$condition);
+		$this->exportTable($output, $pref.'meetingattachment',$condition);
+		$this->exportTable($output, $pref.'meetinglinepage',$condition);
+		$this->exportTable($output, $pref.'meetinglinetask',$condition);
+	}
+
+	private function exportTable ($output, $table, $condition = ''){
+		if($table == '')
+			return;
+
+		fputcsv($output,["$table"],';');
+
+		// Headers
+		$sql = "SELECT * FROM information_schema.COLUMNS where TABLE_NAME = '$table' order by ORDINAL_POSITION";
+		$this->registry->getObject('db')->executeQuery( $sql );
+		while( $row = $this->registry->getObject('db')->getRows() )
+		{
+			$header[] = $row['COLUMN_NAME'];
+		}
+		fputcsv($output,$header,';');
+
+		// Data
+		$sql = "SELECT * FROM $table ";
+		if($condition != '')
+			$sql .= " WHERE $condition";
+		$this->registry->getObject('db')->executeQuery( $sql );
+		while( $row = $this->registry->getObject('db')->getRows() )
+		{
+			fputcsv($output,$row,';');
+		}
+	}
+
+
+		
 	private function deleteAllMeeting(){
 		$electionperiod = $this->zob->getActualElectionperiod();
 		if(!$electionperiod){

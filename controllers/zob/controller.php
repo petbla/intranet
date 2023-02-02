@@ -1258,6 +1258,16 @@ class Zobcontroller{
 		return $meetingtype;
 	}
 
+	public function readMeetingByElectionperiodID ( $ElectionPeriodID  )
+	{
+		$meetings = null;
+		$this->registry->getObject('db')->initQuery('meeting');
+		$this->registry->getObject('db')->setFilter('ElectionPeriodID',$ElectionPeriodID);
+		if ($this->registry->getObject('db')->findSet())
+			$meetings = $this->registry->getObject('db')->getResult();			
+		return $meetings;
+	}
+
 	public function readMeetingLinesFromTemplate( $MeetingName )
 	{
 		$electionperiod = null;

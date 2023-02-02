@@ -1,13 +1,7 @@
 <div id="actionpanel">
-    <table>
-        <tr>
-            <td>
-                <img src="views/classic/images/nav/addContact.png" alt="{lbl_New}" title="{lbl_NewContact}" onclick="document.getElementById('newcardID').style.display = 'block';">
-                <br>
-                {lbl_NewContact}
-            </td>
-        </tr>
-    </table>
+    <a href="index.php?page=zob/manage/backupContact" title="Záloha kontaktů (CSV Export)"><img src="views/classic/images/nav/backup48.png" /></a>        
+    <img src="views/classic/images/nav/line48.png"/>
+    <img src="views/classic/images/nav/addContact.png" alt="{lbl_New}" title="{lbl_NewContact}" onclick="document.getElementById('newcardID').style.display = 'block';">
 </div>
 <div style="display: none;" id="formImportContactCSV">
     <form action="index.php?page=contact/importCsv" method="POST" enctype="multipart/form-data">
@@ -17,7 +11,6 @@
         <input type="image" src="views/classic/images/nav/upload.png" name="submit" id="submitImport">
     </form>
 </div>
-
 <div id="DocumentItems">
     <p id="pageMessage" class="message" onClick="this.style.display = 'none';" >{message}</p>
     <script>
