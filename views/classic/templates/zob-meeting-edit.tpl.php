@@ -1,5 +1,5 @@
 <form action="" method="post" disable>
-    <fieldset {disabled} style="padding:0; border:0;">
+    <fieldset style="padding:0; border:0;">
         <table class="edit-card">
             <tr>
                 <td colspan="3">
@@ -30,9 +30,9 @@
                                 <label class="title">{lbl_AtDate}</label>
                             </td>
                             <td style="border:0;">
-                                <input type="date" class="value" name="AtDate" value="{AtDate}" pkID="{MeetingID}" table="meeting" onchange="wsUpdate(this);"/>
+                                <input type="date" class="value" name="AtDate" value="{AtDate}" pkID="{MeetingID}" table="meeting" onchange="wsUpdate(this);" {disabled}/>
                                 &nbsp;
-                                <input type="time" class="value" name="AtTime" value="{AtTime}" pkID="{MeetingID}" table="meeting" onchange="wsUpdate(this);"/><br>
+                                <input type="time" class="value" name="AtTime" value="{AtTime}" pkID="{MeetingID}" table="meeting" onchange="wsUpdate(this);" {disabled}/><br>
                             </td>
                         </tr>
                         <tr>
@@ -40,7 +40,7 @@
                                 <label class="title">{lbl_MeetingPlace}</label>
                             </td>
                             <td style="border:0;">
-                                <input type="text" class="value col_function" name="MeetingPlace" value="{MeetingPlace}" pkID="{MeetingID}" table="meeting" onchange="wsUpdate(this);"/><br>
+                                <input type="text" class="value col_function" name="MeetingPlace" value="{MeetingPlace}" pkID="{MeetingID}" table="meeting" onchange="wsUpdate(this);" {disabled}/><br>
                             </td>
                         </tr>
                         <tr>
@@ -48,7 +48,7 @@
                                 <label class="title">{lbl_Present}</label><br>
                             </td>
                             <td style="border:0;">
-                                <input type="text" class="value" name="Present" value="{Present}" pkID="{MeetingID}" table="meeting" onchange="wsUpdate(this);"/><br>
+                                <input type="text" class="value" name="Present" value="{Present}" pkID="{MeetingID}" table="meeting" onchange="wsUpdate(this);" {disabled}/><br>
                             </td>
                         </tr>
                         <tr>
@@ -56,7 +56,7 @@
                                 <label class="title">{lbl_Close}</label>
                             </td>
                             <td style="border:0;">
-                                <input type="checkbox" id = "Close{MeetingID}" class="value" name="Close" value="{Close}" pkID="{MeetingID}" table="meeting" onchange = "validateCheckbox( this );"/>
+                                <input type="checkbox" id = "Close{MeetingID}" class="value" name="Close" value="{Close}" pkID="{MeetingID}" table="meeting" onchange = "validateCheckbox( this );"/ >
                                 <script>
                                     var e;
                                     e = document.getElementById('Close{MeetingID}');
@@ -74,7 +74,7 @@
                                 <label class="title">{lbl_PostedUpDate}</label><br>
                             </td>
                             <td style="border:0;">
-                                <input type="date" class="value" name="PostedUpDate" value="{PostedUpDate}" pkID="{MeetingID}" table="meeting" onchange="wsUpdate(this);"/><br>
+                                <input type="date" class="value" name="PostedUpDate" value="{PostedUpDate}" pkID="{MeetingID}" table="meeting" onchange="wsUpdate(this);" {disabled}/><br>
                             </td>
                         </tr>
                         <tr>
@@ -82,7 +82,7 @@
                                 <label class="title">{lbl_PostedDownDate}</label><br>
                             </td>
                             <td style="border:0;">
-                                <input type="date" class="value" name="PostedDownDate" value="{PostedDownDate}" pkID="{MeetingID}" table="meeting" onchange="wsUpdate(this);"/><br>
+                                <input type="date" class="value" name="PostedDownDate" value="{PostedDownDate}" pkID="{MeetingID}" table="meeting" onchange="wsUpdate(this);" {disabled}/><br>
                             </td>
                         </tr>
                     </table>
@@ -94,7 +94,7 @@
                                 <label class="title">{lbl_RecorderBy}</label><br>
                             </td>
                             <td style="border:0;">
-                                <input type="text" class="value" name="RecorderBy" value="{RecorderBy}" pkID="{MeetingID}" table="meeting" onchange="wsUpdate(this);"/><br>
+                                <input type="text" class="value" name="RecorderBy" value="{RecorderBy}" pkID="{MeetingID}" table="meeting" onchange="wsUpdate(this);" {disabled}/><br>
                             </td>
                         </tr>
                         <tr>
@@ -102,7 +102,7 @@
                                 <label class="title">{lbl_RecorderAtDate}</label><br>
                             </td>
                             <td style="border:0;">
-                                <input type="date" class="value" name="RecorderAtDate" value="{RecorderAtDate}" pkID="{MeetingID}" table="meeting" onchange="wsUpdate(this);"/><br>
+                                <input type="date" class="value" name="RecorderAtDate" value="{RecorderAtDate}" pkID="{MeetingID}" table="meeting" onchange="wsUpdate(this);" {disabled}/><br>
                             </td>
                         </tr>
                         <tr>
@@ -110,7 +110,7 @@
                                 <label class="title">{lbl_VerifierBy} 1</label><br>
                             </td>
                             <td style="border:0;">
-                                <input type="text" class="value" name="VerifierBy1" value="{VerifierBy1}" pkID="{MeetingID}" table="meeting" onchange="wsUpdate(this);"/><br>
+                                <input type="text" class="value" name="VerifierBy1" value="{VerifierBy1}" pkID="{MeetingID}" table="meeting" onchange="wsUpdate(this);" {disabled}/><br>
                             </td>
                         </tr>
                         <tr>
@@ -118,7 +118,7 @@
                                 <label class="title">{lbl_VerifierBy} 2</label><br>
                             </td>
                             <td style="border:0;">
-                                <input type="text" class="value" name="VerifierBy2" value="{VerifierBy2}" pkID="{MeetingID}" table="meeting" onchange="wsUpdate(this);"/><br>
+                                <input type="text" class="value" name="VerifierBy2" value="{VerifierBy2}" pkID="{MeetingID}" table="meeting" onchange="wsUpdate(this);" {disabled}/><br>
                             </td>
                         </tr>
                     </table>

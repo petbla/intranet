@@ -1,11 +1,11 @@
 <?php
 /**
- * PdfDocument is class for document printing 
+ * PdfDocument is class for document printing as invoice,labels,post address etc.
  * This class is build on the Pdf.php from PEAR library 
  *
  * @author  Petr Blažek
  * @version 1.0
- * @date    7.2.2023
+ * @date    10.7.2011 
  */
  
 class pdfdocument extends FPDF  
@@ -14,28 +14,26 @@ class pdfdocument extends FPDF
    * Public variable
    *
    */        
-  private $registry;
-  private $fileName;        // filename
-
+  var $fileName;        // filename
   /**
    * "Label's variablies
    *
    */        
-  private $labelLines = 4;    // počet řádků adresy        
-  private $labelWidth;        // šířka štítku [mm]         
-  private $labelHeight;       // výška štítku [mm]        
-  private $labelInCols;       // počet štítků ve sloupcích A4         
-  private $labelInRows;       // počet štítků v řádcích A4
-  private $lSpace = 2;        // vnitřní levý okraj [mm]
-  private $rSpace = 2;        // vnitřní pravý okraj [mm]          
-  private $lineHeight = 10;   // výška řádku;
-
-  private $documentType;      // Typ dokumentu PDF
-  private $yy = 10;           // Lokální pozice Y
-  private $isHeader = false;  // Tisk záhlaví Header() dokumentu na každý list
-  private $isFooter = false;  // Tisk patičky Footer() dokumentu na každý list
-  private $reportTitle;       // Název tiskové sestavy  
-  private $pageNo;
+  var $labelLines = 4;    // počet řádků adresy        
+  var $labelWidth;        // šířka štítku [mm]         
+  var $labelHeight;       // výška štítku [mm]        
+  var $labelInCols;       // počet štítků ve sloupcích A4         
+  var $labelInRows;       // počet štítků v řádcích A4
+  var $lSpace = 2;        // vnitřní levý okraj [mm]
+  var $rSpace = 2;        // vnitřní pravý okraj [mm]          
+  var $lineHeight = 10;   // výška řádku;
+  var $documentType;      // Typ dokumentu PDF
+  var $yy = 10;           // Lokální pozice Y
+  var $isHeader = false;  // Tisk záhlaví Header() dokumentu na každý list
+  var $isFooter = false;  // Tisk patičky Footer() dokumentu na každý list
+  var $reportTitle;       // Název tiskové sestavy  
+  var $registry;
+  var $pageNo;
   
   public function __construct( $registry ) 
   {
@@ -43,11 +41,13 @@ class pdfdocument extends FPDF
 
   }
 
-  public function SetDocument($documentType, $fileName='', $reportTitle = '', $orientation='P', $unit='mm', $format='A4')
+  public function SetDocument($documentType, $fileName='', $orientation='P', $unit='mm', $format='A4')
   {   
     parent:: __construct($orientation, $unit, $format);
     
-    $this->reportTitle = $reportTitle;
+    global $config;
+    global $deb;
+
 
     $this->AddFont('candara','','candara.php');
     $this->AddFont('candara','B','candarab.php');
@@ -65,12 +65,12 @@ class pdfdocument extends FPDF
         
     /*  
      *  $this->documentType 
-     *  - report (header, body,footer)
+     *  - invoice, label, postReceipt, sek, report
      */
         
     $this->setDocumentType( $documentType );
         
-    $sTitle    = 'DMS Server';
+    $sTitle    = 'www.petbla.cz';
     $sSubject  = '';
     $sAuthor   = 'Petr Blažek';
     $sKeywords = '';
@@ -97,6 +97,12 @@ class pdfdocument extends FPDF
       case 'report':
         $this->SetFont('calibri','',9);
         $this->isHeader = true;
+        $this->isFooter = true;
+        $this->reportTitle = 'Katalog zboží';
+                    break;
+      case 'invoice':
+        $this->SetFont('calibri','I',0);
+        $this->isHeader = false;
         $this->isFooter = true;
         break;
       case 'label_2x7':
@@ -181,19 +187,15 @@ class pdfdocument extends FPDF
   
   function Show()
   {
-    // D - download
-    // F - file
-    // I - standard output (PDF view)
-    $this->Output($this->fileName,'I');
-  }
+    if ($this->fileName <> 'document.pdf')
+      $this->Output($this->fileName);
+    else
+      $this->Output();
+  } // END function Show
       
-  /**
-   *  Print header if $isHeader = true
-   */
   function Header()
   {
       global $config;
-      $skin = $config['skin'];
       
       $yy = $this->tMargin;
       if (!$this->isHeader)
@@ -203,16 +205,15 @@ class pdfdocument extends FPDF
     {
       case 'report':
         //Logo      
-        $this->Image("views/$skin/images/logoPrint.jpg",10,$yy + 30,20);
-        $this->SetY($yy + 10);
-        
-        $this->SetX(50);
-
-        $this->SetFont('times','',40);
-        $this->Cell(30,10,$this->_utf2win('OBEC MISTŘICE'),0,0,'L');
-        //$this->Cell(30,10,'OBEC MISTŘICE',0,0,'L');
-        //Line break
-        $this->Ln(12);
+        //$this->Image($config['dir_files'] . 'img/logoBijouxMaja.jpg',10,$yy,190);
+        $this->SetY($yy + 20);
+        //Title
+        if (isset($this->reportTitle)){
+          $this->SetFont('calibri','B',15);
+          $this->Cell(30,10,$this->_utf2win($this->reportTitle),0,0,'L');
+          //Line break
+          $this->Ln(12);
+        }
         break;
     }
     $this->yy = $this->GetY();
@@ -233,10 +234,15 @@ class pdfdocument extends FPDF
     
     switch ($this->documentType)
     {
-      case 'report':
-        // Page number
+      case 'invoice':
+        //Legislativa
+        $this->Text(15,$yy,$this->_utf2win($config['regDocument']));   
+        $this->Text(15,$yy+3,$this->_utf2win($config['regDocumentNo']));
+        break;   
+                  case 'report':
+        //Page number
         $this->SetY($yy);
-        $this->Cell(0,10,$this->_utf2win($caption['PageNo']).' '.$this->PageNo(),0,0,'C');
+        $this->Cell(0,10,$this->_utf2win($caption['pageNo']).' '.$this->PageNo(),0,0,'C');
         break;
     }
   }
@@ -452,7 +458,8 @@ class pdfdocument extends FPDF
     $this->AddPage();
     $this->pageNo++;
     
-       
+    $this->_border();
+        
     
     // Header
     /*

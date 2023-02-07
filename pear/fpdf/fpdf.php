@@ -72,7 +72,7 @@ var $PDFVersion;         //PDF version number
 *                               Public methods                                 *
 *                                                                              *
 *******************************************************************************/
-function FPDF($orientation='P', $unit='mm', $format='A4')
+function  __construct($orientation='P', $unit='mm', $format='A4')
 {
 	//Some checks
 	$this->_dochecks();
@@ -1015,7 +1015,7 @@ function Output($name='', $dest='')
 			if(php_sapi_name()!='cli')
 			{
 				//We send to a browser
-				header('Content-Type: application/pdf');
+				header('Content-Type: application/pdf; charset=utf-8');
 				if(headers_sent())
 					$this->Error('Some data has already been output, can\'t send PDF file');
 				header('Content-Length: '.strlen($this->buffer));
@@ -1561,9 +1561,13 @@ function _putfonts()
 
 function _putimages()
 {
+	
 	$filter=($this->compress) ? '/Filter /FlateDecode ' : '';
 	reset($this->images);
-	while(list($file,$info)=each($this->images))
+	
+	
+	//while(list($file,$info)=each($this->images))
+	foreach($this->images as $file =>$info)
 	{
 		$this->_newobj();
 		$this->images[$file]['n']=$this->n;

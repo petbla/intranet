@@ -2,7 +2,7 @@
 <p>
     <a href="index.php?page=zob/xxx" title="Prezentace"><img src="views/classic/images/nav/present48.png" /></a>        
     <img src="views/classic/images/nav/line48.png"/>
-    <a href="index.php?page=zob/xxx" title="Tisk zápisu"><img src="views/classic/images/nav/printZ48.png" /></a>
+    <a href="index.php?page=zob/export/zapis/{MeetingID}" title="Tisk zápisu"><img src="views/classic/images/nav/printZ48.png" /></a>
     <img src="views/classic/images/nav/line48.png"/>
     <a href="index.php?page=zob/xxx" title="Tisk usnesení"><img src="views/classic/images/nav/printU48.png" /></a>
     <img src="views/classic/images/nav/line48.png"/>
@@ -33,7 +33,7 @@
             <th style="width:100px;">.................</th>
         </tr>
         <!-- START meetinglineList -->
-        <tr ondrop="dropattachmentadv(event)" ondragover="allowDrop(event)" style="background-color:blanchedalmond;">      
+        <tr ondrop="dropattachmentadv(event)" ondragover="allowDrop(event)" style="background-color:#e1e1e1;">      
             <td class="col_code200" MeetingLineID="{MeetingLineID}">
                 <span MeetingLineID="{MeetingLineID}">
                     <a href="index.php?page=zob/adv/meetingline/moveup/{MeetingID}/{MeetingLineID}"><img src="views/classic/images/icon/moveup.png" title="Posun bodu nahorů"/></a>
@@ -41,8 +41,8 @@
                     <a href="index.php?page=zob/adv/meetingline/movedown/{MeetingID}/{MeetingLineID}"><img src="views/classic/images/icon/movedown.png" title="Posun bodu dolů"/></a>
                 </span>
             </td>
-            <td colspan="2" >
-                
+            <td colspan="2">
+                <a href="index.php?page=zob/adv/meetinglinecontent/add/{MeetingLineID}" id="anchor{MeetingLineID}" >Přidat obsah</a>
             </td>
             <td class="col_action">
                 <a href="index.php?page=zob/adv/meetingline/delete/{MeetingID}/{MeetingLineID}">

@@ -3,6 +3,7 @@
     <tr>
       <th></th>
       <th>Popis</th>
+      <th>Odkaz</th>
       <th>Typ</th>
     </tr>
     <!-- START ResultItems -->
@@ -16,8 +17,11 @@
         {remindIcon}        
       </td>
       <td>
-        <a href="{Url}" target="{Target}" onclick="document.getElementById('{view{Type}CardID}').style.display = 'block'; this.href = 'javascript:void(0)';">
           {Description}
+      </td>
+      <td>
+        <a href="{Url}" target="{Target}" onclick="document.getElementById('{view{Type}CardID}').style.display = 'block'; this.href = 'javascript:void(0)';">
+          <small>{Name}</small>
         </a>
       </td>
       <td>{Type}</td>

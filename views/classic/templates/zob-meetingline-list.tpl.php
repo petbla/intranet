@@ -4,7 +4,7 @@
     <img src="views/classic/images/nav/line48.png"/>
     <a href="index.php?page=zob/xxx" title="Prezentace"><img src="views/classic/images/nav/present48.png" /></a>        
     <img src="views/classic/images/nav/line48.png"/>
-    <a href="index.php?page=zob/xxx" title="Tisk zápisu"><img src="views/classic/images/nav/printZ48.png" /></a>
+    <a href="index.php?page=zob/export/zapis/{MeetingID}" title="Tisk zápisu"><img src="views/classic/images/nav/printZ48.png" /></a>
     <img src="views/classic/images/nav/line48.png"/>
     <a href="index.php?page=zob/xxx" title="Tisk usnesení"><img src="views/classic/images/nav/printU48.png" /></a>
     <img src="views/classic/images/nav/line48.png"/>

@@ -165,13 +165,6 @@
                     document.getElementById('content{MeetingLineID}').style.display = 'none';
             </script>            
             <!-- END meetinglinecontent{MeetingLineID} -->
-            <tr>
-                <td></td>
-                <td colspan="2">
-                    <hr>
-                    <a href="index.php?page=zob/adv/meetinglinecontent/add/{MeetingLineID}" id="anchor{MeetingLineID}" class="action" ><img src="views/classic/images/nav/addNew.png" title="Přidat obsah" /> Přidat obsah</a>
-                </td>
-            </tr>
         </form>
         <tr>
             <td></td>

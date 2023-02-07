@@ -85,6 +85,12 @@ class Zobcontroller{
 						$adv = new Zobadvance( $this->registry, false );					
 						$adv->main($action);
 						break;
+					case 'export':
+						$action = isset($urlBits[2]) ? $urlBits[2] : '';
+						require_once( FRAMEWORK_PATH . 'controllers/zob/export.php');
+						$export = new Zobexport( $this->registry, false );					
+						$export->main($action);
+						break;
 					default:
 						$this->pageNotFound();
 						break;
@@ -947,7 +953,7 @@ class Zobcontroller{
 	{
 
 		// Zápis z jednání
-		$sql = "SELECT * FROM ".$this->prefDb."meeting WHERE MeetingTypeID = $MeetingTypeID";
+		$sql = "SELECT * FROM ".$this->prefDb."meeting WHERE MeetingTypeID = $MeetingTypeID ORDER BY EntryNo";
 		$sql = $this->registry->getObject('db')->getSqlByPage( $sql );
 		$cache = $this->registry->getObject('db')->cacheQuery( $sql );	
 		if(!$this->registry->getObject('db')->isEmpty( $cache )){

@@ -146,10 +146,10 @@ class Generalcontroller {
 
 		// Search in dmsentry	
 		if (($table == '') || ($table == 'dmsentry')){
-			$sql = "INSERT INTO ".$pref."resultsearch (BatchID,CreateDate,Type,Description,ID) ".
+			$sql = "INSERT INTO ".$pref."resultsearch (BatchID,CreateDate,Type,Description,ID,Name) ".
 					"SELECT $batchID as BatchID, '$createDate' as CreateDate, ".
 						"CASE WHEN Type=20 THEN 'Folder' WHEN Type=25 THEN 'Block' WHEN Type=30 THEN 'File'WHEN Type=35 THEN 'Note' ELSE Type END as Type, ".
-						"Title as Description ,ID ".
+						"Title as Description ,ID ,Name ".
 					"FROM ".$pref."dmsentry ".
 					"WHERE Archived = 0 AND Type IN (20,25,30,35) ".
 						"AND ((Title like '%$searchText%') OR (Content like '%$searchText%')) ".

@@ -39,9 +39,12 @@ $registry->storeObject('core','core');
 /**
  *  PEAR modul and set library
  */ 
-
 ini_set('include_path',ini_get('include_path').PATH_SEPARATOR.'../'.PATH_SEPARATOR.$_SERVER["DOCUMENT_ROOT"]);
- 
+require_once 'pear/fpdf/fpdf.php';
+
+$registry->storeObject('pdf','pdfdocument');
+$registry->storeObject('email', 'email');
+
 /**
  *  Setting System Information
  */

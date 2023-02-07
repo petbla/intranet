@@ -133,7 +133,7 @@ class Generalws {
 
 		$meeting = $this->zob->getMeeting($ID);
 		$isTemplate = $this->zob->isElectionperiodTemplate( $meeting['ElectionPeriodID'] );
-		if($meeting['Close'] == 1){
+		if(($meeting['Close'] == 1) && ($field != 'Close')){
 			$this->result = 'Nelze editovat uzavřený zápis jednání;';
 			return;
 		}

@@ -283,6 +283,24 @@ class upgrademanagement {
             // upgrade to 2.43
             $this->upgrade_243('2.43');
         }
+        if ($this->version === '2.43') 
+        {
+            // upgrade to 2.44
+            $this->upgrade_244('2.44');
+        }
+    }
+
+    private function upgrade_244($upVer)
+    {
+		global $config;
+        $pref = $config['dbPrefix'];
+
+        // upgrade table 'meeting'
+        $sql = "ALTER TABLE ".$pref."resultsearch".
+            " ADD `Name` varchar(250) COLLATE utf8_czech_ci DEFAULT ''";
+        $this->registry->getObject('db')->executeQuery( $sql );
+
+        $this->setNewVersion($upVer);
     }
 
     private function upgrade_243($upVer)

@@ -131,7 +131,7 @@ class Zobmanage {
 
 		$filename = 'contacts';
 		$condition = '';
-		
+
 		header('Content-Type: text/csv; charset=utf-8');
 		header("Content-Disposition: attachment; filename=$filename.csv");
 		// Create stream
@@ -263,8 +263,7 @@ class Zobmanage {
 			$parentPath = $fileroot."/_".$meetingtype['MeetingName']."/".$electionperiod['PeriodName']."/";
 			
 			if(is_dir($parentPath)){
-				
-				
+							
 				$content .= $meetingtype['MeetingName']."/".$electionperiod['PeriodName']."<br>";
 				$content .= $this->scanDirPath($meetingtype,0,$parentPath,'',true);
 
@@ -340,7 +339,8 @@ class Zobmanage {
 				}
 				
 
-			/*
+			//TODO
+			/*			
 			$fullItemPath = $directoryNamePath.$fileName;
 			$winFullItemPath = $this->Convert2SystemCodePage($fullItemPath);
 			$entryNo = $this->findItem($winFullItemPath);
@@ -450,7 +450,7 @@ class Zobmanage {
 						$this->registry->getObject('db')->setFilter('MeetingTypeID',$MeetingTypeID);
 						$this->registry->getObject('db')->setFilter('EntryNo',$EntryNo);
 						if($this->registry->getObject('db')->findFirst()){
-							//$this->errorMessage = "Jednání typu $MeetingName číslo $EntryNo/$Year již existuje.";
+							$this->errorMessage = "Jednání typu $MeetingName číslo $EntryNo/$Year již existuje.<BR>";
 							//$this->print();
 							return;					
 						}
