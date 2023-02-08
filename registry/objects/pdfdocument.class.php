@@ -2,6 +2,9 @@
 /**
  * PdfDocument is class for document printing 
  * This class is build on the Pdf.php from PEAR library 
+ * 
+ * Generování fontů - popis: http://www.fpdf.org/en/tutorial/tuto7.htm
+ * Generování fontů: http://www.fpdf.org/makefont/make.php 
  *
  * @author  Petr Blažek
  * @version 1.0
@@ -57,6 +60,10 @@ class pdfdocument extends FPDF
     $this->AddFont('calibri','','calibri.php');
     $this->AddFont('calibri','B','calibrib.php');
     $this->AddFont('calibri','I','calibrii.php');
+            
+    $this->AddFont('times','','times.php');
+    $this->AddFont('times','B','timesb.php');
+    $this->AddFont('times','I','timesi.php');
             
     if (isset($fileName) && ($fileName <> ''))
       $this->fileName = $fileName;

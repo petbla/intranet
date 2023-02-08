@@ -5096,3 +5096,38 @@
 [03-Feb-2023 00:21:24 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
 [03-Feb-2023 00:24:30 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
 [03-Feb-2023 00:24:32 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[08-Feb-2023 00:45:58 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[08-Feb-2023 19:06:35 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[08-Feb-2023 19:07:55 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[08-Feb-2023 19:22:55 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[08-Feb-2023 19:32:41 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[08-Feb-2023 19:33:08 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[08-Feb-2023 19:33:08 Europe/Prague] PHP Notice:  iconv(): Detected an illegal character in input string in C:\inetpub\wwwroot\intranet\registry\objects\pdfdocument.class.php on line 752
+[08-Feb-2023 19:33:08 Europe/Prague] PHP Stack trace:
+[08-Feb-2023 19:33:08 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[08-Feb-2023 19:33:08 Europe/Prague] PHP   2. Zobcontroller->__construct($registry = class Registry {  }, $directCall = TRUE) C:\inetpub\wwwroot\intranet\index.php:104
+[08-Feb-2023 19:33:08 Europe/Prague] PHP   3. Zobexport->main($action = 'zapis') C:\inetpub\wwwroot\intranet\controllers\zob\controller.php:92
+[08-Feb-2023 19:33:08 Europe/Prague] PHP   4. Zobexport->exportZapis($meeting = ['MeetingID' => '83', 'MeetingTypeID' => '5', 'ElectionPeriodID' => '7', 'EntryNo' => '2', 'AtDate' => '2023-02-24', 'AtTime' => '18:00:00', 'Year' => '2023', 'Present' => '5', 'MeetingPlace' => 'Kancelář starosty obce', 'PostedUpDate' => NULL, 'PostedDownDate' => NULL, 'State' => '', 'RecorderAtDate' => NULL, 'Actual' => '1', 'Close' => '0', 'RecorderBy' => 'Blažek Petr', 'VerifierBy1' => '00000000-0000-0000-0000-000000000000', 'VerifierBy2' => '00000000-0000-0000-0000-000000000000', 'ParentID' => 'E80FE590-7C15-401E-801A-E884F379B011']) C:\inetpub\wwwroot\intranet\controllers\zob\export.php:38
+[08-Feb-2023 19:33:08 Europe/Prague] PHP   5. pdfdocument->NewOrder() C:\inetpub\wwwroot\intranet\controllers\zob\export.php:52
+[08-Feb-2023 19:33:08 Europe/Prague] PHP   6. pdfdocument->HeaderOrder() C:\inetpub\wwwroot\intranet\registry\objects\pdfdocument.class.php:447
+[08-Feb-2023 19:33:08 Europe/Prague] PHP   7. pdfdocument->AddPage($orientation = *uninitialized*, $size = *uninitialized*, $rotation = *uninitialized*) C:\inetpub\wwwroot\intranet\registry\objects\pdfdocument.class.php:456
+[08-Feb-2023 19:33:08 Europe/Prague] PHP   8. pdfdocument->Header() C:\inetpub\wwwroot\PEAR\fpdf\fpdf.php:334
+[08-Feb-2023 19:33:08 Europe/Prague] PHP   9. pdfdocument->_utf2win($text = 'OBEC MISTŘICE') C:\inetpub\wwwroot\intranet\registry\objects\pdfdocument.class.php:216
+[08-Feb-2023 19:33:08 Europe/Prague] PHP  10. iconv($in_charset = 'utf-8', $out_charset = 'cp1252', $str = 'OBEC MISTŘICE') C:\inetpub\wwwroot\intranet\registry\objects\pdfdocument.class.php:752
+[08-Feb-2023 19:33:08 Europe/Prague] PHP Fatal error:  Uncaught Exception: FPDF error: Some data has already been output, can't send PDF file in C:\inetpub\wwwroot\PEAR\fpdf\fpdf.php:271
+Stack trace:
+#0 C:\inetpub\wwwroot\PEAR\fpdf\fpdf.php(1060): FPDF->Error('Some data has a...')
+#1 C:\inetpub\wwwroot\PEAR\fpdf\fpdf.php(999): FPDF->_checkoutput()
+#2 C:\inetpub\wwwroot\intranet\registry\objects\pdfdocument.class.php(191): FPDF->Output('I', 'document.pdf')
+#3 C:\inetpub\wwwroot\intranet\controllers\zob\export.php(59): pdfdocument->Show()
+#4 C:\inetpub\wwwroot\intranet\controllers\zob\export.php(38): Zobexport->exportZapis(Array)
+#5 C:\inetpub\wwwroot\intranet\controllers\zob\controller.php(92): Zobexport->main('zapis')
+#6 C:\inetpub\wwwroot\intranet\index.php(104): Zobcontroller->__construct(Object(Registry), true)
+#7 {main}
+  thrown in C:\inetpub\wwwroot\PEAR\fpdf\fpdf.php on line 271
+[08-Feb-2023 19:33:21 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[08-Feb-2023 19:33:43 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[08-Feb-2023 19:36:12 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[08-Feb-2023 19:37:42 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[08-Feb-2023 19:57:46 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[08-Feb-2023 19:59:23 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
