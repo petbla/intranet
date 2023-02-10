@@ -85,11 +85,11 @@ class Zobcontroller{
 						$adv = new Zobadvance( $this->registry, false );					
 						$adv->main($action);
 						break;
-					case 'export':
+					case 'print':
 						$action = isset($urlBits[2]) ? $urlBits[2] : '';
-						require_once( FRAMEWORK_PATH . 'controllers/zob/export.php');
-						$export = new Zobexport( $this->registry, false );					
-						$export->main($action);
+						require_once( FRAMEWORK_PATH . 'controllers/zob/print.php');
+						$print = new Zobprint( $this->registry, false );					
+						$print->main($action);
 						break;
 					default:
 						$this->pageNotFound();
@@ -1326,8 +1326,13 @@ class Zobcontroller{
 		return $member;
 	}
 
-	public function readMeetingLines ( $MeetingID  )
+	public function readMeetingLines ( $param  )
 	{
+		if(is_array($param)){
+			$MeetingID = $param['MeetingID'];
+		}else{
+			$MeetingID = $param;
+		}
 		$meetingline = null;
 		$this->registry->getObject('db')->initQuery('meetingline');
 		$this->registry->getObject('db')->setFilter('MeetingID',$MeetingID);
@@ -1423,8 +1428,13 @@ class Zobcontroller{
 		return $meeting;
 	}
 
-	public function getMeetingtype ( $MeetingTypeID )
+	public function getMeetingtype ( $param )
 	{
+		if(is_array($param)){
+			$MeetingTypeID = $param['MeetingTypeID'];
+		}else{
+			$MeetingTypeID = $param;
+		}
 		$meetingtype = null;
 		$this->registry->getObject('db')->initQuery('meetingtype');
 		$this->registry->getObject('db')->setFilter('MeetingTypeID',$MeetingTypeID);
@@ -1452,6 +1462,38 @@ class Zobcontroller{
 		if ($this->registry->getObject('db')->findFirst())
 			$meeting = $this->registry->getObject('db')->getResult();			
 		return $meeting;
+	}
+
+	public function getMeetingExcused( $param )
+	{
+		$excused = '';
+		if(is_array($param)){
+			$meeting = $param;
+		}else{
+			$meeting = $this->getMeeting($param);
+		};
+
+		//TODO - Doplnit jména omluvených členů
+		$excused = '';
+
+		return $excused;
+	}
+	
+	public function getMeetingVerifierBy( $param )
+	{
+		$verifier = '';
+		if(is_array($param)){
+			$meeting = $param;
+		}else{
+			$meeting = $this->getMeeting($param);
+		};
+		if($meeting['VerifierBy1'] != '00000000-0000-0000-0000-000000000000')
+			$verifier = $meeting['VerifierBy1'];
+		if($meeting['VerifierBy2'] != '00000000-0000-0000-0000-000000000000'){			
+			$verifier .= ($verifier == '') ? '' : ', ';
+			$verifier .= $meeting['VerifierBy2'];
+		}
+		return $verifier;
 	}
 	
 	public function getInbox ( $InboxID )

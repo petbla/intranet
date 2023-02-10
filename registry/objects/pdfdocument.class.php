@@ -23,6 +23,12 @@ class pdfdocument extends FPDF
   /**
    * "Label's variablies
    *
+   *  -------------------------------------------------------------------------------------------------------------------------
+   *  documentType (option)       headerTitle (array)
+   *  -------------------------------------------------------------------------------------------------------------------------
+   *   zapis                      City, FromMeting, AtDate, MeetingNo, PresentMembers, ExcusedMemberNames, VerifiedMemberNames
+   *  -------------------------------------------------------------------------------------------------------------------------
+   * 
    */        
   private $labelLines = 4;    // počet řádků adresy        
   private $labelWidth;        // šířka štítku [mm]         
@@ -32,8 +38,7 @@ class pdfdocument extends FPDF
   private $lSpace = 2;        // vnitřní levý okraj [mm]
   private $rSpace = 2;        // vnitřní pravý okraj [mm]          
   private $lineHeight = 10;   // výška řádku;
-
-  private $documentType;      // Typ dokumentu PDF
+  private $documentType;      // Typ dokumentu PDF: zapis
   private $yy = 10;           // Lokální pozice Y
   private $isHeader = false;  // Tisk záhlaví Header() dokumentu na každý list
   private $isFooter = false;  // Tisk patičky Footer() dokumentu na každý list
@@ -104,6 +109,11 @@ class pdfdocument extends FPDF
       case 'report':
         $this->SetFont('calibri','',9);
         $this->isHeader = true;
+        $this->isFooter = true;
+        break;
+      case 'document':
+        $this->SetFont('calibri','',9);
+        $this->isHeader = false;
         $this->isFooter = true;
         break;
       case 'label_2x7':
@@ -185,7 +195,7 @@ class pdfdocument extends FPDF
     }  // END switch
   }
   
-  
+ 
   function Show()
   {
     // D - download
@@ -193,38 +203,48 @@ class pdfdocument extends FPDF
     // I - standard output (PDF view)
     $this->Output($this->fileName,'I');
   }
+
+  function NewDocument()
+  {      
+    $this->pageNo = 0;
+    $this->HeaderDocument();
+  }
+
+  function HeaderDocument()
+  {
+    global $config, $caption;
+    
+    $this->AddFont('candara','','candara.php');
+    $this->AddPage();
+    $this->pageNo++;   
+  } 
       
   /**
    *  Print header if $isHeader = true
+   * 
+   *  Cell($family, $style='', $size=0, $xpos=0, $nextln=0, $w, $h=0, $txt='', $border=0, $ln=0, $align='', $fill=false, $link='')
    */
   function Header()
   {
-      global $config;
-      $skin = $config['skin'];
-      
-      $yy = $this->tMargin;
-      if (!$this->isHeader)
-        return;
+    global $config;
+    $skin = $config['skin'];
+    $yy = $this->tMargin;
+    
+    if (!$this->isHeader)
+      return;
       
     switch ($this->documentType)
     {
       case 'report':
         //Logo      
-        $this->Image("views/$skin/images/logoPrint.jpg",10,$yy + 30,20);
+        $this->Image("views/$skin/images/logoPrint.jpg",15,$yy + 10,25);
         $this->SetY($yy + 10);
-        
-        $this->SetX(50);
-
-        $this->SetFont('times','',40);
-        $this->Cell(30,10,$this->_utf2win('OBEC MISTŘICE'),0,0,'L');
-        //$this->Cell(30,10,'OBEC MISTŘICE',0,0,'L');
-        //Line break
-        $this->Ln(12);
         break;
     }
     $this->yy = $this->GetY();
   }
-  
+
+
   //Page footer
   function Footer()
   {
@@ -241,6 +261,7 @@ class pdfdocument extends FPDF
     switch ($this->documentType)
     {
       case 'report':
+      case 'zapis':
         // Page number
         $this->SetY($yy);
         $this->Cell(0,10,$this->_utf2win($caption['PageNo']).' '.$this->PageNo(),0,0,'C');
@@ -248,183 +269,135 @@ class pdfdocument extends FPDF
     }
   }
 
-  function NewInvoice($aInvoice)
-  {      
-    $this->pageNo = 0;
-    $this->HeaderInvoice($aInvoice);
-    $this->AddressInvoice($aInvoice); 
-  } // END function NewInvoice
+  public function DocumentTitle($headerTitle){
+    global $config;
+    $skin = $config['skin'];
+    $yy = $this->tMargin;
 
-  function HeaderInvoice($aInvoice)
-  {
-    global $config, $caption;
-    
-    $this->AddFont('candara','','candara.php');
-    $this->AddPage();
-    $this->pageNo++;
-    
-    $this->_border();
-        
-    // Header
-    $yy = $this->yy;
-    $this->SetXY(12,$yy);
-    $this->SetFontSize(16);
-    $this->Write(10,$this->_utf2win($caption['textInvoice']));
-    $this->SetXY(0,$yy);
-    $this->Cell(198,10,$this->_utf2win($caption['docNo']).' '.$aInvoice['invoiceNo'],0,0,'R');
-//    $this->Image('libraries/img/logoBijouxMaja.jpg', 10, 10,190,20,'jpeg');
-    
-    $this->SetXY(0,$yy + 7);
-    $this->SetFontSize(8);
-    $this->Cell(198,10,$this->_utf2win($caption['pageNo'].' '.$this->pageNo,85,10,100),0,0,'R');
-    $this->Line(10,$yy + 15,200,$yy + 15);
-    $this->SetY($yy + 15);
-    
-  } // END function HeaderInvoice
+    //Logo      
+    $this->Image("views/$skin/images/logoPrint.jpg",15,$yy + 10,25);
+    $this->SetY($yy + 10);
+            
+    $this->WriteCell('times','B',40, 40, 12, 150,0,$headerTitle['City'],0,0,'C');
+    $this->WriteCell('times','BI',18, 40, 8, 150,0,'ZÁPIS',0,0,'C');
+    $this->WriteCell('times','I',18, 40, 8, 150,0,$headerTitle['FromMeting'].', '.$headerTitle['AtDate'],0,0,'C');
+    $this->WriteCell('times','BI',18, 40, 8, 150,0,$headerTitle['MeetingNo'],0,0,'C');
+    $this->WriteCell('times','',14, 40, 8, 150,0,$headerTitle['PresentMembers'],0,0,'C');
+    if($headerTitle['ExcusedMemberNames'] != '')
+      $this->WriteCell('times','',14, 40, 8, 150,0,$headerTitle['ExcusedMemberNames'],0,0,'C');
+    if($headerTitle['VerifiedMemberNames'] != '')
+      $this->WriteCell('times','',14, 40, 8, 150,0,$headerTitle['VerifiedMemberNames'],0,0,'C');
+    $this->WriteCell('times','B',14, 40, 8, 150,0,'USNÁŠENÍ SCHOPNÉ',0,0,'C');
 
-  function AddressInvoice($aInvoice)
-  {
-    global $config, $caption;
-    
-    // Addres - Customer
-    $yy = $this->yy;
-    $this->SetFontSize(8);
-    $this->Text(120,$yy + 25,$this->_utf2win($caption['textCust']));
-    $this->SetFontSize(10);
-    $this->Text(120,$yy + 35,$this->_utf2win($aInvoice['deliveryAddress']['name']));
-    $this->Text(120,$yy + 40,$this->_utf2win($aInvoice['deliveryAddress']['address']));
-    $this->Text(120,$yy + 45,$this->_utf2win($aInvoice['deliveryAddress']['city']));
-    $this->Text(120,$yy + 50,$aInvoice['deliveryAddress']['zipcode']);
-
-    $this->SetFontSize(8);
-    $this->Text(120,$yy + 65,$this->_utf2win($caption['email'] . ' : ' . $aInvoice['deliveryAddress']['email']));
-    $this->Text(120,$yy + 69,$this->_utf2win($caption['Phone'] . ": " . $aInvoice['deliveryAddress']['phone']));
-     
-    // Addres - Company
-    $this->SetFontSize(8);
-    $this->Text(15,$yy + 25,$this->_utf2win($caption['textComp']));
-    $this->SetFontSize(10);
-    $this->Text(15,$yy + 35,$this->_utf2win($config['compName']));
-    $this->Text(15,$yy + 40,$this->_utf2win($config['compAddress']));
-    $this->Text(15,$yy + 45,$this->_utf2win($config['compCity']));
-    $this->Text(15,$yy + 50,$config['compZip']);
-    $this->SetFontSize(8);   
-    $this->Text(15,$yy + 57,$this->_utf2win($caption['ico'].' : '.$config['compICO']));  
-    $this->Text(15,$yy + 65,$this->_utf2win($caption['email']));
-    $this->Text(15,$yy + 69,$this->_utf2win($caption['Phone']));
-    $this->Text(15,$yy + 75,$this->_utf2win($caption['bankAcc']));
-    $this->Text(15,$yy + 79,$this->_utf2win($caption['varSymb']));
-    $this->Text(15,$yy + 83,$this->_utf2win($caption['conSymb']));
-    
-    $this->Text(45,$yy + 65,$config['eShopEmail']);   
-    $this->Text(45,$yy + 69,$config['phoneUcto']);
-    $this->Text(45,$yy + 75,$config['bankAccountNo']);
-    $this->Text(45,$yy + 79,$aInvoice['orderNo']);
-    $this->Text(45,$yy + 83,'0008');
-    $this->Line(10,$yy + 85,200,$yy + 85);
-    
-    // Payment information
-    $this->Text(120,$yy + 88,$this->_utf2win($caption['docDate']));   
-    $this->Text(120,$yy + 92,$this->_utf2win($caption['dueDate']));
-    $this->Text(120,$yy + 96,$this->_utf2win($caption['payMethod']));
-    $this->Text(120,$yy + 100,$this->_utf2win($caption['OrderNo']));
-    $this->Text(150,$yy + 88,$aInvoice['postingDate']);
-    $this->Text(150,$yy + 92,$aInvoice['dueDate']);
-    $this->Text(150,$yy + 96,$this->_utf2win($aInvoice['paymentMethod']));
-    $this->Text(150,$yy + 100,$aInvoice['orderNo']);
-    $this->Line(10,$yy + 102,200,$yy + 102);
-    $this->SetY($yy + 102);
-    
-  } // END function AddressInvoice
-
-  function AddressOrder($aOrder)
-  {
-    global $config, $caption;
-    
-    // Addres - Customer
-    $yy = $this->yy;
-    $this->SetFontSize(8);
-    $this->Text(120,$yy + 25,$this->_utf2win($caption['textCust']));
-    $this->SetFontSize(10);
-    $this->Text(120,$yy + 35,$this->_utf2win($aOrder['deliveryAddress']['name']));
-    $this->Text(120,$yy + 40,$this->_utf2win($aOrder['deliveryAddress']['address']));
-    $this->Text(120,$yy + 45,$this->_utf2win($aOrder['deliveryAddress']['city']));
-    $this->Text(120,$yy + 50,$aOrder['deliveryAddress']['zipcode']);
-
-    $this->SetFontSize(8);
-    $this->Text(120,$yy + 65,$this->_utf2win($caption['email'] . ' : ' . $aOrder['deliveryAddress']['email']));
-    //$this->Text(120,$yy + 69,$this->_utf2win($caption['Phone'] . ": " . $aOrder['deliveryAddress']['phone']));
-     
-    // Addres - Company
-    $this->SetFontSize(8);
-    $this->Text(15,$yy + 25,$this->_utf2win($caption['textComp']));
-    $this->SetFontSize(10);
-    $this->Text(15,$yy + 35,$this->_utf2win($config['compName']));
-    $this->Text(15,$yy + 40,$this->_utf2win($config['compAddress']));
-    $this->Text(15,$yy + 45,$this->_utf2win($config['compCity']));
-    $this->Text(15,$yy + 50,$config['compZip']);
-    $this->SetFontSize(8);   
-    $this->Text(15,$yy + 57,$this->_utf2win($caption['ico'].' : '.$config['compICO']));  
-    $this->Text(15,$yy + 65,$this->_utf2win($caption['email']));
-    $this->Text(15,$yy + 69,$this->_utf2win($caption['Phone']));
-    $this->Text(15,$yy + 75,$this->_utf2win($caption['bankAcc']));
-    $this->Text(15,$yy + 79,$this->_utf2win($caption['varSymb']));
-    $this->Text(15,$yy + 83,$this->_utf2win($caption['conSymb']));
-    
-    $this->Text(45,$yy + 65,$config['eShopEmail']);   
-    $this->Text(45,$yy + 69,$config['phoneUcto']);
-    $this->Text(45,$yy + 75,$config['bankAccountNo']);
-    $this->Text(45,$yy + 79,$aOrder['orderNo']);
-    $this->Text(45,$yy + 83,'0008');
-    $this->Line(10,$yy + 85,200,$yy + 85);
-    
-    // Payment information
-    $this->Text(90,$yy + 90,$this->_utf2win($caption['docDate']));   
-    $this->Text(90,$yy + 94,$this->_utf2win($caption['DeliveryMethod']));
-    $this->Text(90,$yy + 98,$this->_utf2win($caption['payMethod']));
-    
-    $this->Text(120,$yy + 90,$aOrder['orderDate']);
-    $this->Text(120,$yy + 94,$this->_utf2win($aOrder['shippingMethod']));
-    $this->Text(120,$yy + 98,$this->_utf2win($aOrder['paymentMethod']));
-    $this->Line(10,$yy + 102,200,$yy + 102);
-    $this->SetY($yy + 102);
-    
-  } // END function AddressOrder
-
-  function ItemHeader()
-  {
-    global $caption, $config;
-    
-    $yy = $this->GetY() - 2;
-    $this->SetXY(15,$yy);
-    $this->SetFontSize(7);   
-    $this->Cell(20,10,$this->_utf2win($caption['code']),0,0,'L');
-    $this->Cell(70,10,$this->_utf2win($caption['FirstLast_name']),0,0,'L');
-    $this->Cell(30,10,$this->_utf2win($caption['Price'].' ['.$config['currency_symbol'].']'),0,0,'R');
-    $this->Cell(30,10,$this->_utf2win($caption['Quantity']),0,0,'R');
-    $this->Cell(30,10,$this->_utf2win($caption['Summary'].' ['.$config['currency_symbol'].']'),0,0,'R');   
-    $yy += 8;
-    $this->Line(10,$yy,200,$yy);
-    $this->SetY($yy);
-  } // END function ItemHeader
+    $this->Ln(4);
+    $this->WriteCell('times','',12, 20, 2, 150,0,'PROGRAM:',0,0,'L');
+  }
 
 
-  function ItemLine($aLine)
+  function LineProgramPoint($lineno,$text)
   {  
-    if ($this->CheckEndPage()){
-      $this->ItemHeader();   
-    }
     $yy = $this->GetY();
-    $this->SetXY(15,$yy);
-    $this->SetFontSize(8);   
-    $this->Cell(20,10,$aLine['code'],0,0,'L');
-    $this->Cell(70,10,$this->_utf2win($aLine['name']),0,0,'L');
-    $this->Cell(30,10,$aLine['price'],0,0,'R');
-    $this->Cell(30,10,$aLine['qty'],0,0,'R');
-    $this->Cell(30,10,$aLine['cost'],0,0,'R');   
-    $yy += 4;
+    $this->SetXY(20,$yy);
+    $this->SetFont('times','',12);
+    $this->Cell(10,10,$lineno,0,0,'L');
+    $this->Cell(150,10,$this->_utf2win($text),0,0,'L');
+    $yy += 5;
     $this->SetY($yy);
-  } // END function ItemLine
+  } 
+
+  function MeetingLineZapis($meetingline)
+  {  
+    $lineno = $meetingline['LineNo'];
+    if ($meetingline['LineNo2'] > 0)
+        $lineno .= '.'.$meetingline['LineNo2'];
+    $lineno .= '/';
+
+    // Content
+    $content = $meetingline['Content'];
+    $yy = $this->GetY();
+    $yy += 5;
+    $this->SetXY(10,$yy);
+    $this->SetFont('times','',12);
+    $this->Cell(10,5,$lineno,0,0,'L');
+    $yy = $this->GetY();
+
+    $arr = explode("\n",$content);
+    foreach($arr as $content){
+      $content = trim($content);
+      if($content != ''){
+        $this->SetXY(20,$yy);
+        $this->MultiCell(170,5,$this->_utf2win($content),0,'L');
+        $yy = $this->GetY();
+      }
+    }
+
+    // Discussion
+    $content = $meetingline['Discussion'];
+    if($content != ''){
+      $yy = $this->GetY();
+      $yy += 5;
+      $this->SetXY(20,$yy);
+      $this->SetFont('times','B',12);
+      $this->Cell(170,5,$this->_utf2win('Diskuze:'),0,'L');
+      $yy = $this->GetY();
+      $yy += 5;
+      $this->SetFont('times','',12);
+      $arr = explode("\n",$content);
+      foreach($arr as $content){
+        $content = trim($content);
+        if($content != ''){
+          $this->SetXY(20,$yy);
+          $this->MultiCell(170,5,$this->_utf2win($content),0,'L');
+          $yy = $this->GetY();
+        }
+      }
+      $this->SetXY(20,$yy + 2);
+    }
+
+    // Vote
+    if($meetingline['Vote']){
+      $yy = $this->GetY();
+      $yy += 2;
+      $this->SetXY(20,$yy);
+      $this->SetFont('times','',12);
+      $vote = $meetingline['VoteFor'] == 0 ? '0' : $meetingline['VoteFor'];
+      $this->Cell(170,5,'pro: '.$vote,0,'L');
+      $yy = $this->GetY();
+      $this->SetXY(40,$yy);
+      $vote = $meetingline['VoteAgainst'] == 0 ? '0' : $meetingline['VoteAgainst'];
+      $this->Cell(170,5,'proti: '.$vote,0,'L');
+      $yy = $this->GetY();
+      $this->SetXY(60,$yy);
+      $vote = $meetingline['VoteDelayed'] == 0 ? '0' : $meetingline['VoteDelayed'];
+      $this->Cell(170,5,$this->_utf2win('zdržel se: ').$vote,0,'L');
+      $yy = $this->GetY();
+      $this->SetXY(20,$yy + 5);
+    }
+
+    // DraftResolution
+    $content = $meetingline['DraftResolution'];
+    if($content != ''){
+      $yy = $this->GetY();
+      $yy += 5;
+      $this->SetXY(20,$yy);
+      $this->SetFont('times','B',12);
+      $this->Cell(170,5,$this->_utf2win('Usnesení:'),0,'L');
+      $yy = $this->GetY();
+      $yy += 5;
+      $this->SetFont('times','',12);
+      $arr = explode("\n",$content);
+      foreach($arr as $content){
+        $content = trim($content);
+        if($content != ''){
+          $this->SetXY(20,$yy);
+          $this->MultiCell(170,5,$this->_utf2win($content),0,'L');
+          $yy = $this->GetY();
+        }
+      }
+      $this->SetXY(20,$yy + 2);
+    }
+
+  } 
 
   function ItemFooter($totalAmount)
   {
@@ -444,41 +417,6 @@ class pdfdocument extends FPDF
   } // END function ItemFooter
 
 
-  function NewOrder()
-  {      
-    $this->pageNo = 0;
-    $this->HeaderOrder();
-   // $this->AddressOrder($aOrder); 
-  } // END function NewOrder
-
-  function HeaderOrder()
-  {
-    global $config, $caption;
-    
-    $this->AddFont('candara','','candara.php');
-    $this->AddPage();
-    $this->pageNo++;
-    
-       
-    
-    // Header
-    /*
-    $yy = $this->yy;
-    $this->SetXY(12,$yy);
-    $this->SetFontSize(16);
-    $this->Write(10,$this->_utf2win($caption['textOrder']));
-    $this->SetXY(0,$yy);
-//    $this->Cell(198,10,$this->_utf2win($caption['docNo']).' '.$aOrder['orderNo'],0,0,'R');
-//    $this->Image('libraries/img/logoBijouxMaja.jpg', 10, 10,190,20,'jpeg');
-    
-    $this->SetXY(0,$yy + 7);
-    $this->SetFontSize(8);
-    $this->Cell(198,10,$this->_utf2win($caption['pageNo'].' '.$this->pageNo,85,10,100),0,0,'R');
-    $this->Line(10,$yy + 15,200,$yy + 15);
-    $this->SetY($yy + 15);
-    */
-    
-  } // END function HeaderInvoice
 
   function CheckEndPage()
   {
@@ -687,68 +625,22 @@ class pdfdocument extends FPDF
       }
   }
   
-  // Product Catalog with (picture,name,description,price) 
-  function ProductKatalog($header,$data)
-  {
-    global $oFoto;
-    global $deb;
-      
-    //Column widths
-    $w=array(30,15,125,20);
-    //Header      
-    $this->SetFillColor(255,255,153);
-    $this->SetFontSize(9);
-    $this->Cell($w[0],7,'',1,0,'L',true);
-    $this->Cell($w[1],7,$this->_utf2win($header[0]),1,0,'L',true);
-    $this->Cell($w[2],7,$this->_utf2win($header[1]),1,0,'L',true);
-    $this->Cell($w[3],7,$this->_utf2win($header[2]),1,0,'R',true);
-    $this->Ln();
-    //Data
-    foreach($data as $row)
-    {
-      if($this->y+27 > $this->PageBreakTrigger){
-        // TransHeader
-        $this->AddPage();      
-        $this->SetFillColor(255,255,153);
-        $this->SetFontSize(9);         
-        $this->Cell($w[0],7,'',1,0,'L',true);
-        $this->Cell($w[1],7,$this->_utf2win($header[0]),1,0,'L',true);
-        $this->Cell($w[2],7,$this->_utf2win($header[1]),1,0,'L',true);
-        $this->Cell($w[3],7,$this->_utf2win($header[2]),1,0,'R',true);
-        $this->Ln();
-      }
-        
-      $this->SetFontSize(9);         
-      $this->Cell($w[0],4,'','LRT',0,'C');
-      $this->Cell($w[1],4,$this->_utf2win($row[0]),'LRT');
-      $this->Cell($w[2],4,$this->_utf2win($row[1]),'LRT');
-      $this->Cell($w[3],4,$this->_utf2win($row[3]),'LRT',0,'R');
-      $this->Ln();
-      $this->SetFontSize(7);
-      $this->Cell($w[0],4,'','LR');
-      $this->Cell($w[1],4,'','LR');
-      $this->Cell($w[2],4,$this->_utf2win($row[2]),'LR');
-      $this->Cell($w[3],4,'','LR');
-      $this->Ln();
-      $this->Cell($w[0],12,'','LRB');
-      $this->Cell($w[1],12,'','LRB');
-      $this->Cell($w[2],12,'','LRB');
-      $this->Cell($w[3],12,'','LRB');
-      $this->Ln();
-      
-      $pomer = $oFoto->throwImgSize($row[4],'width') / $oFoto->throwImgSize($row[4],'height');
-      $imgH = 18;
-      $imgW = $imgH * $pomer;
-
-      if ($imgW > 28)
-        $imgW = 28;
-      $this->Image($row[4],$this->GetX() + 1,$this->GetY()-19,$imgW,$imgH);
-    }
-    //Closure line
-    $this->Cell(array_sum($w),0,'','T');
-  }
   
   // ---------------------------------------------------------------------------
+
+  /**
+   *  Extended function Cell()
+   * 
+   *  Cell($family, $style='', $size=0, $xpos=0, $nextln=0, $w, $h=0, $txt='', $border=0, $ln=0, $align='', $fill=false, $link='')
+   */
+  function writeCell($family, $style='', $size=0, $xpos=0, $nextln=0, $w, $h=0, $txt='', $border=0, $ln=0, $align='', $fill=false, $link=''){
+    $this->SetFont($family, $style, $size);
+    $this->SetX($xpos);  
+    $this->Cell($w, $h, $this->_utf2win($txt), $border, $ln, $align, $fill, $link);
+    if($nextln > 0)
+      $this->Ln($nextln);
+  }
+
 
   function _utf2win( $text )
   {
@@ -778,11 +670,6 @@ class pdfdocument extends FPDF
       }
     }
   } // END function TextWider
-
-
-  function tPrice( $fPrice ){
-    return sprintf( '%01.2f', $fPrice );
-  } // end function tPrice
 
 } // END class PdfDocument
 
