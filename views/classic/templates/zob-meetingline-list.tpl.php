@@ -8,7 +8,7 @@
     <img src="views/classic/images/nav/line48.png"/>
     <a href="index.php?page=zob/xxx" title="Tisk usnesení"><img src="views/classic/images/nav/printU48.png" /></a>
     <img src="views/classic/images/nav/line48.png"/>
-    <a href="index.php?page=zob/adv/print/invitation/{MeetingID}" title="Odeslat pozvánka"><img src="views/classic/images/nav/email48.png" /></a>
+    <a href="index.php?page=zob/print/10020/{MeetingID}" title="Odeslat pozvánka"><img src="views/classic/images/nav/email48.png" /></a>
     <img src="views/classic/images/nav/line48.png"/>
     <a href="index.php?page=document/list/{ParentID}" title="Složka"><img src="views/classic/images/nav/folder48.png" /></a>
     <img src="views/classic/images/nav/line48.png"/>

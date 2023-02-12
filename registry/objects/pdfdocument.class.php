@@ -269,28 +269,53 @@ class pdfdocument extends FPDF
     }
   }
 
-  public function DocumentTitle($headerTitle){
+  public function DocumentTitle($report,$headerTitle){
     global $config;
     $skin = $config['skin'];
     $yy = $this->tMargin;
 
-    //Logo      
-    $this->Image("views/$skin/images/logoPrint.jpg",15,$yy + 10,25);
-    $this->SetY($yy + 10);
-            
-    $this->WriteCell('times','B',40, 40, 12, 150,0,$headerTitle['City'],0,0,'C');
-    $this->WriteCell('times','BI',18, 40, 8, 150,0,'ZÁPIS',0,0,'C');
-    $this->WriteCell('times','I',18, 40, 8, 150,0,$headerTitle['FromMeting'].', '.$headerTitle['AtDate'],0,0,'C');
-    $this->WriteCell('times','BI',18, 40, 8, 150,0,$headerTitle['MeetingNo'],0,0,'C');
-    $this->WriteCell('times','',14, 40, 8, 150,0,$headerTitle['PresentMembers'],0,0,'C');
-    if($headerTitle['ExcusedMemberNames'] != '')
-      $this->WriteCell('times','',14, 40, 8, 150,0,$headerTitle['ExcusedMemberNames'],0,0,'C');
-    if($headerTitle['VerifiedMemberNames'] != '')
-      $this->WriteCell('times','',14, 40, 8, 150,0,$headerTitle['VerifiedMemberNames'],0,0,'C');
-    $this->WriteCell('times','B',14, 40, 8, 150,0,'USNÁŠENÍ SCHOPNÉ',0,0,'C');
+    switch ($report) {
+      case '10000':
+      case '10020':
+        //Logo      
+        $this->Image("views/$skin/images/logoPrint.jpg",15,$yy + 10,25);
+        $this->SetY($yy + 10);
+    }
 
-    $this->Ln(4);
-    $this->WriteCell('times','',12, 20, 2, 150,0,'PROGRAM:',0,0,'L');
+    switch ($report) {
+      case '10000':
+        $this->WriteCell('times','B',40, 40, 12, 150,0,$headerTitle['City'],0,0,'C');
+        $this->WriteCell('times','BI',18, 40, 8, 150,0,'ZÁPIS',0,0,'C');
+        $this->WriteCell('times','I',18, 40, 8, 150,0,$headerTitle['FromMeting'].', '.$headerTitle['AtDate'],0,0,'C');
+        $this->WriteCell('times','BI',18, 40, 8, 150,0,$headerTitle['MeetingNo'],0,0,'C');
+        $this->WriteCell('times','',14, 40, 8, 150,0,$headerTitle['PresentMembers'],0,0,'C');
+        if($headerTitle['ExcusedMemberNames'] != '')
+          $this->WriteCell('times','',14, 40, 8, 150,0,$headerTitle['ExcusedMemberNames'],0,0,'C');
+        if($headerTitle['VerifiedMemberNames'] != '')
+          $this->WriteCell('times','',14, 40, 8, 150,0,$headerTitle['VerifiedMemberNames'],0,0,'C');
+        $this->WriteCell('times','B',14, 40, 8, 150,0,'USNÁŠENÍ SCHOPNÉ',0,0,'C');
+
+        $this->Ln(4);
+        $this->WriteCell('times','',12, 20, 2, 150,0,'PROGRAM:',0,0,'L');
+        break;
+      case '10020':
+        $this->WriteCell('times','B',40, 40, 12, 150,0,$headerTitle['City'],0,0,'C');
+        if($headerTitle['FromMeting'] != '')
+          $this->WriteCell('times','B',16, 40, 8, 150,0,$headerTitle['FromMeting'],0,0,'C');        
+        if($headerTitle['FromMeting2'] != '')
+          $this->WriteCell('times','B',16, 40, 10, 150,0,$headerTitle['FromMeting2'],0,0,'C');        
+        $this->WriteCell('times','I',18, 40, 10, 150,0,$headerTitle['AtDate'],0,0,'C');
+        if($headerTitle['MetingTitle'] != '')
+          $this->WriteCell('times','BU',20, 40, 12, 150,0,$headerTitle['MetingTitle'],0,0,'C');        
+        if($headerTitle['MetingTitle'] != '')
+          $this->WriteCell('times','BU',20, 40, 12, 150,0,$headerTitle['MetingTitle2'],0,0,'C');        
+        $this->WriteCell('times','B',16, 40, 8, 150,0,$headerTitle['AtTime'],0,0,'C');        
+        $this->WriteCell('times','B',16, 40, 8, 150,0,$headerTitle['MeetingPlace'],0,0,'C');        
+
+        $this->Ln(10);
+        $this->WriteCell('times','BU',14, 20, 10, 150,0,'PROGRAM:',0,0,'L');
+        break;
+    }
   }
 
 
@@ -396,25 +421,68 @@ class pdfdocument extends FPDF
       }
       $this->SetXY(20,$yy + 2);
     }
-
   } 
 
-  function ItemFooter($totalAmount)
-  {
-    global $caption,$config;
-
-    $yy = $this->GetY() + 10;
-    $this->SetXY(10,$yy);
-    $this->SetFontSize(9);   
-    
-    if ($this->CheckEndPage()){
-      $this->ItemHeader();
-      $yy = $this->GetY() + 10;   
+  function MeetingVerifiedBy($meeting, $headman ='starosta')
+  {  
+    $yy = $this->GetY();
+    if (($meeting['VerifierBy1'] != '00000000-0000-0000-0000-000000000000') && ($meeting['VerifierBy2'] != '00000000-0000-0000-0000-000000000000')){
+      $yy += 5;
+      $this->SetXY(10,$yy);
+      $this->SetFont('times','UI',12);
+      $this->Cell(170,5,$this->_utf2win('Ověřovatelé zápisu:'),0,'L');
+      $yy = $this->GetY();
+      $ver = $meeting['VerifierBy1'];
+      if ($ver != '00000000-0000-0000-0000-000000000000'){
+        $yy += 15;
+        $this->SetXY(10,$yy);
+        $this->SetFont('times','',12);
+        $this->Cell(170,5,$this->_utf2win($ver).' :............................................' ,0,'L');
+        $yy = $this->GetY();
+      }
+      $ver = $meeting['VerifierBy2'];
+      if ($ver != '00000000-0000-0000-0000-000000000000'){
+        $yy += 15;
+        $this->SetXY(10,$yy);
+        $this->SetFont('times','',12);
+        $this->Cell(170,5,$this->_utf2win($ver).' :............................................' ,0,'L');
+        $yy = $this->GetY();
+      }
     }
 
-    $this->Cell(160,10,$this->_utf2win($caption['Summary_cost']),0,0,'R');
-    $this->Cell(25,10,$this->_utf2win($totalAmount.' '.$config['currency_symbol']),0,0,'R');
-  } // END function ItemFooter
+    $this->SetY($yy + 10);
+    $text = "$headman :............................................";
+    $this->WriteCell('times','',12, 10, 12, 180,0,$text,0,0,'R');
+    $yy = $this->GetY();
+  }
+
+  function MeetingRecorederBy($RecorderBy, $RecorderAt)
+  {  
+    $yy = $this->GetY();
+    $this->SetXY(10,$yy);
+    $this->SetFont('times','',10);
+    $this->Cell(170,5,$this->_utf2win($RecorderBy),0,'L');
+    $yy = $this->GetY();
+    $yy += 5;
+    $this->SetXY(10,$yy);
+    $this->Cell(170,5,$this->_utf2win($RecorderAt),0,'L');
+  }
+
+  function MeetingPostedDate($PostedUp, $PostedDown, $HeadMan)
+  {  
+    $yy = $this->GetY();
+    $yy += 20;
+    $this->SetXY(10,$yy);
+    $this->WriteCell('times','B',16, 10, 12, 180,0,$HeadMan,0,0,'C');
+    $yy = $this->GetY();
+    $yy += 30;
+    $this->SetXY(10,$yy);
+    $this->WriteCell('times','',14, 10, 0, 90,0,$PostedUp,0,0,'L');
+    $yy = $this->GetY();
+    $this->SetXY(150,$yy);
+    $this->WriteCell('times','',14, 10, 0, 180,0,$PostedDown,0,0,'R');
+  }
+
 
 
 
@@ -640,7 +708,6 @@ class pdfdocument extends FPDF
     if($nextln > 0)
       $this->Ln($nextln);
   }
-
 
   function _utf2win( $text )
   {

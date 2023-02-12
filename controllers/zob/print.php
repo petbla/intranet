@@ -5,7 +5,8 @@
  * @date    7.2.2023
  * 
  * Sestavy
- *  10000   - zápis
+ *  10000   - zápis z jednání
+ *  10020   - pozvánka na jednání
  */
 class Zobprint {
 	
@@ -32,13 +33,21 @@ class Zobprint {
 
 		switch ($action) {
 			case '10000':
+			case '10020':
                 $MeetingID = $urlBits[3];
                 $meeting = $this->zob->getMeeting($MeetingID);
                 if(!$meeting){
                     $this->errorMessage = 'ERROR: Nezadáno číslo jednání nebo jednání $MeetingID neexistuje.';
                     return;
                 };
-				$this->report10000($meeting);
+                switch ($action) {
+                    case '10000':
+                        $this->report10000($meeting);
+                        break;
+                    case '10020':
+                        $this->report10020($meeting);
+                        break;
+                };
                 break;
 		}
 		exit;
@@ -58,20 +67,29 @@ class Zobprint {
         $this->registry->getObject('pdf')->NewDocument();
         
         // Záhlaví
-        switch (strtolower($meetingtype['MeetingName'])){
+        switch (mb_strtolower($meetingtype['MeetingName'])){
             case 'zastupitelstvo':
                 $headerTitle['FromMeting'] = 'ze zasedání zastupitelstva obce '.$config['compCity'];
+                $headerTitle['HeadMan'] = 'starosta';
+                $headerTitle['RecorderBy'] = 'zapsala: '.$meeting['RecorderBy'];
                 break;
             case 'rada':
                 $headerTitle['FromMeting'] = 'z jednání rady obce '.$config['compCity'];
+                $headerTitle['HeadMan'] = 'starosta';
+                $headerTitle['RecorderBy'] = 'zapsal: '.$meeting['RecorderBy'];
                 break;
             case 'stavevni komise':
                 $headerTitle['FromMeting'] = 'z jednání stavební komise obce '.$config['compCity'];
+                $headerTitle['HeadMan'] = 'předseda komise';
+                $headerTitle['RecorderBy'] = 'zapsal: '.$meeting['RecorderBy'];
                 break;
             default:
-                $headerTitle['FromMeting'] = strtolower($meetingtype['MeetingName']).' obce '.$config['compCity'];
+                $headerTitle['FromMeting'] = mb_strtolower($meetingtype['MeetingName']).' obce '.$config['compCity'];
+                $headerTitle['HeadMan'] = 'předseda';
+                $headerTitle['RecorderBy'] = 'zapsal(a): '.$meeting['RecorderBy'];
                 break;
         }
+        $headerTitle['RecorderAt'] = $config['compCity'].', '.date('d.m.Y',strtotime($meeting['RecorderAtDate']));
         $headerTitle['City'] = 'OBEC '.mb_strtoupper($config['compCity']);
         $headerTitle['AtDate'] = 'dne '.date('d.m.Y',strtotime($meeting['AtDate']));
         $headerTitle['MeetingNo'] = 'číslo '. $meeting['EntryNo'];
@@ -84,7 +102,7 @@ class Zobprint {
             $headerTitle['VerifiedMemberNames'] = '';
         else
             $headerTitle['VerifiedMemberNames'] = 'Ověrovatelé zápisu: '.$this->zob->getMeetingVerifierBy($meeting);
-        $this->registry->getObject('pdf')->DocumentTitle($headerTitle);
+        $this->registry->getObject('pdf')->DocumentTitle('10000',$headerTitle);
 
         // Meeting Lines - Program
         foreach($meetinglines as $meetingline){
@@ -105,8 +123,92 @@ class Zobprint {
             $this->registry->getObject('pdf')->MeetingLineZapis($meetingline);    
         }
 
-//        $this->registry->getObject('pdf')->ItemLine($aLine);
+        // Verified By
+        $this->registry->getObject('pdf')->MeetingVerifiedBy($meeting, $headerTitle['HeadMan']);
 
+
+        // Recorder By and At day
+        $this->registry->getObject('pdf')->MeetingRecorederBy($headerTitle['RecorderBy'], $headerTitle['RecorderAt']);
+
+        // Show PDF document
+        $this->registry->getObject('pdf')->Show();
+  
+		exit;
+	}
+
+	private function report10020($meeting)
+	{
+        global $config;
+
+        $meetingtype = $this->zob->getMeetingtype($meeting);        
+        $meetinglines = $this->zob->readMeetingLines($meeting);
+        $filename = 'document.pdf';
+        $reportTitle = '';
+
+        // Create PDF
+        $this->registry->getObject('pdf')->SetDocument('document',$filename, $reportTitle);
+        $this->registry->getObject('pdf')->NewDocument();
+        
+        // Záhlaví
+        $headerTitle['City'] = 'OBEC '.mb_strtoupper($config['compCity']);
+        $met = mb_strtolower($meetingtype['MeetingName']);
+        switch ($met){
+            case 'zastupitelstvo':
+                $headerTitle['FromMeting'] = 'STAROSTA OBCE '.mb_strtoupper($config['compCity']);
+                $headerTitle['FromMeting2'] = 'SVOLÁVÁ';
+                $headerTitle['MetingTitle'] = 'VEŘEJNÉ ZASEDÁNÍ';
+                $headerTitle['MetingTitle2'] = 'ZASTUPITELSTVA OBCE';
+                $headerTitle['HeadMan'] = 'starosta obce';
+                break;
+            case 'rada':
+                $headerTitle['FromMeting'] = 'STAROSTA OBCE '.mb_strtoupper($config['compCity']);
+                $headerTitle['FromMeting2'] = 'SVOLÁVÁ';
+                $headerTitle['MetingTitle'] = 'JEDNÁNÍ RADY';
+                $headerTitle['MetingTitle2'] = '';
+                $headerTitle['HeadMan'] = 'starosta obce';
+                break;
+            case 'stavební komise':
+                $headerTitle['FromMeting'] = 'předseda stavební komise obce '.$config['compCity'];
+                $headerTitle['FromMeting2'] = 'SVOLÁVÁ';
+                $headerTitle['MetingTitle'] = 'JEDNÁNÍ STAVEBNÍ KOMISE';
+                $headerTitle['MetingTitle2'] = '';
+                $headerTitle['HeadMan'] = 'předseda komise';
+                break;
+            default:
+                $headerTitle['FromMeting'] = 'pozvánka na jednání:';
+                $headerTitle['FromMeting2'] = mb_strtolower($meetingtype['MeetingName']).' obce '.$config['compCity'];
+                $headerTitle['FromMeting2'] = '';
+                $headerTitle['MetingTitle'] = '';
+                $headerTitle['HeadMan'] = 'předseda';
+                break;
+        }
+        $headerTitle['AtDate'] = 'Na den '.date('d.m.Y',strtotime($meeting['AtDate']));
+        $headerTitle['AtTime'] = 'ZAČÁTEK: '.date('H:i',strtotime($meeting['AtTime'])).' HODIN';
+        $headerTitle['MeetingPlace'] = 'MÍSTO KONÁNÍ: '.$meeting['MeetingPlace'];
+        $atdate = $meeting['PostedUpDate'] != null ? date('d.m.Y',strtotime($meeting['PostedUpDate'])) : '........................';
+        $headerTitle['PostedUp'] = 'Vyvěšeno: '.$atdate;
+        $atdate = $meeting['PostedDownDate'] != null ? date('d.m.Y',strtotime($meeting['PostedDownDate'])) : '........................';
+        $headerTitle['PostedDown'] = 'Sňato: '.$atdate;
+
+        $this->registry->getObject('pdf')->DocumentTitle('10020',$headerTitle);
+
+        // Meeting Lines - Program
+        if ($meetinglines != null){
+            foreach($meetinglines as $meetingline){
+                if($meetingline['LineType'] != 'Doplňující bod'){
+                    $lineno = $meetingline['LineNo'].'.';
+                    if ($meetingline['LineNo2'] > 0)
+                        $lineno .= $meetingline['LineNo2'].'.';
+                    $text = $meetingline['Title'];
+                    $this->registry->getObject('pdf')->LineProgramPoint($lineno,$text);    
+                }
+            }
+        }
+
+        // Posted Date
+        $this->registry->getObject('pdf')->MeetingPostedDate($headerTitle['PostedUp'], $headerTitle['PostedDown'], $headerTitle['HeadMan']);
+
+        // Show PDF document
         $this->registry->getObject('pdf')->Show();
   
 		exit;
