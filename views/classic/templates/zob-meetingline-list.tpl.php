@@ -12,6 +12,8 @@
     <img src="views/classic/images/nav/line48.png"/>
     <a href="index.php?page=document/list/{ParentID}" title="Složka"><img src="views/classic/images/nav/folder48.png" /></a>
     <img src="views/classic/images/nav/line48.png"/>
+    <a href="index.php?page=zob/manage/scanMeeting/{MeetingID}" title="Import"><img src="views/classic/images/nav/scanfolder48.png" /></a>        
+    <img src="views/classic/images/nav/line48.png"/>
     <a href="index.php?page=zob/manage/backupMeeting/{MeetingID}" title="Záloha zápisu jednání (CSV Export)"><img src="views/classic/images/nav/backup48.png" /></a>        
 </p>
 <a href="index.php?page=zob/meeting/list/{MeetingTypeID}" id="closePage" class="button"><span class="action_close">{lbl_Close}</span></a>

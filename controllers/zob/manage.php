@@ -34,9 +34,11 @@ class Zobmanage {
 		switch ($action) {
 			case 'importMeeting':
 				$this->importMeeting();
+				$this->zob->errorMessage = $this->errorMessage;
 				return;
 			case 'deleteAllMeeting':
 				$this->deleteAllMeeting();
+				$this->zob->errorMessage = $this->errorMessage;
 				break;
 			case 'backupElectionPeriod':
 				$ElectionPeriodID = isset($urlBits[3]) ? $urlBits[3] : 0;
@@ -49,9 +51,19 @@ class Zobmanage {
 			case 'backupContact':
 				$this->backupContact();
 				break;
+			case 'scanAllMeeting':
+				$this->scanAllMeeting();
+				$this->zob->errorMessage = $this->errorMessage;
+				break;
 			case 'scanMeeting':
-				$this->scanMeeting();
-				return;
+				$MeetingID = isset($urlBits[3]) ? $urlBits[3] : 0;
+				$MeetingID = $this->scanMeeting($MeetingID);
+				$this->zob->errorMessage = $this->errorMessage;
+				if($MeetingID != null){
+					$this->zob->listMeetingLine($MeetingID);
+					return;
+				}
+				break;
 		}
 		$this->zob->listElectionPeriod();
 	}
@@ -201,9 +213,18 @@ class Zobmanage {
 			fputcsv($output,$row,';');
 		}
 	}
-
-
 		
+	private function deleteMeeting($MeetingID){
+		$condition = "MeetingID = $MeetingID";
+		$this->registry->getObject('db')->deleteRecords('meetingattachment',$condition);
+		$this->registry->getObject('db')->deleteRecords('meetinglinecontent',$condition);
+		$this->registry->getObject('db')->deleteRecords('meetinglinepage',$condition);
+		$this->registry->getObject('db')->deleteRecords('meetinglinetask',$condition);
+		$this->registry->getObject('db')->deleteRecords('meetingline',$condition);
+		$this->registry->getObject('db')->deleteRecords('meeting',$condition);
+		return;
+	}
+
 	private function deleteAllMeeting(){
 		$electionperiod = $this->zob->getActualElectionperiod();
 		if(!$electionperiod){
@@ -246,7 +267,29 @@ class Zobmanage {
 		}
 	}
 
-	private function scanMeeting(){
+	private function scanMeeting($param){
+		if(is_array($param))
+			$meeting = $param;
+		else
+			$meeting = $this->zob->getMeeting($param);
+		$MeetingID = $meeting['MeetingID'];
+		$meetingtype = $this->zob->getMeetingtype($meeting['MeetingTypeID']);
+		$electionperiod = $this->zob->getElectionperiod($meeting['ElectionPeriodID']);
+
+		global $config;
+		$fileroot = $config['fileroot'].$config['rootZOB'];
+		$fullFileName = $fileroot."/_".$meetingtype['MeetingName']."/".$electionperiod['PeriodName']."/".$meeting['EntryNo']."/.meeting";		
+
+		if($meeting['Close'] == 1){
+			$this->errorMessage = "Nelze přepsat uzavřený zápis.";
+			return;
+		}
+		$this->deleteMeeting($MeetingID);
+		$MeetingID = $this->importMeeting($fullFileName);
+		return $MeetingID;
+	}
+
+	private function scanAllMeeting(){
 		global $config;
 
 		$fileroot = $config['fileroot'].$config['rootZOB'];
@@ -261,7 +304,7 @@ class Zobmanage {
 		foreach($meetingtypes as $meetingtype)
 		{
 			$parentPath = $fileroot."/_".$meetingtype['MeetingName']."/".$electionperiod['PeriodName']."/";
-			
+
 			if(is_dir($parentPath)){
 							
 				$content .= $meetingtype['MeetingName']."/".$electionperiod['PeriodName']."<br>";
@@ -281,11 +324,10 @@ class Zobmanage {
 			{ 
 				if ($fileName == '.' |0| $fileName == '..') { 
 					continue; 
-				};
-			
+				};			
 			
 				$fullFileName = $dirPath.$fileName;		// celá cesta k souboru nebo složce včetně rootu
-				
+
 				// Nyjvyšší úroveň jsou složky zápisů, co není číslo nás nezajímá
 				if($topLevel){					
 					$EntryNo = (int) $fileName;
@@ -304,14 +346,20 @@ class Zobmanage {
 					$content .= $this->scanDirPath($meetingtype,$EntryNo,$fullFileName.'/', $Name,false);
 				}else{
 					// Soubor
+					$meeting = $this->zob->getMeetingByEntryNo($meetingtype, $EntryNo);
 
 					// Pokud zápis ještě nebyl načten, pak se proveden impoert a zápisu do tabulek ZOB
 					if($fileName == ".meeting"){
 						// Tento nebude součástí příloh
+
+						if($meeting != null){
+							if($meeting['Close'] == 1){
+								continue;
+							}
+							$this->deleteMeeting($meeting['MeetingID']);
+						}
 						$this->importMeeting($fullFileName);
 					}else{
-
-						$meeting = $this->zob->getMeetingByEntryNo($meetingtype, $EntryNo);
 						if($meeting == null)
 							continue;
 							
@@ -442,7 +490,7 @@ class Zobmanage {
 						$meeting['MeetingID'] = 0;
 						$meeting['MeetingTypeID'] = $MeetingTypeID;
 						$meeting['ElectionPeriodID'] = $ElectionPeriodID;
-						$meeting['Close'] = 1;
+						$meeting['Close'] = 0;
 						$meeting['ParentID'] = '00000000-0000-0000-0000-000000000000';
 						$meeting['ParentID'] = $this->zob->getMeetingParentID($meeting);
 				
@@ -674,8 +722,7 @@ class Zobmanage {
 			
 		  }		
 		fclose( $file );
-	
-		$this->print($content);
+		return $MeetingID;
 	}
 
 }

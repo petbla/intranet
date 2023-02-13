@@ -147,7 +147,7 @@ class Generalws {
 				}
 				break;
 			case 'Close':
-				if(!$isTemplate){											
+				if((!$isTemplate) && ($meeting['Close'] == 0)){
 					if ($meeting['AtDate'] ==null){
 						$this->result = "Nelze uzavřít jednání pokud není vyplnměn termín jednání.";
 					};
@@ -165,6 +165,8 @@ class Generalws {
 					}
 					if($this->result == 'OK')
 						$data[$field] = $value;
+				}else{
+					$data[$field] = $value;
 				}
 				break;
 			case 'PostedUpDate':

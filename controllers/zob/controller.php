@@ -605,8 +605,6 @@ class Zobcontroller{
 				break;
 			case 'list':
 				$MeetingID = isset($urlBits[3]) ? $urlBits[3] : null;
-				if($MeetingID)
-					$this->listMeetingLine( $MeetingID );
 				break;
 			default:
 				$this->pageNotFound();
@@ -1745,6 +1743,10 @@ class Zobcontroller{
 			return null;
 		$text = trim($text);
 		$arr = explode('.',$text);
+		if(!isset($arr[1]))
+			return null;
+		if(!isset($arr[2]))
+			return null;
 		if($arr[2] < 100)
 			$arr[2] = $arr[2] + 2000;
 		$text = $arr[0].".".$arr[1].".".$arr[2];

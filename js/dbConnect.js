@@ -27,7 +27,9 @@ function wsUpdate(e) {
         Http.onreadystatechange=(e)=>{
             response = Http.responseText;
             if((response == 'OK' ) || (response == '' )){
-                console.log(response)      
+                console.log(response);
+                if(field == 'Close')
+                    window.location.reload();      
             }else{
                 console.log(response);
                 err = document.getElementById('pageErrorMesage');
