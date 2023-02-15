@@ -120,7 +120,25 @@ class Zobprint {
         $this->registry->getObject('pdf')->SetY($yy + 10);
 
         foreach($meetinglines as $meetingline){
-            $this->registry->getObject('pdf')->MeetingLineZapis($meetingline);    
+            $this->registry->getObject('pdf')->MeetingLineZapis($meetingline);
+            
+            // Line Contents
+            $meetinglinecontents = $this->zob->readMeetingLineContents ($meetingline['MeetingLineID']);
+            if ($meetinglinecontents){
+                foreach($meetinglinecontents as $meetinglinecontent){
+                    $meetingline = array();
+                    $meetingline['LineNo'] = null;
+                    $meetingline['LineNo2'] = $meetinglinecontent['LineNo'];
+                    $meetingline['Content'] = $meetinglinecontent['Content'];
+                    $meetingline['Discussion'] = $meetinglinecontent['Discussion'];
+                    $meetingline['DraftResolution'] = $meetinglinecontent['DraftResolution'];
+                    $meetingline['Vote'] = $meetinglinecontent['Vote'];
+                    $meetingline['VoteFor'] = $meetinglinecontent['VoteFor'];
+                    $meetingline['VoteAgainst'] = $meetinglinecontent['VoteAgainst'];
+                    $meetingline['VoteDelayed'] = $meetinglinecontent['VoteDelayed'];
+                    $this->registry->getObject('pdf')->MeetingLineZapis($meetingline);                
+                }
+            }
         }
 
         // Verified By
@@ -193,14 +211,19 @@ class Zobprint {
         $this->registry->getObject('pdf')->DocumentTitle('10020',$headerTitle);
 
         // Meeting Lines - Program
+        $i = 0;
+        $lastlineno = 0;
         if ($meetinglines != null){
             foreach($meetinglines as $meetingline){
                 if($meetingline['LineType'] != 'Doplňující bod'){
-                    $lineno = $meetingline['LineNo'].'.';
+                    if ($lastlineno <> $meetingline['LineNo'])
+                        $i++;
+                    $lineno = $i.'.';
                     if ($meetingline['LineNo2'] > 0)
                         $lineno .= $meetingline['LineNo2'].'.';
                     $text = $meetingline['Title'];
                     $this->registry->getObject('pdf')->LineProgramPoint($lineno,$text);    
+                    $lastlineno = $meetingline['LineNo'];
                 }
             }
         }

@@ -333,9 +333,13 @@ class pdfdocument extends FPDF
   function MeetingLineZapis($meetingline)
   {  
     $lineno = $meetingline['LineNo'];
-    if ($meetingline['LineNo2'] > 0)
-        $lineno .= '.'.$meetingline['LineNo2'];
-    $lineno .= '/';
+    if($lineno){
+      if ($meetingline['LineNo2'] > 0)
+          $lineno .= '.'.$meetingline['LineNo2'];
+      $lineno .= '/';
+    }else{
+      $lineno = $meetingline['LineNo2'].')';
+    }
 
     // Content
     $content = $meetingline['Content'];

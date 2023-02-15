@@ -179,7 +179,7 @@ class Generalws {
 			case 'VerifierBy1':
 			case 'VerifierBy2':
 				if(!$isTemplate)
-					$data[$field] = $value;
+					$data[$field] = $this->contact->getContactID($value);
 				break;
 			default:
 				$data[$field] = $value;

@@ -19,7 +19,7 @@
         <img src="views/classic/images/nav/line48.png"/>
         <a href="index.php?page=zob/manage/backupElectionPeriod/{ElectionPeriodID}" title="Záloha všech zápisů volebního období (CSV Export)"><img src="views/classic/images/nav/backup48.png" /></a>        
         <img src="views/classic/images/nav/line48.png"/>
-        <a href="index.php?page=zob/manage/scanAllMeeting" title="Import"><img src="views/classic/images/nav/scanfolder48.png" /></a>        
+        <a href="index.php?page=zob/manage/scanAllMeeting" title="Import" onclick="return ConfirmAction('Import přepisuje otevřené zápisy jednání. Sktečně chtete tutu nevratnou akci provést a přepsat data?');"><img src="views/classic/images/nav/scanfolder48.png" /></a>        
     </p>
     <table>
         <tr>

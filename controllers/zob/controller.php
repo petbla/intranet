@@ -980,7 +980,11 @@ class Zobcontroller{
 				$meeting['RecorderAtDate_view'] = $this->registry->getObject('core')->formatDate($meeting['RecorderAtDate']);
 				$meeting['dmsClassName'] = 'meeting';
 				
-				
+				$contact = $this->getContactByID($meeting['Verifier1']);
+				$meeting['VerifierBy1Name'] = $contact == null ? '' : $contact['FullName'];
+				$contact = $this->getContactByID($meeting['Verifier2']);
+				$meeting['VerifierBy2Name'] = $contact == null ? '' : $contact['FullName'];
+
 				$meetings[] = $meeting;
 			}
 			$cache = $this->registry->getObject('db')->cacheData( $meetings );

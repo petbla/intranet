@@ -110,7 +110,7 @@
                                 <label class="title">{lbl_VerifierBy} 1</label><br>
                             </td>
                             <td style="border:0;">
-                                <input type="text" class="value" name="VerifierBy1" value="{VerifierBy1}" pkID="{MeetingID}" table="meeting" onchange="wsUpdate(this);" {disabled}/><br>
+                                <input type="text" class="value" name="VerifierBy1" value="{VerifierBy1Name}" pkID="{MeetingID}" table="meeting" onchange="wsUpdate(this);" {disabled}/><br>
                             </td>
                         </tr>
                         <tr>
@@ -118,7 +118,7 @@
                                 <label class="title">{lbl_VerifierBy} 2</label><br>
                             </td>
                             <td style="border:0;">
-                                <input type="text" class="value" name="VerifierBy2" value="{VerifierBy2}" pkID="{MeetingID}" table="meeting" onchange="wsUpdate(this);" {disabled}/><br>
+                                <input type="text" class="value" name="VerifierBy2" value="{VerifierBy2Name}" pkID="{MeetingID}" table="meeting" onchange="wsUpdate(this);" {disabled}/><br>
                             </td>
                         </tr>
                     </table>
