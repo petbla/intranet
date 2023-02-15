@@ -44,17 +44,17 @@
                 <textarea class="value col_note" rows="10" recID="contact{ID}" pkID="{ID}" table="contact" name="Note" onchange="wsUpdate(this);">{Note}</textarea>
             </td>
             <td>
-                <label class="title" for="grouplist">{lbl_ChoiceGroup}</label><br>
-                <select id="grouplist{ID}" value="" pkID="{ID}" table="contact" name="ContactGroups" onchange="this.setAttribute('value',this.options[this.selectedIndex].text); wsUpdate(this);">
+                <label class="title">{lbl_ChoiceGroup}</label><br>
+                <select recID="contact{ID}" pkID="{ID}" table="contact" name="ContactGroups" onchange="this.setAttribute('value',this.options[this.selectedIndex].text), wsUpdate(this);">
                     <option value="" class="value">{lbl_choiceAction}</option>
                     <!-- START GroupList -->
                     <option value="{Code}" class="value">{Code} - {Name}</option>
                     <!-- END GroupList -->
                 </select><br>
+                
                 <label class="title">{lbl_Label}</label>
-                <p class="tags{ID}" ContactGroupsID="{ID}">{ContactGroups}</p>
+                <p class="tags" tagID="tag{ID}" recID="contact{ID}" pkID="{ID}" table="contact" name="ContactGroups" value="{ContactGroups}">{ContactGroups}</p>
                 <input type="hidden" name="oldContactGroups" value="{ContactGroups}" oldContactGroupsID="{ID}"/>
-                <input type="hidden" id="ContactGroups{ID}" name="ContactGroups" value="{ContactGroups}">
             </td>
         </tr>
         <tr>

@@ -61,7 +61,7 @@
                 </a>
             </td>
             <td class="col_fullname">
-                <a href="" onclick="document.getElementById('{viewContactCardID}').style.display = 'block'; this.href = 'javascript:void(0)';">
+                <a href="" recID="contact{ID}" pkID="{ID}" table="contact" name="FullName" onclick="document.getElementById('{viewContactCardID}').style.display = 'block'; this.href = 'javascript:void(0)';">
                     {FullName}
                 </a>
             </td>
@@ -71,7 +71,7 @@
             <td class="col_phone" ><span class="phone" recID="contact{ID}" pkID="{ID}" table="contact" name="Phone">{Phone}</span></td>
             <td class="col_email"><span class="email" recID="contact{ID}" pkID="{ID}" table="contact" name="Email">{Email}</span></td>
             <td class="col_note" recID="contact{ID}" pkID="{ID}" table="contact" name="Note">{Note}</td>
-            <td class="tags" recID="contact{ID}" pkID="{ID}" table="contact" name="ContactGroups">
+            <td class="tags" tagID="tag{ID}" recID="contact{ID}" pkID="{ID}" table="contact" name="ContactGroups" value="{ContactGroups}">
                 {ContactGroups}
             </td>
         </tr>

@@ -47,9 +47,8 @@ search = document.querySelector('#search');
 password = document.querySelector('#usr_psw1');
 password_confirm = document.querySelector('#usr_psw2');
 loginForm = document.querySelector('#loginForm');
-tags = document.querySelectorAll('[class="tags"]');
-contactGroups = document.querySelector('#ContactGroups');
-grouplist = document.querySelector('#grouplist');
+
+
 deleteEntryType20 = document.querySelectorAll('#DeleteEntryType20');
 items = document.querySelectorAll('[dmsClassName="item"]');
 contacts = document.querySelectorAll('[dmsClassName="contact"]');
@@ -343,43 +342,6 @@ if(contacts){
             card = document.querySelector('[id="editContactCard' + e.target.id + '"]' );
             card.style.display = 'block';
 
-            tag = document.querySelector('[class="tags' + e.target.id + '"]' );
-            grouplist = document.querySelector( '[id="grouplist' + e.target.id + '"]' );
-            arrGroup = (tag.innerText).split(',');            
-            if (tag.innerText !== ''){
-                tag.innerHTML = tags2Html( arrGroup );
-            }
-            grouplist.onchange = function  (ee) {
-                var tag,arrGroup; 
-                var contactGroups;
-                
-                tag = document.querySelector('[class="tags' + e.target.id + '"]' );
-                contactGroups = document.querySelector('[id="ContactGroups' + e.target.id + '"]' );
-                if (tag !== null)
-                {
-                    arrGroup = (contactGroups.value).split(',');
-                    if(arrGroup)
-                    {
-                        var idx;
-                        idx = arrGroup.indexOf(ee.target.value);
-                        if (idx > -1)
-                        {
-                            arrGroup.splice(idx,1);
-                        }
-                        else
-                        {
-                            arrGroup.push(ee.target.value);
-                        }            
-                        arrGroup = arrGroup.filter(function(el){ return el;});
-                        tag.innerHTML = tags2Html( arrGroup );       
-                        if(contactGroups)
-                        {
-                            contactGroups.value = arrGroup.join(',');
-                        }
-                    }
-                }
-                ee.target.value = '';
-            }
         }
     })   
 }
@@ -561,16 +523,47 @@ if(link_element){
     })
 }
 
-
+tags = document.querySelectorAll('[class="tags"]');
 if(tags){
-    for (let i = 0; i < tags.length; i++) {
-        var e;
-        e = tags[i];
-        arrGroup = (e.innerText).split(',');
-        if (e.innerText !== ''){
-            e.innerHTML = tags2Html( arrGroup );
+    tags.forEach(function(tag){
+        var arrGroup = (tag.innerText).split(',');
+        if (tag.innerText !== ''){
+            tag.innerHTML = tags2Html( arrGroup );
         }
-    }
+    })
+}
+
+contactGroups = document.querySelectorAll('[name="ContactGroups"]');
+if(contactGroups){
+    contactGroups.forEach(function(e){
+        e.onchange = function(e2) {
+            var pkID = e2.target.getAttribute('pkID');
+            var id = "tag";
+            if(pkID) 
+                id = id + pkID;
+            var tags = document.querySelectorAll('[tagID="' + id + '"]')
+            tags.forEach(function(tag){
+                var arrGroup = (tag.getAttribute('value')).split(',');
+                if(arrGroup)
+                {
+                    var idx;
+                    idx = arrGroup.indexOf(e2.target.value);
+                    if (idx > -1)
+                    {
+                        arrGroup.splice(idx,1);
+                    }
+                    else
+                    {
+                        arrGroup.push(e2.target.value);
+                    }            
+                    arrGroup = arrGroup.filter(function(el){ return el;});
+                    tag.setAttribute('value',arrGroup);
+                    tag.innerHTML = tags2Html( arrGroup );            
+                    wsUpdate(tag);
+                }
+            })            
+        }
+    })
 }
 
 if(deleteEntryType20){
@@ -580,34 +573,6 @@ if(deleteEntryType20){
         e.style.display = "none";
     }
 }
-
-if(grouplist){
-    grouplist.onchange = function  (e2) {
-        if (tags[0] !== null)
-        {
-            var e,oldValue,newValue;
-            if(arrGroup)
-            {
-                var idx;
-                idx = arrGroup.indexOf(e2.target.value);
-                if (idx > -1)
-                {
-                    arrGroup.splice(idx,1);
-                }
-                else
-                {
-                    arrGroup.push(e2.target.value);
-                }            
-                arrGroup = arrGroup.filter(function(el){ return el;});
-                tags[0].innerHTML = tags2Html( arrGroup );            
-                if(contactGroups)
-                {
-                    contactGroups.value = arrGroup.join(',');
-                }
-            }
-        }
-    };
-};
 
 
 if(fld_handled){

@@ -1,18 +1,20 @@
 'use strict';
 
 function refreshRec(e){
-    var table,pkID,field,value,recID;
+    var recID;
     var condition, elements;
     recID = e.getAttribute('recID'); 
-    condition = '[recID="' + recID +'"]';
-    elements = document.querySelectorAll('[recID="' + recID +'"]');
-
-    if(elements){
-        elements.forEach(function(ee){
-            updateRecValue(ee);                        
-        })
-    }
-    
+    if(recID){
+        condition = '[recID="' + recID +'"]';
+        elements = document.querySelectorAll('[recID="' + recID +'"]');
+        if(elements){
+            elements.forEach(function(ee){
+                var val = ee.getAttribute('name');
+                if(val != 'ContactGroups')
+                    updateRecValue(ee);  
+            })
+        }
+    }    
 }
 
 // ************************************************************************************
@@ -35,6 +37,8 @@ function wsUpdate(e) {
         pkID = e.getAttribute('pkID');
         field = e.getAttribute('name'); 
         newvalue = e.value; 
+        if(newvalue == undefined)
+            newvalue = e.getAttribute('value'); 
         url = url + '?page=general/ws/upd/' + table + '/' + pkID + '/' + field;
         Http.open("POST", url, true);
         Http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -45,7 +49,7 @@ function wsUpdate(e) {
                 console.log(response);
                 if(field == 'Close')
                     window.location.reload();      
-                refreshRec(e);
+                    refreshRec(e);
             }else{
                 console.log(response);
                 err = document.getElementById('pageErrorMesage');
