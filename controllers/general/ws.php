@@ -96,8 +96,10 @@ class Generalws {
 	 * URL: general/ws/upd/<table>/<ID>/<FieldName>/<FieldValue>
 	 */
 	private function update($action)
-	{
+	{		
 		$value = isset($_POST['value']) ? $_POST['value'] : '';
+		if($value == 'undefined')
+			return;
 		switch ($this->table) {
 			case 'dmsentry':
 				$this->updateDmsentry($value);
