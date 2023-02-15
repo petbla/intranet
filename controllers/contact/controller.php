@@ -772,5 +772,24 @@ class Contactcontroller {
 		return $contact;
 	}
 
+	public function getContactID( $value )
+	{
+		$contact = null;
+		$contactID = null;
+		$this->registry->getObject('db')->initQuery('contact');
+		$this->registry->getObject('db')->setFilter('ID',$value);
+		if ($this->registry->getObject('db')->findFirst())
+			$contact = $this->registry->getObject('db')->getResult();
+		else{
+			$this->registry->getObject('db')->initQuery('contact');
+			$this->registry->getObject('db')->setFilter('FullName',$value);
+			if ($this->registry->getObject('db')->findFirst())
+				$contact = $this->registry->getObject('db')->getResult();	
+		}			
+		if($contact)
+			$contactID = $contact['ID'];
+		return $contactID;
+	}
+
 }
 ?>
