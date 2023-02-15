@@ -30,9 +30,11 @@
                     <img src="views/classic/images/icon/modify.png" alt="{lbl_edit}" onClick = "modifyUser('{ID}','{Name}','{FullName}','{PermissionSet}','modify',true);"/>
                     <a href="index.php?page=admin/user/delete/{ID}"><img src="views/classic/images/icon/delete.png" alt="{lbl_Delete}" id="{ID}" title="{lbl_Delete}" onclick="return ConfirmDelete();"></a>
                 </td>
-                <td class="col_text">{Name}</td>
-                <td class="col_text">{FullName}</td>
-                <td class="col_text">{PermissionSet} - {Role}</td>
+                <td class="col_text" recID="meetingline{ID}" pkID="{ID}" table="meetingline" name="Name">{Name}</td>
+                <td class="col_text" recID="meetingline{ID}" pkID="{ID}" table="meetingline" name="FullName">{FullName}</td>
+                <td class="col_text">
+                    <span recID="meetingline{ID}" pkID="{ID}" table="meetingline" name="PermissionSet">{PermissionSet}</span> - <span recID="meetingline{ID}" pkID="{ID}" table="meetingline" name="Role">{Role}</span>
+                </td>
                 <td></td>
                 <td></td>
                 <td></td>

@@ -65,13 +65,13 @@
                     {FullName}
                 </a>
             </td>
-            <td class="col_company">{Address}</td>
-            <td class="col_company">{Company}</td>
-            <td class="col_function">{Function}</td>
-            <td class="col_phone" ><span class="phone" >{Phone}</span></td>
-            <td class="col_email"><span class="email">{Email}</span></td>
-            <td class="col_note">{Note}</td>
-            <td class="tags">
+            <td class="col_company" recID="contact{ID}" pkID="{ID}" table="contact" name="Address">{Address}</td>
+            <td class="col_company" recID="contact{ID}" pkID="{ID}" table="contact" name="Company">{Company}</td>
+            <td class="col_function" recID="contact{ID}" pkID="{ID}" table="contact" name="Function">{Function}</td>
+            <td class="col_phone" ><span class="phone" recID="contact{ID}" pkID="{ID}" table="contact" name="Phone">{Phone}</span></td>
+            <td class="col_email"><span class="email" recID="contact{ID}" pkID="{ID}" table="contact" name="Email">{Email}</span></td>
+            <td class="col_note" recID="contact{ID}" pkID="{ID}" table="contact" name="Note">{Note}</td>
+            <td class="tags" recID="contact{ID}" pkID="{ID}" table="contact" name="ContactGroups">
                 {ContactGroups}
             </td>
         </tr>

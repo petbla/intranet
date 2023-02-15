@@ -1,62 +1,51 @@
-<form id="editName" action="index.php?page=contact/save/{ID}"  method="post">
+<form action="index.php?page=contact/save/{ID}"  method="post">
     <table class="edit-card">
         <tr>
             <td>
                 <label class="title">{lbl_Title}</label><br>
-                <input type="text" class="value" name="Title" value="{Title}" TitleID="{ID}"/><br>
-                <input type="hidden" name="oldTitle" value="{Title}" oldTitleID="{ID}">               
+                <input type="text" class="value" value="{Title}" recID="contact{ID}" pkID="{ID}" table="contact" name="Title" onchange="wsUpdate(this);"/><br>
                 <label class="title">{lbl_First_name}</label><br>
-                <input type="text" class="value col_name" name="FirstName" value="{FirstName}" FirstNameID="{ID}"/><br>
-                <input type="hidden" name="oldFirstName" value="{FirstName}" oldFirstNameID="{ID}"/>
+                <input type="text" class="value col_name" value="{FirstName}" recID="contact{ID}" pkID="{ID}" table="contact" name="FirstName" onchange="wsUpdate(this);"/><br>
                 <label class="title">{lbl_Last_name}</label><br>
-                <input type="text" class="value col_lastname" name="LastName" value="{LastName}" LastNameID="{ID}"/>
-                <input type="hidden" name="oldLastName" value="{LastName}" oldLastNameID="{ID}"/>
+                <input type="text" class="value col_lastname" value="{LastName}" recID="contact{ID}" pkID="{ID}" table="contact" name="LastName" onchange="wsUpdate(this);"/>
             </td>
             <td width="50%">
                 <label class="title">{lbl_Function}</label><br>    
-                <input type="text" class="value" name="Function" value="{Function}" FunctionID="{ID}"/><br>
-                <input type="hidden" name="oldFunction" value="{Function}" oldFunctionID="{ID}"/>
-
+                <input type="text" class="value" value="{Function}" recID="contact{ID}" pkID="{ID}" table="contact" name="Function" onchange="wsUpdate(this);"/><br>
                 <label class="title">{lbl_Company}</label><br>
-                <input type="text" class="value col_company" name="Company" value="{Company}" CompanyID="{ID}"/><br>
-                <input type="hidden" name="oldCompany" value="{Company}" oldCompanyID="{ID}"/>
-
+                <input type="text" class="value col_company" value="{Company}" recID="contact{ID}" pkID="{ID}" table="contact" name="Company" onchange="wsUpdate(this);"/><br>
                 <label class="title">{lbl_Web}</label><br>
-                <input type="text" class="value col_web" name="Web" value="{Web}" WebID="{ID}"/>
-                <input type="hidden" name="oldWeb" value="{Web}" oldWebID="{ID}"/>
+                <input type="text" class="value col_web" value="{Web}" recID="contact{ID}" pkID="{ID}" table="contact" name="Web" onchange="wsUpdate(this);"/>
             </td>
             <td>
                 <label class="title">{lbl_Address}</label><br>
-                <textarea class="value col_address" name="Address" rows="5" AddressID="{ID}">{Address}</textarea>
-                <input type="hidden" name="oldAddress" value="{Address}" oldAddressID="{ID}"/><br>
-
+                <textarea class="value col_address" rows="5" recID="contact{ID}" pkID="{ID}" table="contact" name="Address" onchange="wsUpdate(this);">{Address}</textarea>
                 <label class="title">{lbl_BirthDate}</label><br>
-                <input type="date" class="value col_date" name="BirthDate" value="{BirthDate}" BirthDateID="{ID}"/>
-                <input type="hidden" name="oldBirthDate" value="{BirthDate}" oldBirthDateID="{ID}"/><br>
+                <input type="date" class="value col_date" value="{BirthDate}" recID="contact{ID}" pkID="{ID}" table="contact" name="BirthDate" onchange="wsUpdate(this);"/>
             </td>
         </tr>
         <tr>
             <td>
                 <label class="title">{lbl_Phone}</label><br>
-                <input type="tel" class="value" name="Phone" value="{Phone}" PhoneID="{ID}"/><br>
-                <input type="hidden" name="oldPhone" value="{Phone}" oldPhoneID="{ID}"/>
-
+                <input type="tel" class="value" value="{Phone}" recID="contact{ID}" pkID="{ID}" table="contact" name="Phone" onchange="wsUpdate(this);"/><br>
                 <label class="title">{lbl_Email}</label><br>
-                <input type="text" class="value col_email" name="Email" value="{Email}" EmailID="{ID}"/>
-                <input type="hidden" name="oldEmail" value="{Email}" oldEmailID="{ID}"/>
-
+                <input type="text" class="value col_email" value="{Email}" recID="contact{ID}" pkID="{ID}" table="contact" name="Email" onchange="wsUpdate(this);"/>
                 <label class="title">{lbl_CloseCard}</label>
-                <input type="checkbox" class="value" name="Close" value="{Close}" CloseID="{ID}" onClick = "validateCheckbox( this );"/>
-                <input type="hidden" name="oldClose" value="{Close}" oldCloseID="{ID}"/>                
+                <input type="checkbox" id = "Close{ID}" class="value" value="{Close}" recID="contact{ID}" pkID="{ID}" table="contact" name="Close" onchange = "validateCheckbox(this);"/ >
+                <script>
+                    var e;
+                    e = document.getElementById('Close{ID}');
+                    if (e.value == 1)
+                        e.checked = true;
+                </script>
             </td>
             <td width="50%">
                 <label class="title">{lbl_Comment}</label><br>
-                <textarea class="value col_note" name="Note" rows="10" NoteID="{ID}">{Note}</textarea>
-                <input type="hidden" name="oldNote" value="{Note}" oldNoteID="{ID}"/>
+                <textarea class="value col_note" rows="10" recID="contact{ID}" pkID="{ID}" table="contact" name="Note" onchange="wsUpdate(this);">{Note}</textarea>
             </td>
             <td>
                 <label class="title" for="grouplist">{lbl_ChoiceGroup}</label><br>
-                <select name="grouplist{ID}" id="grouplist{ID}">
+                <select id="grouplist{ID}" value="" pkID="{ID}" table="contact" name="ContactGroups" onchange="this.setAttribute('value',this.options[this.selectedIndex].text); wsUpdate(this);">
                     <option value="" class="value">{lbl_choiceAction}</option>
                     <!-- START GroupList -->
                     <option value="{Code}" class="value">{Code} - {Name}</option>

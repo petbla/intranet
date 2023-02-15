@@ -114,6 +114,9 @@ class Generalws {
 			case 'meetinglinecontent':
 				$this->updateMeetinglinecontent($value);
 				break;
+			case 'contact':
+				$this->updateContact($value);
+				break;
 			default:
 				$data = null;
 				$data[$this->field] = $value;
@@ -324,6 +327,7 @@ class Generalws {
 	private function updateDmsentry($value)
 	{
 		$dmsentry = $this->zob->getDmsentryByID($this->ID);
+		$field = $this->field;
 		$data = null;
 		$ID = $this->ID;
 
@@ -344,6 +348,8 @@ class Generalws {
 					$this->registry->getObject('db')->updateRecords('inbox',$inbox,$condition);
 				}
 				break;
+			default:
+				$data[$field] = $value;
 		}
 		$condition = "ID = '$ID'";
 		if(($this->result == 'OK') && $data)
@@ -353,6 +359,7 @@ class Generalws {
 	private function updateInbox($value)
 	{
 		$inbox = $this->zob->getInbox($this->ID);
+		$field = $this->field;
 		$data = null;
 		$ID = $this->ID;
 
@@ -379,8 +386,37 @@ class Generalws {
 					}
 				}
 				break;
+			default:
+				$data[$field] = $value;
 		}
 		$condition = "InboxID = $ID";
+		if(($this->result == 'OK') && $data)
+			$this->registry->getObject('db')->updateRecords($this->table,$data,$condition);
+	}
+
+	private function updateContact($value)
+	{
+		$contact = $this->zob->getContactByID($this->ID);
+		$field = $this->field;
+		$data = null;
+		$ID = $this->ID;
+
+		switch ($this->field) {
+			case 'LastName':
+			case 'FirstName':
+			case 'Title':
+			case 'Company':
+				$data['LastName'] = $contact['LastName'];
+				$data['FirstName'] = $contact['FirstName'];
+				$data['Title'] = $contact['Title'];
+				$data['Company'] = $contact['Company'];
+				$data[$field] = $value;
+				$data['FullName'] = $this->contact->makeFullName($data);
+				break;
+			default:
+				$data[$field] = $value;
+		}
+		$condition = "ID = '$ID'";
 		if(($this->result == 'OK') && $data)
 			$this->registry->getObject('db')->updateRecords($this->table,$data,$condition);
 	}

@@ -744,7 +744,7 @@ class Contactcontroller {
 	 * @param Array $data
 	 * @return String $FullName
 	 */
-	private function makeFullName ($data)
+	public function makeFullName ($data)
 	{
 		$FullName = '';
 		$FullName = isset($data['LastName']) ? $data['LastName'] : "";

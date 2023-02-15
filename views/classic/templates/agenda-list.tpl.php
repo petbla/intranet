@@ -35,6 +35,7 @@
         <!-- START AgendaList -->
         <tr>      
             <td class="col_action">
+                // recID="agenda{ID}" pkID="{ID}" table="agenda" name="ID"
                 <a href="" SET_HREF table="agenda" entryid="{EntryID}" type="odkaz" name="" id="{ID}"><img src="views/classic/images/icon/unlink.png" alt="{lbl_delete}" onclick="return ConfirmUnlink();"/></a>                
                 <a href="" SET_HREF table="agenda" entryid="{EntryID}" type="SourceFolder" name="{Name}"></a>                
                 <a href="" SET_HREF table="agenda" entryid="{EntryID}" type="PDF" name="{Name}"></a>                

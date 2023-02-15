@@ -1,5 +1,20 @@
 'use strict';
 
+function refreshRec(e){
+    var table,pkID,field,value,recID;
+    var condition, elements;
+    recID = e.getAttribute('recID'); 
+    condition = '[recID="' + recID +'"]';
+    elements = document.querySelectorAll('[recID="' + recID +'"]');
+
+    if(elements){
+        elements.forEach(function(ee){
+            updateRecValue(ee);                        
+        })
+    }
+    
+}
+
 // ************************************************************************************
 //    DATABASE functions - Update fields 
 //
@@ -24,12 +39,13 @@ function wsUpdate(e) {
         Http.open("POST", url, true);
         Http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         Http.send("value=" + newvalue);
-        Http.onreadystatechange=(e)=>{
+        Http.onreadystatechange=(ee)=>{
             response = Http.responseText;
             if((response == 'OK' ) || (response == '' )){
                 console.log(response);
                 if(field == 'Close')
                     window.location.reload();      
+                refreshRec(e);
             }else{
                 console.log(response);
                 err = document.getElementById('pageErrorMesage');
@@ -42,6 +58,9 @@ function wsUpdate(e) {
         }    
     }
 }
+
+
+
 
 // ************************************************************************************
 //    DATABASE functions - Copy content between two fields 
@@ -147,6 +166,45 @@ function wsRefreshMeetinglinecontent(e) {
         wsRefreshField(table,pkID,'VoteAgainst');
         wsRefreshField(table,pkID,'VoteDelayed');
     }
+}
+
+// ************************************************************************************
+//    DATABASE functions - Read value from database
+//    - internal function
+// ************************************************************************************
+function updateRecValue(e) {
+    const Http = new XMLHttpRequest();
+    var val = null;
+    var url;
+    var table,pkID,field,value;
+    table = e.getAttribute('table'); 
+    pkID = e.getAttribute('pkID');
+    field = e.getAttribute('name'); 
+    value = e.getAttribute('value'); 
+
+    url = window.location.origin + window.location.pathname;
+    url = url + '?page=general/ws/getValue/' + table + '/' + pkID + '/' + field;
+    Http.onreadystatechange = function(){
+        if (Http.readyState == 4) {
+            if (Http.status == 200) {
+                val = Http.responseText;
+                if(val == '<NULL>'){ 
+                    val = null;
+                }else{
+                    if(val){
+                        if(value){
+                            e.value = val;
+                        }else{
+                            e.innerHTML = val;
+                        }
+                    }
+                }
+            }
+        }
+    }    
+    Http.open("GET", url, true);
+    Http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    Http.send();
 }
 
 

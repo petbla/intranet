@@ -6,7 +6,6 @@
     <link rel="stylesheet" type="text/css" href="views/classic/styles/default.css"> 
     <link rel="stylesheet" type="text/css" href="views/classic/styles/slideshow.css"> 
     <script type="text/javascript" src="js/jquery.min.js"></script>
-    <script type="text/javascript" src="js/dbConnect.js"></script>
     <script type="text/javascript" src="js/onBeforeScripts.js"></script>
     <style>
       .mySlides {display:none}
