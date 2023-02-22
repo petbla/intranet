@@ -21,6 +21,10 @@
       </td>
       <td>
         <a href="{Url}" target="{Target}" onclick="document.getElementById('{view{Type}CardID}').style.display = 'block'; this.href = 'javascript:void(0)';">
+          <small>KARTA</small>
+        </a>
+        <br>
+        <a href="{Url}" target="{Target}" SET_HREF id="{ID}" table="{Table}" name="{Name}" type="{Type}">
           <small>{Name}</small>
         </a>
       </td>
@@ -32,7 +36,7 @@
       <td colspan = "3">
         <div id="{viewContactCardID}" style="display:none;" onclick="this.style.display = 'none';" >          
           <span class="action_close" onclick="document.getElementById('{viewContactCardID}').style.display = 'none';">{lbl_Close}</span>
-          {viewcardContact}
+          {viewcardContact} 
         </div>
         <div id="{viewFileCardID}" style="display:none;" onclick="this.style.display = 'none';" >          
           <span class="action_close" onclick="document.getElementById('{viewFileCardID}').style.display = 'none';">{lbl_Close}</span>

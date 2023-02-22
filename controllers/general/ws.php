@@ -178,6 +178,9 @@ class Generalws {
 			case 'PostedDownDate':
 			case 'State':
 			case 'RecorderAtDate':
+				if(!$isTemplate)
+					$data[$field] = $value;
+				break;
 			case 'VerifierBy1':
 			case 'VerifierBy2':
 				if(!$isTemplate)
