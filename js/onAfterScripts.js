@@ -98,22 +98,22 @@ function formatElementClass (classText) {
     }   
 }
 
-function formatText (text, type)
+function formatText (text, field)
 {
     var newtext = ''
     var arr,val;        
-    if(type === '')
+    if(field === '')
     {
         return text;
     }
-    type = type.toLowerCase();
+    field = field.toLowerCase();
     if(text === '')
     {
         return '';
     }
     arr = text.split(',');              
     arr.forEach(val => {
-        switch (type) {
+        switch (field) {
             case 'phone':
                 val = formatPhoneNumber(val);
                 break;

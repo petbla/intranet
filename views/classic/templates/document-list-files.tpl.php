@@ -18,14 +18,14 @@
         {remindIcon}        
       </td>
       <td>
-        <a href="" SET_HREF id="{ID}" table="dmsentry" name="{Name}" type="{Type}" url="{Url}" onclick="wsLogView();">{Title}</a>
+        <a href="" SET_HREF id="{ID}" recID="dmsentry{ID}" table="dmsentry" pkID="{ID}" name="Title" type="{Type}" url="{Url}" onclick="wsLogView();">{Title}</a>
         {mediaplayer}
       </td>
-      <td>{DocumentNo}</td>
-      <td>{RemindState_{RemindState}}</td>
-      <td>{RemindLastDate}</td>
-      <td>{ModifyDateTime}</td>
-      <td>.{FileExtension}</td>
+      <td recID="dmsentry{ID}" table="dmsentry" pkID="{ID}" name="DocumentNo">{DocumentNo}</td>
+      <td recID="dmsentry{ID}" table="dmsentry" pkID="{ID}" name="RemindState_{RemindState}">{RemindState_{RemindState}}</td>
+      <td recID="dmsentry{ID}" table="dmsentry" pkID="{ID}" name="RemindLastDate">{RemindLastDate}</td>
+      <td recID="dmsentry{ID}" table="dmsentry" pkID="{ID}" name="ModifyDateTime">{ModifyDateTime}</td>
+      <td recID="dmsentry{ID}" table="dmsentry" pkID="{ID}" name="FileExtension">.{FileExtension}</td>
   	</tr>
     <tr></tr>
     <tr>

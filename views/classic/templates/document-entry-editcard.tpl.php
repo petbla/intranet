@@ -4,19 +4,19 @@
             <td>
                 <label class="title">{lbl_Name} / {lbl_FileExtension}</label><br>
                 <span>
-                    <input type="text" class="value col_filename" name="Title" value="{Title}" pkID="{ID}" table="dmsentry" onchange="wsUpdate(this);">
-                    <input type="text" class="value col_fileext"  name="FileExtension" value="{FileExtension}" pkID="{ID}" table="dmsentry" onchange="wsUpdate(this);"><br>
+                    <input type="text" class="value col_filename" recID="dmsentry{ID}" name="Title" value="{Title}" pkID="{ID}" table="dmsentry" onchange="wsUpdate(this);">
+                    <input type="text" class="value col_fileext"  recID="dmsentry{ID}" name="FileExtension" value="{FileExtension}" pkID="{ID}" table="dmsentry" onchange="wsUpdate(this);"><br>
                 </span>
 
                 <label class="title">Url</label><br>
-                <input type="text" class="value col_web" name="Url" value="{Url}" pkID="{ID}" table="dmsentry" onchange="wsUpdate(this);">
+                <input type="text" class="value col_web" recID="dmsentry{ID}" name="Url" value="{Url}" pkID="{ID}" table="dmsentry" onchange="wsUpdate(this);">
             </td>
             <td>
                 <label class="title">{lbl_RemindRespPers}</label><br>
-                <input type="text" class="value" name="RemindResponsiblePerson" value="{RemindResponsiblePerson}" pkID="{ID}" table="dmsentry" onchange="wsUpdate(this);">
+                <input type="text" class="value" recID="dmsentry{ID}" name="RemindResponsiblePerson" value="{RemindResponsiblePerson}" pkID="{ID}" table="dmsentry" onchange="wsUpdate(this);">
                 
                 <label class="title">{lbl_RemindState}</label><br>
-                <select class="title" name="RemindState" pkID="{ID}" table="dmsentry" onchange="wsUpdate(this);">
+                <select class="title" recID="dmsentry{ID}" name="RemindState" pkID="{ID}" table="dmsentry" onchange="wsUpdate(this);">
                     <option value="00_new" optionRemindState_id="00_new{ID}"></option>
                     <option value="10_process" optionRemindState_id="10_process{ID}">Rozpracováno</option>
                     <option value="20_wait" optionRemindState_id="20_wait{ID}">Čeká na schválení</option>
@@ -40,7 +40,7 @@
             </td>
             <td>               
                 <label class="title"">Vyřízeno</label>
-                <input type="checkbox" class="value" name="RemindClose" value="{RemindClose}" pkID="{ID}" table="dmsentry" RemindCloseID="{ID}" onClick = "validateCheckbox( this );"/>
+                <input type="checkbox" class="value" recID="dmsentry{ID}" name="RemindClose" value="{RemindClose}" pkID="{ID}" table="dmsentry" RemindCloseID="{ID}" onClick = "validateCheckbox( this );"/>
                 <script>
                     var inputValue;
                     inputValue = document.querySelector( '[RemindCloseID="{ID}"]' );
@@ -55,15 +55,15 @@
         <tr>
             <td>
                 <label class="title">Popis</label><br>
-                <textarea class="value col_note" name="Content" cols="120" rows="30" pkID="{ID}" table="dmsentry" onchange="wsUpdate(this);">{Content}</textarea>
+                <textarea class="value col_note" recID="dmsentry{ID}" name="Content" cols="120" rows="30" pkID="{ID}" table="dmsentry" onchange="wsUpdate(this);">{Content}</textarea>
             </td>
             <td colspan="2">
                 <label class="title">{lbl_RemindToDate}</label>
-                <input type="date" class="value" name="RemindLastDate" value="{RemindLastDate}" pkID="{ID}" table="dmsentry" RemindLastDateID="{ID}" onchange="wsUpdate(this);"><br>
+                <input type="date" class="value" recID="dmsentry{ID}" name="RemindLastDate" value="{RemindLastDate}" pkID="{ID}" table="dmsentry" RemindLastDateID="{ID}" onchange="wsUpdate(this);"><br>
                 <div class="quickChoice">Rychlá volba termínu: do <b><u onclick="setValue('RemindLastDateID','{ID}','addDay',7);">7dní</u>&nbsp;-&nbsp;<u onclick="setValue('RemindLastDateID','{ID}','addDay',14);">14dní</u>&nbsp;-&nbsp;<u onclick="setValue('RemindLastDateID','{ID}','addDay',30);">měsíce</u></b></div><br>
                 
                 <label class="title">{lbl_Remind}</label>
-                <input type="checkbox" class="value" name="Remind" value="{Remind}" pkID="{ID}" table="dmsentry" RemindID="{ID}" onClick = "validateCheckbox( this );"><br>
+                <input type="checkbox" class="value" recID="dmsentry{ID}" name="Remind" value="{Remind}" pkID="{ID}" table="dmsentry" RemindID="{ID}" onClick = "validateCheckbox( this );"><br>
                 <script>
                     var inputValue;
                     inputValue = document.querySelector( '[RemindID="{ID}"]' );

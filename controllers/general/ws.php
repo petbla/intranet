@@ -353,6 +353,7 @@ class Generalws {
 			default:
 				$data[$field] = $value;
 		}
+		$data['ModifyDateTime'] = date("Y-m-d H:i:s");
 		$condition = "ID = '$ID'";
 		if(($this->result == 'OK') && $data)
 			$this->registry->getObject('db')->updateRecords($this->table,$data,$condition);

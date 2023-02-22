@@ -199,7 +199,7 @@ function updateRecValue(e) {
                         if(value){
                             e.value = val;
                         }else{
-                            e.innerHTML = val;
+                            e.innerHTML = formatText(val, field);
                         }
                     }
                 }

@@ -54,16 +54,8 @@
                 
                 <label class="title">{lbl_Label}</label>
                 <p class="tags" tagID="tag{ID}" recID="contact{ID}" pkID="{ID}" table="contact" name="ContactGroups" value="{ContactGroups}">{ContactGroups}</p>
-                <input type="hidden" name="oldContactGroups" value="{ContactGroups}" oldContactGroupsID="{ID}"/>
             </td>
         </tr>
-        <tr>
-            <td colspan = "3">
-                <input type="submit" name="submitEditContact" class="action_button" value="{lbl_Save}">
-                <input type="hidden" name="ID" value="{ID}">
-                <input type="hidden" name="searchText" value="{searchText}">
-            </td>
-        </tr>    
     </table>
 </form>
 
