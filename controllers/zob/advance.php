@@ -35,6 +35,13 @@ class Zobadvance {
 		$template = 'zob-adv-meetingline-list.tpl.php';
 
 		switch ($action) {
+            case 'meetinglinecard':
+				$template = 'zob-adv-meetingline-card.tpl.php';
+                $MeetingID = isset($urlBits[3]) ? $urlBits[3] : '';
+                $PageNo = isset($urlBits[4]) ? (int) $urlBits[4] : 1;
+                $this->meetinglinecard($MeetingID, $PageNo);
+                $this->buildcard($template);
+				return;
             case 'meetingline':
                 $action = isset($urlBits[3]) ? $urlBits[3] : '';
                 $action = isset($_POST["action"]) ? $_POST["action"] : $action;						
@@ -61,6 +68,21 @@ class Zobadvance {
                 }
         }
         $this->build($template);            
+	}
+
+    /**
+     * Sestavení stránky pro TISK
+     * @return void
+     */
+	public function buildcard( $template = 'zob-adv-meetingline-card.tpl.php' )
+	{
+        // Page message
+		$this->registry->getObject('template')->getPage()->addTag('message',$this->message);
+		$this->registry->getObject('template')->getPage()->addTag('errorMessage',$this->errorMessage);
+		$this->registry->getObject('template')->getPage()->addTag('anchor',$this->anchor);
+
+		// Build page
+		$this->registry->getObject('template')->buildFromTemplates('print-header.tpl.php', $template , 'print-footer.tpl.php');
 	}
 
     /**
@@ -107,6 +129,32 @@ class Zobadvance {
 		}
 		$this->MeetingID = $MeetingID;
 		return $template;
+	}
+
+	/**
+	 * Modifikace tabulky bodů jednání
+	 * @return void
+	 */
+	private function meetinglinecard($MeetingID, $PageNo)
+	{
+		$pages = $this->zob->synchroMeetinglinepage($MeetingID);
+
+		$prevPageNo = $PageNo > 1 ? $PageNo - 1 : $PageNo;
+		$nextPageNo = $PageNo >= $pages ? $pages : $PageNo + 1;
+
+        $meetinglinepage = $this->zob->getMeetinglinepageByPageNo($MeetingID, $PageNo);
+        $meetingline = $this->zob->getMeetingline($meetinglinepage['MeetingLineID']);
+		
+		$meetingline['LineNo'] .= $meetingline['LineNo2'] > 0 ? '.'.$meetingline['LineNo2'].'.' : '.';
+		$this->registry->getObject('template')->dataToTags( $meetinglinepage, 'page_' );
+		$this->registry->getObject('template')->dataToTags( $meetingline, 'line_' );
+
+		$this->registry->getObject('template')->getPage()->addTag('MeetingID',$MeetingID);
+		$this->registry->getObject('template')->getPage()->addTag('prevPageNo',$prevPageNo);
+		$this->registry->getObject('template')->getPage()->addTag('nextPageNo',$nextPageNo);
+		$this->registry->getObject('template')->getPage()->addTag('PageNo',$PageNo);
+		
+        $this->MeetingID = $MeetingID;        
 	}
 
 	/**

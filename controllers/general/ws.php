@@ -510,6 +510,8 @@ class Generalws {
 				return 'MeetingLineID';
 			case 'meetinglinecontent':
 				return 'ContentID';
+			case 'meetinglinepage':
+				return 'PageID';
 			default:
 				$this->result = "ERROR: Unknown table name '$table'.";
 		}

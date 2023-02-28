@@ -16,14 +16,10 @@
         </a>
         {remindIcon}        
       </td>
-      <td>
+      <td class="action_close" onclick="document.getElementById('{view{Type}CardID}').style.display = 'block'">
           {Description}
       </td>
       <td>
-        <a href="{Url}" target="{Target}" onclick="document.getElementById('{view{Type}CardID}').style.display = 'block'; this.href = 'javascript:void(0)';">
-          <small>KARTA</small>
-        </a>
-        <br>
         <a href="{Url}" target="{Target}" SET_HREF id="{ID}" table="{Table}" name="{Name}" type="{Type}">
           <small>{Name}</small>
         </a>

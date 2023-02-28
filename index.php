@@ -125,21 +125,21 @@ $contactBarMenuItem = $perSet > 0 ? "<li><a href='index.php?page=contact/list'>"
 $PortalCounter = $perSet == 9 ? $registry->getObject('db')->GetPortalCount() : 0;
 switch ($perSet) {
 	case 9:
-		$calendarBarMenuItem = "<li><a href='https://teamup.com/ks7xn3roxm7uo5r44z' target='_blank'>Kalendář</a></li>";
+		$calendarBarMenuItem = "<li><a href='https://teamup.com/ksgbrpsyinezv8575p' target='_blank'>Kalendář</a></li>";
 		break;
 	case 5:
-		$calendarBarMenuItem = "<li><a href='https://teamup.com/ksekgkc9ebu9deai3e' target='_blank'>Kalendář</a></li>";
+		$calendarBarMenuItem = "<li><a href='https://teamup.com/ksmoedn1dphw6gy7vf' target='_blank'>Kalendář</a></li>";
 		break;
  	case 4:
  	case 3:
  	case 2:
-		$calendarBarMenuItem = "<li><a href='https://teamup.com/ksx5ivfw8yrnn6gbqy' target='_blank'>Kalendář</a></li>";
+		$calendarBarMenuItem = "<li><a href='https://teamup.com/ks8v2jjagvj6a832b9' target='_blank'>Kalendář</a></li>";
 		break;
 	case 1:
 		$calendarBarMenuItem = "<li><a href='https://teamup.com/ksmoedn1dphw6gy7vf' target='_blank'>Kalendář</a></li>";
 		break;
 	default:
-		$calendarBarMenuItem = "";
+		$calendarBarMenuItem = "<li><a href='https://teamup.com/ks8v2jjagvj6a832b9' target='_blank'>Kalendář</a></li>";
 		break;
 }
 $adminBarMenuItem = $isAdmin ? "<li><a href='index.php?page=admin'>Administrace</a></li>" : '';

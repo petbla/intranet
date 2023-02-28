@@ -401,15 +401,16 @@ if(link_element){
     link_element.forEach( function (e) {
         switch (e.getAttribute('table')) {
             case 'dmsentry':
-                console.log('Jsem tu: ' + e.getAttribute('type'));
+                web = setup.getAttribute('webroot');
+                entryname = e.getAttribute('filename');
                 // <a href="" id="0828E65D-32A8-4E77-8BD8-C188AAB4DCAF" table="dmsentry" name="Obecní úřad\Reklama a grafika\POUKAZ.pdf" extension="pdf" type="30" onclick="wsLogView();">POUKAZ</a>
-                // <a href="" SET_HREF id="{ID}" table="dmsentry" name="{Name}" type="{Type}" url="{Url}" onclick="wsLogView();">{Title}</a>
+                // <a href="" SET_HREF id="{ID}" table="dmsentry" name="Title" filename="{Name}" type="{Type}" url="{Url}" onclick="wsLogView();">{Title}</a>
                 switch (e.getAttribute('type')) {
                     case 'File':
                     case '30':
                         // File ()
                         var name,extension,id;
-                        name = e.getAttribute('name')
+                        name = e.getAttribute('filename')
                         extension = name.split('.').pop();
                         if (isValidFileExtension(extension))
                         {
@@ -454,7 +455,7 @@ if(link_element){
                 var fileextension,entryname2,isChange;
                 entryid = e.getAttribute('entryid');
                 web = setup.getAttribute('webroot');
-                entryname = e.getAttribute('name');
+                entryname = e.getAttribute('filename');
 
                 switch (e.getAttribute('type')) {
                     case 'DocumentNo':
@@ -483,7 +484,7 @@ if(link_element){
                             link = "<a href='" + web + entryname + "'  target='_blank'>" + title + "</a>";
                             e.innerHTML = link;
                             e.setAttribute('class','col_link');       
-                        };
+                        }
                         break;
                     case 'odkaz':
                         if(entryid != ""){

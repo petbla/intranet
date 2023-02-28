@@ -2,6 +2,8 @@
 <p>
     <a href="index.php?page=zob/adv/{MeetingID}" title="Zápis jednání"><img src="views/classic/images/nav/meeting48.png" /></a>
     <img src="views/classic/images/nav/line48.png"/>
+    <a href="index.php?page=zob/adv/meetinglinecard/{MeetingID}" title="Karta zápisu jednání"><img src="views/classic/images/nav/meetingcard48.png" /></a>
+    <img src="views/classic/images/nav/line48.png"/>
     <a href="index.php?page=zob/xxx" title="Prezentace"><img src="views/classic/images/nav/present48.png" /></a>        
     <img src="views/classic/images/nav/line48.png"/>
     <a href="index.php?page=zob/print/10000/{MeetingID}" title="Tisk zápisu"><img src="views/classic/images/nav/printZ48.png" /></a>
@@ -110,54 +112,53 @@
                     </form>
                 </table>
             </td>
-            <td>
-                <table class="table-child" style="width:70%;">
-                    <tr>
-                        <th colspan="3">
-                            <h2 ondrop="dropattachment(event)" ondragover="allowDrop(event)" MeetingLineID="0">
-                                <img src="views/classic/images/icon/attachment.png" title="{lbl_attachment}" style="width:24px;"/>
-                                Přílohy jednání
-                            </h2>
-                        </th>
-                    </tr>
-                    <tr>
-                        <th style="width:100px;">.................</th>
-                        <th></th>
-                        <th></th>
-                    </tr>
-                    <!-- START meetingattachmentListNo0 -->
-                    <tr draggable="true" ondragstart="dragattachment(event)">      
-                        <td class="col_action">
-                            <img src="views/classic/images/icon/modify.png" title="{lbl_edit}" id="{AttachmentID}" MeetingLineID="0" dmsClassName="{dmsClassName}""/>
-                            <a href="index.php?page=zob/meetingattachment/delete/{AttachmentID}"><img src="views/classic/images/icon/delete.png" title="{lbl_Delete}" onclick="return ConfirmDelete();"/></a>
-                        </td>
-                        <td colspan="2" class="col_name">
-                            <span>
-                                <a href="" SET_HREF AttachmentID="{AttachmentID}" id="{ID}" table="dmsentry" name="{Name}" type="{Type}" url="">{Description}</a>                
-                            </span>
-                        </td>
-                    </tr>
-                    <!-- END meetingattachmentListNo0 -->
-                    <form action="index.php?page=document/addFiles" method="POST" enctype="multipart/form-data">
-                        <tr>
-                            <td>
-                                <img src="views/classic/images/nav/addNew.png" alt="{lbl_New}" />                    
-                            </td>
-                            <td>
-                                <input type="file" name="fileToUpload[]" id="fileToUpload" multiple class="action" >  
-                            </td>
-                            <td>
-                                <input type="image" src="views/classic/images/nav/upload.png" name="submit" id="submitAddFile">
-                                <input type="hidden" name="ParentID" value="{ParentID}">
-                            </td>
-                        </tr>
-                    </form>
-                </table>
-
-            </td>
         </tr>
     </table>
-                        
+
+    <table class="table-child" style="width:70%;">
+        <tr>
+            <th colspan="3">
+                <h2 ondrop="dropattachment(event)" ondragover="allowDrop(event)" MeetingLineID="0">
+                    <img src="views/classic/images/icon/attachment.png" title="{lbl_attachment}" style="width:24px;"/>
+                    Přílohy jednání
+                </h2>
+            </th>
+        </tr>
+        <tr>
+            <th style="width:100px;">.................</th>
+            <th></th>
+            <th></th>
+        </tr>
+        <!-- START meetingattachmentListNo0 -->
+        <tr draggable="true" ondragstart="dragattachment(event)">      
+            <td class="col_action">
+                <img src="views/classic/images/icon/modify.png" title="{lbl_edit}" id="{AttachmentID}" MeetingLineID="0" dmsClassName="{dmsClassName}""/>
+                <a href="index.php?page=zob/meetingattachment/delete/{AttachmentID}"><img src="views/classic/images/icon/delete.png" title="{lbl_Delete}" onclick="return ConfirmDelete();"/></a>
+            </td>
+            <td colspan="2" class="col_name">
+                <span>
+                    <a href="" SET_HREF AttachmentID="{AttachmentID}" id="{ID}" table="dmsentry" name="{Name}" type="{Type}" url="">{Description}</a>                
+                </span>
+            </td>
+        </tr>
+        <!-- END meetingattachmentListNo0 -->
+        <form action="index.php?page=document/addFiles" method="POST" enctype="multipart/form-data">
+            <tr>
+                <td>
+                    <img src="views/classic/images/nav/addNew.png" alt="{lbl_New}" />                    
+                </td>
+                <td>
+                    <input type="file" name="fileToUpload[]" id="fileToUpload" multiple class="action" >  
+                </td>
+                <td>
+                    <input type="image" src="views/classic/images/nav/upload.png" name="submit" id="submitAddFile">
+                    <input type="hidden" name="ParentID" value="{ParentID}">
+                </td>
+            </tr>
+        </form>
+    </table>
+
+    
 </div>
 <a href="#header" class="button"><span class="action_close">Nahorů</span></a>
 <a href="index.php?page=zob/meeting/list/{MeetingTypeID}" class="button"><span class="action_close">{lbl_Close}</span></a>

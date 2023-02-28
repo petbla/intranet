@@ -33,6 +33,12 @@ p, li{
   background-color: #fff;
   width: 200px;
 }
+.pageno{
+  margin: 0;
+  padding: 0;
+  font-size: 24px;
+  font-weight: bold;  
+}
 /* Fieldset */
 
 h1, .actions img{
@@ -791,6 +797,40 @@ div#editwindow input[type=button]{
 div#editwindow .required{
 	color:red;
 	font-weight:normal;
+}
+
+/* Form  - PowerPoint */
+div#PageHeader{
+	min-height: 10vh;
+  margin: 0 auto;
+}
+
+div#PageBody{
+	min-height: 80vh;
+  margin: 0 auto;
+	padding: 0;
+	width: 100%;
+  font: 13px "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+  border: 1px solid black;
+}
+div#PageBody p, textarea{
+	padding: 10px;
+  width: 95%;
+  line-height: 30px;
+  font: 24px "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+  font-weight: bold;
+}
+div#PageFooter{
+	min-height: 10vh;
+  margin: 0 auto;
+	padding: 10px;
+	width: 100%;
+  height: 24px;
+  text-align: center;
+}
+div#PageFooter span{
+  margin: 0;
+  padding: 0;
 }
 
 /* Form  - CARD */

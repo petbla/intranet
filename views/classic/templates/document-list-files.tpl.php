@@ -18,7 +18,7 @@
         {remindIcon}        
       </td>
       <td>
-        <a href="" SET_HREF id="{ID}" recID="dmsentry{ID}" table="dmsentry" pkID="{ID}" name="Title" type="{Type}" url="{Url}" onclick="wsLogView();">{Title}</a>
+        <a href="" SET_HREF id="{ID}" recID="dmsentry{ID}" table="dmsentry" pkID="{ID}" name="Title" filename="{Name}" type="{Type}" url="{Url}" onclick="wsLogView();">{Title}</a>
         {mediaplayer}
       </td>
       <td recID="dmsentry{ID}" table="dmsentry" pkID="{ID}" name="DocumentNo">{DocumentNo}</td>

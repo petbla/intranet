@@ -6590,3 +6590,1024 @@ Stack trace:
 [17-Feb-2023 23:36:18 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
 [17-Feb-2023 23:36:18 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
 [17-Feb-2023 23:36:18 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 21:36:02 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 21:36:14 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 21:36:14 Europe/Prague] PHP Notice:  Undefined index: Verifier1 in C:\inetpub\wwwroot\intranet\controllers\zob\controller.php on line 983
+[22-Feb-2023 21:36:14 Europe/Prague] PHP Stack trace:
+[22-Feb-2023 21:36:14 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[22-Feb-2023 21:36:14 Europe/Prague] PHP   2. Zobcontroller->__construct($registry = class Registry {  }, $directCall = TRUE) C:\inetpub\wwwroot\intranet\index.php:104
+[22-Feb-2023 21:36:14 Europe/Prague] PHP   3. Zobcontroller->meeting($action = 'list') C:\inetpub\wwwroot\intranet\controllers\zob\controller.php:62
+[22-Feb-2023 21:36:14 Europe/Prague] PHP   4. Zobcontroller->listMeeting($MeetingTypeID = '4') C:\inetpub\wwwroot\intranet\controllers\zob\controller.php:530
+[22-Feb-2023 21:36:14 Europe/Prague] PHP Notice:  Undefined index: Verifier2 in C:\inetpub\wwwroot\intranet\controllers\zob\controller.php on line 985
+[22-Feb-2023 21:36:14 Europe/Prague] PHP Stack trace:
+[22-Feb-2023 21:36:14 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[22-Feb-2023 21:36:14 Europe/Prague] PHP   2. Zobcontroller->__construct($registry = class Registry {  }, $directCall = TRUE) C:\inetpub\wwwroot\intranet\index.php:104
+[22-Feb-2023 21:36:14 Europe/Prague] PHP   3. Zobcontroller->meeting($action = 'list') C:\inetpub\wwwroot\intranet\controllers\zob\controller.php:62
+[22-Feb-2023 21:36:14 Europe/Prague] PHP   4. Zobcontroller->listMeeting($MeetingTypeID = '4') C:\inetpub\wwwroot\intranet\controllers\zob\controller.php:530
+[22-Feb-2023 21:36:14 Europe/Prague] PHP Notice:  Undefined index: Verifier1 in C:\inetpub\wwwroot\intranet\controllers\zob\controller.php on line 983
+[22-Feb-2023 21:36:14 Europe/Prague] PHP Stack trace:
+[22-Feb-2023 21:36:14 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[22-Feb-2023 21:36:14 Europe/Prague] PHP   2. Zobcontroller->__construct($registry = class Registry {  }, $directCall = TRUE) C:\inetpub\wwwroot\intranet\index.php:104
+[22-Feb-2023 21:36:14 Europe/Prague] PHP   3. Zobcontroller->meeting($action = 'list') C:\inetpub\wwwroot\intranet\controllers\zob\controller.php:62
+[22-Feb-2023 21:36:14 Europe/Prague] PHP   4. Zobcontroller->listMeeting($MeetingTypeID = '4') C:\inetpub\wwwroot\intranet\controllers\zob\controller.php:530
+[22-Feb-2023 21:36:14 Europe/Prague] PHP Notice:  Undefined index: Verifier2 in C:\inetpub\wwwroot\intranet\controllers\zob\controller.php on line 985
+[22-Feb-2023 21:36:14 Europe/Prague] PHP Stack trace:
+[22-Feb-2023 21:36:14 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[22-Feb-2023 21:36:14 Europe/Prague] PHP   2. Zobcontroller->__construct($registry = class Registry {  }, $directCall = TRUE) C:\inetpub\wwwroot\intranet\index.php:104
+[22-Feb-2023 21:36:14 Europe/Prague] PHP   3. Zobcontroller->meeting($action = 'list') C:\inetpub\wwwroot\intranet\controllers\zob\controller.php:62
+[22-Feb-2023 21:36:14 Europe/Prague] PHP   4. Zobcontroller->listMeeting($MeetingTypeID = '4') C:\inetpub\wwwroot\intranet\controllers\zob\controller.php:530
+[22-Feb-2023 21:36:14 Europe/Prague] PHP Notice:  Undefined index: Verifier1 in C:\inetpub\wwwroot\intranet\controllers\zob\controller.php on line 983
+[22-Feb-2023 21:36:14 Europe/Prague] PHP Stack trace:
+[22-Feb-2023 21:36:14 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[22-Feb-2023 21:36:14 Europe/Prague] PHP   2. Zobcontroller->__construct($registry = class Registry {  }, $directCall = TRUE) C:\inetpub\wwwroot\intranet\index.php:104
+[22-Feb-2023 21:36:14 Europe/Prague] PHP   3. Zobcontroller->meeting($action = 'list') C:\inetpub\wwwroot\intranet\controllers\zob\controller.php:62
+[22-Feb-2023 21:36:14 Europe/Prague] PHP   4. Zobcontroller->listMeeting($MeetingTypeID = '4') C:\inetpub\wwwroot\intranet\controllers\zob\controller.php:530
+[22-Feb-2023 21:36:14 Europe/Prague] PHP Notice:  Undefined index: Verifier2 in C:\inetpub\wwwroot\intranet\controllers\zob\controller.php on line 985
+[22-Feb-2023 21:36:14 Europe/Prague] PHP Stack trace:
+[22-Feb-2023 21:36:14 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[22-Feb-2023 21:36:14 Europe/Prague] PHP   2. Zobcontroller->__construct($registry = class Registry {  }, $directCall = TRUE) C:\inetpub\wwwroot\intranet\index.php:104
+[22-Feb-2023 21:36:14 Europe/Prague] PHP   3. Zobcontroller->meeting($action = 'list') C:\inetpub\wwwroot\intranet\controllers\zob\controller.php:62
+[22-Feb-2023 21:36:14 Europe/Prague] PHP   4. Zobcontroller->listMeeting($MeetingTypeID = '4') C:\inetpub\wwwroot\intranet\controllers\zob\controller.php:530
+[22-Feb-2023 21:37:57 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 21:38:03 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 21:38:07 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 21:38:14 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 21:38:19 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 21:38:30 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 21:38:36 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 21:38:39 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 21:38:47 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 21:38:49 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 21:38:58 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 21:41:59 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 21:42:26 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 21:50:57 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 21:53:44 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 21:53:52 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 21:53:55 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 21:59:05 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 21:59:09 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 21:59:41 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 21:59:44 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 22:57:31 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:00:54 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:01:00 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:01:00 Europe/Prague] PHP Fatal error:  Chyba při provádění dotazu a jeho ukládání do mezipaměti: Unknown column 'OrderNo' in 'order clause' in C:\inetpub\wwwroot\intranet\registry\databaseobjects\mysql.database.class.php on line 126
+[22-Feb-2023 23:01:00 Europe/Prague] PHP Stack trace:
+[22-Feb-2023 23:01:00 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[22-Feb-2023 23:01:00 Europe/Prague] PHP   2. Zobcontroller->__construct($registry = class Registry {  }, $directCall = TRUE) C:\inetpub\wwwroot\intranet\index.php:104
+[22-Feb-2023 23:01:00 Europe/Prague] PHP   3. Zobadvance->main($action = 'meetinglinecard') C:\inetpub\wwwroot\intranet\controllers\zob\controller.php:86
+[22-Feb-2023 23:01:00 Europe/Prague] PHP   4. Zobadvance->meetinglinecard($MeetingID = '80', $PageNo = 1) C:\inetpub\wwwroot\intranet\controllers\zob\advance.php:42
+[22-Feb-2023 23:01:00 Europe/Prague] PHP   5. Zobcontroller->readMeetingLinesIndex($param = '80') C:\inetpub\wwwroot\intranet\controllers\zob\advance.php:124
+[22-Feb-2023 23:01:00 Europe/Prague] PHP   6. mysqldatabase->findSet($sql = *uninitialized*) C:\inetpub\wwwroot\intranet\controllers\zob\controller.php:1382
+[22-Feb-2023 23:01:00 Europe/Prague] PHP   7. mysqldatabase->cacheQuery($queryStr = 'SELECT * FROM mis_meetinglinepage WHERE `MeetingLineID` = \'1371\' ORDER BY OrderNo') C:\inetpub\wwwroot\intranet\registry\databaseobjects\mysql.database.class.php:408
+[22-Feb-2023 23:01:00 Europe/Prague] PHP   8. trigger_error($message = 'Chyba při provádění dotazu a jeho ukládání do mezipaměti: Unknown column \'OrderNo\' in \'order clause\'', $error_type = 256) C:\inetpub\wwwroot\intranet\registry\databaseobjects\mysql.database.class.php:126
+[22-Feb-2023 23:01:54 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:01:54 Europe/Prague] PHP Fatal error:  Chyba při provádění dotazu a jeho ukládání do mezipaměti: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'Order' at line 1 in C:\inetpub\wwwroot\intranet\registry\databaseobjects\mysql.database.class.php on line 126
+[22-Feb-2023 23:01:54 Europe/Prague] PHP Stack trace:
+[22-Feb-2023 23:01:54 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[22-Feb-2023 23:01:54 Europe/Prague] PHP   2. Zobcontroller->__construct($registry = class Registry {  }, $directCall = TRUE) C:\inetpub\wwwroot\intranet\index.php:104
+[22-Feb-2023 23:01:54 Europe/Prague] PHP   3. Zobadvance->main($action = 'meetinglinecard') C:\inetpub\wwwroot\intranet\controllers\zob\controller.php:86
+[22-Feb-2023 23:01:54 Europe/Prague] PHP   4. Zobadvance->meetinglinecard($MeetingID = '80', $PageNo = 1) C:\inetpub\wwwroot\intranet\controllers\zob\advance.php:42
+[22-Feb-2023 23:01:54 Europe/Prague] PHP   5. Zobcontroller->readMeetingLinesIndex($param = '80') C:\inetpub\wwwroot\intranet\controllers\zob\advance.php:124
+[22-Feb-2023 23:01:54 Europe/Prague] PHP   6. mysqldatabase->findSet($sql = *uninitialized*) C:\inetpub\wwwroot\intranet\controllers\zob\controller.php:1382
+[22-Feb-2023 23:01:54 Europe/Prague] PHP   7. mysqldatabase->cacheQuery($queryStr = 'SELECT * FROM mis_meetinglinepage WHERE `MeetingLineID` = \'1371\' ORDER BY Order') C:\inetpub\wwwroot\intranet\registry\databaseobjects\mysql.database.class.php:408
+[22-Feb-2023 23:01:54 Europe/Prague] PHP   8. trigger_error($message = 'Chyba při provádění dotazu a jeho ukládání do mezipaměti: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near \'Order\' at line 1', $error_type = 256) C:\inetpub\wwwroot\intranet\registry\databaseobjects\mysql.database.class.php:126
+[22-Feb-2023 23:05:01 Europe/Prague] PHP Fatal error:  Chyba při provádění dotazu: Unknown column 'OrderNo DESC' in 'order clause' in C:\inetpub\wwwroot\intranet\registry\databaseobjects\mysql.database.class.php on line 507
+[22-Feb-2023 23:05:01 Europe/Prague] PHP Stack trace:
+[22-Feb-2023 23:05:01 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[22-Feb-2023 23:05:01 Europe/Prague] PHP   2. Zobcontroller->__construct($registry = class Registry {  }, $directCall = TRUE) C:\inetpub\wwwroot\intranet\index.php:104
+[22-Feb-2023 23:05:01 Europe/Prague] PHP   3. Zobadvance->main($action = 'meetinglinecard') C:\inetpub\wwwroot\intranet\controllers\zob\controller.php:86
+[22-Feb-2023 23:05:01 Europe/Prague] PHP   4. Zobadvance->meetinglinecard($MeetingID = '80', $PageNo = 1) C:\inetpub\wwwroot\intranet\controllers\zob\advance.php:42
+[22-Feb-2023 23:05:01 Europe/Prague] PHP   5. Zobcontroller->readMeetingLinesIndex($param = '80') C:\inetpub\wwwroot\intranet\controllers\zob\advance.php:124
+[22-Feb-2023 23:05:01 Europe/Prague] PHP   6. Zobcontroller->addMeetinglinePage($MeetingLineID = '1371') C:\inetpub\wwwroot\intranet\controllers\zob\controller.php:1392
+[22-Feb-2023 23:05:01 Europe/Prague] PHP   7. mysqldatabase->findLast() C:\inetpub\wwwroot\intranet\controllers\zob\controller.php:761
+[22-Feb-2023 23:05:01 Europe/Prague] PHP   8. mysqldatabase->findFirst() C:\inetpub\wwwroot\intranet\registry\databaseobjects\mysql.database.class.php:457
+[22-Feb-2023 23:05:01 Europe/Prague] PHP   9. mysqldatabase->executeQuery($queryStr = 'SELECT * FROM mis_meetinglinepage WHERE `MeetingLineID` = \'1371\' ORDER BY `OrderNo DESC`') C:\inetpub\wwwroot\intranet\registry\databaseobjects\mysql.database.class.php:433
+[22-Feb-2023 23:05:01 Europe/Prague] PHP  10. trigger_error($message = 'Chyba při provádění dotazu: Unknown column \'OrderNo DESC\' in \'order clause\'', $error_type = 256) C:\inetpub\wwwroot\intranet\registry\databaseobjects\mysql.database.class.php:507
+[22-Feb-2023 23:05:57 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:05:57 Europe/Prague] PHP Fatal error:  Chyba při provádění dotazu: Unknown column 'OrderNo' in 'order clause' in C:\inetpub\wwwroot\intranet\registry\databaseobjects\mysql.database.class.php on line 507
+[22-Feb-2023 23:05:57 Europe/Prague] PHP Stack trace:
+[22-Feb-2023 23:05:57 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[22-Feb-2023 23:05:57 Europe/Prague] PHP   2. Zobcontroller->__construct($registry = class Registry {  }, $directCall = TRUE) C:\inetpub\wwwroot\intranet\index.php:104
+[22-Feb-2023 23:05:57 Europe/Prague] PHP   3. Zobadvance->main($action = 'meetinglinecard') C:\inetpub\wwwroot\intranet\controllers\zob\controller.php:86
+[22-Feb-2023 23:05:57 Europe/Prague] PHP   4. Zobadvance->meetinglinecard($MeetingID = '80', $PageNo = 1) C:\inetpub\wwwroot\intranet\controllers\zob\advance.php:42
+[22-Feb-2023 23:05:57 Europe/Prague] PHP   5. Zobcontroller->readMeetingLinesIndex($param = '80') C:\inetpub\wwwroot\intranet\controllers\zob\advance.php:124
+[22-Feb-2023 23:05:57 Europe/Prague] PHP   6. Zobcontroller->addMeetinglinePage($MeetingLineID = '1371') C:\inetpub\wwwroot\intranet\controllers\zob\controller.php:1392
+[22-Feb-2023 23:05:57 Europe/Prague] PHP   7. mysqldatabase->findLast() C:\inetpub\wwwroot\intranet\controllers\zob\controller.php:761
+[22-Feb-2023 23:05:57 Europe/Prague] PHP   8. mysqldatabase->findFirst() C:\inetpub\wwwroot\intranet\registry\databaseobjects\mysql.database.class.php:457
+[22-Feb-2023 23:05:57 Europe/Prague] PHP   9. mysqldatabase->executeQuery($queryStr = 'SELECT * FROM mis_meetinglinepage WHERE `MeetingLineID` = \'1371\' ORDER BY OrderNo DESC') C:\inetpub\wwwroot\intranet\registry\databaseobjects\mysql.database.class.php:433
+[22-Feb-2023 23:05:57 Europe/Prague] PHP  10. trigger_error($message = 'Chyba při provádění dotazu: Unknown column \'OrderNo\' in \'order clause\'', $error_type = 256) C:\inetpub\wwwroot\intranet\registry\databaseobjects\mysql.database.class.php:507
+[22-Feb-2023 23:07:03 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:07:03 Europe/Prague] PHP Fatal error:  Chyba při provádění dotazu a jeho ukládání do mezipaměti: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'AND MeetingLineID = 0' at line 1 in C:\inetpub\wwwroot\intranet\registry\databaseobjects\mysql.database.class.php on line 126
+[22-Feb-2023 23:07:03 Europe/Prague] PHP Stack trace:
+[22-Feb-2023 23:07:03 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[22-Feb-2023 23:07:03 Europe/Prague] PHP   2. Zobcontroller->__construct($registry = class Registry {  }, $directCall = TRUE) C:\inetpub\wwwroot\intranet\index.php:104
+[22-Feb-2023 23:07:03 Europe/Prague] PHP   3. Zobadvance->main($action = 'meetinglinecard') C:\inetpub\wwwroot\intranet\controllers\zob\controller.php:86
+[22-Feb-2023 23:07:03 Europe/Prague] PHP   4. Zobadvance->build($template = 'zob-adv-meetingline-card.tpl.php') C:\inetpub\wwwroot\intranet\controllers\zob\advance.php:69
+[22-Feb-2023 23:07:03 Europe/Prague] PHP   5. Zobcontroller->setDatasetMeetingLine($MeetingID = NULL, $activeMeetingLineID = *uninitialized*) C:\inetpub\wwwroot\intranet\controllers\zob\advance.php:78
+[22-Feb-2023 23:07:03 Europe/Prague] PHP   6. mysqldatabase->cacheQuery($queryStr = 'SELECT * FROM mis_meetingattachment WHERE MeetingID =  AND MeetingLineID = 0') C:\inetpub\wwwroot\intranet\controllers\zob\controller.php:1179
+[22-Feb-2023 23:07:03 Europe/Prague] PHP   7. trigger_error($message = 'Chyba při provádění dotazu a jeho ukládání do mezipaměti: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near \'AND MeetingLineID = 0\' at line 1', $error_type = 256) C:\inetpub\wwwroot\intranet\registry\databaseobjects\mysql.database.class.php:126
+[22-Feb-2023 23:10:57 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:10:57 Europe/Prague] PHP Fatal error:  Chyba při provádění dotazu a jeho ukládání do mezipaměti: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'AND MeetingLineID = 0' at line 1 in C:\inetpub\wwwroot\intranet\registry\databaseobjects\mysql.database.class.php on line 126
+[22-Feb-2023 23:10:57 Europe/Prague] PHP Stack trace:
+[22-Feb-2023 23:10:57 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[22-Feb-2023 23:10:57 Europe/Prague] PHP   2. Zobcontroller->__construct($registry = class Registry {  }, $directCall = TRUE) C:\inetpub\wwwroot\intranet\index.php:104
+[22-Feb-2023 23:10:57 Europe/Prague] PHP   3. Zobadvance->main($action = 'meetinglinecard') C:\inetpub\wwwroot\intranet\controllers\zob\controller.php:86
+[22-Feb-2023 23:10:57 Europe/Prague] PHP   4. Zobadvance->build($template = 'zob-adv-meetingline-card.tpl.php') C:\inetpub\wwwroot\intranet\controllers\zob\advance.php:69
+[22-Feb-2023 23:10:57 Europe/Prague] PHP   5. Zobcontroller->setDatasetMeetingLine($MeetingID = NULL, $activeMeetingLineID = *uninitialized*) C:\inetpub\wwwroot\intranet\controllers\zob\advance.php:78
+[22-Feb-2023 23:10:57 Europe/Prague] PHP   6. mysqldatabase->cacheQuery($queryStr = 'SELECT * FROM mis_meetingattachment WHERE MeetingID =  AND MeetingLineID = 0') C:\inetpub\wwwroot\intranet\controllers\zob\controller.php:1179
+[22-Feb-2023 23:10:57 Europe/Prague] PHP   7. trigger_error($message = 'Chyba při provádění dotazu a jeho ukládání do mezipaměti: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near \'AND MeetingLineID = 0\' at line 1', $error_type = 256) C:\inetpub\wwwroot\intranet\registry\databaseobjects\mysql.database.class.php:126
+[22-Feb-2023 23:12:29 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:12:35 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:12:41 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:12:43 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:13:27 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:13:33 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:18:38 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:19:49 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:20:09 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:21:15 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:25:15 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:25:17 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:26:04 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:27:04 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:27:05 Europe/Prague] PHP Warning:  count(): Parameter must be an array or an object that implements Countable in C:\inetpub\wwwroot\intranet\controllers\zob\advance.php on line 126
+[22-Feb-2023 23:27:05 Europe/Prague] PHP Stack trace:
+[22-Feb-2023 23:27:05 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[22-Feb-2023 23:27:05 Europe/Prague] PHP   2. Zobcontroller->__construct($registry = class Registry {  }, $directCall = TRUE) C:\inetpub\wwwroot\intranet\index.php:104
+[22-Feb-2023 23:27:05 Europe/Prague] PHP   3. Zobadvance->main($action = 'meetinglinecard') C:\inetpub\wwwroot\intranet\controllers\zob\controller.php:86
+[22-Feb-2023 23:27:05 Europe/Prague] PHP   4. Zobadvance->meetinglinecard($MeetingID = '80', $PageNo = '{nextPageNo}') C:\inetpub\wwwroot\intranet\controllers\zob\advance.php:42
+[22-Feb-2023 23:27:19 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:31:35 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:31:40 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:31:42 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:31:43 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:31:48 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:31:50 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:31:52 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:31:54 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:31:55 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:31:56 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:31:58 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:31:59 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:32:02 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:32:04 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:32:07 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:32:08 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:32:10 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:32:11 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:32:12 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:32:13 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:32:14 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:34:31 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:34:31 Europe/Prague] PHP Notice:  Undefined index: LineID in C:\inetpub\wwwroot\intranet\controllers\zob\advance.php on line 133
+[22-Feb-2023 23:34:31 Europe/Prague] PHP Stack trace:
+[22-Feb-2023 23:34:31 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[22-Feb-2023 23:34:31 Europe/Prague] PHP   2. Zobcontroller->__construct($registry = class Registry {  }, $directCall = TRUE) C:\inetpub\wwwroot\intranet\index.php:104
+[22-Feb-2023 23:34:31 Europe/Prague] PHP   3. Zobadvance->main($action = 'meetinglinecard') C:\inetpub\wwwroot\intranet\controllers\zob\controller.php:86
+[22-Feb-2023 23:34:31 Europe/Prague] PHP   4. Zobadvance->meetinglinecard($MeetingID = '80', $PageNo = 4) C:\inetpub\wwwroot\intranet\controllers\zob\advance.php:42
+[22-Feb-2023 23:34:31 Europe/Prague] PHP Notice:  Undefined index: PageNo in C:\inetpub\wwwroot\intranet\controllers\zob\advance.php on line 133
+[22-Feb-2023 23:34:31 Europe/Prague] PHP Stack trace:
+[22-Feb-2023 23:34:31 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[22-Feb-2023 23:34:31 Europe/Prague] PHP   2. Zobcontroller->__construct($registry = class Registry {  }, $directCall = TRUE) C:\inetpub\wwwroot\intranet\index.php:104
+[22-Feb-2023 23:34:31 Europe/Prague] PHP   3. Zobadvance->main($action = 'meetinglinecard') C:\inetpub\wwwroot\intranet\controllers\zob\controller.php:86
+[22-Feb-2023 23:34:31 Europe/Prague] PHP   4. Zobadvance->meetinglinecard($MeetingID = '80', $PageNo = 4) C:\inetpub\wwwroot\intranet\controllers\zob\advance.php:42
+[22-Feb-2023 23:35:01 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:35:01 Europe/Prague] PHP Notice:  Undefined index: LineID in C:\inetpub\wwwroot\intranet\controllers\zob\advance.php on line 133
+[22-Feb-2023 23:35:01 Europe/Prague] PHP Stack trace:
+[22-Feb-2023 23:35:01 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[22-Feb-2023 23:35:01 Europe/Prague] PHP   2. Zobcontroller->__construct($registry = class Registry {  }, $directCall = TRUE) C:\inetpub\wwwroot\intranet\index.php:104
+[22-Feb-2023 23:35:01 Europe/Prague] PHP   3. Zobadvance->main($action = 'meetinglinecard') C:\inetpub\wwwroot\intranet\controllers\zob\controller.php:86
+[22-Feb-2023 23:35:01 Europe/Prague] PHP   4. Zobadvance->meetinglinecard($MeetingID = '80', $PageNo = 4) C:\inetpub\wwwroot\intranet\controllers\zob\advance.php:42
+[22-Feb-2023 23:35:01 Europe/Prague] PHP Notice:  Undefined index: PageID in C:\inetpub\wwwroot\intranet\controllers\zob\advance.php on line 133
+[22-Feb-2023 23:35:01 Europe/Prague] PHP Stack trace:
+[22-Feb-2023 23:35:01 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[22-Feb-2023 23:35:01 Europe/Prague] PHP   2. Zobcontroller->__construct($registry = class Registry {  }, $directCall = TRUE) C:\inetpub\wwwroot\intranet\index.php:104
+[22-Feb-2023 23:35:01 Europe/Prague] PHP   3. Zobadvance->main($action = 'meetinglinecard') C:\inetpub\wwwroot\intranet\controllers\zob\controller.php:86
+[22-Feb-2023 23:35:01 Europe/Prague] PHP   4. Zobadvance->meetinglinecard($MeetingID = '80', $PageNo = 4) C:\inetpub\wwwroot\intranet\controllers\zob\advance.php:42
+[22-Feb-2023 23:35:25 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:35:30 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:35:31 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:35:39 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:35:40 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:35:42 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:35:56 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:36:02 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:36:05 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:36:08 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:36:20 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:36:23 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:36:25 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:36:26 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:36:27 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:36:29 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:36:31 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:36:34 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:36:37 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:36:39 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:36:41 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:36:43 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:36:45 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:36:45 Europe/Prague] PHP Notice:  Undefined offset: 3 in C:\inetpub\wwwroot\intranet\controllers\zob\advance.php on line 133
+[22-Feb-2023 23:36:45 Europe/Prague] PHP Stack trace:
+[22-Feb-2023 23:36:45 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[22-Feb-2023 23:36:45 Europe/Prague] PHP   2. Zobcontroller->__construct($registry = class Registry {  }, $directCall = TRUE) C:\inetpub\wwwroot\intranet\index.php:104
+[22-Feb-2023 23:36:45 Europe/Prague] PHP   3. Zobadvance->main($action = 'meetinglinecard') C:\inetpub\wwwroot\intranet\controllers\zob\controller.php:86
+[22-Feb-2023 23:36:45 Europe/Prague] PHP   4. Zobadvance->meetinglinecard($MeetingID = '83', $PageNo = 3) C:\inetpub\wwwroot\intranet\controllers\zob\advance.php:42
+[22-Feb-2023 23:36:45 Europe/Prague] PHP Notice:  Undefined offset: 3 in C:\inetpub\wwwroot\intranet\controllers\zob\advance.php on line 133
+[22-Feb-2023 23:36:45 Europe/Prague] PHP Stack trace:
+[22-Feb-2023 23:36:45 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[22-Feb-2023 23:36:45 Europe/Prague] PHP   2. Zobcontroller->__construct($registry = class Registry {  }, $directCall = TRUE) C:\inetpub\wwwroot\intranet\index.php:104
+[22-Feb-2023 23:36:45 Europe/Prague] PHP   3. Zobadvance->main($action = 'meetinglinecard') C:\inetpub\wwwroot\intranet\controllers\zob\controller.php:86
+[22-Feb-2023 23:36:45 Europe/Prague] PHP   4. Zobadvance->meetinglinecard($MeetingID = '83', $PageNo = 3) C:\inetpub\wwwroot\intranet\controllers\zob\advance.php:42
+[22-Feb-2023 23:36:50 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:36:53 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:36:53 Europe/Prague] PHP Notice:  Undefined offset: 3 in C:\inetpub\wwwroot\intranet\controllers\zob\advance.php on line 133
+[22-Feb-2023 23:36:53 Europe/Prague] PHP Stack trace:
+[22-Feb-2023 23:36:53 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[22-Feb-2023 23:36:53 Europe/Prague] PHP   2. Zobcontroller->__construct($registry = class Registry {  }, $directCall = TRUE) C:\inetpub\wwwroot\intranet\index.php:104
+[22-Feb-2023 23:36:53 Europe/Prague] PHP   3. Zobadvance->main($action = 'meetinglinecard') C:\inetpub\wwwroot\intranet\controllers\zob\controller.php:86
+[22-Feb-2023 23:36:53 Europe/Prague] PHP   4. Zobadvance->meetinglinecard($MeetingID = '83', $PageNo = 3) C:\inetpub\wwwroot\intranet\controllers\zob\advance.php:42
+[22-Feb-2023 23:36:53 Europe/Prague] PHP Notice:  Undefined offset: 3 in C:\inetpub\wwwroot\intranet\controllers\zob\advance.php on line 133
+[22-Feb-2023 23:36:53 Europe/Prague] PHP Stack trace:
+[22-Feb-2023 23:36:53 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[22-Feb-2023 23:36:53 Europe/Prague] PHP   2. Zobcontroller->__construct($registry = class Registry {  }, $directCall = TRUE) C:\inetpub\wwwroot\intranet\index.php:104
+[22-Feb-2023 23:36:53 Europe/Prague] PHP   3. Zobadvance->main($action = 'meetinglinecard') C:\inetpub\wwwroot\intranet\controllers\zob\controller.php:86
+[22-Feb-2023 23:36:53 Europe/Prague] PHP   4. Zobadvance->meetinglinecard($MeetingID = '83', $PageNo = 3) C:\inetpub\wwwroot\intranet\controllers\zob\advance.php:42
+[22-Feb-2023 23:36:58 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:37:08 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:37:09 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:37:10 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:37:12 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:37:15 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:37:18 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:37:20 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:37:22 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:37:23 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:37:24 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:37:24 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:37:25 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:37:25 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:37:27 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:37:29 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:37:30 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:37:31 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:37:32 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:37:34 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:37:35 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:37:36 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:37:37 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:37:39 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:37:40 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:37:42 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:37:43 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:37:45 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:37:47 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:37:48 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:37:49 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:37:51 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:37:51 Europe/Prague] PHP Notice:  Undefined offset: 21 in C:\inetpub\wwwroot\intranet\controllers\zob\advance.php on line 133
+[22-Feb-2023 23:37:51 Europe/Prague] PHP Stack trace:
+[22-Feb-2023 23:37:51 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[22-Feb-2023 23:37:51 Europe/Prague] PHP   2. Zobcontroller->__construct($registry = class Registry {  }, $directCall = TRUE) C:\inetpub\wwwroot\intranet\index.php:104
+[22-Feb-2023 23:37:51 Europe/Prague] PHP   3. Zobadvance->main($action = 'meetinglinecard') C:\inetpub\wwwroot\intranet\controllers\zob\controller.php:86
+[22-Feb-2023 23:37:51 Europe/Prague] PHP   4. Zobadvance->meetinglinecard($MeetingID = '80', $PageNo = 21) C:\inetpub\wwwroot\intranet\controllers\zob\advance.php:42
+[22-Feb-2023 23:37:51 Europe/Prague] PHP Notice:  Undefined offset: 21 in C:\inetpub\wwwroot\intranet\controllers\zob\advance.php on line 133
+[22-Feb-2023 23:37:51 Europe/Prague] PHP Stack trace:
+[22-Feb-2023 23:37:51 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[22-Feb-2023 23:37:51 Europe/Prague] PHP   2. Zobcontroller->__construct($registry = class Registry {  }, $directCall = TRUE) C:\inetpub\wwwroot\intranet\index.php:104
+[22-Feb-2023 23:37:51 Europe/Prague] PHP   3. Zobadvance->main($action = 'meetinglinecard') C:\inetpub\wwwroot\intranet\controllers\zob\controller.php:86
+[22-Feb-2023 23:37:51 Europe/Prague] PHP   4. Zobadvance->meetinglinecard($MeetingID = '80', $PageNo = 21) C:\inetpub\wwwroot\intranet\controllers\zob\advance.php:42
+[22-Feb-2023 23:38:29 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:38:29 Europe/Prague] PHP Notice:  Undefined offset: 21 in C:\inetpub\wwwroot\intranet\controllers\zob\advance.php on line 133
+[22-Feb-2023 23:38:29 Europe/Prague] PHP Stack trace:
+[22-Feb-2023 23:38:29 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[22-Feb-2023 23:38:29 Europe/Prague] PHP   2. Zobcontroller->__construct($registry = class Registry {  }, $directCall = TRUE) C:\inetpub\wwwroot\intranet\index.php:104
+[22-Feb-2023 23:38:29 Europe/Prague] PHP   3. Zobadvance->main($action = 'meetinglinecard') C:\inetpub\wwwroot\intranet\controllers\zob\controller.php:86
+[22-Feb-2023 23:38:29 Europe/Prague] PHP   4. Zobadvance->meetinglinecard($MeetingID = '80', $PageNo = 21) C:\inetpub\wwwroot\intranet\controllers\zob\advance.php:42
+[22-Feb-2023 23:38:29 Europe/Prague] PHP Notice:  Undefined offset: 21 in C:\inetpub\wwwroot\intranet\controllers\zob\advance.php on line 133
+[22-Feb-2023 23:38:29 Europe/Prague] PHP Stack trace:
+[22-Feb-2023 23:38:29 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[22-Feb-2023 23:38:29 Europe/Prague] PHP   2. Zobcontroller->__construct($registry = class Registry {  }, $directCall = TRUE) C:\inetpub\wwwroot\intranet\index.php:104
+[22-Feb-2023 23:38:29 Europe/Prague] PHP   3. Zobadvance->main($action = 'meetinglinecard') C:\inetpub\wwwroot\intranet\controllers\zob\controller.php:86
+[22-Feb-2023 23:38:29 Europe/Prague] PHP   4. Zobadvance->meetinglinecard($MeetingID = '80', $PageNo = 21) C:\inetpub\wwwroot\intranet\controllers\zob\advance.php:42
+[22-Feb-2023 23:38:33 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:38:36 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:38:38 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:38:41 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:38:43 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:43:07 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:43:12 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:43:12 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:43:13 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:43:15 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:43:15 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:43:15 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:43:16 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:43:16 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:43:19 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:43:21 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:43:52 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:48:13 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:48:25 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:51:39 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:51:39 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[22-Feb-2023 23:51:39 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[23-Feb-2023 20:35:45 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[23-Feb-2023 20:35:47 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 17:16:35 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 17:16:36 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 17:16:38 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 17:16:39 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 17:17:58 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 17:18:17 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 17:18:32 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 17:19:08 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 17:24:31 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 17:24:36 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 17:24:37 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 17:24:38 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 17:24:40 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 17:24:47 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 17:24:52 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 17:24:54 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 17:25:24 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 17:25:57 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 17:26:01 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 17:26:02 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 17:26:04 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 17:28:07 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 17:28:20 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 17:28:22 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 21:38:24 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 21:38:33 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 21:38:35 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 21:38:56 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 21:40:23 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 21:40:29 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 21:40:31 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 21:44:46 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 21:44:46 Europe/Prague] PHP Notice:  Undefined offset: 13 in C:\inetpub\wwwroot\intranet\controllers\zob\advance.php on line 140
+[25-Feb-2023 21:44:46 Europe/Prague] PHP Stack trace:
+[25-Feb-2023 21:44:46 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[25-Feb-2023 21:44:46 Europe/Prague] PHP   2. Zobcontroller->__construct($registry = class Registry {  }, $directCall = TRUE) C:\inetpub\wwwroot\intranet\index.php:104
+[25-Feb-2023 21:44:46 Europe/Prague] PHP   3. Zobadvance->main($action = 'meetinglinecard') C:\inetpub\wwwroot\intranet\controllers\zob\controller.php:86
+[25-Feb-2023 21:44:46 Europe/Prague] PHP   4. Zobadvance->meetinglinecard($MeetingID = '80', $PageNo = 13) C:\inetpub\wwwroot\intranet\controllers\zob\advance.php:42
+[25-Feb-2023 21:44:46 Europe/Prague] PHP Notice:  Undefined offset: 13 in C:\inetpub\wwwroot\intranet\controllers\zob\advance.php on line 140
+[25-Feb-2023 21:44:46 Europe/Prague] PHP Stack trace:
+[25-Feb-2023 21:44:46 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[25-Feb-2023 21:44:46 Europe/Prague] PHP   2. Zobcontroller->__construct($registry = class Registry {  }, $directCall = TRUE) C:\inetpub\wwwroot\intranet\index.php:104
+[25-Feb-2023 21:44:46 Europe/Prague] PHP   3. Zobadvance->main($action = 'meetinglinecard') C:\inetpub\wwwroot\intranet\controllers\zob\controller.php:86
+[25-Feb-2023 21:44:46 Europe/Prague] PHP   4. Zobadvance->meetinglinecard($MeetingID = '80', $PageNo = 13) C:\inetpub\wwwroot\intranet\controllers\zob\advance.php:42
+[25-Feb-2023 21:45:17 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 21:45:21 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 21:45:22 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 21:45:26 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 21:45:27 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 21:45:29 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 21:45:30 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 21:45:31 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 21:45:33 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 21:45:41 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 21:45:43 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 21:45:44 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 21:46:51 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 21:46:58 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 21:47:02 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 21:47:03 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 21:47:05 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 21:47:06 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 21:47:07 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 21:47:14 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 21:47:18 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 21:47:21 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 21:47:23 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 21:47:25 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 21:47:26 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 21:47:28 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 21:47:29 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 21:47:31 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 21:47:32 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 21:48:53 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 21:49:14 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 21:52:00 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 21:52:42 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 21:55:37 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 21:55:41 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 21:55:44 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 21:55:48 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 21:55:53 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 21:55:57 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 21:55:59 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 21:59:47 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 21:59:51 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 21:59:52 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 21:59:53 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 21:59:55 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 21:59:56 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 21:59:58 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 21:59:59 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:00:00 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:00:01 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:00:02 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:06:23 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:06:26 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:06:27 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:06:28 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:06:29 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:06:31 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:06:32 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:06:33 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:12:31 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:12:31 Europe/Prague] PHP Warning:  Invalid argument supplied for foreach() in C:\inetpub\wwwroot\intranet\registry\objects\template.class.php on line 164
+[25-Feb-2023 22:12:31 Europe/Prague] PHP Stack trace:
+[25-Feb-2023 22:12:31 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[25-Feb-2023 22:12:31 Europe/Prague] PHP   2. template->parseOutput() C:\inetpub\wwwroot\intranet\index.php:153
+[25-Feb-2023 22:12:31 Europe/Prague] PHP   3. template->replaceTags($pp = FALSE) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:239
+[25-Feb-2023 22:12:31 Europe/Prague] PHP   4. template->replaceDataTags($tag = 'meetingline', $cacheId = 0) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:101
+[25-Feb-2023 22:12:31 Europe/Prague] PHP Warning:  Invalid argument supplied for foreach() in C:\inetpub\wwwroot\intranet\registry\objects\template.class.php on line 164
+[25-Feb-2023 22:12:31 Europe/Prague] PHP Stack trace:
+[25-Feb-2023 22:12:31 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[25-Feb-2023 22:12:31 Europe/Prague] PHP   2. template->parseOutput() C:\inetpub\wwwroot\intranet\index.php:153
+[25-Feb-2023 22:12:31 Europe/Prague] PHP   3. template->replaceTags($pp = FALSE) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:239
+[25-Feb-2023 22:12:31 Europe/Prague] PHP   4. template->replaceDataTags($tag = 'meetingline', $cacheId = 0) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:101
+[25-Feb-2023 22:12:31 Europe/Prague] PHP Warning:  Invalid argument supplied for foreach() in C:\inetpub\wwwroot\intranet\registry\objects\template.class.php on line 164
+[25-Feb-2023 22:12:31 Europe/Prague] PHP Stack trace:
+[25-Feb-2023 22:12:31 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[25-Feb-2023 22:12:31 Europe/Prague] PHP   2. template->parseOutput() C:\inetpub\wwwroot\intranet\index.php:153
+[25-Feb-2023 22:12:31 Europe/Prague] PHP   3. template->replaceTags($pp = FALSE) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:239
+[25-Feb-2023 22:12:31 Europe/Prague] PHP   4. template->replaceDataTags($tag = 'meetingline', $cacheId = 0) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:101
+[25-Feb-2023 22:12:31 Europe/Prague] PHP Warning:  Invalid argument supplied for foreach() in C:\inetpub\wwwroot\intranet\registry\objects\template.class.php on line 164
+[25-Feb-2023 22:12:31 Europe/Prague] PHP Stack trace:
+[25-Feb-2023 22:12:31 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[25-Feb-2023 22:12:31 Europe/Prague] PHP   2. template->parseOutput() C:\inetpub\wwwroot\intranet\index.php:153
+[25-Feb-2023 22:12:31 Europe/Prague] PHP   3. template->replaceTags($pp = FALSE) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:239
+[25-Feb-2023 22:12:31 Europe/Prague] PHP   4. template->replaceDataTags($tag = 'meetingline', $cacheId = 0) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:101
+[25-Feb-2023 22:12:31 Europe/Prague] PHP Warning:  Invalid argument supplied for foreach() in C:\inetpub\wwwroot\intranet\registry\objects\template.class.php on line 164
+[25-Feb-2023 22:12:31 Europe/Prague] PHP Stack trace:
+[25-Feb-2023 22:12:31 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[25-Feb-2023 22:12:31 Europe/Prague] PHP   2. template->parseOutput() C:\inetpub\wwwroot\intranet\index.php:153
+[25-Feb-2023 22:12:31 Europe/Prague] PHP   3. template->replaceTags($pp = FALSE) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:239
+[25-Feb-2023 22:12:31 Europe/Prague] PHP   4. template->replaceDataTags($tag = 'meetingline', $cacheId = 0) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:101
+[25-Feb-2023 22:12:31 Europe/Prague] PHP Warning:  Invalid argument supplied for foreach() in C:\inetpub\wwwroot\intranet\registry\objects\template.class.php on line 164
+[25-Feb-2023 22:12:31 Europe/Prague] PHP Stack trace:
+[25-Feb-2023 22:12:31 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[25-Feb-2023 22:12:31 Europe/Prague] PHP   2. template->parseOutput() C:\inetpub\wwwroot\intranet\index.php:153
+[25-Feb-2023 22:12:31 Europe/Prague] PHP   3. template->replaceTags($pp = FALSE) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:239
+[25-Feb-2023 22:12:31 Europe/Prague] PHP   4. template->replaceDataTags($tag = 'meetingline', $cacheId = 0) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:101
+[25-Feb-2023 22:12:31 Europe/Prague] PHP Warning:  Invalid argument supplied for foreach() in C:\inetpub\wwwroot\intranet\registry\objects\template.class.php on line 164
+[25-Feb-2023 22:12:31 Europe/Prague] PHP Stack trace:
+[25-Feb-2023 22:12:31 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[25-Feb-2023 22:12:31 Europe/Prague] PHP   2. template->parseOutput() C:\inetpub\wwwroot\intranet\index.php:153
+[25-Feb-2023 22:12:31 Europe/Prague] PHP   3. template->replaceTags($pp = FALSE) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:239
+[25-Feb-2023 22:12:31 Europe/Prague] PHP   4. template->replaceDataTags($tag = 'meetingline', $cacheId = 0) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:101
+[25-Feb-2023 22:12:31 Europe/Prague] PHP Warning:  Invalid argument supplied for foreach() in C:\inetpub\wwwroot\intranet\registry\objects\template.class.php on line 164
+[25-Feb-2023 22:12:31 Europe/Prague] PHP Stack trace:
+[25-Feb-2023 22:12:31 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[25-Feb-2023 22:12:31 Europe/Prague] PHP   2. template->parseOutput() C:\inetpub\wwwroot\intranet\index.php:153
+[25-Feb-2023 22:12:31 Europe/Prague] PHP   3. template->replaceTags($pp = FALSE) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:239
+[25-Feb-2023 22:12:31 Europe/Prague] PHP   4. template->replaceDataTags($tag = 'meetingline', $cacheId = 0) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:101
+[25-Feb-2023 22:12:31 Europe/Prague] PHP Warning:  Invalid argument supplied for foreach() in C:\inetpub\wwwroot\intranet\registry\objects\template.class.php on line 164
+[25-Feb-2023 22:12:31 Europe/Prague] PHP Stack trace:
+[25-Feb-2023 22:12:31 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[25-Feb-2023 22:12:31 Europe/Prague] PHP   2. template->parseOutput() C:\inetpub\wwwroot\intranet\index.php:153
+[25-Feb-2023 22:12:31 Europe/Prague] PHP   3. template->replaceTags($pp = FALSE) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:239
+[25-Feb-2023 22:12:31 Europe/Prague] PHP   4. template->replaceDataTags($tag = 'meetingline', $cacheId = 0) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:101
+[25-Feb-2023 22:12:31 Europe/Prague] PHP Warning:  Invalid argument supplied for foreach() in C:\inetpub\wwwroot\intranet\registry\objects\template.class.php on line 164
+[25-Feb-2023 22:12:31 Europe/Prague] PHP Stack trace:
+[25-Feb-2023 22:12:31 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[25-Feb-2023 22:12:31 Europe/Prague] PHP   2. template->parseOutput() C:\inetpub\wwwroot\intranet\index.php:153
+[25-Feb-2023 22:12:31 Europe/Prague] PHP   3. template->replaceTags($pp = FALSE) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:239
+[25-Feb-2023 22:12:31 Europe/Prague] PHP   4. template->replaceDataTags($tag = 'meetingline', $cacheId = 0) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:101
+[25-Feb-2023 22:12:31 Europe/Prague] PHP Warning:  Invalid argument supplied for foreach() in C:\inetpub\wwwroot\intranet\registry\objects\template.class.php on line 164
+[25-Feb-2023 22:12:31 Europe/Prague] PHP Stack trace:
+[25-Feb-2023 22:12:31 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[25-Feb-2023 22:12:31 Europe/Prague] PHP   2. template->parseOutput() C:\inetpub\wwwroot\intranet\index.php:153
+[25-Feb-2023 22:12:31 Europe/Prague] PHP   3. template->replaceTags($pp = FALSE) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:239
+[25-Feb-2023 22:12:31 Europe/Prague] PHP   4. template->replaceDataTags($tag = 'meetingline', $cacheId = 0) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:101
+[25-Feb-2023 22:12:31 Europe/Prague] PHP Warning:  Invalid argument supplied for foreach() in C:\inetpub\wwwroot\intranet\registry\objects\template.class.php on line 164
+[25-Feb-2023 22:12:31 Europe/Prague] PHP Stack trace:
+[25-Feb-2023 22:12:31 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[25-Feb-2023 22:12:31 Europe/Prague] PHP   2. template->parseOutput() C:\inetpub\wwwroot\intranet\index.php:153
+[25-Feb-2023 22:12:31 Europe/Prague] PHP   3. template->replaceTags($pp = FALSE) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:239
+[25-Feb-2023 22:12:31 Europe/Prague] PHP   4. template->replaceDataTags($tag = 'meetingline', $cacheId = 0) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:101
+[25-Feb-2023 22:12:31 Europe/Prague] PHP Warning:  Invalid argument supplied for foreach() in C:\inetpub\wwwroot\intranet\registry\objects\template.class.php on line 164
+[25-Feb-2023 22:12:31 Europe/Prague] PHP Stack trace:
+[25-Feb-2023 22:12:31 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[25-Feb-2023 22:12:31 Europe/Prague] PHP   2. template->parseOutput() C:\inetpub\wwwroot\intranet\index.php:153
+[25-Feb-2023 22:12:31 Europe/Prague] PHP   3. template->replaceTags($pp = FALSE) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:239
+[25-Feb-2023 22:12:31 Europe/Prague] PHP   4. template->replaceDataTags($tag = 'meetingline', $cacheId = 0) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:101
+[25-Feb-2023 22:12:31 Europe/Prague] PHP Warning:  Invalid argument supplied for foreach() in C:\inetpub\wwwroot\intranet\registry\objects\template.class.php on line 164
+[25-Feb-2023 22:12:31 Europe/Prague] PHP Stack trace:
+[25-Feb-2023 22:12:31 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[25-Feb-2023 22:12:31 Europe/Prague] PHP   2. template->parseOutput() C:\inetpub\wwwroot\intranet\index.php:153
+[25-Feb-2023 22:12:31 Europe/Prague] PHP   3. template->replaceTags($pp = FALSE) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:239
+[25-Feb-2023 22:12:31 Europe/Prague] PHP   4. template->replaceDataTags($tag = 'meetingline', $cacheId = 0) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:101
+[25-Feb-2023 22:12:31 Europe/Prague] PHP Warning:  Invalid argument supplied for foreach() in C:\inetpub\wwwroot\intranet\registry\objects\template.class.php on line 164
+[25-Feb-2023 22:12:31 Europe/Prague] PHP Stack trace:
+[25-Feb-2023 22:12:31 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[25-Feb-2023 22:12:31 Europe/Prague] PHP   2. template->parseOutput() C:\inetpub\wwwroot\intranet\index.php:153
+[25-Feb-2023 22:12:31 Europe/Prague] PHP   3. template->replaceTags($pp = FALSE) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:239
+[25-Feb-2023 22:12:31 Europe/Prague] PHP   4. template->replaceDataTags($tag = 'meetingline', $cacheId = 0) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:101
+[25-Feb-2023 22:12:31 Europe/Prague] PHP Warning:  Invalid argument supplied for foreach() in C:\inetpub\wwwroot\intranet\registry\objects\template.class.php on line 164
+[25-Feb-2023 22:12:31 Europe/Prague] PHP Stack trace:
+[25-Feb-2023 22:12:31 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[25-Feb-2023 22:12:31 Europe/Prague] PHP   2. template->parseOutput() C:\inetpub\wwwroot\intranet\index.php:153
+[25-Feb-2023 22:12:31 Europe/Prague] PHP   3. template->replaceTags($pp = FALSE) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:239
+[25-Feb-2023 22:12:31 Europe/Prague] PHP   4. template->replaceDataTags($tag = 'meetingline', $cacheId = 0) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:101
+[25-Feb-2023 22:12:31 Europe/Prague] PHP Warning:  Invalid argument supplied for foreach() in C:\inetpub\wwwroot\intranet\registry\objects\template.class.php on line 164
+[25-Feb-2023 22:12:31 Europe/Prague] PHP Stack trace:
+[25-Feb-2023 22:12:31 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[25-Feb-2023 22:12:31 Europe/Prague] PHP   2. template->parseOutput() C:\inetpub\wwwroot\intranet\index.php:153
+[25-Feb-2023 22:12:31 Europe/Prague] PHP   3. template->replaceTags($pp = FALSE) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:239
+[25-Feb-2023 22:12:31 Europe/Prague] PHP   4. template->replaceDataTags($tag = 'meetingline', $cacheId = 0) C:\inetpub\wwwroot\intranet\registry\objects\template.class.php:101
+[25-Feb-2023 22:13:09 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:17:15 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:19:27 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:19:41 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:20:05 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:20:47 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:20:51 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:20:53 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:20:54 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:20:56 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:20:57 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:20:59 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:21:01 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:21:03 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:24:13 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:24:15 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:24:16 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:24:18 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:24:20 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:28:33 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:29:23 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:29:32 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:33:26 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:33:46 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:33:54 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:34:04 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:34:35 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:34:56 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:35:08 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:37:02 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:37:16 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:37:30 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:38:17 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:39:33 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:39:39 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:39:42 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:39:46 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:39:48 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:39:50 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:39:52 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:39:54 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:39:57 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:40:46 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:41:13 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:42:41 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:42:56 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:43:20 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:44:16 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:45:14 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:45:30 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:45:40 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:45:43 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:45:54 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:46:09 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:46:50 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:46:58 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:47:05 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:47:13 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:47:15 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:47:22 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:49:01 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:49:27 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:50:12 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:51:46 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:52:05 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:55:56 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:56:23 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:57:29 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 22:58:22 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 23:04:02 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 23:04:35 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 23:07:32 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 23:07:41 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 23:09:06 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 23:09:54 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 23:11:32 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 23:12:14 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 23:12:29 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 23:12:33 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 23:12:34 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 23:12:36 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 23:12:38 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 23:12:39 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[25-Feb-2023 23:12:52 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 09:05:01 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 09:05:13 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 12:18:35 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 12:18:50 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 12:19:29 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 12:19:45 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 12:20:04 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 12:21:47 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 12:22:30 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 12:23:10 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 12:23:18 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 12:23:19 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 12:23:21 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 12:23:22 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 12:23:23 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 12:23:24 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 12:23:32 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 12:24:11 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 12:24:42 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 12:24:51 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 12:25:15 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 12:25:18 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 12:25:19 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 12:25:24 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 12:25:26 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 12:25:27 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 12:25:28 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 12:25:29 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 12:25:30 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 12:25:34 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 12:26:08 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 12:26:11 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 12:26:12 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 12:26:13 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 12:26:14 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 12:26:15 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 12:26:16 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 12:26:19 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 12:26:20 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 12:26:22 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 12:26:24 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 12:26:26 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 12:26:27 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 12:26:29 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 12:26:30 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 12:26:32 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 12:26:34 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 12:26:35 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 12:26:37 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 12:35:16 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 12:35:24 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 12:35:25 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 12:35:25 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 12:35:27 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 12:35:49 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 12:36:59 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 12:37:27 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 12:37:54 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 12:38:18 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 12:39:51 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 12:39:53 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 12:39:54 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 12:39:54 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 12:39:55 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 12:39:56 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 12:39:57 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 12:39:59 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 12:40:01 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 12:40:04 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 12:40:14 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 20:39:39 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 22:41:04 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 22:41:10 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 22:41:10 Europe/Prague] PHP Fatal error:  Chyba při provádění dotazu: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '`` = 1' at line 1 in C:\inetpub\wwwroot\intranet\registry\databaseobjects\mysql.database.class.php on line 507
+[26-Feb-2023 22:41:10 Europe/Prague] PHP Stack trace:
+[26-Feb-2023 22:41:10 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[26-Feb-2023 22:41:10 Europe/Prague] PHP   2. Zobcontroller->__construct($registry = class Registry {  }, $directCall = TRUE) C:\inetpub\wwwroot\intranet\index.php:104
+[26-Feb-2023 22:41:10 Europe/Prague] PHP   3. Zobadvance->main($action = 'meetinglinecard') C:\inetpub\wwwroot\intranet\controllers\zob\controller.php:86
+[26-Feb-2023 22:41:10 Europe/Prague] PHP   4. Zobadvance->meetinglinecard($MeetingID = '80', $PageNo = 1) C:\inetpub\wwwroot\intranet\controllers\zob\advance.php:42
+[26-Feb-2023 22:41:10 Europe/Prague] PHP   5. Zobcontroller->synchroMeetinglinepage($param = '80') C:\inetpub\wwwroot\intranet\controllers\zob\advance.php:140
+[26-Feb-2023 22:41:10 Europe/Prague] PHP   6. mysqldatabase->isEmpty($cache_id = *uninitialized*) C:\inetpub\wwwroot\intranet\controllers\zob\controller.php:1384
+[26-Feb-2023 22:41:10 Europe/Prague] PHP   7. mysqldatabase->executeQuery($queryStr = 'SELECT * FROM mis_meetinglinepage WHERE `MeetingLineID` = \'1371\' AND ``Order`` = 1') C:\inetpub\wwwroot\intranet\registry\databaseobjects\mysql.database.class.php:480
+[26-Feb-2023 22:41:10 Europe/Prague] PHP   8. trigger_error($message = 'Chyba při provádění dotazu: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near \'`` = 1\' at line 1', $error_type = 256) C:\inetpub\wwwroot\intranet\registry\databaseobjects\mysql.database.class.php:507
+[26-Feb-2023 22:42:23 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 22:42:23 Europe/Prague] PHP Fatal error:  Chyba při provádění dotazu a jeho ukládání do mezipaměti: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'Order' at line 1 in C:\inetpub\wwwroot\intranet\registry\databaseobjects\mysql.database.class.php on line 126
+[26-Feb-2023 22:42:23 Europe/Prague] PHP Stack trace:
+[26-Feb-2023 22:42:23 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[26-Feb-2023 22:42:23 Europe/Prague] PHP   2. Zobcontroller->__construct($registry = class Registry {  }, $directCall = TRUE) C:\inetpub\wwwroot\intranet\index.php:104
+[26-Feb-2023 22:42:23 Europe/Prague] PHP   3. Zobadvance->main($action = 'meetinglinecard') C:\inetpub\wwwroot\intranet\controllers\zob\controller.php:86
+[26-Feb-2023 22:42:23 Europe/Prague] PHP   4. Zobadvance->meetinglinecard($MeetingID = '80', $PageNo = 1) C:\inetpub\wwwroot\intranet\controllers\zob\advance.php:42
+[26-Feb-2023 22:42:23 Europe/Prague] PHP   5. Zobcontroller->synchroMeetinglinepage($param = '80') C:\inetpub\wwwroot\intranet\controllers\zob\advance.php:140
+[26-Feb-2023 22:42:23 Europe/Prague] PHP   6. mysqldatabase->findSet($sql = *uninitialized*) C:\inetpub\wwwroot\intranet\controllers\zob\controller.php:1390
+[26-Feb-2023 22:42:23 Europe/Prague] PHP   7. mysqldatabase->cacheQuery($queryStr = 'SELECT * FROM mis_meetinglinepage WHERE `MeetingLineID` = \'1390\' ORDER BY Order') C:\inetpub\wwwroot\intranet\registry\databaseobjects\mysql.database.class.php:408
+[26-Feb-2023 22:42:23 Europe/Prague] PHP   8. trigger_error($message = 'Chyba při provádění dotazu a jeho ukládání do mezipaměti: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near \'Order\' at line 1', $error_type = 256) C:\inetpub\wwwroot\intranet\registry\databaseobjects\mysql.database.class.php:126
+[26-Feb-2023 22:42:33 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 22:42:33 Europe/Prague] PHP Fatal error:  Chyba při provádění dotazu: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'Order``='1'WHERE PageID = 63' at line 1 in C:\inetpub\wwwroot\intranet\registry\databaseobjects\mysql.database.class.php on line 507
+[26-Feb-2023 22:42:33 Europe/Prague] PHP Stack trace:
+[26-Feb-2023 22:42:33 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[26-Feb-2023 22:42:33 Europe/Prague] PHP   2. Zobcontroller->__construct($registry = class Registry {  }, $directCall = TRUE) C:\inetpub\wwwroot\intranet\index.php:104
+[26-Feb-2023 22:42:33 Europe/Prague] PHP   3. Zobadvance->main($action = 'meetinglinecard') C:\inetpub\wwwroot\intranet\controllers\zob\controller.php:86
+[26-Feb-2023 22:42:33 Europe/Prague] PHP   4. Zobadvance->meetinglinecard($MeetingID = '80', $PageNo = 1) C:\inetpub\wwwroot\intranet\controllers\zob\advance.php:42
+[26-Feb-2023 22:42:33 Europe/Prague] PHP   5. Zobcontroller->synchroMeetinglinepage($param = '80') C:\inetpub\wwwroot\intranet\controllers\zob\advance.php:140
+[26-Feb-2023 22:42:33 Europe/Prague] PHP   6. mysqldatabase->updateRecords($table = 'meetinglinepage', $changes = ['`Order`' => 1], $condition = 'PageID = 63', $withPrefix = *uninitialized*) C:\inetpub\wwwroot\intranet\controllers\zob\controller.php:1397
+[26-Feb-2023 22:42:33 Europe/Prague] PHP   7. mysqldatabase->executeQuery($queryStr = 'UPDATE mis_meetinglinepage SET ``Order``=\'1\'WHERE PageID = 63') C:\inetpub\wwwroot\intranet\registry\databaseobjects\mysql.database.class.php:226
+[26-Feb-2023 22:42:33 Europe/Prague] PHP   8. trigger_error($message = 'Chyba při provádění dotazu: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near \'Order``=\'1\'WHERE PageID = 63\' at line 1', $error_type = 256) C:\inetpub\wwwroot\intranet\registry\databaseobjects\mysql.database.class.php:507
+[26-Feb-2023 22:43:32 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 22:43:32 Europe/Prague] PHP Fatal error:  Chyba při provádění dotazu: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '`` = 1' at line 1 in C:\inetpub\wwwroot\intranet\registry\databaseobjects\mysql.database.class.php on line 507
+[26-Feb-2023 22:43:32 Europe/Prague] PHP Stack trace:
+[26-Feb-2023 22:43:32 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[26-Feb-2023 22:43:32 Europe/Prague] PHP   2. Zobcontroller->__construct($registry = class Registry {  }, $directCall = TRUE) C:\inetpub\wwwroot\intranet\index.php:104
+[26-Feb-2023 22:43:32 Europe/Prague] PHP   3. Zobadvance->main($action = 'meetinglinecard') C:\inetpub\wwwroot\intranet\controllers\zob\controller.php:86
+[26-Feb-2023 22:43:32 Europe/Prague] PHP   4. Zobadvance->meetinglinecard($MeetingID = '80', $PageNo = 1) C:\inetpub\wwwroot\intranet\controllers\zob\advance.php:42
+[26-Feb-2023 22:43:32 Europe/Prague] PHP   5. Zobcontroller->getMeetinglineByPageNo($MeetingID = '80', $PageNo = 1) C:\inetpub\wwwroot\intranet\controllers\zob\advance.php:145
+[26-Feb-2023 22:43:32 Europe/Prague] PHP   6. mysqldatabase->findFirst() C:\inetpub\wwwroot\intranet\controllers\zob\controller.php:1614
+[26-Feb-2023 22:43:32 Europe/Prague] PHP   7. mysqldatabase->executeQuery($queryStr = 'SELECT * FROM mis_meetinglinepage WHERE `MeetingID` = \'80\' AND ``Order`` = 1') C:\inetpub\wwwroot\intranet\registry\databaseobjects\mysql.database.class.php:433
+[26-Feb-2023 22:43:32 Europe/Prague] PHP   8. trigger_error($message = 'Chyba při provádění dotazu: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near \'`` = 1\' at line 1', $error_type = 256) C:\inetpub\wwwroot\intranet\registry\databaseobjects\mysql.database.class.php:507
+[26-Feb-2023 22:45:34 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 22:45:34 Europe/Prague] PHP Fatal error:  Chyba při provádění dotazu: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '`` = 1' at line 1 in C:\inetpub\wwwroot\intranet\registry\databaseobjects\mysql.database.class.php on line 507
+[26-Feb-2023 22:45:34 Europe/Prague] PHP Stack trace:
+[26-Feb-2023 22:45:34 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[26-Feb-2023 22:45:34 Europe/Prague] PHP   2. Zobcontroller->__construct($registry = class Registry {  }, $directCall = TRUE) C:\inetpub\wwwroot\intranet\index.php:104
+[26-Feb-2023 22:45:34 Europe/Prague] PHP   3. Zobadvance->main($action = 'meetinglinecard') C:\inetpub\wwwroot\intranet\controllers\zob\controller.php:86
+[26-Feb-2023 22:45:34 Europe/Prague] PHP   4. Zobadvance->meetinglinecard($MeetingID = '80', $PageNo = 1) C:\inetpub\wwwroot\intranet\controllers\zob\advance.php:42
+[26-Feb-2023 22:45:34 Europe/Prague] PHP   5. Zobcontroller->getMeetinglineByPageNo($MeetingID = '80', $PageNo = 1) C:\inetpub\wwwroot\intranet\controllers\zob\advance.php:145
+[26-Feb-2023 22:45:34 Europe/Prague] PHP   6. mysqldatabase->findFirst() C:\inetpub\wwwroot\intranet\controllers\zob\controller.php:1614
+[26-Feb-2023 22:45:34 Europe/Prague] PHP   7. mysqldatabase->executeQuery($queryStr = 'SELECT * FROM mis_meetinglinepage WHERE `MeetingID` = \'80\' AND ``Order`` = 1') C:\inetpub\wwwroot\intranet\registry\databaseobjects\mysql.database.class.php:433
+[26-Feb-2023 22:45:34 Europe/Prague] PHP   8. trigger_error($message = 'Chyba při provádění dotazu: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near \'`` = 1\' at line 1', $error_type = 256) C:\inetpub\wwwroot\intranet\registry\databaseobjects\mysql.database.class.php:507
+[26-Feb-2023 22:46:46 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 22:46:51 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 22:46:53 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 22:46:54 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 22:46:55 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 22:48:35 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 22:48:37 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 22:48:39 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 22:54:57 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 22:56:15 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 22:56:32 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 22:56:32 Europe/Prague] PHP Notice:  Undefined index: LineNo in C:\inetpub\wwwroot\intranet\controllers\zob\advance.php on line 146
+[26-Feb-2023 22:56:32 Europe/Prague] PHP Stack trace:
+[26-Feb-2023 22:56:32 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[26-Feb-2023 22:56:32 Europe/Prague] PHP   2. Zobcontroller->__construct($registry = class Registry {  }, $directCall = TRUE) C:\inetpub\wwwroot\intranet\index.php:104
+[26-Feb-2023 22:56:32 Europe/Prague] PHP   3. Zobadvance->main($action = 'meetinglinecard') C:\inetpub\wwwroot\intranet\controllers\zob\controller.php:86
+[26-Feb-2023 22:56:32 Europe/Prague] PHP   4. Zobadvance->meetinglinecard($MeetingID = '80', $PageNo = 2) C:\inetpub\wwwroot\intranet\controllers\zob\advance.php:42
+[26-Feb-2023 22:57:25 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 22:57:29 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 22:57:49 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 22:57:49 Europe/Prague] PHP Notice:  Undefined index: LineNo in C:\inetpub\wwwroot\intranet\controllers\zob\advance.php on line 146
+[26-Feb-2023 22:57:49 Europe/Prague] PHP Stack trace:
+[26-Feb-2023 22:57:49 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[26-Feb-2023 22:57:49 Europe/Prague] PHP   2. Zobcontroller->__construct($registry = class Registry {  }, $directCall = TRUE) C:\inetpub\wwwroot\intranet\index.php:104
+[26-Feb-2023 22:57:49 Europe/Prague] PHP   3. Zobadvance->main($action = 'meetinglinecard') C:\inetpub\wwwroot\intranet\controllers\zob\controller.php:86
+[26-Feb-2023 22:57:49 Europe/Prague] PHP   4. Zobadvance->meetinglinecard($MeetingID = '80', $PageNo = 2) C:\inetpub\wwwroot\intranet\controllers\zob\advance.php:42
+[26-Feb-2023 22:57:51 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 22:57:51 Europe/Prague] PHP Notice:  Undefined index: LineNo in C:\inetpub\wwwroot\intranet\controllers\zob\advance.php on line 146
+[26-Feb-2023 22:57:51 Europe/Prague] PHP Stack trace:
+[26-Feb-2023 22:57:51 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[26-Feb-2023 22:57:51 Europe/Prague] PHP   2. Zobcontroller->__construct($registry = class Registry {  }, $directCall = TRUE) C:\inetpub\wwwroot\intranet\index.php:104
+[26-Feb-2023 22:57:51 Europe/Prague] PHP   3. Zobadvance->main($action = 'meetinglinecard') C:\inetpub\wwwroot\intranet\controllers\zob\controller.php:86
+[26-Feb-2023 22:57:51 Europe/Prague] PHP   4. Zobadvance->meetinglinecard($MeetingID = '80', $PageNo = 3) C:\inetpub\wwwroot\intranet\controllers\zob\advance.php:42
+[26-Feb-2023 22:57:52 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 22:57:52 Europe/Prague] PHP Notice:  Undefined index: LineNo in C:\inetpub\wwwroot\intranet\controllers\zob\advance.php on line 146
+[26-Feb-2023 22:57:52 Europe/Prague] PHP Stack trace:
+[26-Feb-2023 22:57:52 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[26-Feb-2023 22:57:52 Europe/Prague] PHP   2. Zobcontroller->__construct($registry = class Registry {  }, $directCall = TRUE) C:\inetpub\wwwroot\intranet\index.php:104
+[26-Feb-2023 22:57:52 Europe/Prague] PHP   3. Zobadvance->main($action = 'meetinglinecard') C:\inetpub\wwwroot\intranet\controllers\zob\controller.php:86
+[26-Feb-2023 22:57:52 Europe/Prague] PHP   4. Zobadvance->meetinglinecard($MeetingID = '80', $PageNo = 4) C:\inetpub\wwwroot\intranet\controllers\zob\advance.php:42
+[26-Feb-2023 22:57:56 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 22:57:56 Europe/Prague] PHP Notice:  Undefined index: LineNo in C:\inetpub\wwwroot\intranet\controllers\zob\advance.php on line 146
+[26-Feb-2023 22:57:56 Europe/Prague] PHP Stack trace:
+[26-Feb-2023 22:57:56 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[26-Feb-2023 22:57:56 Europe/Prague] PHP   2. Zobcontroller->__construct($registry = class Registry {  }, $directCall = TRUE) C:\inetpub\wwwroot\intranet\index.php:104
+[26-Feb-2023 22:57:56 Europe/Prague] PHP   3. Zobadvance->main($action = 'meetinglinecard') C:\inetpub\wwwroot\intranet\controllers\zob\controller.php:86
+[26-Feb-2023 22:57:56 Europe/Prague] PHP   4. Zobadvance->meetinglinecard($MeetingID = '80', $PageNo = 5) C:\inetpub\wwwroot\intranet\controllers\zob\advance.php:42
+[26-Feb-2023 22:59:08 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 22:59:11 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 22:59:12 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 22:59:20 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 22:59:22 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 22:59:23 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 22:59:25 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 22:59:27 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 22:59:28 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 22:59:29 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 22:59:31 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 22:59:32 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 22:59:33 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 22:59:35 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 22:59:35 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 23:00:12 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 23:00:16 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 23:03:22 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 23:03:44 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 23:04:28 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 23:04:34 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 23:04:49 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 23:05:14 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 23:05:37 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 23:06:03 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 23:06:22 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 23:06:29 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 23:06:35 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 23:09:00 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 23:09:09 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 23:09:13 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 23:09:19 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 23:09:24 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 23:09:33 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 23:09:56 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 23:09:57 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 23:09:58 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 23:12:08 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 23:12:14 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 23:12:14 Europe/Prague] PHP Fatal error:  Chyba při provádění dotazu: Truncated incorrect DOUBLE value: '{PageID}' in C:\inetpub\wwwroot\intranet\registry\databaseobjects\mysql.database.class.php on line 507
+[26-Feb-2023 23:12:14 Europe/Prague] PHP Stack trace:
+[26-Feb-2023 23:12:14 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[26-Feb-2023 23:12:14 Europe/Prague] PHP   2. Generalcontroller->__construct($registry = class Registry {  }, $directCall = TRUE) C:\inetpub\wwwroot\intranet\index.php:104
+[26-Feb-2023 23:12:14 Europe/Prague] PHP   3. Generalws->main($action = 'upd') C:\inetpub\wwwroot\intranet\controllers\general\controller.php:73
+[26-Feb-2023 23:12:14 Europe/Prague] PHP   4. Generalws->update($action = 'upd') C:\inetpub\wwwroot\intranet\controllers\general\ws.php:43
+[26-Feb-2023 23:12:14 Europe/Prague] PHP   5. mysqldatabase->updateRecords($table = 'meetinglinepage', $changes = ['Content' => 'Veřejné zasedání \nzastupitelstva obce\n\n15. prosince, 18:00\nZasedací místnost obecního úřadu'], $condition = '`PageID` = \'{PageID}\'', $withPrefix = *uninitialized*) C:\inetpub\wwwroot\intranet\controllers\general\ws.php:128
+[26-Feb-2023 23:12:14 Europe/Prague] PHP   6. mysqldatabase->executeQuery($queryStr = 'UPDATE mis_meetinglinepage SET `Content`=\'Veřejné zasedání \nzastupitelstva obce\n\n15. prosince, 18:00\nZasedací místnost obecního úřadu\'WHERE `PageID` = \'{PageID}\'') C:\inetpub\wwwroot\intranet\registry\databaseobjects\mysql.database.class.php:226
+[26-Feb-2023 23:12:14 Europe/Prague] PHP   7. trigger_error($message = 'Chyba při provádění dotazu: Truncated incorrect DOUBLE value: \'{PageID}\'', $error_type = 256) C:\inetpub\wwwroot\intranet\registry\databaseobjects\mysql.database.class.php:507
+[26-Feb-2023 23:12:15 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 23:12:17 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 23:12:53 Europe/Prague] PHP Fatal error:  Chyba při provádění dotazu: Truncated incorrect DOUBLE value: '{PageID}' in C:\inetpub\wwwroot\intranet\registry\databaseobjects\mysql.database.class.php on line 507
+[26-Feb-2023 23:12:53 Europe/Prague] PHP Stack trace:
+[26-Feb-2023 23:12:53 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[26-Feb-2023 23:12:53 Europe/Prague] PHP   2. Generalcontroller->__construct($registry = class Registry {  }, $directCall = TRUE) C:\inetpub\wwwroot\intranet\index.php:104
+[26-Feb-2023 23:12:53 Europe/Prague] PHP   3. Generalws->main($action = 'upd') C:\inetpub\wwwroot\intranet\controllers\general\controller.php:73
+[26-Feb-2023 23:12:53 Europe/Prague] PHP   4. Generalws->update($action = 'upd') C:\inetpub\wwwroot\intranet\controllers\general\ws.php:43
+[26-Feb-2023 23:12:53 Europe/Prague] PHP   5. mysqldatabase->updateRecords($table = 'meetinglinepage', $changes = ['Content' => 'Veřejné zasedání \nzastupitelstva obce\n\n15. prosince, 18:00\nZasedací místnost obecního úřadu'], $condition = '`PageID` = \'{PageID}\'', $withPrefix = *uninitialized*) C:\inetpub\wwwroot\intranet\controllers\general\ws.php:128
+[26-Feb-2023 23:12:53 Europe/Prague] PHP   6. mysqldatabase->executeQuery($queryStr = 'UPDATE mis_meetinglinepage SET `Content`=\'Veřejné zasedání \nzastupitelstva obce\n\n15. prosince, 18:00\nZasedací místnost obecního úřadu\'WHERE `PageID` = \'{PageID}\'') C:\inetpub\wwwroot\intranet\registry\databaseobjects\mysql.database.class.php:226
+[26-Feb-2023 23:12:53 Europe/Prague] PHP   7. trigger_error($message = 'Chyba při provádění dotazu: Truncated incorrect DOUBLE value: \'{PageID}\'', $error_type = 256) C:\inetpub\wwwroot\intranet\registry\databaseobjects\mysql.database.class.php:507
+[26-Feb-2023 23:18:44 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 23:18:55 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 23:18:55 Europe/Prague] PHP Fatal error:  Chyba při provádění dotazu: Truncated incorrect DOUBLE value: '{PageID}' in C:\inetpub\wwwroot\intranet\registry\databaseobjects\mysql.database.class.php on line 507
+[26-Feb-2023 23:18:55 Europe/Prague] PHP Stack trace:
+[26-Feb-2023 23:18:55 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[26-Feb-2023 23:18:55 Europe/Prague] PHP   2. Generalcontroller->__construct($registry = class Registry {  }, $directCall = TRUE) C:\inetpub\wwwroot\intranet\index.php:104
+[26-Feb-2023 23:18:55 Europe/Prague] PHP   3. Generalws->main($action = 'upd') C:\inetpub\wwwroot\intranet\controllers\general\controller.php:73
+[26-Feb-2023 23:18:55 Europe/Prague] PHP   4. Generalws->update($action = 'upd') C:\inetpub\wwwroot\intranet\controllers\general\ws.php:43
+[26-Feb-2023 23:18:55 Europe/Prague] PHP   5. mysqldatabase->updateRecords($table = 'meetinglinepage', $changes = ['Content' => '\t\tVeřejné zasedání \n\t\tzastupitelstva obce\n\t\t\n\t\t15. prosince, 18:00\n\t\tZasedací místnost obecního úřadu\n'], $condition = '`PageID` = \'{PageID}\'', $withPrefix = *uninitialized*) C:\inetpub\wwwroot\intranet\controllers\general\ws.php:128
+[26-Feb-2023 23:18:55 Europe/Prague] PHP   6. mysqldatabase->executeQuery($queryStr = 'UPDATE mis_meetinglinepage SET `Content`=\'\t\tVeřejné zasedání \n\t\tzastupitelstva obce\n\t\t\n\t\t15. prosince, 18:00\n\t\tZasedací místnost obecního úřadu\n\'WHERE `PageID` = \'{PageID}\'') C:\inetpub\wwwroot\intranet\registry\databaseobjects\mysql.database.class.php:226
+[26-Feb-2023 23:18:55 Europe/Prague] PHP   7. trigger_error($message = 'Chyba při provádění dotazu: Truncated incorrect DOUBLE value: \'{PageID}\'', $error_type = 256) C:\inetpub\wwwroot\intranet\registry\databaseobjects\mysql.database.class.php:507
+[26-Feb-2023 23:19:05 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 23:19:05 Europe/Prague] PHP Fatal error:  Chyba při provádění dotazu: Truncated incorrect DOUBLE value: '{PageID}' in C:\inetpub\wwwroot\intranet\registry\databaseobjects\mysql.database.class.php on line 507
+[26-Feb-2023 23:19:05 Europe/Prague] PHP Stack trace:
+[26-Feb-2023 23:19:05 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[26-Feb-2023 23:19:05 Europe/Prague] PHP   2. Generalcontroller->__construct($registry = class Registry {  }, $directCall = TRUE) C:\inetpub\wwwroot\intranet\index.php:104
+[26-Feb-2023 23:19:05 Europe/Prague] PHP   3. Generalws->main($action = 'upd') C:\inetpub\wwwroot\intranet\controllers\general\controller.php:73
+[26-Feb-2023 23:19:05 Europe/Prague] PHP   4. Generalws->update($action = 'upd') C:\inetpub\wwwroot\intranet\controllers\general\ws.php:43
+[26-Feb-2023 23:19:05 Europe/Prague] PHP   5. mysqldatabase->updateRecords($table = 'meetinglinepage', $changes = ['Content' => 'Veřejné zasedání \nzastupitelstva obce\n\t\t\n15. prosince, 18:00\nZasedací místnost obecního úřadu\n'], $condition = '`PageID` = \'{PageID}\'', $withPrefix = *uninitialized*) C:\inetpub\wwwroot\intranet\controllers\general\ws.php:128
+[26-Feb-2023 23:19:05 Europe/Prague] PHP   6. mysqldatabase->executeQuery($queryStr = 'UPDATE mis_meetinglinepage SET `Content`=\'Veřejné zasedání \nzastupitelstva obce\n\t\t\n15. prosince, 18:00\nZasedací místnost obecního úřadu\n\'WHERE `PageID` = \'{PageID}\'') C:\inetpub\wwwroot\intranet\registry\databaseobjects\mysql.database.class.php:226
+[26-Feb-2023 23:19:05 Europe/Prague] PHP   7. trigger_error($message = 'Chyba při provádění dotazu: Truncated incorrect DOUBLE value: \'{PageID}\'', $error_type = 256) C:\inetpub\wwwroot\intranet\registry\databaseobjects\mysql.database.class.php:507
+[26-Feb-2023 23:19:11 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 23:19:13 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 23:19:28 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 23:19:28 Europe/Prague] PHP Fatal error:  Chyba při provádění dotazu: Truncated incorrect DOUBLE value: '{PageID}' in C:\inetpub\wwwroot\intranet\registry\databaseobjects\mysql.database.class.php on line 507
+[26-Feb-2023 23:19:28 Europe/Prague] PHP Stack trace:
+[26-Feb-2023 23:19:28 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[26-Feb-2023 23:19:28 Europe/Prague] PHP   2. Generalcontroller->__construct($registry = class Registry {  }, $directCall = TRUE) C:\inetpub\wwwroot\intranet\index.php:104
+[26-Feb-2023 23:19:28 Europe/Prague] PHP   3. Generalws->main($action = 'upd') C:\inetpub\wwwroot\intranet\controllers\general\controller.php:73
+[26-Feb-2023 23:19:28 Europe/Prague] PHP   4. Generalws->update($action = 'upd') C:\inetpub\wwwroot\intranet\controllers\general\ws.php:43
+[26-Feb-2023 23:19:28 Europe/Prague] PHP   5. mysqldatabase->updateRecords($table = 'meetinglinepage', $changes = ['Content' => 'Veřejné zasedání \nzastupitelstva obce\n\t\t\n15. prosince, 18:00\nZasedací místnost obecního úřadu\n'], $condition = '`PageID` = \'{PageID}\'', $withPrefix = *uninitialized*) C:\inetpub\wwwroot\intranet\controllers\general\ws.php:128
+[26-Feb-2023 23:19:28 Europe/Prague] PHP   6. mysqldatabase->executeQuery($queryStr = 'UPDATE mis_meetinglinepage SET `Content`=\'Veřejné zasedání \nzastupitelstva obce\n\t\t\n15. prosince, 18:00\nZasedací místnost obecního úřadu\n\'WHERE `PageID` = \'{PageID}\'') C:\inetpub\wwwroot\intranet\registry\databaseobjects\mysql.database.class.php:226
+[26-Feb-2023 23:19:28 Europe/Prague] PHP   7. trigger_error($message = 'Chyba při provádění dotazu: Truncated incorrect DOUBLE value: \'{PageID}\'', $error_type = 256) C:\inetpub\wwwroot\intranet\registry\databaseobjects\mysql.database.class.php:507
+[26-Feb-2023 23:20:08 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 23:20:13 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 23:20:22 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 23:20:22 Europe/Prague] PHP Fatal error:  Chyba při provádění dotazu: Truncated incorrect DOUBLE value: '{PageID}' in C:\inetpub\wwwroot\intranet\registry\databaseobjects\mysql.database.class.php on line 507
+[26-Feb-2023 23:20:22 Europe/Prague] PHP Stack trace:
+[26-Feb-2023 23:20:22 Europe/Prague] PHP   1. {main}() C:\inetpub\wwwroot\intranet\index.php:0
+[26-Feb-2023 23:20:22 Europe/Prague] PHP   2. Generalcontroller->__construct($registry = class Registry {  }, $directCall = TRUE) C:\inetpub\wwwroot\intranet\index.php:104
+[26-Feb-2023 23:20:22 Europe/Prague] PHP   3. Generalws->main($action = 'upd') C:\inetpub\wwwroot\intranet\controllers\general\controller.php:73
+[26-Feb-2023 23:20:22 Europe/Prague] PHP   4. Generalws->update($action = 'upd') C:\inetpub\wwwroot\intranet\controllers\general\ws.php:43
+[26-Feb-2023 23:20:22 Europe/Prague] PHP   5. mysqldatabase->updateRecords($table = 'meetinglinepage', $changes = ['Content' => 'Veřejné zasedání \nzastupitelstva obce\n\t\t\n15. prosince, 18:00\nZasedací místnost obecního úřadu\n'], $condition = '`PageID` = \'{PageID}\'', $withPrefix = *uninitialized*) C:\inetpub\wwwroot\intranet\controllers\general\ws.php:128
+[26-Feb-2023 23:20:22 Europe/Prague] PHP   6. mysqldatabase->executeQuery($queryStr = 'UPDATE mis_meetinglinepage SET `Content`=\'Veřejné zasedání \nzastupitelstva obce\n\t\t\n15. prosince, 18:00\nZasedací místnost obecního úřadu\n\'WHERE `PageID` = \'{PageID}\'') C:\inetpub\wwwroot\intranet\registry\databaseobjects\mysql.database.class.php:226
+[26-Feb-2023 23:20:22 Europe/Prague] PHP   7. trigger_error($message = 'Chyba při provádění dotazu: Truncated incorrect DOUBLE value: \'{PageID}\'', $error_type = 256) C:\inetpub\wwwroot\intranet\registry\databaseobjects\mysql.database.class.php:507
+[26-Feb-2023 23:22:51 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 23:22:58 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 23:22:58 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 23:23:00 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 23:23:44 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 23:24:01 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 23:24:15 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 23:24:15 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 23:24:41 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 23:25:14 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 23:25:17 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 23:25:22 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 23:25:25 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 23:25:26 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 23:25:28 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 23:25:30 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 23:25:32 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 23:26:15 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 23:26:52 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 23:27:16 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 23:27:20 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 23:27:23 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 23:27:26 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 23:27:28 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 23:27:37 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 23:28:42 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 23:28:55 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[26-Feb-2023 23:28:55 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[27-Feb-2023 22:37:46 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[27-Feb-2023 22:37:51 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[27-Feb-2023 22:37:52 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[27-Feb-2023 22:37:55 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[27-Feb-2023 22:37:57 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[27-Feb-2023 22:37:58 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[27-Feb-2023 22:38:03 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 22:27:07 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 22:29:05 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 22:29:51 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 22:29:55 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 22:29:58 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 22:31:42 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 22:33:31 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 22:34:53 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 22:39:14 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 22:39:21 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 22:40:17 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 22:40:22 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 22:40:25 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 22:40:38 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 22:41:11 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 22:41:14 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 22:43:11 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 22:43:15 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 22:43:18 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 22:46:16 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 22:46:21 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 22:46:24 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 22:46:35 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 22:49:31 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 22:49:39 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 22:51:45 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 22:51:50 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 22:51:53 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 22:52:33 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 22:52:41 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 22:53:49 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 22:54:12 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 22:54:41 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 22:54:56 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 22:57:41 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 22:58:29 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 23:01:33 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 23:01:59 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 23:02:04 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 23:02:08 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 23:02:14 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 23:02:33 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 23:03:23 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 23:03:30 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 23:03:36 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 23:03:40 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 23:04:59 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 23:08:48 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 23:09:55 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 23:10:13 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 23:10:58 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 23:11:26 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 23:13:52 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 23:15:18 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 23:15:18 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 23:15:18 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 23:15:18 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 23:15:19 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 23:15:19 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 23:15:19 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 23:15:19 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 23:15:19 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 23:15:19 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 23:15:20 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 23:15:20 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 23:15:20 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 23:15:20 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 23:15:20 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 23:15:20 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 23:15:20 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 23:15:20 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 23:15:21 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 23:15:21 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 23:15:21 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 23:15:21 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 23:15:21 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 23:15:21 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 23:15:21 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 23:15:21 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 23:15:22 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 23:15:22 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 23:15:24 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 23:17:32 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 23:19:17 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 23:19:40 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 23:20:40 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 23:20:48 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 23:20:58 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 23:21:07 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 23:24:45 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 23:24:52 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+[28-Feb-2023 23:31:24 Europe/Prague] Xdebug: [Step Debug] Time-out connecting to debugging client, waited: 200 ms. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(

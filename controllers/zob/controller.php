@@ -704,17 +704,29 @@ class Zobcontroller{
 		// Vložení bodů ze šablony
 		if (isset($_POST['submitTemplate'])){
 			
-			$meetingTemplate = $this->readMeetingLinesFromTemplate( $meetingtype['MeetingName']);
-			if($meetingTemplate == null){
+			$meetinglineTemplate = $this->readMeetingLinesFromTemplate( $meetingtype['MeetingName']);
+			if($meetinglineTemplate == null){
 				$this->errorMessage = 'Šablona pro jednání '.$meetingtype['MeetingName'].' nebyla nalezena.';
 				return false;
 			}
-			foreach($meetingTemplate as $data){
-				$data['MeetingLineID'] = null;
-				$data['MeetingID'] = $MeetingID;
-				$data['MeetingTypeID'] = $meeting['MeetingTypeID'];
-				$data['ElectionPeriodID'] = $meeting['ElectionPeriodID'];
-				$this->registry->getObject('db')->insertRecords('meetingline',$data);
+			foreach($meetinglineTemplate as $meetingline){
+				$MeetingLineIDTemplate = $meetingline['MeetingLineID'];
+				$meetingline['MeetingLineID'] = null;
+				$meetingline['MeetingID'] = $MeetingID;
+				$meetingline['MeetingTypeID'] = $meeting['MeetingTypeID'];
+				$meetingline['ElectionPeriodID'] = $meeting['ElectionPeriodID'];
+				$this->registry->getObject('db')->insertRecords('meetingline',$meetingline);
+				$MeetingLineID = $this->getLastMeetinglineID();
+
+				// meetinglinepage
+				$meetinglinepages = $this->readMeetinglinepage( $MeetingLineIDTemplate );
+				foreach($meetinglinepages as $meetinglinepage){
+					$meetinglinepage['PageID'] = null;
+					$meetinglinepage['MeetingLineID'] = $MeetingLineID;
+					$meetinglinepage['MeetingID'] = $MeetingID;
+					$meetinglinepage['MeetingTypeID'] = $meeting['MeetingTypeID'];
+					$this->registry->getObject('db')->insertRecords('meetinglinepage',$meetingline);
+				}
 			}
 			return true;
 		}
@@ -748,6 +760,39 @@ class Zobcontroller{
 
 		return true;
 	}
+
+	public function addMeetinglinePage($MeetingLineID){
+		$meetingline = $this->getMeetingline($MeetingLineID);
+		$PageID = -1;
+
+		if($meetingline == null)
+			return $PageID;
+		$this->registry->getObject('db')->initQuery('meetinglinepage');
+		$this->registry->getObject('db')->setFilter('MeetingLineID',$MeetingLineID);
+		$this->registry->getObject('db')->setOrderBy('`Order`');
+		if ($this->registry->getObject('db')->findLast()){
+			$meetinglinepage = $this->registry->getObject('db')->getResult();
+			$order = $meetinglinepage['Order'] + 1;
+		}else{
+			$order = 1;
+		}
+		$data['MeetingLineID'] = $MeetingLineID;
+		$data['MeetingID'] = $meetingline['MeetingID'];
+		$data['MeetingTypeID'] = $meetingline['MeetingTypeID'];
+		$data['Order'] = $order;
+		if($order == 1)
+			$data['Content'] = $meetingline['Content'];
+		$this->registry->getObject('db')->InsertRecords('meetinglinepage',$data);
+
+		$this->registry->getObject('db')->initQuery('meetinglinepage');
+		$this->registry->getObject('db')->setFilter('MeetingLineID',$MeetingLineID);
+		$this->registry->getObject('db')->setFilter('Order',$order);
+		if ($this->registry->getObject('db')->findFirst()){
+			$meetinglinepage = $this->registry->getObject('db')->getResult();
+			$PageID = $meetinglinepage['PageID'];
+		}
+		return $PageID;
+	} 
 
 	private function deleteMeeting($MeetingID){
 		$meeting = $this->getMeeting($MeetingID);
@@ -980,9 +1025,9 @@ class Zobcontroller{
 				$meeting['RecorderAtDate_view'] = $this->registry->getObject('core')->formatDate($meeting['RecorderAtDate']);
 				$meeting['dmsClassName'] = 'meeting';
 				
-				$contact = $this->getContactByID($meeting['Verifier1']);
+				$contact = $this->getContactByID($meeting['VerifierBy1']);
 				$meeting['VerifierBy1Name'] = $contact == null ? '' : $contact['FullName'];
-				$contact = $this->getContactByID($meeting['Verifier2']);
+				$contact = $this->getContactByID($meeting['VerifierBy2']);
 				$meeting['VerifierBy2Name'] = $contact == null ? '' : $contact['FullName'];
 
 				$meetings[] = $meeting;
@@ -1309,6 +1354,16 @@ class Zobcontroller{
 		return $meetingline;
 	}
 
+	public function readMeetinglinepage ( $MeetingLineID  )
+	{
+		$meetinglinepages = null;
+		$this->registry->getObject('db')->initQuery('meetinglinepage');
+		$this->registry->getObject('db')->setFilter('MeetingLineID',$MeetingLineID);
+		if ($this->registry->getObject('db')->findSet())
+			$meetinglinepages = $this->registry->getObject('db')->getResult();			
+		return $meetinglinepages;
+	}
+	
 	public function readElectionperiods ( )
 	{
 		$electionperiod = null;
@@ -1326,6 +1381,45 @@ class Zobcontroller{
 		if ($this->registry->getObject('db')->findSet())
 			$member = $this->registry->getObject('db')->getResult();			
 		return $member;
+	}
+
+	public function synchroMeetinglinepage ( $param  )
+	{
+		if(is_array($param)){
+			$MeetingID = $param['MeetingID'];
+		}else{
+			$MeetingID = $param;
+		}
+		$meetingline = null;
+		$index = array();
+		$idx = 0;
+		$this->registry->getObject('db')->initQuery('meetingline');
+		$this->registry->getObject('db')->setFilter('MeetingID',$MeetingID);
+		$this->registry->getObject('db')->setOrderBy('LineNo');
+		if ($this->registry->getObject('db')->findSet())
+			$meetinglines = $this->registry->getObject('db')->getResult();			
+		foreach ($meetinglines as $meetingline){
+			$MeetingLineID = $meetingline['MeetingLineID'];
+			$this->registry->getObject('db')->initQuery('meetinglinepage');
+			$this->registry->getObject('db')->setFilter('MeetingLineID',$MeetingLineID);
+			$this->registry->getObject('db')->setFilter('Order',1);
+			if ($this->registry->getObject('db')->isEmpty())
+				$this->addMeetinglinePage($MeetingLineID);
+		}
+		$this->registry->getObject('db')->initQuery('meetinglinepage');
+		$this->registry->getObject('db')->setFilter('MeetingID',$MeetingID);
+		$this->registry->getObject('db')->setOrderBy('`Order`');
+		if ($this->registry->getObject('db')->findSet())
+			$meetinglinepages = $this->registry->getObject('db')->getResult();			
+		$page = 0;
+		foreach($meetinglinepages as $meetinglinepage){
+			$page += 1;
+			$change['PageNo'] = $page;
+			$condition = 'PageID = '.$meetinglinepage['PageID'];
+			$this->registry->getObject('db')->updateRecords('meetinglinepage',$change,$condition);
+		}
+
+		return ($page);
 	}
 
 	public function readMeetingLines ( $param  )
@@ -1532,6 +1626,17 @@ class Zobcontroller{
 		return $meetingline;
 	}
 
+	public function getMeetinglinepageByPageNo ( $MeetingID, $PageNo )
+	{
+		$meetinglinepage = null;
+		$this->registry->getObject('db')->initQuery('meetinglinepage');
+		$this->registry->getObject('db')->setFilter('MeetingID',$MeetingID);
+		$this->registry->getObject('db')->setFilter('PageNo',$PageNo);
+		if ($this->registry->getObject('db')->findFirst())
+			$meetinglinepage = $this->registry->getObject('db')->getResult();			
+		return $meetinglinepage;
+	}
+
 	public function getMeetinglinecontent ( $ContentID )
 	{
 		$meetinglinecontent = null;
@@ -1665,6 +1770,17 @@ class Zobcontroller{
 		$this->registry->getObject('db')->findFirst( $cache );
 		$result = $this->registry->getObject('db')->resultsFromCache( $cache );
 		return $result['LineNo'] + 1;				
+	}
+
+	public function getLastMeetinglineID(  )
+	{
+		$MeetingLineID = 0;
+		$this->registry->getObject('db')->initQuery('meetingline');
+		if ($this->registry->getObject('db')->findLast()){
+			$meetingline = $this->registry->getObject('db')->getResult();
+			$MeetingLineID = $meetingline['MeetingLineID'];			
+		}
+		return $MeetingLineID;		
 	}
 
 	public function getLastMeetinglineLineNo( $MeetingID )

@@ -83,6 +83,7 @@ function isValidFileExtension(extension) {
         'jpg',
         'bmp',
         'png',
+        'zip',
         'mp3'
     ];
     return (ext.indexOf(extension) >= 0)
