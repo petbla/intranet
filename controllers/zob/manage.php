@@ -40,6 +40,11 @@ class Zobmanage {
 				$this->deleteAllMeeting();
 				$this->zob->errorMessage = $this->errorMessage;
 				break;
+			case 'deleteMeeting':
+				$MeetingID = isset($urlBits[3]) ? $urlBits[3] : 0;
+				$this->deleteMeeting($MeetingID);
+				$this->zob->errorMessage = $this->errorMessage;
+				break;
 			case 'backupElectionPeriod':
 				$ElectionPeriodID = isset($urlBits[3]) ? $urlBits[3] : 0;
 				$this->backupElectionPeriod($ElectionPeriodID);
@@ -215,6 +220,11 @@ class Zobmanage {
 	}
 		
 	private function deleteMeeting($MeetingID){
+		$meeting = $this->zob->getMeeting($MeetingID);
+		if ($meeting == null)
+			exit;
+		if($meeting['Close'] == 1)
+			exit;
 		$condition = "MeetingID = $MeetingID";
 		$this->registry->getObject('db')->deleteRecords('meetingattachment',$condition);
 		$this->registry->getObject('db')->deleteRecords('meetinglinecontent',$condition);
@@ -253,11 +263,13 @@ class Zobmanage {
 							foreach ($meetinglines as $meetingline){
 								$MeetingLineID = $meetingline['MeetingLineID'];
 								$condition = "MeetingLineID = $MeetingLineID";
-								$this->registry->getObject('db')->deleteRecords('meetingattachment',$condition);
 								$this->registry->getObject('db')->deleteRecords('meetinglinecontent',$condition);
+								$this->registry->getObject('db')->deleteRecords('meetinglinepage',$condition);
+								$this->registry->getObject('db')->deleteRecords('meetinglinetask',$condition);
 							}
 						}								
 						$condition = "MeetingID = $MeetingID";
+						$this->registry->getObject('db')->deleteRecords('meetingattachment',$condition);
 						$this->registry->getObject('db')->deleteRecords('meetingline',$condition);
 					}
 				}
@@ -278,15 +290,12 @@ class Zobmanage {
 
 		global $config;
 		$fileroot = $config['fileroot'].$config['rootZOB'];
-		$fullFileName = $fileroot."/_".$meetingtype['MeetingName']."/".$electionperiod['PeriodName']."/".$meeting['EntryNo']."/.meeting";		
+		$EntryNo = $meeting['EntryNo'];
 
-		if($meeting['Close'] == 1){
-			$this->errorMessage = "Nelze přepsat uzavřený zápis.";
-			return;
-		}
-		$this->deleteMeeting($MeetingID);
-		$MeetingID = $this->importMeeting($fullFileName);
-		return $MeetingID;
+		$parentPath = $fileroot."/_".$meetingtype['MeetingName']."/".$electionperiod['PeriodName']."/";
+		$this->scanDirPath($meetingtype,$EntryNo,$parentPath.$EntryNo.'/', '',false);
+		$meeting = $this->zob->getMeetingByEntryNo($meetingtype, $EntryNo);
+		return $meeting['MeetingID'];
 	}
 
 	private function scanAllMeeting(){
@@ -312,7 +321,8 @@ class Zobmanage {
 
 			}					
 		};
-	
+
+		
 		$this->print($content);
 		return;
 	}
@@ -365,8 +375,6 @@ class Zobmanage {
 							
 						// Toto je příloha k založení 
 						$content .= $EntryNo." ===> ".$HtmlName."<br>";
-
-						//TODO - zde se bude zapisovat do příloh
 
 						// Najít/vytvořit EntryNo
 						$dmsEntryNo = $this->registry->getObject('file')->findItem($fullFileName);
@@ -436,6 +444,7 @@ class Zobmanage {
 		while(!feof($file)) {
 		
 			$line = fgets($file);
+			$line = trim($line);
 			if($line){
 				$field = explode(';',$line);
 				$type = count($field)>1 ? $field[0] : '';
@@ -554,7 +563,18 @@ class Zobmanage {
 						$data['LineNo'] = (int) $arr[0];
 						$data['LineNo2'] = isset($arr[1]) ? (int) $arr[1] : 0;
 						$data['LineType'] = isset($arr[1]) ? 'Podbod' : 'Bod';
-						$data['Title'] = $this->registry->getObject('db')->sanitizeData(trim($field[2]));
+						$text = trim($field[2]);
+						$text = str_replace("–","-",$text);
+						if($text <> ''){
+							if($text[0] == '-')
+								$text = substr($text,1);
+						};
+						if (strlen($text) > 250){
+							$data['Title'] = $this->registry->getObject('db')->sanitizeData(trim(substr($text,0,249)));
+							$data['Title2'] = $this->registry->getObject('db')->sanitizeData(trim(substr($text,250,249)));
+						}else
+							$data['Title'] = $this->registry->getObject('db')->sanitizeData(trim($text));
+						
 						$this->registry->getObject('db')->insertRecords('meetingline',$data);
 						break;
 					case 'T':
@@ -565,7 +585,13 @@ class Zobmanage {
 						$data['LineNo'] = (int) trim($field[1]);
 						$data['LineNo2'] = 0;
 						$data['LineType'] = 'Doplňující bod';
-						$data['Title'] = $this->registry->getObject('db')->sanitizeData(trim($field[2]));
+						$text = trim($field[2]);
+						$text = str_replace("–","-",$text);
+						if($text <> ''){
+							if($text[0] == '-')
+								$text = substr($text,1);
+						};
+						$data['Title'] = $this->registry->getObject('db')->sanitizeData($text);
 						$this->registry->getObject('db')->insertRecords('meetingline',$data);
 						break;
 					case 'P':
@@ -578,7 +604,13 @@ class Zobmanage {
 						$data['LineNo'] = (int) $arr[0];
 						$data['LineNo2'] = isset($arr[1]) ? (int) $arr[1] : 0;
 						$data['LineType'] = isset($arr[1]) ? 'Podbod' : 'Bod';
-						$data['Title'] = $this->registry->getObject('db')->sanitizeData(trim($field[2]));
+						$text = trim($field[2]);
+						$text = str_replace("–","-",$text);
+						if($text <> ''){
+							if($text[0] == '-')
+								$text = substr($text,1);
+						};
+						$data['Title'] = $this->registry->getObject('db')->sanitizeData($text);
 						$this->registry->getObject('db')->insertRecords('meetingline',$data);
 						break;
 					case 'O':
@@ -599,6 +631,7 @@ class Zobmanage {
 						$MeetingLineID = $meetingline['MeetingLineID'];
 						
 						$text = isset($field[2]) ? trim($field[2]) : '';
+						$text = str_replace("–","-",$text);
 						if($text == ""){
 							$this->errorMessage = "Obsah bodu $LineNo.$LineNo2 není vyplněn, nebo struktura dat obsahuje chybu.";
 							$this->print();
@@ -615,6 +648,11 @@ class Zobmanage {
 						break;
 					case 'C':
 						$text = isset($field[1]) ? trim($field[1]) : '';
+						$text = str_replace("–","-",$text);
+						if($text <> ''){
+							if($text[0] == '-')
+								$text = substr($text,1);
+						};
 						$data = null;
 						$data['MeetingLineID'] = $MeetingLineID;
 						$data['MeetingID'] = $MeetingID;
@@ -635,6 +673,7 @@ class Zobmanage {
 						break;						
 					case 'U':
 						$text = trim($field[1]);
+						$text = str_replace("–","-",$text);
 						if($text[0] == '-')
 							$text = substr($text,1);
 						$data = null;
@@ -650,6 +689,7 @@ class Zobmanage {
 						break;
 					case 'I':
 						$text = trim($field[1]);
+						$text = str_replace("–","-",$text);
 						if($text[0] == '-')
 							$text = substr($text,1);
 						$data = null;
@@ -699,6 +739,7 @@ class Zobmanage {
 								return;
 						}
 						$line = trim($line);
+						$line = str_replace("–","-",$line);
 						if($line != ""){
 							if($lastOC == 'O'){
 								$meetingline = $this->zob->getMeetingline($MeetingLineID);

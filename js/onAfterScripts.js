@@ -411,6 +411,8 @@ if(link_element){
                         // File ()
                         var name,extension,id;
                         name = e.getAttribute('filename')
+                        if(!name)
+                            name = e.getAttribute('name')
                         extension = name.split('.').pop();
                         if (isValidFileExtension(extension))
                         {

@@ -725,7 +725,7 @@ class Zobcontroller{
 					$meetinglinepage['MeetingLineID'] = $MeetingLineID;
 					$meetinglinepage['MeetingID'] = $MeetingID;
 					$meetinglinepage['MeetingTypeID'] = $meeting['MeetingTypeID'];
-					$this->registry->getObject('db')->insertRecords('meetinglinepage',$meetingline);
+					$this->registry->getObject('db')->insertRecords('meetinglinepage',$meetinglinepage);
 				}
 			}
 			return true;
@@ -1298,6 +1298,24 @@ class Zobcontroller{
 		if (!$this->registry->getObject('db')->isEmpty())
 			return true;
 
+		// meetinglinecontent
+		$this->registry->getObject('db')->initQuery('meetinglinecontent');
+		$this->registry->getObject('db')->setFilter('MeetingLineID',$MeetingLineID);
+		if (!$this->registry->getObject('db')->isEmpty())
+			return true;
+
+		// meetinglinepage
+		$this->registry->getObject('db')->initQuery('meetinglinepage');
+		$this->registry->getObject('db')->setFilter('MeetingLineID',$MeetingLineID);
+		if (!$this->registry->getObject('db')->isEmpty())
+			return true;
+
+		// meetinglinetask
+		$this->registry->getObject('db')->initQuery('meetinglinetask');
+		$this->registry->getObject('db')->setFilter('MeetingLineID',$MeetingLineID);
+		if (!$this->registry->getObject('db')->isEmpty())
+			return true;
+
 		return false;
 	}
 
@@ -1776,6 +1794,7 @@ class Zobcontroller{
 	{
 		$MeetingLineID = 0;
 		$this->registry->getObject('db')->initQuery('meetingline');
+		$this->registry->getObject('db')->setOrderBy('MeetingLineID');
 		if ($this->registry->getObject('db')->findLast()){
 			$meetingline = $this->registry->getObject('db')->getResult();
 			$MeetingLineID = $meetingline['MeetingLineID'];			

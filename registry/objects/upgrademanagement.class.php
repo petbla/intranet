@@ -298,6 +298,44 @@ class upgrademanagement {
             // upgrade to 2.46
             $this->upgrade_246('2.46');
         }
+        if ($this->version === '2.46') 
+        {
+            // upgrade to 2.47
+            $this->upgrade_247('2.47');
+        }
+        if ($this->version === '2.47') 
+        {
+            // upgrade to 2.48
+            $this->upgrade_248('2.48');
+        }
+    }
+
+    private function upgrade_248($upVer)
+    {
+		global $config;
+        $pref = $config['dbPrefix'];
+
+        // upgrade table 'meetingattachment'
+        $sql = "ALTER TABLE ".$pref."meetingattachment".
+            " CHANGE `Description` `Description` varchar(250) CHARACTER SET utf8 COLLATE utf8_czech_ci DEFAULT NULL";
+
+        $this->registry->getObject('db')->executeQuery( $sql );
+
+        $this->setNewVersion($upVer);
+    }
+
+    private function upgrade_247($upVer)
+    {
+		global $config;
+        $pref = $config['dbPrefix'];
+
+        // upgrade table 'meetingline'
+        $sql = "ALTER TABLE ".$pref."meetingline".
+            " CHANGE `Title` `Title` varchar(250) CHARACTER SET utf8 COLLATE utf8_czech_ci DEFAULT NULL";
+
+        $this->registry->getObject('db')->executeQuery( $sql );
+
+        $this->setNewVersion($upVer);
     }
 
     private function upgrade_246($upVer)
