@@ -996,7 +996,7 @@ class Zobcontroller{
 	{
 
 		// Zápis z jednání
-		$sql = "SELECT * FROM ".$this->prefDb."meeting WHERE MeetingTypeID = $MeetingTypeID ORDER BY EntryNo";
+		$sql = "SELECT * FROM ".$this->prefDb."meeting WHERE MeetingTypeID = $MeetingTypeID ORDER BY EntryNo DESC";
 		$sql = $this->registry->getObject('db')->getSqlByPage( $sql );
 		$cache = $this->registry->getObject('db')->cacheQuery( $sql );	
 		if(!$this->registry->getObject('db')->isEmpty( $cache )){
