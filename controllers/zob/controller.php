@@ -720,12 +720,14 @@ class Zobcontroller{
 
 				// meetinglinepage
 				$meetinglinepages = $this->readMeetinglinepage( $MeetingLineIDTemplate );
-				foreach($meetinglinepages as $meetinglinepage){
-					$meetinglinepage['PageID'] = null;
-					$meetinglinepage['MeetingLineID'] = $MeetingLineID;
-					$meetinglinepage['MeetingID'] = $MeetingID;
-					$meetinglinepage['MeetingTypeID'] = $meeting['MeetingTypeID'];
-					$this->registry->getObject('db')->insertRecords('meetinglinepage',$meetinglinepage);
+				if($meetinglinepages){
+					foreach($meetinglinepages as $meetinglinepage){
+						$meetinglinepage['PageID'] = null;
+						$meetinglinepage['MeetingLineID'] = $MeetingLineID;
+						$meetinglinepage['MeetingID'] = $MeetingID;
+						$meetinglinepage['MeetingTypeID'] = $meeting['MeetingTypeID'];
+						$this->registry->getObject('db')->insertRecords('meetinglinepage',$meetinglinepage);
+					}
 				}
 			}
 			return true;
@@ -1601,11 +1603,11 @@ class Zobcontroller{
 		}else{
 			$meeting = $this->getMeeting($param);
 		};
-		if($meeting['VerifierBy1'] != '00000000-0000-0000-0000-000000000000')
-			$verifier = $meeting['VerifierBy1'];
-		if($meeting['VerifierBy2'] != '00000000-0000-0000-0000-000000000000'){			
+		$verifier = $this->getContactFullName($meeting['VerifierBy1']);
+		$name2 = $this->getContactFullName($meeting['VerifierBy2']);
+		if($name2 != ''){			
 			$verifier .= ($verifier == '') ? '' : ', ';
-			$verifier .= $meeting['VerifierBy2'];
+			$verifier .= $name2;
 		}
 		return $verifier;
 	}
@@ -1715,6 +1717,20 @@ class Zobcontroller{
 		if ($this->registry->getObject('db')->findFirst())
 			$contact = $this->registry->getObject('db')->getResult();			
 		return $contact;
+	}
+
+	public function getContactFullName ( $ContactID )
+	{
+		$fullName = '';
+		$contact = $this->getContactByID($ContactID);
+		if ($contact)
+			$fullName = $contact['FullName'];
+		else{
+			if($ContactID != '00000000-0000-0000-0000-000000000000'){			
+				$fullName = $ContactID;
+			}
+		}
+		return $fullName;
 	}
 
 	public function getDmsentryByInboxID ( $InboxID )
@@ -1889,7 +1905,7 @@ class Zobcontroller{
 		if($arr[2] < 100)
 			$arr[2] = $arr[2] + 2000;
 		$text = $arr[0].".".$arr[1].".".$arr[2];
-		$date = date('Y-m-d', strtotime($text));
+		$date = $this->registry->getObject('core')->formatDate($text,'Y-m-d');
 		return $date;
 	}
 }

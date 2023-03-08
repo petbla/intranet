@@ -186,6 +186,14 @@ class Generalws {
 				if(!$isTemplate)
 					$data[$field] = $this->contact->getContactID($value);
 				break;
+			case 'Actual':
+				// Reset pole Actual na všech záznamech
+				$changes = array();
+				$changes['Actual'] = 0;
+				$condition = "MeetingTypeID = ".$meeting['MeetingTypeID'];
+				$this->registry->getObject('db')->updateRecords('meeting',$changes,$condition);
+				$data['Actual'] = 1;
+				break;
 			default:
 				$data[$field] = $value;
 		}

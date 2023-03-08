@@ -24,12 +24,12 @@
           <small>{Name}</small>
         </a>
       </td>
-      <td>{Type}</td>
+      <td>{TypeText}</td>
   	</tr>
   	<tr>
   	</tr>
   	<tr>
-      <td colspan = "3">
+      <td colspan = "4">
         <div id="{viewContactCardID}" style="display:none;" onclick="this.style.display = 'none';" >          
           <span class="action_close" onclick="document.getElementById('{viewContactCardID}').style.display = 'none';">{lbl_Close}</span>
           {viewcardContact} 

@@ -296,7 +296,7 @@ class pdfdocument extends FPDF
         $this->WriteCell('times','B',14, 40, 8, 150,0,'USNÁŠENÍ SCHOPNÉ',0,0,'C');
 
         $this->Ln(4);
-        $this->WriteCell('times','',12, 20, 2, 150,0,'PROGRAM:',0,0,'L');
+        $this->WriteCell('times','B',12, 20, 5, 150,0,'PROGRAM:',0,0,'L');
         break;
       case '10020':
         $this->WriteCell('times','B',40, 40, 12, 150,0,$headerTitle['City'],0,0,'C');
@@ -324,9 +324,10 @@ class pdfdocument extends FPDF
     $yy = $this->GetY();
     $this->SetXY(20,$yy);
     $this->SetFont('times','',12);
-    $this->Cell(10,10,$lineno,0,0,'L');
-    $this->Cell(150,10,$this->_utf2win($text),0,0,'L');
-    $yy += 5;
+    $this->Cell(10,5,$lineno,0,0,'L');
+    //$this->Cell(150,10,$this->_utf2win($text),0,0,'L');
+    $this->MultiCell(150,5,$this->_utf2win($text),0,'L');
+    $yy = $this->GetY();
     $this->SetY($yy);
   } 
 

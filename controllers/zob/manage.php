@@ -471,14 +471,14 @@ class Zobmanage {
 								return;
 						}
 						$EntryNo = $field[2];
-						$Year = date('Y', strtotime($field[4]));
+						$Year = $this->registry->getObject('core')->formatDate($field[4],'Y');
 
 						$meeting = array();
 						$meeting['EntryNo'] = $EntryNo;
 						$meeting['Present'] = (int) $field[3];
 						$meeting['AtDate'] = $this->zob->text2Date($field[4]);
 						$meeting['Year'] = $Year;
-						$meeting['AtTime'] = date('H:i', strtotime($field[5]));
+						$meeting['AtTime'] = $this->registry->getObject('core')->formatDate($field[5],'H:i');
 						$meeting['PostedUpDate'] = $this->zob->text2Date($field[6]);
 						$meeting['PostedDownDate'] = $this->zob->text2Date($field[7]);
 

@@ -89,9 +89,9 @@ class Zobprint {
                 $headerTitle['RecorderBy'] = 'zapsal(a): '.$meeting['RecorderBy'];
                 break;
         }
-        $headerTitle['RecorderAt'] = $config['compCity'].', '.date('d.m.Y',strtotime($meeting['RecorderAtDate']));
+        $headerTitle['RecorderAt'] = $config['compCity'].', '.$this->registry->getObject('core')->formatDate($meeting['RecorderAtDate']);
         $headerTitle['City'] = 'OBEC '.mb_strtoupper($config['compCity']);
-        $headerTitle['AtDate'] = 'dne '.date('d.m.Y',strtotime($meeting['AtDate']));
+        $headerTitle['AtDate'] = 'dne '.$this->registry->getObject('core')->formatDate($meeting['AtDate']);
         $headerTitle['MeetingNo'] = 'číslo '. $meeting['EntryNo'];
         $headerTitle['PresentMembers'] = 'Přítomno: '.$meeting['Present'];
         if($this->zob->getMeetingExcused($meeting) == '')
@@ -200,12 +200,12 @@ class Zobprint {
                 $headerTitle['HeadMan'] = 'předseda';
                 break;
         }
-        $headerTitle['AtDate'] = 'Na den '.date('d.m.Y',strtotime($meeting['AtDate']));
-        $headerTitle['AtTime'] = 'ZAČÁTEK: '.date('H:i',strtotime($meeting['AtTime'])).' HODIN';
+        $headerTitle['AtDate'] = 'Na den '.$this->registry->getObject('core')->formatDate($meeting['AtDate']);
+        $headerTitle['AtTime'] = 'ZAČÁTEK: '.$this->registry->getObject('core')->formatDate($meeting['AtTime'],'H:i').' HODIN';
         $headerTitle['MeetingPlace'] = 'MÍSTO KONÁNÍ: '.$meeting['MeetingPlace'];
-        $atdate = $meeting['PostedUpDate'] != null ? date('d.m.Y',strtotime($meeting['PostedUpDate'])) : '........................';
+        $atdate = $meeting['PostedUpDate'] != null ? $this->registry->getObject('core')->formatDate($meeting['PostedUpDate']) : '........................';
         $headerTitle['PostedUp'] = 'Vyvěšeno: '.$atdate;
-        $atdate = $meeting['PostedDownDate'] != null ? date('d.m.Y',strtotime($meeting['PostedDownDate'])) : '........................';
+        $atdate = $meeting['PostedDownDate'] != null ? $this->registry->getObject('core')->formatDate($meeting['PostedDownDate']) : '........................';
         $headerTitle['PostedDown'] = 'Sňato: '.$atdate;
 
         $this->registry->getObject('pdf')->DocumentTitle('10020',$headerTitle);
@@ -235,7 +235,5 @@ class Zobprint {
         $this->registry->getObject('pdf')->Show();
   
 		exit;
-
 	}
-
 }

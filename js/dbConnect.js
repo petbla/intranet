@@ -47,7 +47,7 @@ function wsUpdate(e) {
             response = Http.responseText;
             if((response == 'OK' ) || (response == '' )){
                 console.log(response);
-                if(field == 'Close')
+                if((field == 'Close') || (field == 'Actual'))
                     window.location.reload();      
                     refreshRec(e);
             }else{

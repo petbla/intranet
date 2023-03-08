@@ -10,6 +10,7 @@
 class Core
 {
 
+  private $registry;
 
   public function __construct(Registry $registry)
   {

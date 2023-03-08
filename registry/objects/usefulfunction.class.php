@@ -125,7 +125,7 @@ class UsefulFunction {
     $pref = $config['dbPrefix'];
     $docNo = 0;
 
-    $date = date('Y-m-d', strtotime($isoDT));
+    $date = $this->registry->getObject('core')->formatDate($isoDT,'Y-m-d');
     $sql = "SELECT ID,valid_from,first_no,last_no FROM ".$pref."no_series WHERE type='$type'";
     if (isset($date) && ($date != null) )
       $sql .= " AND valid_from <= '" . $date . "' ORDER BY valid_from DESC";
@@ -307,7 +307,7 @@ class UsefulFunction {
     if ($millions <= 4) { 
       $result .= $namesMillions[$millions - 1] . $WordsSeparator; 
     } else { 
-      $result .= AmmountWords($millions).$WordsSeparator.$namesMillions[strlen($namesMillions) - 1].$WordsSeparator; 
+      //$result .= AmmountWords($millions).$WordsSeparator.$namesMillions[strlen($namesMillions) - 1].$WordsSeparator; 
     } 
     return $result; 
   } 

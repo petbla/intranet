@@ -225,6 +225,8 @@ class Generalcontroller {
 				$rec['FileExtension'] = '';
 				$rec['ADocumentNo'] = '---';
 
+				$type = $rec['Type'];
+				$rec['TypeText'] = isset($caption[$type]) ? $caption[$type] : $type;
 
 				switch ($rec['Type']) {
 					case 'Folder':
