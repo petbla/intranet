@@ -7,6 +7,7 @@
 class Generalcontroller {
 
 	private $registry;
+	private $zob;
 	private $urlBits;
 	private $message;
 	private $errorMessage;
@@ -16,6 +17,8 @@ class Generalcontroller {
 		global $caption;
 
 		$this->registry = $registry;
+		require_once( FRAMEWORK_PATH . 'controllers/zob/controller.php');
+		$this->zob = new Zobcontroller( $this->registry, false );					
 		require_once( FRAMEWORK_PATH . 'models/entry/model.php');
 		require_once( FRAMEWORK_PATH . 'models/contact/model.php');
 		
@@ -29,7 +32,7 @@ class Generalcontroller {
 			{
 				$this->registry->getObject('log')->addMessage($caption['msg_unauthorized'],'contact','');
 				
-				$this->registry->getObject('template')->getPage()->addTag('message',$caption['msg_unauthorized']);
+				$this->message = $caption['msg_unauthorized'];				
 				$this->build();
 				return;
 			}
@@ -66,6 +69,9 @@ class Generalcontroller {
 							return;
 						}
 						break;
+					case 'favourite':
+						$this->favourite();
+						return;
 					case 'ws':
 							$action = isset($urlBits[2]) ? $urlBits[2] : '';
 							require_once( FRAMEWORK_PATH . 'controllers/general/ws.php');
@@ -84,9 +90,13 @@ class Generalcontroller {
      */
 	private function build( $template = 'page.tpl.php' )
 	{
+		// Page message
+		$this->registry->getObject('template')->getPage()->addTag('message',$this->message);
+		$this->registry->getObject('template')->getPage()->addTag('errorMessage',$this->errorMessage);
+
 		// Build page
 		$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
-		$this->registry->getObject('template')->addTemplateBit('categories', 'categorymenu-empty.tpl.php');
+		$this->registry->getObject('template')->addTemplateBit('categories', 'categorymenu-favourite.tpl.php');
 		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', $template , 'footer.tpl.php');
 	}
 
@@ -98,6 +108,8 @@ class Generalcontroller {
 	{
 		// Logování
 		$this->registry->getObject('log')->addMessage("Pokus o zobrazení neznámého obsahu",'dmsentry','');		
+
+		$this->errorMessage = "Pokus o zobrazení neznámého obsahu";
 		$this->build('invalid-page.tpl.php');
 	}
 
@@ -111,7 +123,58 @@ class Generalcontroller {
 		// Logování
 		$this->registry->getObject('log')->addMessage("Chyba: $message",'contact','');
 		
-		$this->registry->getObject('template')->getPage()->addTag('message',$message);
+		$this->errorMessage = $message;
+		$this->build();
+	}
+
+	/**
+	 * Generování menu
+	 * @return void
+	 */
+	public function createFavouriteCategoryMenu()
+    {
+		global $config;
+        $pref = $config['dbPrefix'];
+        $perSet = $this->registry->getObject('authenticate')->getPermissionSet();
+		$table = null;
+
+		// TODO
+		$countInboxNew = $this->countInboxNew();
+		if($countInboxNew)
+			$rec['titleCat'] = "<b>SKEN - Doručená pošta ($countInboxNew)</b>";
+		else
+			$rec['titleCat'] = "Doručená pošta ($countInboxNew)";
+		$rec['hrefCat'] = "todo/inbox";
+		$table[] = $rec;
+
+		// ZOB
+		$electionperiod = $this->zob->getActualElectionperiod();
+		if($electionperiod){
+			$meetingtypes = $this->zob->readMeetingtypesByElectionperiodID($electionperiod['ElectionPeriodID']);
+			if($meetingtypes){
+				foreach($meetingtypes as $meetingtype){
+					$meeting = $this->zob->getActualMeeting($meetingtype['MeetingName']);
+					if($meeting){
+						$rec['titleCat'] = '<b>'.$meetingtype['MeetingName'].'</b> číslo ('.$meeting['EntryNo'].'/'.$meeting['Year'].')';
+						$rec['hrefCat'] = 'zob/meetingline/list/'.$meeting['MeetingID'];
+						$table[] = $rec;				
+					}
+				}
+			}
+		}
+
+		if($table){
+			$cache = $this->registry->getObject('db')->cacheData( $table );
+			$this->registry->getObject('template')->getPage()->addTag( 'categoryList', array( 'DATA', $cache ) );
+		}else
+			$this->registry->getObject('template')->getPage()->addTag( 'titleCat', '' );
+    }
+
+	private function favourite()
+	{
+		// Category Menu
+		$this->createFavouriteCategoryMenu();
+
 		$this->build();
 	}
 
@@ -343,7 +406,7 @@ class Generalcontroller {
 		    }			
 		}else{
 			$message = 'Nenalezeno';
-			$this->registry->getObject('template')->getPage()->addTag('message',$message);
+			$this->message = $message;
 			$this->build();
 			return;
 		}	
@@ -446,6 +509,19 @@ class Generalcontroller {
 				break;
 		}
 		return $app;
+	}
+
+	private function countInboxNew(){
+		global $config;
+		$prefDb = $config['dbPrefix'];
+
+		$table = 'inbox';
+		$sql = "SELECT count(*) as pocet FROM ".$prefDb.$table;
+		$sql .= " WHERE Close = 0";
+		$cache = $this->registry->getObject('db')->cacheQuery( $sql );	
+		$this->registry->getObject('db')->findFirst( $cache );
+		$result = $this->registry->getObject('db')->resultsFromCache( $cache );
+		return $result['pocet'];				
 	}
 
 }

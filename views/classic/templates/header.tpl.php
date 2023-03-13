@@ -36,6 +36,7 @@
       <h1>{lbl_DmsLabel} - {compName}</h1>
       <nav>
         <ul>
+          <li><a href="index.php?page=general/favourite">{lbl_Home}</a></li>
           <li><a href="index.php?page=todo/inbox">{lbl_Todos}</a></li>
           <li><a href="index.php?page=document/list">{lbl_Documents}</a></li>
           <li><a href="index.php?page=agenda/type/list">{lbl_Agenda}</a></li>

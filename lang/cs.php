@@ -94,7 +94,8 @@ $caption['Documents'] =      'Dokumenty';
 $caption['DocumentNo'] =     'Číslo jednací';
 $caption['Code'] =           'Kód';
 $caption['Agenda'] =         'Evidence';
-$caption['ZOB'] =            'Zápisy obce';
+$caption['Home'] =           'ÚVOD';
+$caption['ZOB'] =            'Zápisy';
 $caption['Created'] =        'Vytvořeno';
 $caption['Modified'] =       'Změněno';
 $caption['News'] =           'Novinky';
@@ -114,6 +115,7 @@ $caption['ExecuteDate'] =    'Datum vyřízení';
 $caption['Close'] =          'Zavřít';
 $caption['CloseCard'] =      'Uzavřít kartu';
 $caption['Actual'] =         'Aktuální';
+$caption['Favourite'] =      'Oblíbené';
 
 $caption['RemindState'] =    'Stav';
 $caption['RemindState00'] = '';
