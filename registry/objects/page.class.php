@@ -1,10 +1,10 @@
 <?php
 /**
- * Objekt stránky pro našeho šablonového správce
+ * Page templates management
  *
  * @author  Petr Blažek
  * @version 1.0
- * @date    1.7.2011 
+ * @date    7.4.20123
  */
 class page {
 
@@ -21,6 +21,7 @@ class page {
 	private $postParseTags = array();
 	// části šablony
 	private $bits = array();
+	private $postParseBits = array();
 	// obsah stránky
 	private $content = "";
 	
@@ -31,7 +32,7 @@ class page {
 
     /**
      * Získá titulek stránky 
-     * @return String
+     * @return string
      */
     public function getTitle()
     {
@@ -40,7 +41,7 @@ class page {
     
     /**
      * Nastaví titulek stránky 
-     * @param String $titulek titulek stránky 
+     * @param string $titulek titulek stránky 
      * @return void
      */
     public function setTitle( $title )
@@ -50,7 +51,7 @@ class page {
     
     /**
      * Nastavení obsahu stránky 
-     * @param String $obsah obsah stránky 
+     * @param string $obsah obsah stránky 
      * @return void
      */
     public function setContent( $content )
@@ -60,8 +61,8 @@ class page {
     
     /**
      * Přidej do stránky značku šablony a její hodnotu/data 
-     * @param String $key - klíč, pod kterým se v poli značka uloží 
-     * @param String $data - data (může se také jednat o pole) 
+     * @param string $key - klíč, pod kterým se v poli značka uloží 
+     * @param string $data - data (může se také jednat o pole) 
      * @return void
      */
     public function addTag( $key, $data )
@@ -71,7 +72,7 @@ class page {
     
     /**
      * Získej značky spojené se stránkou 
-     * @return void
+     * @return array<string>
      */
     public function getTags()
     {
@@ -80,8 +81,8 @@ class page {
     
     /**
      * Přidej značku vkládanou po analýze
-     * @param String $klic klíč, který se vloží do pole
-     * @param String $data data 
+     * @param string $klic klíč, který se vloží do pole
+     * @param string $data data 
      * @return void
      */
     public function addPPTag( $key, $data )
@@ -91,7 +92,7 @@ class page {
     
     /**
      * Získej značky, které se analyzují po provedení první analýzy
-     * @return array
+     * @return array<mixed>
      */
     public function getPPTags()
     {
@@ -101,8 +102,8 @@ class page {
     /**
      * Přidej do stránky část šablony – momentálně se ještě nepřidává 
      * samotný obsah 
-     * @param String tag - značka, do které se šablona přidá 
-     * @param String bit - název souboru šablony 
+     * @param string tag - značka, do které se šablona přidá 
+     * @param string bit - název souboru šablony 
      * @return void
      */
     public function addTemplateBit( $tag, $bit )
@@ -110,19 +111,29 @@ class page {
 	    $this->bits[ $tag ] = $bit;
     } // end function addTemplateBit
     
+    public function addPPTemplateBit( $tag, $bit )
+    {
+	    $this->postParseBits[ $tag ] = $bit;
+    }
+    
     /**
      * Získej části šablon, které se vloží do stránky 
-     * @return array pole značek šablon a názvů souborů šablon 
+     * @return array<mixed> pole značek šablon a názvů souborů šablon 
      */
     public function getBits()
     {
 	    return $this->bits;
     } // end function getBits
     
+    public function getPPBits()
+    {
+	    return $this->postParseBits;
+    } 
+    
     /**
      * Získej blok obsahu stránky 
-     * @param String tag - obalující blok ( <!-- START tag --> tor <!-- END tag --> ) 
-     * @return String tor obsahu 
+     * @param string tag - obalující blok ( <!-- START tag --> tor <!-- END tag --> ) 
+     * @return string tor obsahu 
      */
     public function getBlock( $tag )
     {

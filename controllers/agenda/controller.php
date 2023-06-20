@@ -86,7 +86,6 @@ class Agendacontroller{
 								$ID = isset($urlBits[3]) ? $urlBits[3] : '';
 								$result = $this->wsUnlinkAgenda($ID);
 								exit($result);		
-								break;
 						}
 						break;
 					default:
@@ -126,7 +125,7 @@ class Agendacontroller{
 
     /**
      * Zobrazení chybové stránky s uživatelským textem
-	 * @param String $message = text zobrazen jako chyba
+	 * @param string $message = text zobrazen jako chyba
      * @return void
      */
 	private function error( $message )
@@ -162,7 +161,7 @@ class Agendacontroller{
 
     /**
      * Zobrazení položek agendy
-	 * @param String $TypeID = ID agendy
+	 * @param string $TypeID = ID agendy
      * @return void
      */
 	private function listAgenda( $TypeID )
@@ -264,6 +263,7 @@ class Agendacontroller{
         {
 			$this->error($caption['msg_unauthorized']);
         }
+		return -1;
     }	
 
 	/**
@@ -383,7 +383,7 @@ class Agendacontroller{
     /**
      * Vrací kód číselné řady
      * @param int $TypeID
-     * @return varchar(20) $NoSeries
+     * @return string $NoSeries
      */
     function getNoSeries( $TypeID ) 
     {
@@ -396,7 +396,78 @@ class Agendacontroller{
         return '';
     }
 
-		/**
+	/**
+     * Vrací záznam typu číselné řady
+     * @param int $TypeID
+     * @return array $agendatype table
+	 */
+	function getAgendatype( $TypeID ) 
+    {
+        $agendatype = null;
+		$this->registry->getObject('db')->initQuery('agendatype');
+        $this->registry->getObject('db')->setFilter('TypeID',$TypeID);
+        if($this->registry->getObject('db')->findFirst()){
+			$agendatype = $this->registry->getObject('db')->getResult();		
+			
+			$this->registry->getObject('db')->initQuery('agenda');
+			$this->registry->getObject('db')->setFilter('NoSeries',$agendatype['NoSeries']);
+			$this->registry->getObject('db')->setOrderBy('DocumentNo');
+			if($this->registry->getObject('db')->findLast()){
+				$agendatype2 = $this->registry->getObject('db')->getResult();				
+				$agendatype['LastNo'] = $agendatype2['DocumentNo'];
+			}else{
+				$agendatype['LastNo'] = $agendatype['NoSeries'];
+			};					
+			// Update
+			$changes = array();
+			$changes['LastNo'] = $agendatype['LastNo'];
+			$condition = "TypeID = '$TypeID'";
+			$this->registry->getObject('db')->updateRecords('agendatype',$changes, $condition);
+		};
+        return $agendatype;
+    }
+
+	/**
+	 * Vrací první volné číslo, nebo založí nové
+	 * @param int $TypeID
+	 * @return string $DocumentNo	 * 
+	 */
+	function getNextDocumentNo( $TypeID )
+	{
+		$agendatype = $this->getAgendatype( $TypeID );
+		$noSeries = $agendatype['NoSeries'];
+		$DocumentNo = '';
+
+		$this->registry->getObject('db')->initQuery('agenda');
+        $this->registry->getObject('db')->setFilter('NoSeries',$noSeries);
+        $this->registry->getObject('db')->setCondition("IFNULL(Description,'') = ''");
+        $this->registry->getObject('db')->setOrderBy('DocumentNo');
+
+        if($this->registry->getObject('db')->findFirst()){
+			$agenda = $this->registry->getObject('db')->getResult();				
+			$DocumentNo = $agenda['DocumentNo'];
+		}else{
+			$DocumentNo = $agendatype['LastNo'];
+			++$DocumentNo;
+
+			// Insert New to Agenda
+			$data = array();
+			$data['TypeID'] = $TypeID;
+			$data['DocumentNo'] = $DocumentNo;
+			$data['NoSeries'] = $noSeries;
+			$data['CreateDate'] = date("Y-m-d H:i:s");
+			$this->registry->getObject('db')->insertRecords('agenda',$data);			
+
+			// Update
+			$changes = array();
+			$changes['LastNo'] = $DocumentNo;
+			$condition = "TypeID = '$TypeID'";
+			$this->registry->getObject('db')->updateRecords('agendatype',$changes, $condition);			
+		};
+		return $DocumentNo;
+	}
+
+	/**
 	 * Odstranení odkazu agendy na dokument (číslo jednací)
 	 * @param string $ID = ID agendy
 	 */
@@ -421,8 +492,8 @@ class Agendacontroller{
 
     /**
      * Webová služba 
-	 * @param String $ID = ID položky Agendy
-     * @return String = Návratová hodnota
+	 * @param string $ID = ID položky Agendy
+     * @return string = Návratová hodnota
 	 *                  => OK    = zápis proběhl korektně
 	 *                  => Error = zápis do logu skončil chybou
      */

@@ -19,7 +19,6 @@ class Core
 
   /**
    * Return aktual date
-   * @param NONE 
    * @return string (DD.MM.YYYY)
    */
   public function today()
@@ -30,7 +29,6 @@ class Core
   
   /**
    * Return actual datetime as ISO format
-   * @param NONE 
    * @return string (YYYY-MM-DD HH:MM:SS)
    */
   public function now()
@@ -43,8 +41,7 @@ class Core
    * Return formateed date
    * @param $date - ISO format '2022-07-23T05:10:30+0200'
    * @param $mask - mask format date (examle: "d.m.Y", "h:m"
-   * 
-   * @return $fdate - formated date
+   * @return string - formated date
    */
   public function formatDate( $date, $mask = "d.m.Y")
   {
@@ -234,7 +231,10 @@ class Core
   public function createGUID()
   {
     if (function_exists('com_create_guid') === true) {
-      return trim(com_create_guid(), '{}');
+      $guid = com_create_guid();
+      if ($guid)
+        $guid = trim($guid, '{}');
+      return $guid;
     }
     return sprintf('%04X%04X-%04X-%04X-%04X-%04X%04X%04X', mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(16384, 20479), mt_rand(32768, 49151), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535));
   }
@@ -242,7 +242,7 @@ class Core
 
     /**
    * Convert array to HTML table text
-   * @param array $input - data
+   * @param array<mixed> $input - data
    * @return string HTML text formated as TABLE
    */
   public function array2table($input)
@@ -263,7 +263,7 @@ class Core
 
   /**
    * Convert array to HTML table List
-   * @param array $table - tabulka[zaznam[hodnoty]] ;
+   * @param array<mixed> $table - tabulka[zaznam[hodnoty]] ;
    * @param string $header - seznam polí pro zobrazení
    * @param string $tableCardLink - url odkazu pro zobrazení karty/detailu
    * @param string $keyName - kliíčové pole pro zobrazení karty/detailu
@@ -319,7 +319,7 @@ class Core
   }
   /**
    * Convert array to HTML table Card
-   * @param array $table - tabulka[zaznam[hodnoty]] ;
+   * @param array<mixed> $table - tabulka[zaznam[hodnoty]] ;
    * @param string $header - seznam polí pro zobrazení
    * @return string HTML text formated as TABLE
    */

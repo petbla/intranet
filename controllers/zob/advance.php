@@ -107,7 +107,8 @@ class Zobadvance {
 	/**
 	 * Tisk dokumentů jednání
 	 * URL: zob/adv/print/invitation/<MeetingID>
-	 * @return void
+	 * @param string $action
+	 * @return mixed|string
 	 */
 	private function print( $action )
 	{
@@ -118,7 +119,7 @@ class Zobadvance {
 		$meeting = $this->zob->getMeeting($MeetingID);
 		if(!$meeting){
 			$this->errorMessage = 'ERROR: Nezadáno číslo jednání nebo jednání $MeetingID neexistuje.';
-			return;
+			return '';
 		}
 
 		switch ($action) {

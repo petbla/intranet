@@ -35,10 +35,8 @@ class file {
     $this->deaktiveUnvalidEntries();
 
     return;
-
-    $directories[]  = $this->getFileRoot(); 
-
-    
+    /*
+    $directories[]  = $this->getFileRoot();    
     $paret = 0;
     $level = 0;
     while (count($directories)) { 
@@ -64,6 +62,7 @@ class file {
         closedir($handle); 
       } 
     } 
+    */
   } 
 
   function synchoroDirectory($entry)
@@ -571,7 +570,7 @@ class file {
   
   /**
    * Funkce vrací root složku dle nastavení z tabulky source
-   * @return String $root
+   * @return string $root
    */
   public function getFileRoot()
   {

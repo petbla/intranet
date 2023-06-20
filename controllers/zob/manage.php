@@ -293,7 +293,7 @@ class Zobmanage {
 		$EntryNo = $meeting['EntryNo'];
 
 		$parentPath = $fileroot."/_".$meetingtype['MeetingName']."/".$electionperiod['PeriodName']."/";
-		$this->scanDirPath($meetingtype,$EntryNo,$parentPath.$EntryNo.'/', '',false);
+		$this->scanDirPath($meetingtype,$EntryNo,$parentPath.$EntryNo.'/',false, '');
 		$meeting = $this->zob->getMeetingByEntryNo($meetingtype, $EntryNo);
 		return $meeting['MeetingID'];
 	}
@@ -317,7 +317,7 @@ class Zobmanage {
 			if(is_dir($parentPath)){
 							
 				$content .= $meetingtype['MeetingName']."/".$electionperiod['PeriodName']."<br>";
-				$content .= $this->scanDirPath($meetingtype,0,$parentPath,'',true);
+				$content .= $this->scanDirPath($meetingtype,0,$parentPath,true,'');
 
 			}					
 		};
@@ -327,7 +327,7 @@ class Zobmanage {
 		return;
 	}
 
-	private function scanDirPath($meetingtype,$EntryNo,$dirPath, $dirName = '', $topLevel){
+	private function scanDirPath($meetingtype,$EntryNo,$dirPath,$topLevel, $dirName = ''){
 		$content = '';
 		if ($handle = opendir($dirPath)) { 
 			while (false !== ($fileName = readdir($handle))) 
@@ -353,7 +353,7 @@ class Zobmanage {
 
 				if(is_dir($fullFileName)){
 					// Další složka => další analýza
-					$content .= $this->scanDirPath($meetingtype,$EntryNo,$fullFileName.'/', $Name,false);
+					$content .= $this->scanDirPath($meetingtype,$EntryNo,$fullFileName.'/',false,$Name);
 				}else{
 					// Soubor
 					$meeting = $this->zob->getMeetingByEntryNo($meetingtype, $EntryNo);

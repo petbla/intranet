@@ -20,6 +20,13 @@ class login
     $this->registry = $registry;
   }
                                                     
+  /**
+   * Summary of addMessage
+   * @param string $message
+   * @param string $table
+   * @param string $ID
+   * @return void
+   */
   public function addMessage( $message, $table = '', $ID = '' )
   {
     if($table !== '')
@@ -57,7 +64,7 @@ class login
 
   /**
    * Funkce vrací root složku dle nastavení z tabulky source
-   * @return String $prefDb
+   * @return string $prefDb
    */
   private function getPrefixDb()
   {
@@ -67,4 +74,3 @@ class login
   }
 
 }
-?>

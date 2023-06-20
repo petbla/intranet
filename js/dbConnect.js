@@ -27,6 +27,7 @@ function refreshRec(e){
 //    Http request           :  ?page=general/ws/upd/<table>/<pkID>/<name>
 // ************************************************************************************
 function wsUpdate(e) {
+    
     const Http = new XMLHttpRequest();
     var url;
     var table,pkID,field,newvalue;
@@ -47,7 +48,7 @@ function wsUpdate(e) {
             response = Http.responseText;
             if((response == 'OK' ) || (response == '' )){
                 console.log(response);
-                if((field == 'Close') || (field == 'Actual'))
+                if((field == 'Close') || (field == 'Actual') || (field == 'NewDocumentNo'))
                     window.location.reload();      
                     refreshRec(e);
             }else{

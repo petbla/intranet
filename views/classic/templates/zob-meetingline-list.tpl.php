@@ -142,7 +142,7 @@
             </td>
         </tr>
         <!-- END meetingattachmentListNo0 -->
-        <form action="index.php?page=document/addFiles" method="POST" enctype="multipart/form-data">
+        <form action="index.php?page=zob/addFiles" method="POST" enctype="multipart/form-data">
             <tr>
                 <td>
                     <img src="views/classic/images/nav/addNew.png" alt="{lbl_New}" />                    
@@ -153,6 +153,7 @@
                 <td>
                     <input type="image" src="views/classic/images/nav/upload.png" name="submit" id="submitAddFile">
                     <input type="hidden" name="ParentID" value="{ParentID}">
+                    <input type="hidden" name="MeetingID" value="{MeetingID}">
                 </td>
             </tr>
         </form>
@@ -162,4 +163,4 @@
 </div>
 <a href="#header" class="button"><span class="action_close">Nahorů</span></a>
 <a href="index.php?page=zob/meeting/list/{MeetingTypeID}" class="button"><span class="action_close">{lbl_Close}</span></a>
-<script>window.location = "#page_header";</script>
+<div id="activeMeetingLine" value="{activeMeetingLineID}" styte="display=none;"></div>

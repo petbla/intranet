@@ -10,7 +10,7 @@
     <tr>
       <td>
         {icon{Type}{FileExtension}}
-        <img src="views/classic/images/icon/modify.png" alt="{lbl_edit}" id="{ID}" dmsClassName="{dmsClassName}" ADocumentNo="{ADocumentNo}" dmsClassType="{Type}"/>       
+        <img src="views/classic/images/icon/modify.png" alt="{lbl_edit}" id="{ID}" dmsClassName="{dmsClassName}" ADocumentNo="{ADocumentNo}" dmsClassType="{Type}"/>  
         <a href="index.php?page={deleteLink}/{ID}">
           <img src="views/classic/images/icon/delete.png" alt="{lbl_delete}" id="{ID}" onclick="return ConfirmDelete();"/>
         </a>
@@ -37,6 +37,10 @@
         <div id="{viewFileCardID}" style="display:none;" onclick="this.style.display = 'none';" >          
           <span class="action_close" onclick="document.getElementById('{viewFileCardID}').style.display = 'none';">{lbl_Close}</span>
           {viewcardFile}
+        </div>
+        <div id="{viewMeetinglineID}" style="display:none;" onclick="this.style.display = 'none';" >          
+          <span class="action_close" onclick="document.getElementById('{viewMeetinglineID}').style.display = 'none';">{lbl_Close}</span>
+          {viewMeetingline}
         </div>
         <div id="{editContactCardID}" style="display:none;">
           <span class="action_close" onclick="document.getElementById('{editContactCardID}').style.display = 'none';">{lbl_Close}</span>

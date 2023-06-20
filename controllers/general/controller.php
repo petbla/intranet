@@ -8,6 +8,7 @@ class Generalcontroller {
 
 	private $registry;
 	private $zob;
+	private $todo;
 	private $urlBits;
 	private $message;
 	private $errorMessage;
@@ -19,6 +20,8 @@ class Generalcontroller {
 		$this->registry = $registry;
 		require_once( FRAMEWORK_PATH . 'controllers/zob/controller.php');
 		$this->zob = new Zobcontroller( $this->registry, false );					
+		require_once( FRAMEWORK_PATH . 'controllers/todo/controller.php');
+		$this->todo = new Todocontroller( $this->registry, false );					
 		require_once( FRAMEWORK_PATH . 'models/entry/model.php');
 		require_once( FRAMEWORK_PATH . 'models/contact/model.php');
 		
@@ -75,7 +78,7 @@ class Generalcontroller {
 					case 'ws':
 							$action = isset($urlBits[2]) ? $urlBits[2] : '';
 							require_once( FRAMEWORK_PATH . 'controllers/general/ws.php');
-							$ws = new Generalws( $this->registry, false );					
+							$ws = new Generalws( $this->registry );					
 							$ws->main($action);
 							break;
 				}
@@ -115,7 +118,7 @@ class Generalcontroller {
 
     /**
      * Zobrazení chybové stránky s uživatelským textem
-	 * @param String $message = text zobrazen jako chyba
+	 * @param string $message = text zobrazen jako chyba
      * @return void
      */
 	private function error( $message )
@@ -172,6 +175,8 @@ class Generalcontroller {
 
 	private function favourite()
 	{
+		$this->todo->inboxRefresh();
+		
 		// Category Menu
 		$this->createFavouriteCategoryMenu();
 
@@ -189,7 +194,7 @@ class Generalcontroller {
 	 * 		 30 - File		položka            .... fyzický soubor
 	 * 		 35 - Note		položka            .... virtuální, jako odkaz, text, poznámka
 
-	 * @param String $searchText = maska hledaných položek
+	 * @param string $searchText = maska hledaných položek
 	 * @return void
      */
 	function searchGlobal( $searchText , $table = '')
@@ -232,9 +237,12 @@ class Generalcontroller {
 
 		// Search in meeting
 		if (($table == '') || ($table == 'meeting')){
-				$sql = "INSERT INTO ".$pref."resultsearch (BatchID,CreateDate,Type,Description,ID,`Table`) ".
+				$sql = "INSERT INTO ".$pref."resultsearch (BatchID,CreateDate,Type,Description,Name,ID,`Table`) ".
 					"SELECT $batchID as BatchID, '$createDate' as CreateDate, ".
-						"'Meeting' as Type, CONCAT (mt.MeetingName,' ',m.EntryNo,'/',m.Year,': ',ml.Title, IFNULL(ml.Title2,'')) as Description,ml.MeetingLineID, 'meeting' ".
+						"'Meeting' as Type, ".
+						"CONCAT (ml.Title, IFNULL(ml.Title2,'')) as Description,
+						CONCAT (mt.MeetingName,' ',m.EntryNo,'/',m.Year) as Name,
+						ml.MeetingLineID, 'meeting' ".
 					"FROM ".$pref."meetingline as ml ".
 					"LEFT JOIN ".$pref."meeting as m ON ml.MeetingID = m.MeetingID ".
 					"LEFT JOIN ".$pref."meetingtype as mt ON ml.MeetingTypeID = mt.MeetingTypeID ".
@@ -344,6 +352,12 @@ class Generalcontroller {
 						$rec['deleteLink'] = "entry/deleteFile";
 
 						break;
+					case 'Meeting':
+						$meetingline = $this->zob->getMeetingline($rec['ID']);
+						$MeetingID = $meetingline['MeetingID']; 
+						$rec['Url'] = "index.php?page=zob/meetingline/list/$MeetingID/".$rec['ID'];
+						$rec['viewMeetinglineID'] = 'viewMeetingline'.$rec['ID'];					
+						break;
 					case 'Note':
 						$rec['Url'] = 'index.php?page=document/list/' . $rec['ID'];
 						$model = new Entry( $this->registry, $rec['ID'] );
@@ -366,6 +380,7 @@ class Generalcontroller {
 						break;
 					case 'Agenda':
 						$rec['Url'] = 'Poznámka';
+						$rec['deleteLink'] = "";
 						break;
 					case 'Contact':
 						$model = new Contact( $this->registry, $rec['ID'] );
@@ -388,6 +403,7 @@ class Generalcontroller {
 						$rec['viewContactCardID'] = 'viewContactCard'.$rec['ID'];					
 						$rec['editContactCardID'] = 'editContactCard'.$rec['ID'];					
 						$rec['deleteLink'] = "contact/delete";
+						$rec['viewPage'] = "viewcardContact";
 
 						// Select Free Agenda Document No.
 						$sql = "SELECT ID as AID, DocumentNo, Description FROM ".$pref."agenda ".
@@ -414,12 +430,16 @@ class Generalcontroller {
 
 		$this->registry->getObject('template')->getPage()->addTag( 'searchText', $searchText );
 		$this->registry->getObject('template')->getPage()->addTag( 'ResultItems', array( 'DATA', $cache ) );
+		$this->registry->getObject('template')->getPage()->addPPTag( 'ResultItems', array( 'DATA', $cache ) );
 		
 		// Card subpages
 		$this->registry->getObject('template')->getPage()->addTag('viewcardFile','');
+		$this->registry->getObject('template')->addTemplateBit('viewMeetingline','zob-meetingline-edit.tpl.php');
 		$this->registry->getObject('template')->addTemplateBit('editcardFile', 'document-entry-editcard.tpl.php');
 		$this->registry->getObject('template')->addTemplateBit('editcardFolder', 'document-entry-editfolder.tpl.php');
+		
 		$this->registry->getObject('template')->addTemplateBit('viewcardContact', 'contact-view.tpl.php');
+		
 		$this->registry->getObject('template')->addTemplateBit('editcardContact', 'contact-edit.tpl.php');
 		$this->registry->getObject('template')->addTemplateBit('SelectedDocumentNo', 'document-edit-selectADocumentNo.tpl.php');        
 		$this->registry->getObject('template')->addTemplateBit('remindIcon','document-list-remindicon.tpl.php');

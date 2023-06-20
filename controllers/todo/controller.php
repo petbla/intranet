@@ -99,7 +99,6 @@ class Todocontroller{
 								else
 									$result = 'Error';
 								exit($result);
-								break;
 						}
 						break;
 					default:
@@ -107,7 +106,7 @@ class Todocontroller{
 						break;
 					}
 			}else{
-        		$this->listMyTodo('');
+        		$this->listMyTodo();
 			}
 		}
 	}
@@ -149,7 +148,7 @@ class Todocontroller{
 
     /**
      * Zobrazení chybové stránky s uživatelským textem
-	 * @param String $message = text zobrazen jako chyba
+	 * @param string $message = text zobrazen jako chyba
      * @return void
      */
 	private function error( $message )
@@ -661,6 +660,7 @@ class Todocontroller{
 							if($inbox['DmsEntryID'] == '00000000-0000-0000-0000-000000000000'){
 								
 								$DmsParentEntryNo = $zob->getMeetingParentEntryNo($meeting);
+								$parentFolder = 'xxx';
 								if($DmsParentEntryNo == 0 ){
 									$this->errorMessage = "Složka $parentFolder nebyla vytvořena, přesun dokumentu nelze dokončit.";
 									$this->build();
@@ -943,8 +943,8 @@ class Todocontroller{
     /**
      * Webová služba 
 	 *  - mění stav položky typu "Připomenutí = ANO" na vyřešeno
-	 * @param String $ID = ID položky DMSEntry
-     * @return String = Návratová hodnota
+	 * @param string $ID = ID položky DMSEntry
+     * @return string = Návratová hodnota
 	 *                  => OK    = zápis proběhl korektně
 	 *                  => Error = zápis do logu skončil chybou
      */

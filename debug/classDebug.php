@@ -16,6 +16,7 @@ class debug
 	var $file;
 	var $fileName;
 	var $levelText = '';
+	var $levelDebug = 0;
 	var $levelNo = 0;
 	var $help = "Value for setup debug: info,trace,error";
 	var $sIP;

@@ -1,187 +1,190 @@
 <?php
+
 /**
  * Views: Správce šablon 
  *
  * @author  Petr Blažek
- * @version 1.0
- * @date    5.7.2011 
+ * @version 2.0
+ * @date    7.4.2023
  */
 
-class template {
+class template
+{
 
-	private $page;
+  private $page;
   private $registry;
-	
-	/**
- 	 * Připojí soubor s definicí třídy page a vytvoří instanci této třídy, která bude sloužit pro správu obsahu a struktury stránky
-	 */
-  public function __construct( $registry ) 
+
+  /**
+   * Připojí soubor s definicí třídy page a vytvoří instanci této třídy, která bude sloužit pro správu obsahu a struktury stránky
+   */
+  public function __construct($registry)
   {
-		$this->registry = $registry;
-    include( FRAMEWORK_PATH . '/registry/objects/page.class.php');
+    $this->registry = $registry;
+    include(FRAMEWORK_PATH . '/registry/objects/page.class.php');
     $this->page = new Page();
   }
-  
+
   /**
    * Přidá do stránky část šablony
-   * @param String $tag - značka, do které se vloží část šablony – např. {ahoj} 
-   * @param String $bit - část šablony (cesta k souboru nebo jeho název) 
+   * @param string $tag - značka, do které se vloží část šablony – např. {ahoj} 
+   * @param string $bit - část šablony (cesta k souboru nebo jeho název) 
    * @return void
    */
-  public function addTemplateBit( $tag, $bit )
+  public function addTemplateBit($tag, $bit)
   {
-		if( strpos( $bit, 'views/' ) === false )
-		{
-		    $bit = 'views/' . $this->registry->getSetting('view') . '/templates/' . $bit;
-		}
-		$this->page->addTemplateBit( $tag, $bit );
+    if (strpos($bit, 'views/') === false) {
+      $bit = 'views/' . $this->registry->getSetting('view') . '/templates/' . $bit;
+    }
+    $this->page->addTemplateBit($tag, $bit);
   } // end function addTemplateBit
+
+  public function addPPTemplateBit($tag, $bit)
+  {
+    if (strpos($bit, 'views/') === false) {
+      $bit = 'views/' . $this->registry->getSetting('view') . '/templates/' . $bit;
+    }
+    $this->page->addPPTemplateBit($tag, $bit);
+  }
 
   /**
    * Vrací obsah soubotu šablony
-   * @param String $template - šablona
+   * @param string $template - šablona
    * @return $templateContent
    */
-  public function getContentTemplate( $template )
+  public function getContentTemplate($template)
   {
-		$templatePath = 'views/' . $this->registry->getSetting('view') . '/templates/' . $template;
-    $templateContent = file_get_contents( $templatePath );
+    $templatePath = 'views/' . $this->registry->getSetting('view') . '/templates/' . $template;
+    $templateContent = file_get_contents($templatePath);
     return $templateContent;
   } // end function getContentTemplate
-  
+
   /**
    * Načte části šablon stránky a vloží je to do obsahu stránky
    * Aktualizuje obsah stránek
    * @return void
    */
-  private function replaceBits()
+  private function replaceBits($pp)
   {
-    $bits = $this->page->getBits();
+    if ($pp == false) {
+      $bits = $this->page->getBits();
+    } else {
+      $bits = $this->page->getPPBits();
+    }
+
     // cyklus přes části šablony
-    foreach( $bits as $tag => $template )
-    {
-	    $templateContent = file_get_contents( $template );
-	    $newContent = str_replace( '{' . $tag . '}', $templateContent, $this->page->getContent() );
-	    
-      $this->page->setContent( $newContent );
+    foreach ($bits as $tag => $template) {
+      $templateContent = file_get_contents($template);
+      $templateContent = ($templateContent == null) ? '' : $templateContent;
+      $newContent = str_replace('{' . $tag . '}', $templateContent, $this->page->getContent());
+
+      $this->page->setContent($newContent);
     }
   } // end function replaceBits
-  
+
   /**
    * Nahradí značky ve stránce požadovaným obsahem 
    * @return void
    */
-  private function replaceTags( $pp = false )
+  private function replaceTags($pp = false)
   {
     // získej značky ve stránce 
-    if( $pp == false )
-    {
-	     $tags = $this->page->getTags();
-    }
-    else
-    {
-	     $tags = $this->page->getPPTags();
+    if ($pp == false) {
+      $tags = $this->page->getTags();
+    } else {
+      $tags = $this->page->getPPTags();
     }
     // cyklus přes značky 
-    foreach( $tags as $tag => $data )
-    {
-	    // pokud je značka pole, je zapotřebí víc než prosté „vyhledej a nahraď“
-	    if( is_array( $data ))
-      {
-        if (isset($data[0]))
-		    {
-			    if( $data[0] == 'SQL' )
-			    {
-				    // jedná se o výsledek dotazu uložený v mezipaměti, značky se nahradí tímto výsledkem
-				    $this->replaceDBTags( $tag, $data[1] );
-			    }
-			    elseif( $data[0] == 'DATA' )
-			    {
-				     // jedná se o data uložená v mezipaměti, značky se nahradí daty z mezipaměti 
-				    $this->replaceDataTags( $tag, $data[1] );
-			    }
-    	  }
+    foreach ($tags as $tag => $data) {
+      // pokud je značka pole, je zapotřebí víc než prosté „vyhledej a nahraď“
+      if (is_array($data)) {
+        if (isset($data[0])) {
+          if ($data[0] == 'SQL') {
+            // jedná se o výsledek dotazu uložený v mezipaměti, značky se nahradí tímto výsledkem
+            $this->replaceDBTags($tag, $data[1]);
+          } elseif ($data[0] == 'DATA') {
+            // jedná se o data uložená v mezipaměti, značky se nahradí daty z mezipaměti 
+            $this->replaceDataTags($tag, $data[1]);
+          }
+        }
+      } else {
+        // nahraď obsah    	
+        $data = ($data == null) ? '' : $data;
+        $newContent = str_replace('{' . $tag . '}', $data, $this->page->getContent());
+        // aktualizuj obsah stránky
+        $this->page->setContent($newContent);
       }
-    	else
-    	{	
-	    	// nahraď obsah    	
-	    	$newContent = str_replace( '{' . $tag . '}', $data, $this->page->getContent() );
-	    	// aktualizuj obsah stránky
-	    	$this->page->setContent( $newContent );
-    
-    	}
     }
   } // end function replaceTags
-  
+
   /**
    * Nahradí obsah stránky daty z databáze 
-   * @param String $znacka značka definující oblast nahrazovaného obsahu 
+   * @param string $znacka značka definující oblast nahrazovaného obsahu 
    * @param int $idMezipameti identifikátor dotazu v mezipaměti 
    * @return void 
    */
-  private function replaceDBTags( $tag, $cacheId )
+  private function replaceDBTags($tag, $cacheId)
   {
     global $deb;
-    
+
     $block = '';
-		$blockOld = $this->page->getBlock( $tag );
-	
-		// cyklus přes jednotlivé záznamy výsledku dotazu 
-		while ($tags = $this->registry->getObject('db')->resultsFromCache( $cacheId ) )
-		{
-			$blockNew = $blockOld;
-			// vytvoří nový blok s vloženými výsledky 
-			foreach ($tags as $ntag => $data) 
-	       	{
-            $blockNew = str_replace("{" . $ntag . "}", $data, $blockNew); 
-	        }
-	        $block .= $blockNew;
-		}
-		
+    $blockOld = $this->page->getBlock($tag);
+
+    // cyklus přes jednotlivé záznamy výsledku dotazu 
+    while ($tags = $this->registry->getObject('db')->resultsFromCache($cacheId)) {
+      $blockNew = $blockOld;
+      // vytvoří nový blok s vloženými výsledky 
+      foreach ($tags as $ntag => $data) {
+        $data = ($data == null) ? '' : $data;
+        $blockNew = str_replace("{" . $ntag . "}", $data, $blockNew);
+      }
+      $block .= $blockNew;
+    }
+
     $pageContent = $this->page->getContent();
-		// odstraní oddělovač ze šablony => čistší kód HTML 
-		$newContent = str_replace( '<!-- START ' . $tag . ' -->' . $blockOld . '<!-- END ' . $tag . ' -->', $block, $pageContent );
-		// aktualizace obsahu stránky
-		$this->page->setContent( $newContent );
-	} // end function replaceDBTags
-  
+    // odstraní oddělovač ze šablony => čistší kód HTML 
+    $block = ($block == null) ? '' : $block;
+    $newContent = str_replace('<!-- START ' . $tag . ' -->' . $blockOld . '<!-- END ' . $tag . ' -->', $block, $pageContent);
+    // aktualizace obsahu stránky
+    $this->page->setContent($newContent);
+  } // end function replaceDBTags
+
   /**
    * Nahradí obsah stránky daty z mezipaměti 
-   * @param String $znacka značka definující oblast nahrazovaného obsahu 
+   * @param string $znacka značka definující oblast nahrazovaného obsahu 
    * @param int $idMezipameti identifikátor dat v mezipaměti 
    * @return void
    */
-  private function replaceDataTags( $tag, $cacheId )
+  private function replaceDataTags($tag, $cacheId)
   {
 
-		$block = '';
-    $blockOld = $this->page->getBlock( $tag );
-		$tags = $this->registry->getObject('db')->dataFromCache( $cacheId );
-		
-    foreach( $tags as $key => $tagsdata )
-		{
-			$blockNew = $blockOld;
-			foreach ($tagsdata as $taga => $data) 
-	       	{
-	        	$blockNew = str_replace("{" . $taga . "}", $data, $blockNew); 
-	        }
-	        $block .= $blockNew;
-		}
+    $block = '';
+    $blockOld = $this->page->getBlock($tag);
+    $tags = $this->registry->getObject('db')->dataFromCache($cacheId);
 
-		$pageContent = $this->page->getContent();
-		$newContent = str_replace( '<!-- START '.$tag.' -->'.$blockOld.'<!-- END '.$tag.' -->', $block, $pageContent );
-		$this->page->setContent( $newContent );
+    foreach ($tags as $key => $tagsdata) {
+      $blockNew = $blockOld;
+      foreach ($tagsdata as $taga => $data) {
+        $data = ($data == null) ? '' : $data;
+        $blockNew = str_replace("{" . $taga . "}", $data, $blockNew);
+      }
+      $block .= $blockNew;
+    }
+
+    $pageContent = $this->page->getContent();
+    $block = ($block == null) ? '' : $block;
+    $newContent = str_replace('<!-- START ' . $tag . ' -->' . $blockOld . '<!-- END ' . $tag . ' -->', $block, $pageContent);
+    $this->page->setContent($newContent);
   } // end function replaceDataTags 
-  
+
   /**
    * Získá objekt strákny 
-   * @return Object 
+   * @return object 
    */
   public function getPage()
   {
     return $this->page;
   } //end function getPage
-  
+
   /**
    * Sestaví obsah stránky na základě několika šablon 
    * umístění jednotlivých šablon se předávají ve formě argumentů 
@@ -191,175 +194,184 @@ class template {
   {
     $bits = func_get_args();
     $content = "";
-    foreach( $bits as $bit )
-    {
-	    if( strpos( $bit, 'views/' ) === false )
-	    {
-		    $bit = 'views/' . $this->registry->getSetting('view') . '/templates/' . $bit;
-	    }
-	    if( file_exists( $bit ) == true )
-	    {
-		    $content .= file_get_contents( $bit );
-	    }
+    foreach ($bits as $bit) {
+      if (strpos($bit, 'views/') === false) {
+        $bit = 'views/' . $this->registry->getSetting('view') . '/templates/' . $bit;
+      }
+      if (file_exists($bit) == true) {
+        $content .= file_get_contents($bit);
+      }
     }
-    $this->page->setContent( $content );
+    $this->page->setContent($content);
   }  // end function buildFromTemplates
-  
+
   /**
    * Převede pole dat na značky
-   * @param array data
+   * @param array<mixed> data
    * @param string prefix, který se přidá k názvu vytvářených značek
    * @return void
    */
-  public function dataToTags( $data, $prefix )
+  public function dataToTags($data, $prefix)
   {
     global $deb;
-    foreach( $data as $key => $content )
-    {
-	    $this->page->addTag( $prefix.$key, $content);
+    foreach ($data as $key => $content) {
+      $this->page->addTag($prefix . $key, $content);
     }
   } // end function dataToTags
-  
+
   /**
    * Načte titulek nastavený v objektu stránky a vloží ho do pohledu 
    */
   public function parseTitle()
   {
-    $newContent = str_replace('<title>', '<title>'. $this->page->getTitle(), $this->page->getContent() );
-    $this->page->setContent( $newContent );
+    $block = $this->page->getTitle();
+    $block = ($block == null) ? '' : $block;
+    $newContent = str_replace('<title>', '<title>' . $block, $this->page->getContent());
+    $this->page->setContent($newContent);
   } // end function parseTitle
-  
+
   /**
    * Analyzuje objekt stránky a vytvoří výstup 
    * @return void
    */
   public function parseOutput()
   {
-    $this->replaceBits();            // Načte části šablon stránky a vloží je to do obsahu stránky    
+    $this->replaceBits(false);       // Načte části šablon stránky a vloží je to do obsahu stránky    
     $this->replaceTags(false);       // Nahradí značky ve stránce požadovaným obsahem
+    $this->replaceBits(true);        // Načte části šablon stránky a vloží je to do obsahu stránky    
     $this->replaceTags(true);        // Nahradí značky ve stránce požadovaným obsahem - postParse
     $this->parseTitle();             // Načte titulek nastavený v objektu stránky a vloží ho do pohledu
   } // end function parseOutput
 
- 
-  public function NavigateElement( $pageNo, $countPage ){
+
+  public function NavigateElement($pageNo, $countPage)
+  {
     global $caption;
-    
+
     if ($countPage == 0)
-      return ''; 
-      
+      return '';
+
     $navigate = "";
-    
+
     if ($pageNo > 2)
-      $navigate = $this->NavigateBit( $pageNo, $countPage, 'first' ); 
+      $navigate = $this->NavigateBit($pageNo, $countPage, 'first');
     if ($pageNo > 1)
-      $navigate .= $this->NavigateBit( $pageNo, $countPage, 'prev' ); 
-    
-    
+      $navigate .= $this->NavigateBit($pageNo, $countPage, 'prev');
+
+
     $fromPage = ($pageNo > 10) ? $pageNo - ($pageNo % 10) : 1;
     $toPage = ($countPage < $fromPage + 9) ? $countPage : $fromPage + 9;
     if (($toPage - $fromPage) < 9)
-      $fromPage = ($toPage - 9 < 1) ? 1 : $toPage - 9;  
-    
-    if ($fromPage > 1){
-        $navigate .= $this->NavigateBit( $pageNo, $countPage, 1 );
-        $navigate .= '...';
+      $fromPage = ($toPage - 9 < 1) ? 1 : $toPage - 9;
+
+    if ($fromPage > 1) {
+      $navigate .= $this->NavigateBit($pageNo, $countPage, 1);
+      $navigate .= '...';
     }
-    
-    if ($countPage > 1){
-      for ($i=$fromPage ; $i<=$toPage ; $i++)
-        $navigate .= $this->NavigateBit( $pageNo, $countPage, $i );
+
+    if ($countPage > 1) {
+      for ($i = $fromPage; $i <= $toPage; $i++)
+        $navigate .= $this->NavigateBit($pageNo, $countPage, $i);
     }
-    if ($toPage < $countPage){
-        $navigate .= '...';
-        $navigate .= $this->NavigateBit( $pageNo, $countPage, $countPage );
+    if ($toPage < $countPage) {
+      $navigate .= '...';
+      $navigate .= $this->NavigateBit($pageNo, $countPage, $countPage);
     }
-    
-    if ($pageNo < $countPage )
-      $navigate .= $this->NavigateBit( $pageNo, $countPage, 'next' ); 
-    if ($pageNo < $countPage-1 )
-      $navigate .= $this->NavigateBit( $pageNo, $countPage, 'last' );
-      
-    return $navigate; 
-  }    
-  
-  private function NavigateBit( $actualPage, $countPage, $symbol ){
-    global $caption;
+
+    if ($pageNo < $countPage)
+      $navigate .= $this->NavigateBit($pageNo, $countPage, 'next');
+    if ($pageNo < $countPage - 1)
+      $navigate .= $this->NavigateBit($pageNo, $countPage, 'last');
+
+    return $navigate;
+  }
+
+  private function NavigateBit($actualPage, $countPage, $symbol)
+  {
+    global $caption, $config;
+    $urlPath = $this->registry->getURLPath();
+    $urlparam = $this->registry->getURLParam();
+    $urlPath .= ($urlparam != '') ? '/' . $urlparam : '';
+    $siteurl = $config['siteurl'];
+
     $element = 'page';
-     
+    
     $get = $_GET;
 
     $imgPath = 'views/' . $this->registry->getSetting('view') . '/images/navigate/';
-    if ( isset($_GET["page"]) )
+    if (isset($_GET["page"]))
       $urlPath = $_GET["page"];
-    else{
-      if ( isset($_GET["search"]) ){
+    else {
+      if (isset($_GET["search"])) {
         $urlPath = $_GET["search"];
-        if ( isset($_GET["searchitem_x"]) ){
+        if (isset($_GET["searchitem_x"])) {
           $element = 'searchItem';
-        }
-        else
-        {
+        } else {
           $element = 'searchGlobal';
         }
-      }
-			elseif (isset($_GET['searchItem']))
-			{
-				$urlPath = $_GET["searchItem"];
-				$element = 'searchItem';
-			}
-			elseif (isset($_GET['searchContact']))
-			{
-				$urlPath = $_GET["searchContact"];
-				$element = 'searchContact';
-			}
-			elseif (isset($_GET['searchGlobal']))
-			{
-				$urlPath = $_GET["searchGlobal"];
-				$element = 'searchGlobal';
-			}
-      else
-        $urlPath = '';            
+      } elseif (isset($_GET['searchItem'])) {
+        $urlPath = $_GET["searchItem"];
+        $element = 'searchItem';
+      } elseif (isset($_GET['searchContact'])) {
+        $urlPath = $_GET["searchContact"];
+        $element = 'searchContact';
+      } elseif (isset($_GET['searchGlobal'])) {
+        $urlPath = $_GET["searchGlobal"];
+        $element = 'searchGlobal';
+      } else
+        $urlPath = '';
     }
 
-    switch ($symbol)
-    {
+    switch ($symbol) {
       case 'first':
         $actualPage = 1;
         $symbol = "<img src=\"$imgPath/firstpage.png\""
-                  . " title=\"" . $caption['btn_firstpage']. "\"" 
-                  . " alt=\"" . $caption['btn_firstpage'] . "\" />";
+          . " title=\"" . $caption['btn_firstpage'] . "\""
+          . " alt=\"" . $caption['btn_firstpage'] . "\" />";
         break;
       case 'prev':
         $actualPage = ($actualPage < 2) ? 1 : $actualPage - 1;
         $symbol = "<img src=\"$imgPath/prevpage.png\""
-                  . " title=\"" . $caption['btn_prevpage']. "\"" 
-                  . " alt=\"" . $caption['btn_prevpage'] . "\" />";
+          . " title=\"" . $caption['btn_prevpage'] . "\""
+          . " alt=\"" . $caption['btn_prevpage'] . "\" />";
         break;
       case 'next':
         $actualPage = ($actualPage > $countPage) ? $countPage : $actualPage + 1;
         $symbol = "<img src=\"$imgPath/nextpage.png\""
-                  . " title=\"" . $caption['btn_nextpage']. "\"" 
-                  . " alt=\"" . $caption['btn_nextpage'] . "\" />";
+          . " title=\"" . $caption['btn_nextpage'] . "\""
+          . " alt=\"" . $caption['btn_nextpage'] . "\" />";
         break;
       case 'last':
         $actualPage = $countPage;
         $symbol = "<img src=\"$imgPath/lastpage.png\""
-                  . " title=\"" . $caption['btn_lastpage']. "\"" 
-                  . " alt=\"" . $caption['btn_lastpage'] . "\" />";
+          . " title=\"" . $caption['btn_lastpage'] . "\""
+          . " alt=\"" . $caption['btn_lastpage'] . "\" />";
         break;
       default:
         // create image with $symbol 
-        if ( $actualPage == $symbol ) 
+        if ($actualPage == $symbol)
           $symbol = "<strong>" . $symbol . "</strong>";
         else
           $actualPage = $symbol;
         $symbol = "<span>" . $symbol . "</span>";
-        
+
         break;
     }
     $element = "<a href=\"index.php?$element=$urlPath&p=$actualPage\">" . $symbol . "</a>";
-    return $element;  
+    return $element;
+  }
+
+  /**
+   * Summary of writeLog
+   * @param string $message
+   * @return void
+   */
+  private function writeLog($message = '')
+  {
+    if ($message == "")
+      return;
+    $file = fopen('tmp/log.txt', 'a+');
+    fwrite($file, $message . "\n");
+    fclose($file);
   }
 }
-?>

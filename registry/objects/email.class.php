@@ -14,6 +14,7 @@ class email
   public $body;
   public $resulSent;
   
+  private $registry;  
   private $encode = "utf-8";  
   private $parts;
   private $headers;
@@ -224,4 +225,3 @@ class email
     return $sContent;
   }
 }
-?>

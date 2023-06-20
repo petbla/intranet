@@ -74,7 +74,7 @@ class Agenda{
 
     /**
      * Inicializace SQL záznamu z modelu
-     * @return array() $data 
+     * @return array<mixed>() $data 
      */
     private function initSQLRecord()
     {

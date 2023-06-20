@@ -17,7 +17,6 @@ class UsefulFunction {
 
   /**
    * Return aktual date
-   * @param NONE 
    * @return string (DD.MM.YYYY)
    */
   public function Today( )
@@ -112,8 +111,8 @@ class UsefulFunction {
 
   /**
   * Return price format
-  * @return float
-  * @param float  $fPrice
+  * @return mixed
+  * @param string  $fPrice
   */
   function tPrice( $fPrice ){
     return sprintf( '%01.2f', $fPrice );

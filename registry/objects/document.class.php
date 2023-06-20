@@ -58,10 +58,8 @@ class document {
 		$cache = $this->registry->getObject('db')->cacheQuery( $sql );
 		if (!$this->registry->getObject('db')->isEmpty( $cache ))
 		{
-            // Select Free Agenda Document No.
-            $sql = "SELECT ID as AID, DocumentNo, Description FROM ".$pref."agenda ".
-                " WHERE IFNULL(`EntryID`,'') = ''".
-                " ORDER BY TypeID,DocumentNo";
+            // Select Agenda Document Types
+            $sql = "SELECT TypeID as AID, Name as Description, NoSeries FROM " . $pref . "agendatype ";
             $cache2 = $this->registry->getObject('db')->cacheQuery( $sql );
             $this->registry->getObject('template')->getPage()->addTag( 'documentList', array( 'SQL', $cache2 ) );
             			

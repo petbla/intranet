@@ -18,6 +18,7 @@ define( "FRAMEWORK_PATH", dirname( __FILE__ ) ."/" );
 
 // Debug
 require_once('debug/classDebug.php');
+
 if (file_exists("mu.exe"))
   $deb = new debug('error',FRAMEWORK_PATH . 'debug/logFile.txt');  // info,trace,error
 else
@@ -48,8 +49,8 @@ if( isset($_COOKIE["HideHandledNote"]) ){
 $registry->getObject('db')->newConnection($config['db_host'], $config['db_user'], $config['db_pass'], $config['db_name']);
 
 // Check database Update
-$registry->getObject('db')->CheckPortal();
-$registry->getObject('db')->SetPortal(0);
+$registry->getObject('upgrade')->CheckPortal();
+$registry->getObject('upgrade')->SetPortal(0);
 $registry->getObject('upgrade')->checkUpgrade();
 
 // zkontroluj data požadavku POST pro uživatele snažící se přihlásit a data relace 
@@ -122,7 +123,7 @@ $registry->getObject('template')->getPage()->addTag( 'dateText', $dateText );
 $perSet = $registry->getObject('authenticate')->getPermissionSet();
 $isAdmin = $registry->getObject('authenticate')->isAdmin();
 $contactBarMenuItem = $perSet > 0 ? "<li><a href='index.php?page=contact/list'>".$caption['Contacts']."</a></li>" : '';
-$PortalCounter = $perSet == 9 ? $registry->getObject('db')->GetPortalCount() : 0;
+$PortalCounter = $perSet == 9 ? $registry->getObject('upgrade')->GetPortalCount() : 0;
 switch ($perSet) {
 	case 9:
 		$calendarBarMenuItem = "<li><a href='https://teamup.com/ksgbrpsyinezv8575p' target='_blank'>Kalendář</a></li>";

@@ -8,6 +8,7 @@ class Generalws {
 	
     private $registry;
     private $zob;
+    private $agenda;
     private $contact;
 	private $table;
 	private $ID;
@@ -23,6 +24,9 @@ class Generalws {
 
 		require_once( FRAMEWORK_PATH . 'controllers/zob/controller.php');
 		$this->zob = new Zobcontroller( $this->registry, false );					
+        
+		require_once( FRAMEWORK_PATH . 'controllers/agenda/controller.php');
+		$this->agenda = new Agendacontroller( $this->registry, false );					
         
 		require_once( FRAMEWORK_PATH . 'controllers/contact/controller.php');
 		$this->contact = new Contactcontroller( $this->registry, false );					
@@ -360,6 +364,17 @@ class Generalws {
 					$inbox['Title'] = $value;
 					$this->registry->getObject('db')->updateRecords('inbox',$inbox,$condition);
 				}
+				break;
+			case 'NewDocumentNo':
+				// $value == agendatype.TypeID
+
+				$DocumentNo = $this->agenda->getNextDocumentNo($value);
+				$changes = array();
+				$changes['EntryID']	= $ID;
+				$changes['Description'] = $dmsentry['Title'];				
+				$condition = "DocumentNo = '$DocumentNo'";
+				$this->registry->getObject('db')->updateRecords('agenda',$changes, $condition);
+
 				break;
 			default:
 				$data[$field] = $value;

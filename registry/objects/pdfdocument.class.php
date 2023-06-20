@@ -7,7 +7,7 @@
  * Generování fontů: http://www.fpdf.org/makefont/make.php 
  *
  * @author  Petr Blažek
- * @version 1.0
+ * @version 2.0
  * @date    7.2.2023
  */
  
@@ -488,20 +488,6 @@ class pdfdocument extends FPDF
     $this->WriteCell('times','',14, 10, 0, 180,0,$PostedDown,0,0,'R');
   }
 
-
-
-
-  function CheckEndPage()
-  {
-    if ($this->GetY() > 270)
-    {
-      $this->HeaderInvoice(0);
-      return true; 
-    }
-    return false;
-  } // END function CheckEndPage
-
-  
   function CompressArray( $aArr )
   {
     foreach ($aArr as $sText){
@@ -640,7 +626,7 @@ class pdfdocument extends FPDF
     $this->TextWider(124,64,5,$this->_utf2win($aInvoice['deliveryAddress']['address']));
     $this->TextWider(124,71,5,$this->_utf2win($aInvoice['deliveryAddress']['city']));    
     $sZip = str_replace(' ', '', $aInvoice['deliveryAddress']['zipcode']);
-    $this->TextWider(124,78,5,$sZip,124,76);   
+    $this->TextWider(124,78,5,$sZip);   
 
     // Customer Address - Left
     $this->Text(15,84,$this->_utf2win($aInvoice['deliveryAddress']['name']));
@@ -651,7 +637,7 @@ class pdfdocument extends FPDF
     $this->TextWider(125,19,5,'6701002207961203');           
     $this->TextWider(125,28,5,'6210');                     
     $sPrice = str_pad($aInvoice['orderNo'] , 10, '0',STR_PAD_LEFT);
-    $this->TextWider(154,28,5,$aInvoice['orderNo'],153.5,27);
+    $this->TextWider(154,28,5,$aInvoice['orderNo']);
     $this->TextWider(125,36,5,'0008');                     
     
     // Bank Account - Left
@@ -706,7 +692,7 @@ class pdfdocument extends FPDF
    * 
    *  Cell($family, $style='', $size=0, $xpos=0, $nextln=0, $w, $h=0, $txt='', $border=0, $ln=0, $align='', $fill=false, $link='')
    */
-  function writeCell($family, $style='', $size=0, $xpos=0, $nextln=0, $w, $h=0, $txt='', $border=0, $ln=0, $align='', $fill=false, $link=''){
+  function writeCell($family, $style='', $size=0, $xpos=0, $nextln=0, $w=0, $h=0, $txt='', $border=0, $ln=0, $align='', $fill=false, $link=''){
     $this->SetFont($family, $style, $size);
     $this->SetX($xpos);  
     $this->Cell($w, $h, $this->_utf2win($txt), $border, $ln, $align, $fill, $link);
@@ -743,7 +729,13 @@ class pdfdocument extends FPDF
     }
   } // END function TextWider
 
+  /**
+   * Summary of tPrice
+   * @param mixed $fPrice
+   * @return string
+   */
+  function tPrice( $fPrice ){
+    return sprintf( '%01.2f', $fPrice );
+  } // end function tPrice
+
 } // END class PdfDocument
-
-
-?>

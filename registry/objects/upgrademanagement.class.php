@@ -1126,5 +1126,100 @@ class upgrademanagement {
     {
         return $this->version;
     }
+
+    /**
+     * Kontrola a aktualizace definice projektů (DMS nastavení)
+     * @return void
+     */
+    public function CheckPortal()
+    {
+      global $config;
+
+      $this->registry->getObject('db')->initQuery('source', '*', false);
+      $this->registry->getObject('db')->setFilter('DbPrefix',$config['dbPrefix']);
+      if($this->registry->getObject('db')->isEmpty())
+      {
+        $data = array();
+        $data['Webroot'] = $config['webroot'];
+        $data['Fileroot'] = $config['fileroot'];
+        $data['DbPrefix'] = $config['dbPrefix'];
+        $data['Name'] = $config['compName'];
+        $data['Address'] = $config['compAddress'];
+        $data['City'] = $config['compCity'];
+        $data['Zip'] = $config['compZip'];
+        $data['ICO'] = $config['compICO'];
+        $this->registry->getObject('db')->insertRecords('source',$data, false);        
+      }
+      
+    }
+
+    /**
+     * Nastavení výchozího DMS zdroje z nastavení
+     * @param $EntryNo = číslo položky portálu, kde 0=výchozí
+     * @return void
+     */
+    public function SetPortal( $EntryNo = 0 )
+    {
+      global $config;
+
+      $this->registry->getObject('db')->initQuery('source', '*', false);
+      if ($EntryNo > 0)
+      {
+        $this->registry->getObject('db')->setFilter('EntryNo',$EntryNo);
+      }
+      else
+      {
+        $this->registry->getObject('db')->setFilter('Default',1);
+      }
+      if($this->registry->getObject('db')->findFirst())
+      {
+        $source = $this->registry->getObject('db')->getResult();
+        $sql = "UPDATE `source` SET `Default` = '0'";
+        $this->registry->getObject('db')->executeQuery( $sql );
+      }
+      else
+      {
+        $this->registry->getObject('db')->initQuery('source', '*', false);
+        $this->registry->getObject('db')->setFilter('DbPrefix',$config['dbPrefix']);
+        $this->registry->getObject('db')->findFirst();
+        $source = $this->registry->getObject('db')->getResult();
+      }  
+      $EntryNo = $source['EntryNo'];
+      $changes =  array();
+      $changes['Default'] = 1;
+      if ($source['Version'] == '')
+        $changes['Version'] = $this->registry->getObject('upgrade')->getVersion();
+			$condition = "EntryNo = $EntryNo";
+			$this->registry->getObject('db')->updateRecords('source',$changes, $condition, false);
+     
+      $config['webroot'] = $source['Webroot'];
+      $config['fileroot'] = $source['Fileroot'];
+      $config['dbPrefix'] = $source['DbPrefix'];
+      $config['compName'] = $source['Name'];
+      $config['compAddress'] = $source['Address'];
+      $config['compCity'] = $source['City'];
+      $config['compZip'] = $source['Zip'];
+      $config['compICO'] = $source['ICO'];
+      $config['sourceVersion'] = $source['Version'];
+      $config['sourceEntryNo'] = $source['EntryNo'];
+      $this->registry->getObject('template')->dataToTags( $config, 'cfg_' );
+    }
+
+    /**
+     * Nastavení výchozího DMS zdroje z nastavení
+     * @return $Counter = počet záznamů DMS portálů
+     */
+    public function GetPortalCount()
+    {
+      global $config;
+
+      $this->registry->getObject('db')->initQuery('source', '*', false);
+      if($this->registry->getObject('db')->findFirst())
+      {
+        $Counter = $this->registry->getObject('db')->numRows();
+      }
+      return $Counter;
+    }
+
 }
 

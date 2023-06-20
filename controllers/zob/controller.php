@@ -7,6 +7,7 @@
 class Zobcontroller{
 	
 	private $registry;
+	private $document;
 	public $message;
 	public $errorMessage;
 	private $perSet;
@@ -23,6 +24,9 @@ class Zobcontroller{
 		$this->perSet = $this->registry->getObject('authenticate')->getPermissionSet();
         $this->prefDb = $config['dbPrefix'];
 		
+		require_once( FRAMEWORK_PATH . 'controllers/document/controller.php');
+		$this->document = new Documentcontroller( $this->registry , false);					
+
 		if( $directCall == true )
 		{
 			$urlBits = $this->registry->getURLBits();     
@@ -76,19 +80,24 @@ class Zobcontroller{
 						$action = isset($_POST["action"]) ? $_POST["action"] : $action;						
 
 						require_once( FRAMEWORK_PATH . 'controllers/zob/manage.php');
-						$manage = new Zobmanage( $this->registry, false );					
+						$manage = new Zobmanage( $this->registry );					
 						$manage->manage($action);
+						break;
+					case 'addFiles':						
+						$uploadDocument = $this->document->addFiles( false );
+						$MeetingID = isset($_POST["MeetingID"]) ? $_POST["MeetingID"] : 0;
+						$this->addFiles($uploadDocument, $MeetingID);
 						break;
 					case 'adv':
 						$action = isset($urlBits[2]) ? $urlBits[2] : '';
 						require_once( FRAMEWORK_PATH . 'controllers/zob/advance.php');
-						$adv = new Zobadvance( $this->registry, false );					
+						$adv = new Zobadvance( $this->registry );					
 						$adv->main($action);
 						break;
 					case 'print':
 						$action = isset($urlBits[2]) ? $urlBits[2] : '';
 						require_once( FRAMEWORK_PATH . 'controllers/zob/print.php');
-						$print = new Zobprint( $this->registry, false );					
+						$print = new Zobprint( $this->registry );					
 						$print->main($action);
 						break;
 					default:
@@ -130,7 +139,7 @@ class Zobcontroller{
 
     /**
      * Zobrazení chybové stránky s uživatelským textem
-	 * @param String $message = text zobrazen jako chyba
+	 * @param string $message = text zobrazen jako chyba
      * @return void
      */
 	public function error( $message )
@@ -219,7 +228,6 @@ class Zobcontroller{
 				$this->setElectionperiodActive( $ElectionPeriodID );
 				$this->listElectionPeriod();
 				return;
-				break;
 			default:
 				$this->listElectionPeriod();
 				return;
@@ -605,6 +613,7 @@ class Zobcontroller{
 				break;
 			case 'list':
 				$MeetingID = isset($urlBits[3]) ? $urlBits[3] : null;
+				$MeetingLineID = isset($urlBits[4]) ? $urlBits[4] : null;
 				break;
 			default:
 				$this->pageNotFound();
@@ -796,6 +805,28 @@ class Zobcontroller{
 		return $PageID;
 	} 
 
+	/**
+	 * Summary of addFiles
+	 * @param array $uploadDocument
+	 * @param int $MeetingID
+	 * @return void
+	 */
+	function addFiles($uploadDocument, $MeetingID)
+	{
+		if ($uploadDocument){
+			foreach ($uploadDocument as $entryNo) {
+				$dmsentry = $this->getDmsentry($entryNo);
+				$data = array();
+				$data['MeetinglineID'] = 0;
+				$data['MeetingID'] = $MeetingID;
+				$data['Description'] = $dmsentry['Title'];
+				$data['DmsEntryID'] = $dmsentry['ID'];
+				$this->registry->getObject('db')->insertRecords('meetingattachment',$data);
+			}
+		}
+		$this->listMeetingLine( $MeetingID , 0 );
+	}
+	
 	private function deleteMeeting($MeetingID){
 		$meeting = $this->getMeeting($MeetingID);
 

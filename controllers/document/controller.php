@@ -52,7 +52,7 @@ class Documentcontroller{
 						$this->viewDocument($ID);
 						break;
 					case 'addFiles':
-						$this->addFiles();
+						$this->addFiles( true );
 						break;
 					case 'deleteFolder':
 						$ID = isset($urlBits[2]) ? $urlBits[2] : '';
@@ -88,7 +88,6 @@ class Documentcontroller{
 									exit('OK');
 								else
 									exit($this->errorMessage);
-								break;
 						}
 						break;
 					default:
@@ -131,7 +130,7 @@ class Documentcontroller{
 
     /**
      * Zobrazení chybové stránky s uživatelským textem
-	 * @param String $message = text zobrazen jako chyba
+	 * @param string $message = text zobrazen jako chyba
      * @return void
      */
 	private function error( $message )
@@ -145,7 +144,7 @@ class Documentcontroller{
     /**
      * Pokud položka je typu složka a tato obsahuje položky typu soubor = media = obrázky
 	 * pak se zobrazí stránka galerie pro listování mezi obrázky 
-	 * @param String $ID = ID položky typu složka
+	 * @param string $ID = ID položky typu složka
      * @return void
      */
 	private function slideshow( $ID )
@@ -205,7 +204,7 @@ class Documentcontroller{
 
     /**
      * Zobrazení seznamu položek ze složky
-	 * @param String $ID = ID položky typu složka
+	 * @param string $ID = ID položky typu složka
      * @return void
      */
 	private function listDocuments( $ID )
@@ -273,7 +272,7 @@ class Documentcontroller{
 	
     /**
      * Zobrazení obsahu položky (souboru, složky, poznámky, apod.)
-	 * @param String $ID = ID položky, jejiž obsah se má zobrazit
+	 * @param string $ID = ID položky, jejiž obsah se má zobrazit
 	 * @return void
      */
 	private function viewDocument( $ID )
@@ -302,7 +301,7 @@ class Documentcontroller{
 	 *   'save'         = uloží se editovaný obsah
 	 *   'back'         = žádná změna se neuloží
 	 * Po dokončení se zobrazí seznam položek podle editované položky
-	 * @param String $ID = ID editované položky
+	 * @param string $ID = ID editované položky
 	 * @return void
      */
 	private function modifyDocument( $ID )
@@ -526,12 +525,14 @@ class Documentcontroller{
      * Akce vyvolaná webovým formulářem, která provee upload souborů na server 
 	 * do aktuální složky
 	 * Po provedení akce se zobrazí nový seznam položek složky
-	 * @return void
+	 * @param boolean $listfolder, default value = true
+	 * @return array $uploadFiles
      */
-	private function addFiles( )
+	function addFiles( $listfolder = true )
 	{
 		global $config;
 		$ParentID = '';
+		$uploadFiles = array();
 
 		if(isset($_FILES["fileToUpload"]) && isset($_POST["submit_x"]) && isset($_POST['ParentID']) ) {
 			$ParentID = $_POST['ParentID'];
@@ -549,6 +550,7 @@ class Documentcontroller{
 						try {
 							move_uploaded_file($file['tmp_name'],$target_file);
 							$EntryNo = $this->registry->getObject('file')->findItem($target_file);
+							$uploadFiles[] = $EntryNo; 
 							$this->registry->getObject('log')->addMessage("Upload souboru EntryNo = $EntryNo do aktuální složky (dle ID)",'dmsentry',$ParentID);
 						} catch (Exception $e) {
 							$this->error('Soubor ' + $file["name"] + ' se nepodařilo načíst. Chyba: ' + $e->getMessage());
@@ -557,14 +559,16 @@ class Documentcontroller{
 				}	
 			}	
 		}
-		$this->listDocuments($ParentID);
+		if ($listfolder)
+			$this->listDocuments($ParentID);
+		return $uploadFiles;
 	}
 
     /**
      * Akce vyvolaná z webové stránky (např.: OnClick), která se pokusí odstranit
 	 * složky blok nebo poznámku. Odstranění v databázi je formnou nastavení pole "Archived = 1"
 	 * Po provedení akce se zobrazí nový seznam položek složky
-	 * @param String $ID = ID odstraňované položky
+	 * @param string $ID = ID odstraňované položky
 	 * @return void
      */
 	private function deleteFolder( $ID )
@@ -606,7 +610,7 @@ class Documentcontroller{
      * Akce vyvolaná z webové stránky (např.: OnClick), která pro danou položku 
 	 * nastaví pole "Archived = 1"
 	 * Po provedení akce se zobrazí seznam položek dle odstraňované položky
-	 * @param String $ID = ID odstraňované položky
+	 * @param string $ID = ID odstraňované položky
 	 * @return void
      */
 	private function deleteFile( $ID )
@@ -633,8 +637,8 @@ class Documentcontroller{
 	/**
 	 * Interní funkce, která z pole webového formuláře typu upload filed, 
 	 * vytvoří seznam souborů, které se budou importova na server
-	 * @param Array $file = pole z webového formuláže
-	 * @return Array = pole seznamu souborů
+	 * @param array<mixed><mixed> $file = pole z webového formuláže
+	 * @return array<mixed> = pole seznamu souborů
 	 */
 	private function reArrayFiles($file)
 	{

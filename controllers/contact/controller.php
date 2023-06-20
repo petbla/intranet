@@ -147,7 +147,7 @@ class Contactcontroller {
 
     /**
      * Zobrazení chybové stránky s uživatelským textem
-	 * @param String $message = text zobrazen jako chyba
+	 * @param string $message = text zobrazen jako chyba
      * @return void
      */
 	private function error( $message )
@@ -288,7 +288,7 @@ class Contactcontroller {
 	 * Akce vyvolaná z webového formuláře, která odstraní kontakt, a to tak
 	 * že nastavení hodotu pole "Close = 1"
 	 * Po dokončení se zobrazí seznam kontaktů
-	 * @param String $ID = ID kontaktu pro odstranění
+	 * @param string $ID = ID kontaktu pro odstranění
 	 * @return void
 	 */
 	private function deleteContact( $ID )
@@ -312,7 +312,7 @@ class Contactcontroller {
 
 	/**
 	 * Zobrazení stránky s editací karty kontaktu
-	 * @param String $ID = ID kontaktu pro editaci
+	 * @param string $ID = ID kontaktu pro editaci
 	 * @return void
 	 */
 	private function editContact( $ID )
@@ -370,7 +370,7 @@ class Contactcontroller {
 	 * Akce vyvolaná webovým formulářem - Editace karty kontaktu,
 	 * která zajistí uložení modifikovaných hodnot
 	 * Po provední akce uložení/storno se zobrazí seznam kontaktů
-	 * @param String $ID = ID editovaného kontaktu
+	 * @param string $ID = ID editovaného kontaktu
 	 * @return void
 	 */
 	private function saveContact( $ID )
@@ -741,8 +741,8 @@ class Contactcontroller {
 	 * ve tvaru [Příjmení][Jméno][Titul]
 	 * 			nebo
 	 *          [Společnost]
-	 * @param Array $data
-	 * @return String $FullName
+	 * @param array<mixed><mixed> $data
+	 * @return string $FullName
 	 */
 	public function makeFullName ($data)
 	{

@@ -132,7 +132,7 @@ class Admincontroller {
 
     /**
      * Zobrazení chybové stránky s uživatelským textem
-	 * @param String $message = text zobrazen jako chyba
+	 * @param string $message = text zobrazen jako chyba
      * @return void
      */
 	private function error( $message )
@@ -391,7 +391,7 @@ class Admincontroller {
 	 * Akce volaná z webové stránky (např. jako OnClick)
 	 * pro odstranění (=deaktivace) uživatele.
 	 * Po provedneí akce se zobrazí seznam uživatelů
-	 * @param String $ID = ID uživatele
+	 * @param string $ID = ID uživatele
 	 * @return void
 	 */
 	private function deleteUser( $ID )
@@ -407,10 +407,10 @@ class Admincontroller {
 
 		switch (true) {
 			case ($UserID == $ID):
-				$this->Message = 'Nelze odstranit aktuálně přihlášeného uživatele.';		
+				$this->message = 'Nelze odstranit aktuálně přihlášeného uživatele.';		
 				break;
 			case $this->isUserUsed($ID):
-				$this->Message = 'Uživatel se již přihlásil, nelze jej odstranit.';
+				$this->message = 'Uživatel se již přihlásil, nelze jej odstranit.';
 				break;
 			default:
 				$condition = "ID = '$ID'";
@@ -457,12 +457,12 @@ class Admincontroller {
 
 	/**
 	 * Nastavení portálu dle výběru
-	 * @param Integer $EntryNo = číslo pložky portálu
+	 * @param mixed $EntryNo = číslo pložky portálu
 	 * @return void
 	 */
 	private function setPortal( $EntryNo )
 	{
-		$this->registry->getObject('db')->setPortal( $EntryNo );
+		$this->registry->getObject('upgrade')->setPortal( $EntryNo );
 		$this->listPortal();
 	}
 }
