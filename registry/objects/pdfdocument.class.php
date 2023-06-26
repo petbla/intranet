@@ -280,6 +280,10 @@ class pdfdocument extends FPDF
         //Logo      
         $this->Image("views/$skin/images/logoPrint.jpg",15,$yy + 10,25);
         $this->SetY($yy + 10);
+      case '20000':
+        //Logo      
+        $this->Image("views/$skin/images/logoPrint.jpg",15,$yy + 10,25);
+        $this->SetY($yy + 10);
     }
 
     switch ($report) {
@@ -315,9 +319,93 @@ class pdfdocument extends FPDF
         $this->Ln(10);
         $this->WriteCell('times','BU',14, 20, 10, 150,0,'PROGRAM:',0,0,'L');
         break;
+      case '20000':
+        // Company Header
+        $this->WriteCell('times','B',24, 50, 7, 150,0,$headerTitle['CompName'],0,0,'C');
+        $this->WriteCell('times','',10, 50, 8, 150,0,$headerTitle['CompAddress'],0,0,'C');        
+        $this->Ln(5);
+
+        // Client Address
+        $yyTop = $this->GetY();
+        $this->WriteCell('times','B',14, 110, 5, 50,0,$headerTitle['ClientName'],0,0,'L');
+        if ($headerTitle['ClientAddress1'])        
+          $this->WriteCell('times','',14, 110, 5, 50,0,$headerTitle['ClientAddress1'],0,0,'L');        
+        if ($headerTitle['ClientAddress2'])
+          $this->WriteCell('times','',14, 110, 5, 50,0,$headerTitle['ClientAddress2'],0,0,'L');        
+        if ($headerTitle['ClientAddress3'])
+          $this->WriteCell('times','',14, 110, 5, 50,0,$headerTitle['ClientAddress3'],0,0,'L');        
+        $this->Ln(3);
+        $this->WriteCell('times','',12, 110, 5, 50,0,'Tel.:'.$headerTitle['ClientPhone'],0,0,'L');        
+        $this->WriteCell('times','',12, 110, 5, 50,0,'email:'.$headerTitle['ClientEmail'],0,0,'L');        
+        $this->WriteCell('times','',12, 110, 5, 50,0,'Datová schránka:'.$headerTitle['DS'],0,0,'L');        
+
+        // border client addres
+        $yyAct = $this->GetY();
+        $this->Rect(108,$yyTop - 5, 80, $yyAct - $yyTop + 5);       
+        $this->SetXY(20,$yyAct + 10);
+
+        // document infodate
+        $this->WriteCell('times','',10, 20, 0, 50,0,'Váš dopis značky / ze dne',0,0,'L');        
+        $this->WriteCell('times','',10, 80, 0, 50,0,'naše značka',0,0,'L');        
+        $this->WriteCell('times','',10, 120, 0, 50,0,'vyřizuje/linka',0,0,'L');        
+        $this->WriteCell('times','',10, 170, 0, 50,0,$headerTitle['City'],0,0,'L');        
+        $this->Ln(4);
+        $this->WriteCell('times','',11, 20, 0, 50,0,'',0,0,'L');        
+        $this->WriteCell('times','',11, 80, 0, 50,0,$headerTitle['DocumentNo'],0,0,'L');        
+        $this->WriteCell('times','',11, 120, 0, 50,0,$headerTitle['Name'].' / '.$headerTitle['Phone'],0,0,'L');        
+        $this->WriteCell('times','',11, 170, 0, 50,0,$headerTitle['AtDate'],0,0,'L');        
+        $this->Ln(10);
+        
+        break;
     }
   }
 
+  public function DocumentLine($report, $subject, $lines, $sing)
+  {
+    global $config;
+    $skin = $config['skin'];
+    $yy = $this->tMargin;
+
+    switch ($report) {
+      case '20000':
+        // subject
+        $this->WriteCell('times','',12, 20, 5, 50,0,'Věc',0,0,'L');        
+        $this->WriteCell('times','B',12, 20, 5, 50,0,$subject,0,0,'L');        
+        $this->Ln(5);
+
+        // lines
+        foreach ($lines as $line) {        
+          $yy = $this->GetY();
+          $xx = 20;
+          $align = 'L';
+          $this->SetFont('times','',12);
+          switch ($line[0]) {
+            case '-':
+              $this->SetXY($xx,$yy + 2);
+              $this->WriteCell('times','',12, 20, 0, 50,0,'-',0,0,'L');
+              $xx = 25;        
+              break;            
+            case 'CB':
+              $align = 'C';
+              $this->SetFont('times','B',12);
+              break;            
+          }
+          $this->SetXY($xx,$yy);
+          $this->MultiCell(170,5,$this->_utf2win($line[1]),0,$align);
+          $yy = $this->GetY();        
+        }
+        $this->Ln(30);
+
+        // Sign
+        $yy = $this->GetY();
+        $this->Rect(100,$yy - 5, 90, 0);       
+
+        $this->WriteCell('times','',12, 120, 5, 50,0,$sing[0],0,0,'C');
+        $this->WriteCell('times','',12, 120, 5, 50,0,$sing[1],0,0,'C');
+
+        break;
+    }
+  }
 
   function LineProgramPoint($lineno,$text)
   {  

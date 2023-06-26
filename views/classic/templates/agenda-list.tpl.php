@@ -2,9 +2,9 @@
     <table>
         <tr>
             <td>
-                <a href="index.php?page=agenda/add/{TypeID}"><img src="views/classic/images/nav/addNew.png" alt="{lbl_NewAgenda}" title="{lbl_NewAgenda}"></a>
+                <a href="index.php?page=zob/print/20000/51" title="Formulář"><img src="views/classic/images/icon/attachment.png" /></a>
                 <br>
-                {lbl_NewAgenda}
+                Formulář
             </td>
         </tr>
     </table>

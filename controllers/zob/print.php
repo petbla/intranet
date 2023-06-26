@@ -7,6 +7,8 @@
  * Sestavy
  *  10000   - zápis z jednání
  *  10020   - pozvánka na jednání
+ * 
+ *  20000   - Vyjádření k projektové dokumentaci
  */
 class Zobprint {
 	
@@ -49,7 +51,11 @@ class Zobprint {
                         break;
                 };
                 break;
-		}
+            case '20000':
+                $MeetingID = $urlBits[3];
+                $this->report20000($MeetingID);
+                break;
+        }
 		exit;
 	}
 
@@ -230,6 +236,70 @@ class Zobprint {
 
         // Posted Date
         $this->registry->getObject('pdf')->MeetingPostedDate($headerTitle['PostedUp'], $headerTitle['PostedDown'], $headerTitle['HeadMan']);
+
+        // Show PDF document
+        $this->registry->getObject('pdf')->Show();
+  
+		exit;
+	}
+
+	private function report20000($meeting)
+	{
+        global $config;
+
+        $filename = 'document.pdf';
+        $reportTitle = '';
+        $headerTitle = array();
+
+        // Create PDF
+        $this->registry->getObject('pdf')->SetDocument('document',$filename, $reportTitle);
+        $this->registry->getObject('pdf')->NewDocument();
+        
+        // Záhlaví
+        $headerTitle['ClientName'] = 'Tomáš Chrástek';
+        $headerTitle['ClientAddress1'] = "Javorovec 4";
+        $headerTitle['ClientAddress2'] = "68712 Mistřice";
+        $headerTitle['ClientAddress3'] = "";
+        $headerTitle['ClientPhone'] = '723114521';
+        $headerTitle['ClientEmail'] = 'chastek.tom@centrum.cz';
+        $headerTitle['DS'] = 'zft8s4';  // datová schránka
+        
+        $headerTitle['DocumentNo'] = 'VYPD-2023-014';
+        $AtDate = '18.5.2023';
+        $headerTitle['Name'] = 'Petr Blažek';
+        $headerTitle['Phone'] = '603772658';
+        
+        $headerTitle['City'] = $config['compCity'];
+        $headerTitle['CompName'] = 'OBEC '.mb_strtoupper($config['compCity']);
+        $headerTitle['CompAddress'] = $config['compAddress'] . ', PSČ ' . $config['compZip'] . ' ' . $config['compCity'];
+        $headerTitle['AtDate'] = $this->registry->getObject('core')->formatDate($AtDate);
+        $this->registry->getObject('pdf')->DocumentTitle('20000',$headerTitle);
+
+        // Lines - Program
+        $subject = 'Vyjádření k PD...';
+        $line = array();
+        $line[] = ['','Obci Mistřice byla předložena žádost o vyjádření k PD „Rodinný dům Chrástkovi“, p.č. 49, 24/1, 24/2 v k.ú. Javorovec, Investorem stavby je Tomáš Chrástek, Javorovec 334, 68712 Mistřice. Projektovou dokumentaci pro stavbu zpracoval projektant Ing. Pavel Gál, Trávník 2088, Staré Město'];
+        $line[] = ['',''];
+        $line[] = ['','Obec Mistřice ,,SOUHLASÍ“ se stavbou RD na pozemku p.č. 49, 24/1, 24/2 v k.ú. Javorovec dle PD.'];
+        $line[] = ['',''];
+        $line[] = ['','Podmínkou souhlasného stanoviska stavby RD je:'];
+        $line[] = ['-','doložení zajištěných dvou parkovacích míst pro osobní automobily do 3,5t na pozemku p.č. 49, 24/1, 24/2 v k.ú. Javorovec'];
+        $line[] = ['-','po vybudování kanalizace v dané lokalitě, bude povinnost stavebníka do jednoho roku provést napojení splaškových vod do této kanalizace'];
+        $line[] = ['-',''];
+        $line[] = ['','Projektová dokumentace novostavby RD investora Tomáše Chrástka není v rozporu s Územním plánem obce Mistřice'];
+        $line[] = ['',''];
+        $line[] = ['','Na základě provedeného posouzení a splnění výše uvedených podmínek, obec Mistřice'];
+        $line[] = ['CB',' „SOUHLASÍ“'];
+        $line[] = ['','s vydáním Územního a Stavebního povolení.'];
+        $line[] = ['',''];
+
+
+        // Sign
+        $sing = array();
+        $sing[] = 'Petr Blažek';
+        $sing[] = 'místostarosta';
+
+        $this->registry->getObject('pdf')->DocumentLine('20000',$subject,$line,$sing);
 
         // Show PDF document
         $this->registry->getObject('pdf')->Show();

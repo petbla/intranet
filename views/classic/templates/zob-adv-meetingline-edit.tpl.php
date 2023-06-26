@@ -103,11 +103,10 @@
                     <br>                   
                     <textarea  name="Content" rows="3" cols="160" value="" class="autosize par" pkID="{con_ContentID}" table="meetinglinecontent" onchange="wsUpdate(this);">{con_Content}</textarea>
                     <br>
-
                     <label class="col_title big">{LineNo}{LineNo2}&nbsp;.{con_LineNo}) {lbl_Discussion}</label>
                     <img src="views/classic/images/icon/arrowdown.png" id="arrowdownDiscussionContent{con_ContentID}" title="Rozbalit" onClick="document.getElementById('meetinglinecontentDiscussion{con_ContentID}').style.display = 'block'; this.style.display='none';document.getElementById('arrowupDiscussionContent{con_ContentID}').style.display='';" style="display:none;"/>
                     <img src="views/classic/images/icon/arrowup.png" id="arrowupDiscussionContent{con_ContentID}" title="Sbalit" onClick="document.getElementById('meetinglinecontentDiscussion{con_ContentID}').style.display = 'none'; this.style.display='none';document.getElementById('arrowdownDiscussionContent{con_ContentID}').style.display='';"/>
-                    <br>                   
+                    <br>
                     <textarea id="meetinglinecontentDiscussion{con_ContentID}" name="Discussion" rows="3" cols="160" value="" class="autosize par" pkID="{con_ContentID}" table="meetinglinecontent" onchange="wsUpdate(this);">{con_Discussion}</textarea>                    
                     <script>
                         if('{con_isDiscussion}' == '0'){

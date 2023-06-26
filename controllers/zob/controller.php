@@ -1140,16 +1140,16 @@ class Zobcontroller{
 				else
 					$meetingline['LineNo2'] = '';
 				
-				$meetingline['isContent'] = $meetingline['Content'] == '' ? 0 : 1;
-				$meetingline['isDiscussion'] = $meetingline['Discussion'] == '' ? 0 : 1;
-				$meetingline['isDraftResolution'] = $meetingline['DraftResolution'] == '' ? 0 : 1;
+				$meetingline['isContent'] = $meetingline['Content'] == '' ? '0' : '1';
+				$meetingline['isDiscussion'] = $meetingline['Discussion'] == '' ? '0' : '1';
+				$meetingline['isDraftResolution'] = $meetingline['DraftResolution'] == '' ? '0' : '1';
 
 				// Content of meetingline
 				$meetinglinecontents = $this->readMeetingLineContents($meetingline['MeetingLineID']);
 				if($meetinglinecontents){
-					$meetingline['isNextContent'] = 1;
+					$meetingline['isNextContent'] = '1';
 				}else{
-					$meetingline['isNextContent'] = 0;
+					$meetingline['isNextContent'] = '0';
 				}									
 				$meetingline['attachments'] = $this->countRec('meetingattachment',"MeetingLineID = ".$meetingline['MeetingLineID']);
 
@@ -1168,14 +1168,16 @@ class Zobcontroller{
 							$rec['con_'.$key] = $value;
 			
 						}
-						$rec['con_isContent'] = $rec['con_Content'] == '' ? 0 : 1;
-						$rec['con_isDiscussion'] = $rec['con_Discussion'] == '' ? 0 : 1;
-						$rec['con_isDraftResolution'] = $rec['con_DraftResolution'] == '' ? 0 : 1;
+						$rec['con_isContent'] = $rec['con_Content'] == '' ? '0' : '1';
+						$rec['con_isDiscussion'] = $rec['con_Discussion'] == '' ? '0' : '1';
+						$rec['con_isDraftResolution'] = $rec['con_DraftResolution'] == '' ? '0' : '1';
 						$meetinglinecontents2[] = $rec;
 					}
 					$cache = $this->registry->getObject('db')->cacheData( $meetinglinecontents2 );
 					$this->registry->getObject('template')->getPage()->addTag( 'meetinglinecontent'.$meetingline['MeetingLineID'], array( 'DATA', $cache ) );
-					$meetingline['isNextContent'] = 1;
+					$meetingline['isNextContent'] = '1';
+				}else{
+					$meetingline['isNextContent'] = '0';
 				}	
 			}
 
