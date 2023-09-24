@@ -114,7 +114,6 @@
     <!-- START meetingattachmentList{MeetingLineID} -->
     <tr draggable="true" ondragstart="dragattachment(event)">
         <td class="col_action">
-            <img src="views/classic/images/icon/modify.png" title="{lbl_edit}" id="{AttachmentID}" MeetingLineID="{MeetingLineID}" dmsClassName="{dmsClassName}""/>
             <a href="index.php?page=zob/meetingattachment/delete/{AttachmentID}"><img src="views/classic/images/icon/delete.png" title="{lbl_Delete}" onclick="return ConfirmDelete();"/></a>
         </td>
         <td class="col_name">
@@ -125,21 +124,8 @@
         <td></td>
     </tr>
     <!-- END meetingattachmentList{MeetingLineID} -->
-    <form action="index.php?page=zob/meetingattachment/modify"  method="post">
-        <tr>
-            <td>
-                <img src="views/classic/images/nav/addNew.png" alt="{lbl_New}" />                    
-            </td>
-            <td>
-                <input type="text" id="fielDescription{MeetingLineID}" class="value col_fullname" name="Description" value="" placeholder autofocus/>
-            </td>
-            <td>
-                <input type="hidden" id="meetinglineAttMeetingID{MeetingLineID}" name="MeetingID" value="{MeetingID}">
-                <input type="hidden" id="meetinglineAttMeetingLineID{MeetingLineID}" name="MeetingLineID" value="{MeetingLineID}">
-                <input type="hidden" id="meetinglineAttAction{MeetingLineID}" name="action" value="add">
-                <input type="submit" name="submitEditCard" class="action_button" value="{lbl_Save}">
-            </td>
-        </tr>
-    </form>
+    <tr>
+        <a href="index.php?page=document/choice/list/meetingline/{MeetingLineID}">Přidat přílohu</a>
+    </tr>
 </table>
 <br>

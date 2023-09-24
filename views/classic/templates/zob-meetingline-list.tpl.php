@@ -4,13 +4,13 @@
     <img src="views/classic/images/nav/line48.png"/>
     <a href="index.php?page=zob/adv/meetinglinecard/{MeetingID}" title="Karta zápisu jednání"><img src="views/classic/images/nav/meetingcard48.png" /></a>
     <img src="views/classic/images/nav/line48.png"/>
-    <a href="index.php?page=zob/xxx" title="Prezentace"><img src="views/classic/images/nav/present48.png" /></a>        
+    <a href="index.php?page=zob/adv/present/{MeetingID}" title="Prezentace"><img src="views/classic/images/nav/present48.png" /></a>        
     <img src="views/classic/images/nav/line48.png"/>
-    <a href="index.php?page=zob/print/10000/{MeetingID}" title="Tisk zápisu"><img src="views/classic/images/nav/printZ48.png" /></a>
+    <a href="index.php?page=zob/print/10000/{MeetingID}" title="Tisk zápisu" target="_blank"><img src="views/classic/images/nav/printZ48.png" /></a>
     <img src="views/classic/images/nav/line48.png"/>
-    <a href="index.php?page=zob/xxx" title="Tisk usnesení"><img src="views/classic/images/nav/printU48.png" /></a>
+    <a href="index.php?page=zob/xxx" title="Tisk usnesení" target="_blank"><img src="views/classic/images/nav/printU48.png" /></a>
     <img src="views/classic/images/nav/line48.png"/>
-    <a href="index.php?page=zob/print/10020/{MeetingID}" title="Odeslat pozvánka"><img src="views/classic/images/nav/email48.png" /></a>
+    <a href="index.php?page=zob/print/10020/{MeetingID}" title="Odeslat pozvánka" target="_blank"><img src="views/classic/images/nav/email48.png" /></a>
     <img src="views/classic/images/nav/line48.png"/>
     <a href="index.php?page=document/list/{ParentID}" title="Otevřít složku"><img src="views/classic/images/nav/folder48.png" /></a>
     <img src="views/classic/images/nav/line48.png"/>

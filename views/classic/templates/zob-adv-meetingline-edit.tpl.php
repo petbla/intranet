@@ -99,7 +99,8 @@
                 <td>               
                 </td>
                 <td colspan="2">
-                    <label class="col_title big">{LineNo}{LineNo2}&nbsp;.{con_LineNo}) {lbl_Content}</label>
+                    <label class="col_title big">{LineNo}{LineNo2}&nbsp;.{con_LineNo}) {lbl_Content}</label>                    
+                    <a href="index.php?page=zob/adv/meetinglinecontent/delete/{con_ContentID}" class="button">Odstranit</a>
                     <br>                   
                     <textarea  name="Content" rows="3" cols="160" value="" class="autosize par" pkID="{con_ContentID}" table="meetinglinecontent" onchange="wsUpdate(this);">{con_Content}</textarea>
                     <br>
@@ -171,7 +172,7 @@
                 <!-- START meetingattachmentList{MeetingLineID} -->
                 <span AttachmentID="{AttachmentID}" draggable="true" ondragstart="dragattachment(event)" class="blue">
                     <img src="views/classic/images/icon/attachment.png" title="{lbl_attachment}" style="width:24px;"/>
-                    <a href="index.php?page=zob/meetingattachment/delete/{AttachmentID}"><img src="views/classic/images/icon/delete.png" title="{lbl_Delete}" onclick="return ConfirmDelete();"/></a>
+                    <a href="index.php?page=zob/adv/meetingattachment/delete/{AttachmentID}"><img src="views/classic/images/icon/delete.png" title="{lbl_Delete}" onclick="return ConfirmDelete();"/></a>
                     <a href="" SET_HREF id="{ID}" table="dmsentry" name="{Name}" type="{Type}" url="">{Description}</a>                    
                 </span>
                 <br>

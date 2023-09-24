@@ -1,12 +1,12 @@
 <h1 id="header">{Header}</h1>
 <p>
-    <a href="index.php?page=zob/xxx" title="Prezentace"><img src="views/classic/images/nav/present48.png" /></a>        
+    <a href="index.php?page=zob/adv/present/{MeetingID}" title="Prezentace"><img src="views/classic/images/nav/present48.png" /></a>        
     <img src="views/classic/images/nav/line48.png"/>
-    <a href="index.php?page=zob/print/10000/{MeetingID}" title="Tisk zápisu"><img src="views/classic/images/nav/printZ48.png" /></a>
+    <a href="index.php?page=zob/print/10000/{MeetingID}" title="Tisk zápisu" target="_blank"><img src="views/classic/images/nav/printZ48.png" /></a>
     <img src="views/classic/images/nav/line48.png"/>
-    <a href="index.php?page=zob/xxx" title="Tisk usnesení"><img src="views/classic/images/nav/printU48.png" /></a>
+    <a href="index.php?page=zob/xxx" title="Tisk usnesení" target="_blank"><img src="views/classic/images/nav/printU48.png" /></a>
     <img src="views/classic/images/nav/line48.png"/>
-    <a href="index.php?page=zob/adv/print/invitation/{MeetingID}" title="Odeslat pozvánka"><img src="views/classic/images/nav/email48.png" /></a>
+    <a href="index.php?page=zob/adv/print/invitation/{MeetingID}" title="Odeslat pozvánka" target="_blank"><img src="views/classic/images/nav/email48.png" /></a>
     <img src="views/classic/images/nav/line48.png"/>
     <a href="index.php?page=document/list/{ParentID}" title="Složka"><img src="views/classic/images/nav/folder48.png" /></a>
 </p>
@@ -43,6 +43,8 @@
             </td>
             <td colspan="2">
                 <a href="index.php?page=zob/adv/meetinglinecontent/add/{MeetingLineID}" id="anchor{MeetingLineID}" >Přidat obsah</a>
+                <img src="views/classic/images/icon/verticalLine.png" />
+                <a href="index.php?page=document/choice/list/meetinglineadv/{MeetingLineID}">Přidat přílohu</a>
             </td>
             <td class="col_action">
                 <a href="index.php?page=zob/adv/meetingline/delete/{MeetingID}/{MeetingLineID}">

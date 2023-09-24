@@ -265,7 +265,7 @@ class document {
         $this->registry->getObject('template')->getPage()->addTag( 'categoryList', array( 'SQL', $cache ) );
     }
 
-    public function readFolders($EntryNo)
+    public function readFolders($EntryNo, $FilterType = 20)
     {
         global $config;
         $dmsentry = null;
@@ -273,7 +273,6 @@ class document {
         $parent = 0;
         $perSet = $this->registry->getObject('authenticate')->getPermissionSet();
         
-
         $entry = $this->getDmsentry($EntryNo);
         if( $entry ){   
             $level = $entry['Level'] + 1;    
@@ -285,9 +284,27 @@ class document {
             $this->registry->getObject('db')->setFilter('Parent',$parent);
         $this->registry->getObject('db')->setFilter('Level',$level);
         $this->registry->getObject('db')->setFilter('Archived',0);
-        $this->registry->getObject('db')->setFilter('Type',20);
+        if($FilterType > 0) 
+            $this->registry->getObject('db')->setFilter('Type',$FilterType);
         $this->registry->getObject('db')->setCondition("PermissionSet <= $perSet");
-        $this->registry->getObject('db')->setOrderBy("Name");
+        $this->registry->getObject('db')->setOrderBy("Type,Name");
+        if ($this->registry->getObject('db')->findSet())
+            $dmsentry = $this->registry->getObject('db')->getResult();			
+        return $dmsentry;
+    }
+
+    public function readFoldersByTitle($searchtext)
+    {
+        global $config;
+        $dmsentry = null;
+        $perSet = $this->registry->getObject('authenticate')->getPermissionSet();
+        
+        $searchtext = 'Title like "%'.$searchtext.'%"';
+        $this->registry->getObject('db')->initQuery('dmsentry');
+        $this->registry->getObject('db')->setFilter('Archived',0);
+        $this->registry->getObject('db')->setCondition($searchtext);
+        $this->registry->getObject('db')->setCondition("PermissionSet <= $perSet");
+        $this->registry->getObject('db')->setOrderBy("Type,Name");
         if ($this->registry->getObject('db')->findSet())
             $dmsentry = $this->registry->getObject('db')->getResult();			
         return $dmsentry;
@@ -342,6 +359,8 @@ class document {
         $icon30 = "<img src='views/classic/images/icon/file.png' />";
         $icon25 = "<img src='views/classic/images/icon/block.png' />";
         $icon35 = "<img src='views/classic/images/icon/note.png' />";
+        $icon0 = "<img src='views/classic/images/icon/remind00.png' />";
+        $this->registry->getObject('template')->getPage()->addTag( 'icon0', $icon0 );
         $this->registry->getObject('template')->getPage()->addTag( 'icon20', $icon20 );
         $this->registry->getObject('template')->getPage()->addTag( 'icon', $icon20 );
         $this->registry->getObject('template')->getPage()->addTag( 'icon30', $icon30 );

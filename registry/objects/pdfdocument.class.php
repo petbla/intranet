@@ -430,14 +430,19 @@ class pdfdocument extends FPDF
       $lineno = $meetingline['LineNo2'].')';
     }
 
+
     // Content
     $content = $meetingline['Content'];
+    $title = $lineno . '   ' . $this->_utf2win($meetingline['Title']);
+
     $yy = $this->GetY();
     $yy += 5;
     $this->SetXY(10,$yy);
     $this->SetFont('times','',12);
-    $this->Cell(10,5,$lineno,0,0,'L');
+    $this->Cell(10,5,$title,0,0,'L');
     $yy = $this->GetY();
+    $yy += 5;
+    $this->SetXY(10,$yy);
 
     $arr = explode("\n",$content);
     foreach($arr as $content){

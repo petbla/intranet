@@ -649,7 +649,7 @@ class Todocontroller{
 					// Zařazení dokumentu do příloh jednání
 					if($inbox['MeetingID'] == 0){
 						require_once( FRAMEWORK_PATH . 'controllers/zob/controller.php');
-						$zob = new Zobcontroller( $this->registry, true );
+						$zob = new Zobcontroller( $this->registry, false );
 					
 						$meeting = $zob->getActualMeeting($SettlementType);					
 						if($meeting){
@@ -723,7 +723,7 @@ class Todocontroller{
 		global $config;
 
 		require_once( FRAMEWORK_PATH . 'controllers/zob/controller.php');
-		$zob = new Zobcontroller( $this->registry, true );
+		$zob = new Zobcontroller( $this->registry, false );
 		
 		$sql = "SELECT * FROM ".$this->prefDb."inbox ".
 				  	"WHERE Close = $close ".

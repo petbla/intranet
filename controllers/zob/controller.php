@@ -24,9 +24,6 @@ class Zobcontroller{
 		$this->perSet = $this->registry->getObject('authenticate')->getPermissionSet();
         $this->prefDb = $config['dbPrefix'];
 		
-		require_once( FRAMEWORK_PATH . 'controllers/document/controller.php');
-		$this->document = new Documentcontroller( $this->registry , false);					
-
 		if( $directCall == true )
 		{
 			$urlBits = $this->registry->getURLBits();     
@@ -84,6 +81,9 @@ class Zobcontroller{
 						$manage->manage($action);
 						break;
 					case 'addFiles':						
+						require_once( FRAMEWORK_PATH . 'controllers/document/controller.php');
+						$this->document = new Documentcontroller( $this->registry , false);					
+
 						$uploadDocument = $this->document->addFiles( false );
 						$MeetingID = isset($_POST["MeetingID"]) ? $_POST["MeetingID"] : 0;
 						$this->addFiles($uploadDocument, $MeetingID);
@@ -92,7 +92,7 @@ class Zobcontroller{
 						$action = isset($urlBits[2]) ? $urlBits[2] : '';
 						require_once( FRAMEWORK_PATH . 'controllers/zob/advance.php');
 						$adv = new Zobadvance( $this->registry );					
-						$adv->main($action);
+						$adv->	main($action);
 						break;
 					case 'print':
 						$action = isset($urlBits[2]) ? $urlBits[2] : '';
@@ -134,7 +134,7 @@ class Zobcontroller{
 	public function pageNotFound()
 	{
 		// Logování
-		$this->error("Pokus o zobrazení neznámé agendy");
+		$this->error("Pokus o zobrazení neznámé stránky");
 	}
 
     /**
@@ -550,6 +550,14 @@ class Zobcontroller{
 		$AttachmentID = 0;
 
 		switch ($action) {
+			case 'delete':
+				$AttachmentID = isset($urlBits['3']) ? $urlBits['3'] : 0;
+				$meetingattachment = $this->getMeetingattachment($AttachmentID);
+				$MeetingID = $meetingattachment['MeetingID'];
+				$MeetingLineID = $meetingattachment['MeetingLineID'];
+				$condition = 'AttachmentID = '.$AttachmentID;
+				$this->registry->getObject('db')->deleteRecords('meetingattachment', $condition, 1);
+				break;
 			case 'assign':
 				$AttachmentID = isset($urlBits['3']) ? $urlBits['3'] : 0;
 				$MeetingLineID = isset($urlBits['4']) ? $urlBits['4'] : 0;
@@ -825,6 +833,18 @@ class Zobcontroller{
 			}
 		}
 		$this->listMeetingLine( $MeetingID , 0 );
+	}
+	
+	function addMeetingLineAttachment($MeetingLineID, $DmsEntryID)
+	{
+		$meetingline = $this->getMeetingline($MeetingLineID);		
+		$dmsentry = $this->getDmsentry($DmsEntryID);
+		$data = array();
+		$data['MeetinglineID'] = $MeetingLineID;
+		$data['MeetingID'] = $meetingline['MeetingID'];
+		$data['Description'] = $dmsentry['Title'];
+		$data['DmsEntryID'] = $dmsentry['ID'];
+		$this->registry->getObject('db')->insertRecords('meetingattachment',$data);
 	}
 	
 	private function deleteMeeting($MeetingID){
@@ -1436,6 +1456,17 @@ class Zobcontroller{
 		return $member;
 	}
 
+	/**
+	 * 
+	 * Struktura
+	 *   meeting['MeetingID'] ........................meetinglinepage['MeetingID']
+	 *     meetingline['LineNo'] .....................meetinglinepage['MeetingLineID']
+	 *       meetingline['LineNo2'] ..................meetinglinepage['MeetingLineID']
+	 *         meetinglinecontent['LineNo'] ..........meetinglinepage['ContentID']
+	 * 
+	 * @param mixed $param
+	 * @return int
+	 */
 	public function synchroMeetinglinepage ( $param  )
 	{
 		if(is_array($param)){

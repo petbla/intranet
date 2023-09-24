@@ -10,7 +10,7 @@ class Zobadvance {
     private $zob;
 	private $message;
 	private $errorMessage;
-	private $MeetingID;
+	public $MeetingID;
 	private $anchor;
     
     /**
@@ -61,6 +61,10 @@ class Zobadvance {
                 $action = isset($urlBits[3]) ? $urlBits[3] : '';
                 $template = $this->print($action);
                 break;
+            case 'present':
+                $MeetingID = isset($urlBits[3]) ? $urlBits[3] : '';
+                $this->meetingpresent($MeetingID);
+                return;
         default:
                 $MeetingID = isset($urlBits[2]) ? (int) $urlBits[2] : null;
                 if($MeetingID){
@@ -212,6 +216,26 @@ class Zobadvance {
 		$MeetingID = 0;
 		$MeetingLineID = 0;
 		switch ($action) {
+			case 'delete':
+				$ContentID = isset($urlBits['4']) ? $urlBits['4'] : 0;
+				$meetinglinecontent = $this->zob->getMeetinglinecontent($ContentID);
+				$MeetingLineID = $meetinglinecontent['MeetingLineID'];
+				$MeetingID = $meetinglinecontent['MeetingID'];
+				$condition = "ContentID = $ContentID";
+				$this->registry->getObject('db')->deleteRecords('meetinglinecontent', $condition, 1);
+				$meetinglinecontents = $this->zob->readMeetingLineContents($MeetingLineID);
+				if($meetinglinecontents){
+					$i = 0;
+					foreach ($meetinglinecontents as $meetinglinecontent){
+						$i++;
+						$ContentID = $meetinglinecontent['ContentID'];
+						$changes = array();
+						$changes['LineNo'] = $i;
+						$condition = "ContentID = $ContentID";
+						$this->registry->getObject('db')->updateRecords('meetinglinecontent',$changes, $condition);			
+					}
+				}
+				break;
 			case 'add':
 				$MeetingLineID = isset($urlBits['4']) ? $urlBits['4'] : 0;
 				$meetingline = $this->zob->getMeetingline($MeetingLineID);
@@ -245,6 +269,14 @@ class Zobadvance {
 		$AttachmentID = 0;
 
 		switch ($action) {
+			case 'delete':
+				$AttachmentID = isset($urlBits['4']) ? $urlBits['4'] : 0;
+				$meetingattachment = $this->zob->getMeetingattachment($AttachmentID);
+				$MeetingID = $meetingattachment['MeetingID'];
+				$MeetingLineID = $meetingattachment['MeetingLineID'];
+				$condition = 'AttachmentID = '.$AttachmentID;
+				$this->registry->getObject('db')->deleteRecords('meetingattachment', $condition, 1);
+				break;
 			case 'assign':
 				$AttachmentID = isset($urlBits['4']) ? $urlBits['4'] : 0;
 				$MeetingLineID = isset($urlBits['5']) ? $urlBits['5'] : 0;
@@ -264,5 +296,10 @@ class Zobadvance {
 		}
         $this->MeetingID = $MeetingID;        
 	}
-   
+	
+	private function meetingpresent( $MeetingID){
+
+		$this->zob->listMeetingLine($MeetingID);
+		$this->MeetingID = $MeetingID;		
+	}
 }

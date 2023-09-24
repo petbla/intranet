@@ -12,6 +12,7 @@ class Documentcontroller{
 	private $prefDb;
 	private $message;
 	private $errorMessage;
+	private $zob;
 
 	/**
 	 * @param Registry $registry 
@@ -23,7 +24,8 @@ class Documentcontroller{
 		$this->registry = $registry;
 		$this->perSet = $this->registry->getObject('authenticate')->getPermissionSet();
         $this->prefDb = $config['dbPrefix'];
-		
+
+
 		if( $directCall == true )
 		{
 			$urlBits = $this->registry->getURLBits();     
@@ -33,7 +35,6 @@ class Documentcontroller{
 				$this->error($caption['msg_unauthorized']);
 				return;
 			}
-
 			if( !isset( $urlBits[1] ) )
 			{		
         		$this->listDocuments('');
@@ -90,6 +91,27 @@ class Documentcontroller{
 									exit($this->errorMessage);
 						}
 						break;
+					case 'choice':
+						// document/choice/list/{Type}/{TypeID}
+						// document/choice/<$action>/<$Type>/<$TypeID>
+						$action = isset($urlBits[2]) ? $urlBits[2] : '';
+						$Type = isset($urlBits[3]) ? $urlBits[3] : '';
+						if($Type == '')
+							$Type = isset($_POST['Type']) ? $_POST['Type'] :'';
+						$action = isset($_POST['storno']) ? 'storno' : $action;
+						$action = isset($_POST['add']) ? 'add' : $action;
+						$TypeID = isset($urlBits[4]) ? $urlBits[4] : 0;
+						if($TypeID == 0)
+							$TypeID = isset($_POST['TypeID']) ? $_POST['TypeID'] :0;
+						$ParentID = isset($urlBits[5]) ? $urlBits[5] : '';
+						$ParentID = isset($_POST['ID']) ? $_POST['ID'] : $ParentID;
+						$parententry = $this->getDmsentryByID($ParentID);
+						if($parententry)
+							$DmsParentEntryNo = $parententry['EntryNo'];
+						else
+							$DmsParentEntryNo = 0;
+						$this->choiceDocument($action, $Type, $TypeID, $DmsParentEntryNo);
+						break;						
 					default:
 						$this->pageNotFound();
 						break;
@@ -563,6 +585,130 @@ class Documentcontroller{
 			$this->listDocuments($ParentID);
 		return $uploadFiles;
 	}
+
+	/**
+	 * Menu pro výběr dokumentu pro další akci (např. výběr přílohy do zápisu)
+	 * 
+	 * Sample:  
+	 *   document/choice/list/{Type}/{TypeID}
+	 *   document/choice/<$action>/<$Type>/<$TypeID>
+     *
+	 * @param mixed $action - option: list,select,storno,set,search
+	 * @param mixed $Type - option: meetingline,
+	 * @param mixed $TypeID - record type ID 
+	 * @param mixed $DmsParentEntryNo - parent DMS entryNo field
+	 * @return void
+	 */
+	public function choiceDocument($action, $Type, $TypeID, $DmsParentEntryNo)	
+	{
+		// Najít ParentFolder - pokud byl zadán - a určit level složky pro výběr
+		$parentPath = '';
+		$ParentID = '';
+		if ($DmsParentEntryNo != ''){
+			$parententry = $this->getDmsentry( $DmsParentEntryNo );
+			if( $parententry ){
+				$parentPath = $parentPath . $parententry['Name'];
+				$ParentID = $parententry['ID'];
+			}				
+		}
+		$breads = str_replace("\\"," => ",$parentPath);
+
+		// Seznam složek pro výběr
+		$searchtext = isset($_POST['searchtext']) ? $_POST['searchtext'] : null;
+		if($searchtext) 
+			$dmsentry = $this->registry->getObject('document')->readFoldersByTitle($searchtext);
+		else
+			$dmsentry = $this->registry->getObject('document')->readFolders($DmsParentEntryNo, 0);
+		$folders = array();
+		if($dmsentry){
+			foreach ($dmsentry as $entry){
+				$rec['ID'] = $entry['ID'];
+				$rec['Name'] = $entry['Name'];
+				$rec['Url'] = $entry['Url'];
+				$rec['Title'] = $entry['Title'];
+				$rec['DocumentType'] = $entry['Type'];
+				$rec['FileExtension'] = $entry['FileExtension'];
+				if ($entry['Type'] <> 20) {
+					$rec['DocumentClass'] = 'blue';
+					$rec['Action'] = 'set';
+				}else{
+					$rec['DocumentClass'] = '';
+					$rec['Action'] = 'select';
+				}
+				$rec['Type'] = $Type;
+				$folders[] = $rec;
+			}
+		}else{
+			$rec['ID'] = '';
+			$rec['Name'] = '<NONE>';
+			$rec['Title'] = '<NONE>';
+			$folders[] = $rec;
+		}
+
+		// Vložení sezanmu do Page
+		$cache =  $this->registry->getObject('db')->cacheData($folders);
+		$this->registry->getObject('template')->getPage()->addTag( 'listFolder', array( 'DATA', $cache ) );
+
+		$post = $_POST;
+		switch ($action) {
+			case 'storno':
+				# Bez zápisu
+				break;
+			case 'select':
+				$this->choiceDocument('list', $Type, $TypeID, $DmsParentEntryNo);
+				return;
+			case 'set':
+				require_once( FRAMEWORK_PATH . 'controllers/zob/controller.php');
+				$zob = new Zobcontroller( $this->registry, false );
+				require_once( FRAMEWORK_PATH . 'controllers/zob/advance.php');
+				$adv = new Zobadvance( $this->registry );					
+
+				switch ($Type){
+					case 'meetinglineadv':
+						$zob->addMeetingLineAttachment($TypeID, $DmsParentEntryNo);
+						$meetingline = $zob->getMeetingline($TypeID);
+						$adv->MeetingID = $meetingline['MeetingID'];
+						$adv->main($meetingline['MeetingID']);
+						return;
+					case 'meetingline':
+						$zob->addMeetingLineAttachment($TypeID, $DmsParentEntryNo);
+						$meetingline = $zob->getMeetingline($TypeID);
+						$zob->listMeetingLine($meetingline['MeetingID'],$meetingline['MeetingLineID']);
+						return;
+				}
+				/*
+
+
+				$inbox = $this->getInbox($InboxID);
+				if($inbox){
+					$filename = $inbox['Title'];
+					$title = $inbox['Title'];
+					$entry = $this->registry->getObject('file')->addFile($inbox['SourcePath'], $DmsParentEntryNo, $filename, $title);
+					if($entry == null){
+						$this->errorMessage = $this->registry->getObject('file')->getLastError();
+					}else{
+						$change = array();
+						$change['DmsEntryID'] = $entry['ID'];
+						$change['DestinationPath'] = $entry['DestinationPath'];
+						$condition = "InboxID = $InboxID";
+						$this->registry->getObject('db')->updateRecords('inbox',$change,$condition);
+					}
+				}
+				*/
+				break;			
+			default:
+				# 'list'
+				# Zobrazení stránky pro výběr složky
+				$this->registry->getObject('template')->getPage()->addTag( 'Type', $Type );							
+				$this->registry->getObject('template')->getPage()->addTag( 'TypeID', $TypeID );							
+				$this->registry->getObject('template')->getPage()->addTag( 'ParentID', $ParentID );							
+				$this->registry->getObject('template')->getPage()->addTag( 'breads', $breads );							
+				$this->registry->getObject('document')->addIcons();
+				$this->build('document-choice.tpl.php');
+				return;
+		}
+	}
+
 
     /**
      * Akce vyvolaná z webové stránky (např.: OnClick), která se pokusí odstranit
