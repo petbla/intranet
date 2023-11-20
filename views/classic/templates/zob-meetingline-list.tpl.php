@@ -2,9 +2,7 @@
 <p>
     <a href="index.php?page=zob/adv/{MeetingID}" title="Zápis jednání"><img src="views/classic/images/nav/meeting48.png" /></a>
     <img src="views/classic/images/nav/line48.png"/>
-    <a href="index.php?page=zob/adv/meetinglinecard/{MeetingID}" title="Karta zápisu jednání"><img src="views/classic/images/nav/meetingcard48.png" /></a>
-    <img src="views/classic/images/nav/line48.png"/>
-    <a href="index.php?page=zob/adv/present/{MeetingID}" title="Prezentace"><img src="views/classic/images/nav/present48.png" /></a>        
+    <a href="index.php?page=zob/adv/presentation/{MeetingID}" title="Prezentace"><img src="views/classic/images/nav/present48.png" /></a>        
     <img src="views/classic/images/nav/line48.png"/>
     <a href="index.php?page=zob/print/10000/{MeetingID}" title="Tisk zápisu" target="_blank"><img src="views/classic/images/nav/printZ48.png" /></a>
     <img src="views/classic/images/nav/line48.png"/>

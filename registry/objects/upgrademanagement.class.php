@@ -313,6 +313,25 @@ class upgrademanagement {
             // upgrade to 2.49
             $this->upgrade_249('2.49');
         }
+        if ($this->version === '2.49') 
+        {
+            // upgrade to 2.50
+            $this->upgrade_250('2.50');
+        }
+    }
+
+    private function upgrade_250($upVer)
+    {
+		global $config;
+        $pref = $config['dbPrefix'];
+
+        // upgrade table 'meetinglinepage'
+        $sql = "ALTER TABLE ".$pref."meetinglinepage".
+            " ADD `System` tinyint(1) NULL DEFAULT 0";
+
+        $this->registry->getObject('db')->executeQuery( $sql );
+
+        $this->setNewVersion($upVer);
     }
 
     private function upgrade_249($upVer)

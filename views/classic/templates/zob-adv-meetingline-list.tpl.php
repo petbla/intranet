@@ -1,6 +1,6 @@
 <h1 id="header">{Header}</h1>
 <p>
-    <a href="index.php?page=zob/adv/present/{MeetingID}" title="Prezentace"><img src="views/classic/images/nav/present48.png" /></a>        
+    <a href="index.php?page=zob/adv/presentation/{MeetingID}" title="Prezentace"><img src="views/classic/images/nav/present48.png" /></a>        
     <img src="views/classic/images/nav/line48.png"/>
     <a href="index.php?page=zob/print/10000/{MeetingID}" title="Tisk zápisu" target="_blank"><img src="views/classic/images/nav/printZ48.png" /></a>
     <img src="views/classic/images/nav/line48.png"/>

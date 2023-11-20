@@ -120,6 +120,9 @@ class Generalws {
 			case 'meetinglinecontent':
 				$this->updateMeetinglinecontent($value);
 				break;
+			case 'meetinglinepage':
+				$this->updateMeetinglinepage($value);
+				break;
 			case 'contact':
 				$this->updateContact($value);
 				break;
@@ -337,6 +340,46 @@ class Generalws {
 				$data[$field] = $value;
 		}
 		$condition = "ContentID = $ID";								
+		if(($this->result == 'OK') && $data)
+			$this->registry->getObject('db')->updateRecords($this->table,$data,$condition);	
+	}
+
+	private function updateMeetinglinepage($value)
+	{
+		$ID = $this->ID;
+		$field = $this->field;
+		$data = null;
+
+		$meetinglinepage = $this->zob->getMeetinglinepage($ID);
+		$meeting = $this->zob->getMeeting($meetinglinepage['MeetingID']);
+		if($meeting['Close'] == 1){
+			$this->result = 'Nelze editovat uzavřený zápis jednání;';
+			return;
+		}
+
+		switch ($field) {
+			case 'Content':
+				$MeetingLineID = $meetinglinepage['MeetingLineID'];
+				$ContentID = $meetinglinepage['ContentID'];
+				if($ContentID == 0){
+					// Update Meetingline
+					$change = array();
+					$change['Content'] = $value;
+					$condition = "MeetingLineID = '$MeetingLineID'";
+					$this->registry->getObject('db')->updateRecords('meetingline',$change,$condition);
+				}else{
+					// Update Meetinglinecontent
+					$change = array();
+					$change['Content'] = $value;
+					$condition = "ContentID = '$ContentID'";
+					$this->registry->getObject('db')->updateRecords('meetinglinecontent',$change,$condition);
+				}
+
+				break;
+			default:
+				$data[$field] = $value;
+		}
+		$condition = "PageID = $ID";								
 		if(($this->result == 'OK') && $data)
 			$this->registry->getObject('db')->updateRecords($this->table,$data,$condition);	
 	}
