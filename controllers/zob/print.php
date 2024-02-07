@@ -272,7 +272,7 @@ class Zobprint {
         $headerTitle['SubHeadMan2'] = '';
         switch (mb_strtolower($meetingtype['MeetingName'])){
             case 'zastupitelstvo':
-                $headerTitle['FromMeting'] = 'ze zasedání zastupitelstva obce '.$config['compCity'];
+                $headerTitle['FromMeting'] = 'zastupitelstva obce '.$config['compCity'];
                 $headerTitle['RecorderBy'] = 'zapsala: '.$meeting['RecorderBy'];
                 if ($config['SubHeadManTotal'] == 1){
                     $headerTitle['SubHeadMan1'] = 'místostarosta';
@@ -282,7 +282,7 @@ class Zobprint {
                 }
                 break;
             case 'rada':
-                $headerTitle['FromMeting'] = 'z jednání rady obce '.$config['compCity'];
+                $headerTitle['FromMeting'] = 'rady obce '.$config['compCity'];
                 $headerTitle['RecorderBy'] = 'zapsal: '.$meeting['RecorderBy'];
                 if ($config['SubHeadManTotal'] == 1){
                     $headerTitle['SubHeadMan1'] = 'místostarosta';
