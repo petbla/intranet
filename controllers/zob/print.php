@@ -309,6 +309,10 @@ class Zobprint {
         $headerTitle['PresentMembers'] = '';
         $headerTitle['ExcusedMemberNames'] = '';
         $headerTitle['VerifiedMemberNames'] = '';
+        
+        $redundand[0] = $headerTitle['MeetingName'].' obce schvaluje';
+        $redundand[1] = $headerTitle['MeetingName'].' schvaluje';
+
         $this->registry->getObject('pdf')->DocumentTitle('10030',$headerTitle);
 
         // Meeting Lines - Content
@@ -319,7 +323,7 @@ class Zobprint {
             if ($meetingline['Vote']) {
                 $line += 1;
                 $lineno = $meeting['EntryNo'] . '/' . $line;
-                $this->registry->getObject('pdf')->MeetingLineUsneseni($meetingline,$lineno);
+                $this->registry->getObject('pdf')->MeetingLineUsneseni($meetingline,$lineno,$redundand);
             }
            
             // Line Contents
@@ -340,7 +344,7 @@ class Zobprint {
                     if ($meetingline['Vote']) {
                         $line += 1;
                         $lineno = $meeting['EntryNo'] . '/' . $line;
-                        $this->registry->getObject('pdf')->MeetingLineUsneseni($meetingline,$lineno);
+                        $this->registry->getObject('pdf')->MeetingLineUsneseni($meetingline,$lineno,$redundand);
                     }
                 }
             }

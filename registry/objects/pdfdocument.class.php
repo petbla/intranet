@@ -531,11 +531,14 @@ class pdfdocument extends FPDF
     }
   } 
 
-  function MeetingLineUsneseni($meetingline,$lineno)
-  {  
+  function MeetingLineUsneseni($meetingline,$lineno,$redundant)
+  {
 
     // DraftResolution
     $content = $meetingline['DraftResolution'];
+    if($redundant !== null){
+      $content = str_replace($redundant, '', $content);
+    };
     $title = $lineno;
 
     $yy = $this->GetY() ;
