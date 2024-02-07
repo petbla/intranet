@@ -7,6 +7,7 @@
  * Sestavy
  *  10000   - zápis z jednání
  *  10020   - pozvánka na jednání
+ *  10030   - usnesení z jednání (všechny body)
  * 
  *  20000   - Vyjádření k projektové dokumentaci
  */
@@ -36,6 +37,7 @@ class Zobprint {
 		switch ($action) {
 			case '10000':
 			case '10020':
+			case '10030':
                 $MeetingID = $urlBits[3];
                 $meeting = $this->zob->getMeeting($MeetingID);
                 if(!$meeting){
@@ -48,6 +50,9 @@ class Zobprint {
                         break;
                     case '10020':
                         $this->report10020($meeting);
+                        break;
+                    case '10030':
+                        $this->report10030($meeting);
                         break;
                 };
                 break;
@@ -73,15 +78,16 @@ class Zobprint {
         $this->registry->getObject('pdf')->NewDocument();
         
         // Záhlaví
+        $headerTitle['HeadMan'] = 'starosta';
+        $headerTitle['SubHeadMan1'] = '';
+        $headerTitle['SubHeadMan2'] = '';
         switch (mb_strtolower($meetingtype['MeetingName'])){
             case 'zastupitelstvo':
                 $headerTitle['FromMeting'] = 'ze zasedání zastupitelstva obce '.$config['compCity'];
-                $headerTitle['HeadMan'] = 'starosta';
                 $headerTitle['RecorderBy'] = 'zapsala: '.$meeting['RecorderBy'];
                 break;
             case 'rada':
                 $headerTitle['FromMeting'] = 'z jednání rady obce '.$config['compCity'];
-                $headerTitle['HeadMan'] = 'starosta';
                 $headerTitle['RecorderBy'] = 'zapsal: '.$meeting['RecorderBy'];
                 break;
             case 'stavevni komise':
@@ -147,8 +153,11 @@ class Zobprint {
             }
         }
 
+        // Headmen
+        $this->registry->getObject('pdf')->MeetingHeadMen($meeting, $headerTitle);
+
         // Verified By
-        $this->registry->getObject('pdf')->MeetingVerifiedBy($meeting, $headerTitle['HeadMan']);
+        $this->registry->getObject('pdf')->MeetingVerifiedBy($meeting);
 
 
         // Recorder By and At day
@@ -236,6 +245,110 @@ class Zobprint {
 
         // Posted Date
         $this->registry->getObject('pdf')->MeetingPostedDate($headerTitle['PostedUp'], $headerTitle['PostedDown'], $headerTitle['HeadMan']);
+
+        // Show PDF document
+        $this->registry->getObject('pdf')->Show();
+  
+		exit;
+	}
+
+    private function report10030($meeting)
+	{
+        global $config;
+
+        $meetingtype = $this->zob->getMeetingtype($meeting);        
+        $meetinglines = $this->zob->readMeetingLines($meeting);
+        $filename = 'document.pdf';
+        $reportTitle = '';
+
+        // Create PDF
+        $this->registry->getObject('pdf')->SetDocument('document',$filename, $reportTitle);
+        $this->registry->getObject('pdf')->NewDocument();
+        
+        // Záhlaví
+        $headerTitle['MeetingName'] = $meetingtype['MeetingName'];
+        $headerTitle['HeadMan'] = 'starosta';
+        $headerTitle['SubHeadMan1'] = '';
+        $headerTitle['SubHeadMan2'] = '';
+        switch (mb_strtolower($meetingtype['MeetingName'])){
+            case 'zastupitelstvo':
+                $headerTitle['FromMeting'] = 'ze zasedání zastupitelstva obce '.$config['compCity'];
+                $headerTitle['RecorderBy'] = 'zapsala: '.$meeting['RecorderBy'];
+                if ($config['SubHeadManTotal'] == 1){
+                    $headerTitle['SubHeadMan1'] = 'místostarosta';
+                }else{
+                    $headerTitle['SubHeadMan1'] = '1. místostarosta';
+                    $headerTitle['SubHeadMan2'] = '2. místostarosta'; 
+                }
+                break;
+            case 'rada':
+                $headerTitle['FromMeting'] = 'z jednání rady obce '.$config['compCity'];
+                $headerTitle['RecorderBy'] = 'zapsal: '.$meeting['RecorderBy'];
+                if ($config['SubHeadManTotal'] == 1){
+                    $headerTitle['SubHeadMan1'] = 'místostarosta';
+                }else{
+                    $headerTitle['SubHeadMan1'] = '1. místostarosta';
+                    $headerTitle['SubHeadMan2'] = '2. místostarosta'; 
+                }
+                break;
+            case 'stavevni komise':
+                $headerTitle['FromMeting'] = 'z jednání stavební komise obce '.$config['compCity'];
+                $headerTitle['HeadMan'] = 'předseda komise';
+                $headerTitle['RecorderBy'] = 'zapsal: '.$meeting['RecorderBy'];
+                break;
+            default:
+                $headerTitle['FromMeting'] = mb_strtolower($meetingtype['MeetingName']).' obce '.$config['compCity'];
+                $headerTitle['HeadMan'] = 'předseda';
+                $headerTitle['RecorderBy'] = 'zapsal(a): '.$meeting['RecorderBy'];
+                break;
+        }
+        $headerTitle['RecorderAt'] = $config['compCity'].', '.$this->registry->getObject('core')->formatDate($meeting['RecorderAtDate']);
+        $headerTitle['City'] = 'OBEC '.mb_strtoupper($config['compCity']);
+        $headerTitle['AtDate'] = 'dne '.$this->registry->getObject('core')->formatDate($meeting['AtDate']);
+        $headerTitle['MeetingNo'] = 'číslo '. $meeting['EntryNo'];
+        $headerTitle['PresentMembers'] = '';
+        $headerTitle['ExcusedMemberNames'] = '';
+        $headerTitle['VerifiedMemberNames'] = '';
+        $this->registry->getObject('pdf')->DocumentTitle('10030',$headerTitle);
+
+        // Meeting Lines - Content
+        $yy = $this->registry->getObject('pdf')->GetY();
+        $this->registry->getObject('pdf')->SetY($yy);
+        $line = 0;
+        foreach($meetinglines as $meetingline){
+            if ($meetingline['Vote']) {
+                $line += 1;
+                $lineno = $meeting['EntryNo'] . '/' . $line;
+                $this->registry->getObject('pdf')->MeetingLineUsneseni($meetingline,$lineno);
+            }
+           
+            // Line Contents
+            $meetinglinecontents = $this->zob->readMeetingLineContents ($meetingline['MeetingLineID']);
+            if ($meetinglinecontents){
+                foreach($meetinglinecontents as $meetinglinecontent){
+                    $meetingline = array();
+                    $meetingline['Title'] = '';
+                    $meetingline['LineNo'] = null;
+                    $meetingline['LineNo2'] = $meetinglinecontent['LineNo'];
+                    $meetingline['Content'] = $meetinglinecontent['Content'];
+                    $meetingline['Discussion'] = $meetinglinecontent['Discussion'];
+                    $meetingline['DraftResolution'] = $meetinglinecontent['DraftResolution'];
+                    $meetingline['Vote'] = $meetinglinecontent['Vote'];
+                    $meetingline['VoteFor'] = $meetinglinecontent['VoteFor'];
+                    $meetingline['VoteAgainst'] = $meetinglinecontent['VoteAgainst'];
+                    $meetingline['VoteDelayed'] = $meetinglinecontent['VoteDelayed'];
+                    if ($meetingline['Vote']) {
+                        $line += 1;
+                        $lineno = $meeting['EntryNo'] . '/' . $line;
+                        $this->registry->getObject('pdf')->MeetingLineUsneseni($meetingline,$lineno);
+                    }
+                }
+            }
+        }
+
+        // Headmen
+        $this->registry->getObject('pdf')->MeetingHeadMen($meeting, $headerTitle);
+       
 
         // Show PDF document
         $this->registry->getObject('pdf')->Show();

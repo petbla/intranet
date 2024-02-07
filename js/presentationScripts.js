@@ -5,7 +5,7 @@ function pptSetEditable( value ){
     editEnable = value;
 }
 
-function pptEditLineTitle(selectElement,type) {
+function pptEditField(selectElement,type) {
 
     if (!editEnable)
         return;
@@ -31,7 +31,7 @@ function pptEditLineTitle(selectElement,type) {
     newElement.setAttribute('pkID',pkID);
     newElement.setAttribute('table',table); 
     newElement.setAttribute('selectElementID',elementID); 
-    newElement.className = 'value autosize'; 
+    newElement.className = 'value autosize bgedit'; 
     newElement.value = value;
     newElement.innerHTML = value;
     newElement.addEventListener('change',function(e) {
@@ -50,7 +50,7 @@ function pptEditLineTitle(selectElement,type) {
         };
         this.remove();
     });
-    newElement.addEventListener('mouseout',function(e) {
+    newElement.addEventListener('dblclick',function(e) {
         wsUpdate(this);
         var elementID = e.srcElement.getAttribute('selectElementID');
         var value = e.srcElement.innerHTML;
@@ -71,3 +71,59 @@ function pptEditLineTitle(selectElement,type) {
     selectElement.style.display = 'none';
     autosize();
 }
+
+
+function pptCreateTable(table,ID,field) {
+    
+    wsReadJson(table,ID,field,function(chyba, odpoved){
+        if (chyba){
+            console.error('Chyba:',chyba);
+        }else{
+            var jsonData = JSON.parse(odpoved);
+
+            // Vytvoření tabulky
+            var tableContainer = document.getElementById('table-container');
+            tableContainer.appendChild(pptJsonToHtmlTable(jsonData));
+        
+        }
+    });
+}
+
+
+function pptJsonToHtmlTable(jsonData) {
+    var table = document.createElement('table');
+    var thead = document.createElement('thead');
+    var tbody = document.createElement('tbody');
+
+    // Create table header
+    var headerRow = document.createElement('tr');
+    Object.keys(jsonData[0]).forEach(function(key) {
+        var th = document.createElement('th');
+        th.textContent = key;
+        headerRow.appendChild(th);
+    });
+    thead.appendChild(headerRow);
+    table.appendChild(thead);
+
+    // Create table rows
+    for (var keyRow in jsonData){
+        if (jsonData.hasOwnProperty(keyRow)) {
+            var row = document.createElement('tr');
+            var jsonRow = jsonData[keyRow];
+      
+            for (var keyCol in jsonRow){
+                if (jsonRow.hasOwnProperty(keyCol)) {
+                    var td = document.createElement('td');
+                    var value = jsonRow[keyCol];
+                    
+                    td.textContent = value;
+                    row.appendChild(td);                            
+                }
+            }
+            tbody.appendChild(row);
+        }        
+    }
+    table.appendChild(tbody);
+    return table;
+}
+

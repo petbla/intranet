@@ -277,6 +277,7 @@ class pdfdocument extends FPDF
     switch ($report) {
       case '10000':
       case '10020':
+      case '10030':
         //Logo      
         $this->Image("views/$skin/images/logoPrint.jpg",15,$yy + 10,25);
         $this->SetY($yy + 10);
@@ -319,7 +320,16 @@ class pdfdocument extends FPDF
         $this->Ln(10);
         $this->WriteCell('times','BU',14, 20, 10, 150,0,'PROGRAM:',0,0,'L');
         break;
-      case '20000':
+      case '10030':
+          $this->WriteCell('times','B',40, 40, 12, 150,0,$headerTitle['City'],0,0,'C');
+          $this->WriteCell('times','BI',18, 40, 8, 150,0,'U S N E S E N Í',0,0,'C');
+          $this->WriteCell('times','I',18, 40, 8, 150,0,$headerTitle['FromMeting'].', '.$headerTitle['AtDate'],0,0,'C');
+          $this->WriteCell('times','BU',18, 40, 8, 150,0,$headerTitle['MeetingNo'],0,0,'C');
+  
+          $this->Ln(4);
+          $this->WriteCell('times','BU',12, 20, 5, 150,0,$headerTitle['MeetingName'].'  obce  s ch v a l u j e:',0,0,'L');
+          break;
+        case '20000':
         // Company Header
         $this->WriteCell('times','B',24, 50, 7, 150,0,$headerTitle['CompName'],0,0,'C');
         $this->WriteCell('times','',10, 50, 8, 150,0,$headerTitle['CompAddress'],0,0,'C');        
@@ -521,7 +531,36 @@ class pdfdocument extends FPDF
     }
   } 
 
-  function MeetingVerifiedBy($meeting, $headman ='starosta')
+  function MeetingLineUsneseni($meetingline,$lineno)
+  {  
+
+    // DraftResolution
+    $content = $meetingline['DraftResolution'];
+    $title = $lineno;
+
+    $yy = $this->GetY() ;
+    $this->SetXY(20,$yy);
+    $this->SetFont('times','',12);
+    $this->Cell(20,5,$title,0,0,'L');
+    $yy = $this->GetY();
+
+    if($content != ''){
+      $yy = $this->GetY();
+      $xx = $this->GetX();
+      $arr = explode("\n",$content);
+      foreach($arr as $content){
+        $content = trim($content);
+        if($content != ''){
+          $this->SetXY(30,$yy);
+          $this->MultiCell(170,5,$this->_utf2win($content),0,'L');
+          $yy = $this->GetY();
+        }
+      }
+      $this->SetXY(20,$yy + 2);
+    }
+  }
+
+  function MeetingVerifiedBy($meeting)
   {  
     $yy = $this->GetY();
     if (($meeting['VerifierBy1'] != '00000000-0000-0000-0000-000000000000') && ($meeting['VerifierBy2'] != '00000000-0000-0000-0000-000000000000')){
@@ -547,11 +586,29 @@ class pdfdocument extends FPDF
         $yy = $this->GetY();
       }
     }
+  }
 
-    $this->SetY($yy + 10);
-    $text = "$headman :............................................";
-    $this->WriteCell('times','',12, 10, 12, 180,0,$text,0,0,'R');
+  function MeetingHeadMen($meeting, $headerTitle)
+  {
     $yy = $this->GetY();
+
+    $this->SetY($yy + 20);
+    
+    if($headerTitle['SubHeadMan1'] != ''){
+      $text = $headerTitle['SubHeadMan1']." :............................................";
+      $this->WriteCell('times','',12, 30, 0 , 180,0,$text,0,0,'L');
+    }
+
+    $text = $headerTitle['HeadMan']." :............................................";
+    $this->WriteCell('times','',12, 0, 0, 180,0,$text,0,0,'R');
+    $yy = $this->GetY();
+
+    if($headerTitle['SubHeadMan2'] != ''){
+      $this->SetY($yy + 20);
+      $text = $headerTitle['SubHeadMan2']." :............................................";
+      $this->WriteCell('times','',12, 30, 12, 180,0,$text,0,0,'L');
+      $yy = $this->GetY();  
+    }
   }
 
   function MeetingRecorederBy($RecorderBy, $RecorderAt)

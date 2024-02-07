@@ -52,6 +52,9 @@ class Generalws {
 				case 'getValue':
 					$this->result = $this->getValue($this->field);
 					break;
+				case 'getJson':
+					$this->result = $this->getJson($this->field);
+					break;
 				case 'log':
 						$this->log();
 						break;
@@ -374,6 +377,10 @@ class Generalws {
 					$condition = "ContentID = '$ContentID'";
 					$this->registry->getObject('db')->updateRecords('meetinglinecontent',$change,$condition);
 				}
+				$change = array();
+				$change['Content'] = $value;
+				$condition = "PageID = '$ID'";
+				$this->registry->getObject('db')->updateRecords('meetinglinepage',$change,$condition);
 
 				break;
 			default:
@@ -539,6 +546,28 @@ class Generalws {
 		return $value;
 	}
 
+	private function getJson($field)
+	{
+		$table = $this->table;
+		$ID = $this->ID;
+		$field = $this->field;
+		$valueArray = '';
+		if($valueArray == ''){
+			$pkField = $this->getFieldPK($table);
+			if($pkField){
+				$this->registry->getObject('db')->initQuery($table);
+				$this->registry->getObject('db')->setFilter($field,$ID);
+				if ($this->registry->getObject('db')->findSet()){
+					$valueArray = $this->registry->getObject('db')->getResult();
+				}else
+					$valueArray = '<NULL>';
+				$valueJson = json_encode($valueArray);
+			}else
+				$valueJson = '<NULL>';
+		}
+		return $valueJson;
+	}
+
 	private function log()
 	{
 		$ID = $this->ID;
@@ -576,6 +605,8 @@ class Generalws {
 				return 'MeetingLineID';
 			case 'meetinglinecontent':
 				return 'ContentID';
+			case 'meetingattachment':
+				return 'AttachmentID';
 			case 'meetinglinepage':
 				return 'PageID';
 			default:

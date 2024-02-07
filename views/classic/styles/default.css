@@ -17,6 +17,11 @@ p, li{
 .blue{
   color: blue;
 }
+.bgedit{
+  font-weight: bold;
+  background-color: #e6e9d6;
+  border: 0;
+}
 .big{
   font-weight: bold;
   font-size: 16px;

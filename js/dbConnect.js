@@ -212,6 +212,38 @@ function updateRecValue(e) {
     Http.send();
 }
 
+// ************************************************************************************
+//    DATABASE functions - Read JSON data from database
+//    - internal function
+// 
+//    Required HTML elenets  :  name, table, pkID
+//    JS script              :  wsReadJson(table,ID,field)
+//    RETURN                 :  JSON data | null
+//    Http request           :  ?page=general/ws/getJson/<table>/<pkID>/<name>
+// ************************************************************************************
+function wsReadJson(table,ID,field,callback) {
+    const Http = new XMLHttpRequest();
+    var val = null;
+    var url;
+    url = window.location.origin + window.location.pathname;
+    url = url + '?page=general/ws/getJson/' + table + '/' + ID + '/' + field;
+    Http.open("GET", url, true);
+    Http.onreadystatechange = function(){
+        if (Http.readyState === 4){
+            if(Http.status === 200){
+                val = Http.responseText;
+                callback(null, val);
+            }else{
+                callback(new Error('Chyba při volání webové služby'));
+            }
+        }       
+        if(val == '<NULL>'){ 
+            val = null;
+        }
+    }    
+    Http.send();
+}
+
 
 // ************************************************************************************
 //    DATABASE functions - actions 
