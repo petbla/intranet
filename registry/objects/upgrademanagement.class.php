@@ -318,6 +318,28 @@ class upgrademanagement {
             // upgrade to 2.50
             $this->upgrade_250('2.50');
         }
+        if ($this->version === '2.50') 
+        {
+            // upgrade to 2.51
+            $this->upgrade_251('2.51');
+        }
+    }
+
+    private function upgrade_251($upVer)
+    {
+		global $config;
+        $pref = $config['dbPrefix'];
+
+        // create table 'meetinglinepageattachment'
+        $sql = "CREATE TABLE IF NOT EXISTS `".$pref."meetinglinepageattachment` (
+            `EntryNo` int(11) NOT NULL AUTO_INCREMENT,
+            `PageID` int(11) NOT NULL,
+            `AttachmentID` int(11) NULL DEFAULT 0,            
+            PRIMARY KEY (`EntryNo`)
+            ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci";
+
+        $this->registry->getObject('db')->executeQuery( $sql );
+        $this->setNewVersion($upVer);
     }
 
     private function upgrade_250($upVer)

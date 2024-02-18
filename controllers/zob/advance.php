@@ -146,15 +146,33 @@ class Zobadvance
 
 		$meetinglinepage = $this->zob->getMeetinglinepageByPageNo($MeetingID, $PageNo);
 		$meetingline = $this->zob->getMeetingline($meetinglinepage['MeetingLineID']);
+		$meetingattachment = $this->zob->readMeetingAttachments($meetingline);
+		$meetingLinepageattachment = $this->zob->readMeetingLinePageAttachments($meetinglinepage);
 
 		$meetingline['LineNo'] .= $meetingline['LineNo2'] > 0 ? '.' . $meetingline['LineNo2'] . '.' : '.';
 		$this->registry->getObject('template')->dataToTags($meetinglinepage, 'page_');
 		$this->registry->getObject('template')->dataToTags($meetingline, 'line_');
 
+		if($meetingLinepageattachment){
+			$cache = $this->registry->getObject('db')->cacheData( $meetingLinepageattachment );
+			$this->registry->getObject('template')->getPage()->addTag( 'pageattachments', array( 'DATA', $cache ) );	
+			$this->registry->getObject('template')->getPage()->addTag( 'visibleattachments', 'yes' );	
+		}else{
+			$this->registry->getObject('template')->getPage()->addTag( 'pageattachments', '' );
+			$this->registry->getObject('template')->getPage()->addTag( 'visibleattachments', 'no' );	
+		};
+
 		$this->registry->getObject('template')->getPage()->addTag('MeetingID', $MeetingID);
 		$this->registry->getObject('template')->getPage()->addTag('prevPageNo', $prevPageNo);
 		$this->registry->getObject('template')->getPage()->addTag('nextPageNo', $nextPageNo);
 		$this->registry->getObject('template')->getPage()->addTag('PageNo', $PageNo);
+		if(is_array($meetingattachment)){
+			$arrCount = count($meetingattachment);
+			$this->registry->getObject('template')->getPage()->addTag('AttachmentCount', $arrCount);
+		}else{
+			$this->registry->getObject('template')->getPage()->addTag('AttachmentCount', '');
+		}
+		
 
 		$this->MeetingID = $MeetingID;
 	}

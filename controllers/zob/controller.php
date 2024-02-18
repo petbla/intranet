@@ -538,6 +538,7 @@ class Zobcontroller{
 		$this->listMeeting( $MeetingTypeID );
 	}	
 
+
 	/**
 	 * Modifikace tabulky bodů jednání
 	 * @return void
@@ -796,7 +797,7 @@ class Zobcontroller{
 			$this->registry->getObject('db')->InsertRecords('meetinglinepage',$data);	
 		}else{
 			$change['PageNo'] = $pageNo;
-			$condition = "PageID = ".$meetinglinepage['PageID'];
+			$condition = "MeetinglineID = $MeetingLineID";
 			$this->registry->getObject('db')->updateRecords('meetinglinepage',$change,$condition);
 		}
 	} 
@@ -817,7 +818,7 @@ class Zobcontroller{
 			$this->registry->getObject('db')->InsertRecords('meetinglinepage',$data);	
 		}else{
 			$change['PageNo'] = $pageNo;
-			$condition = "PageID = ".$meetinglinepage['PageID'];
+			$condition = "MeetinglineID = $MeetingLineID AND ContentID = $ContentID";
 			$this->registry->getObject('db')->updateRecords('meetinglinepage',$change,$condition);
 		}
 	} 
@@ -1525,6 +1526,21 @@ class Zobcontroller{
 		return $meetingline;
 	}
 
+	public function readMeetingAttachments ( $param  )
+	{
+		if(is_array($param)){
+			$MeetingLineID = $param['MeetingLineID'];
+		}else{
+			$MeetingLineID = $param;
+		}
+		$meetingattachment = null;
+		$this->registry->getObject('db')->initQuery('meetingattachment');
+		$this->registry->getObject('db')->setFilter('MeetingLineID',$MeetingLineID);
+		if ($this->registry->getObject('db')->findSet())
+			$meetingattachment = $this->registry->getObject('db')->getResult();			
+		return $meetingattachment;
+	}
+
 	public function readMeetingLineContents ( $param  )
 	{
 		if(is_array($param)){
@@ -1540,6 +1556,31 @@ class Zobcontroller{
 		if ($this->registry->getObject('db')->findSet())
 			$meetinglinecontent = $this->registry->getObject('db')->getResult();			
 		return $meetinglinecontent;
+	}
+
+	public function readMeetingLinePageAttachments ( $param  )
+	{
+		if(is_array($param)){
+			$PageID = $param['PageID'];
+		}else{
+			$PageID = $param;
+		}
+
+		$meetinglinepageattachment = null;
+
+		$sql = "SELECT pa.EntryNo,pa.PageID,pa.AttachmentID,a.DmsEntryID,a.Description " .
+			"FROM " . $this->prefDb . "meetinglinepageattachment as pa " .
+			"LEFT JOIN " . $this->prefDb . "meetingattachment as a ON a.AttachmentID = pa.AttachmentID ".
+			"WHERE pa.PageID = $PageID" ;
+		$cache = $this->registry->getObject('db')->cacheQuery( $sql );
+		if (!$this->registry->getObject('db')->isEmpty( $cache ))
+		{
+			while( $rec = $this->registry->getObject('db')->resultsFromCache( $cache ) )
+			{
+				$meetinglinepageattachment[] = $rec;
+			}
+		}
+		return $meetinglinepageattachment;
 	}
 
 	public function getElectionperiod ($ElectionPeriodID )

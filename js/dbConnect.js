@@ -174,6 +174,124 @@ function wsRefreshMeetinglinecontent(e) {
 }
 
 // ************************************************************************************
+//    Specific DATABASE functions 
+//    - Add meetingattachment to meetinglinepage   
+// 
+//    JS script              :  wsAddMeetinglinepageattachment(AttachmentID,PageID)
+// ************************************************************************************
+function wsAddMeetinglinepageattachment(e) {
+    var AttachmentID,PageID;
+    if(e){
+        var PageID = document.getElementById('PageHeader').getAttribute('pageID');
+        var val;
+        var AttachmentID,Description,DmsEntryID;
+
+        var subord = e.children;
+        for (var i=0;i < subord.length ;i++){
+            console.log(subord[i]);
+
+            val = subord[i].getAttribute('attachmentid');
+            if (val){
+                AttachmentID = val;
+            }
+            val = subord[i].getAttribute('description');
+            if (val){
+                Description = val;
+            }
+            val = subord[i].getAttribute('dmsentryid');
+            if (val){
+                DmsEntryID = val;
+            }
+        };
+        
+        const Http = new XMLHttpRequest();
+        var EntryNo;
+        var url;
+        url = window.location.origin + window.location.pathname;
+        url = url + '?page=general/ws/addMeetinglineattachment/' + AttachmentID + '/' + PageID;
+        Http.open("GET", url, true);
+        Http.onreadystatechange = function(){
+            if (Http.readyState === 4){
+                if(Http.status === 200){
+                    EntryNo = Http.responseText;
+                    console.log('EntryNo: ',EntryNo);
+
+                    if (EntryNo != 0){
+                        var table = document.getElementById('pageattachments');
+                        var tr = document.createElement('tr');    
+                        tr.setAttribute('id','attachmentEntryNo' + EntryNo)                            
+                        tr.className = "blue";
+                        var td = document.createElement('td');         
+                        td.className = "attachment";  
+                        var imgAtt = document.createElement('img');
+                        imgAtt.src = "views/classic/images/icon/attachment.png";
+                        imgAtt.style.width = "24px";
+                        var imgDel = document.createElement('img');
+                        imgDel.src = "views/classic/images/icon/delete.png";
+                        imgDel.addEventListener('click',function(){wsDeleteMeetinglinepageattachment('attachmentEntryNo' + EntryNo,EntryNo);});
+                        var span = document.createElement('span');
+                        span.setAttribute('id',DmsEntryID);
+                        span.setAttribute('table','meetingattachment');
+                        span.setAttribute('name','Description');
+                        span.setAttribute('poID',AttachmentID);
+                        span.style.fontSize = "24px";
+                        span.style.width = "90%";
+                        span.style.display = "inline";
+                        span.addEventListener('click',function(){pptEditField(this,'input');});
+                        span.innerHTML = Description;
+                        td.appendChild(imgAtt);
+                        td.appendChild(imgDel);                    
+                        td.appendChild(span);
+                        tr.appendChild(td);
+                        table.appendChild(tr);
+                    }            
+                }else{
+                    console.log('Chyba při volání webové služby');
+                }
+            }       
+            if(EntryNo == '<NULL>'){ 
+                EntryNo = 0;
+            }
+        }
+        Http.send();
+    }    
+}
+
+// ************************************************************************************
+//    Specific DATABASE functions 
+//    - Delete meetingattachment for choice page
+// 
+//    JS script              :  wsDeleteMeetinglinepageattachment(EntryNo)
+// ************************************************************************************
+function wsDeleteMeetinglinepageattachment(childName,EntryNo) {
+    if(EntryNo){
+        const Http = new XMLHttpRequest();
+        var val;
+        var url;
+        url = window.location.origin + window.location.pathname;
+        url = url + '?page=general/ws/deleteMeetinglineattachment/' + EntryNo;
+        Http.open("GET", url, true);
+        Http.onreadystatechange = function(){
+            if (Http.readyState === 4){
+                if(Http.status === 200){
+                    val = Http.responseText;
+                    console.log('OK');
+                    var table = document.getElementById('pageattachments');
+                    var row = document.getElementById(childName);        
+                    row.remove();            
+                }else{
+                    console.log('Chyba při volání webové služby');
+                }
+            }       
+            if(val == '<NULL>'){ 
+                val = null;
+            }
+        }        
+        Http.send();
+    }    
+}
+
+// ************************************************************************************
 //    DATABASE functions - Read value from database
 //    - internal function
 // ************************************************************************************
@@ -217,16 +335,16 @@ function updateRecValue(e) {
 //    - internal function
 // 
 //    Required HTML elenets  :  name, table, pkID
-//    JS script              :  wsReadJson(table,ID,field)
+//    JS script              :  wsReadJson(table,ID,field,fieldlist)
 //    RETURN                 :  JSON data | null
 //    Http request           :  ?page=general/ws/getJson/<table>/<pkID>/<name>
 // ************************************************************************************
-function wsReadJson(table,ID,field,callback) {
+function wsReadJson(table,ID,field,fieldlist,callback) {
     const Http = new XMLHttpRequest();
     var val = null;
     var url;
     url = window.location.origin + window.location.pathname;
-    url = url + '?page=general/ws/getJson/' + table + '/' + ID + '/' + field;
+    url = url + '?page=general/ws/getJson/' + table + '/' + ID + '/' + field + '/' + fieldlist;
     Http.open("GET", url, true);
     Http.onreadystatechange = function(){
         if (Http.readyState === 4){

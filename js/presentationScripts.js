@@ -73,30 +73,42 @@ function pptEditField(selectElement,type) {
 }
 
 
-function pptCreateTable(table,ID,field) {
-    
-    wsReadJson(table,ID,field,function(chyba, odpoved){
+function pptCreateTable(table,ID,field,fieldlist,roweventaction) {
+    wsReadJson(table,ID,field,fieldlist,function(chyba, odpoved){
         if (chyba){
             console.error('Chyba:',chyba);
         }else{
             var jsonData = JSON.parse(odpoved);
+            if(jsonData != '<NULL>'){
 
-            // Vytvoření tabulky
-            var tableContainer = document.getElementById('table-container');
-            tableContainer.appendChild(pptJsonToHtmlTable(jsonData));
-        
+                // Vytvoření tabulky
+                var tableContainerId = 'table-container';
+                var tableContainer = document.getElementById(tableContainerId);
+                tableContainer.style.display = '';
+                tableContainer.innerHTML = '';
+                tableContainer.appendChild(pptJsonToHtmlTable(jsonData,tableContainerId,roweventaction));
+            }else{
+                console.error('Error, not Json format.');
+            }
         }
     });
 }
 
 
-function pptJsonToHtmlTable(jsonData) {
+function pptJsonToHtmlTable(jsonData,tableContainerId,roweventaction) {
     var table = document.createElement('table');
     var thead = document.createElement('thead');
     var tbody = document.createElement('tbody');
 
+    table.style.width = '70%';
+    table.style.fontSize = '18px';
+    table.style.margin = '10px';
+    
     // Create table header
     var headerRow = document.createElement('tr');
+    headerRow.addEventListener("click",function(e){document.getElementById(tableContainerId).style.display = 'none';});
+    
+    
     Object.keys(jsonData[0]).forEach(function(key) {
         var th = document.createElement('th');
         th.textContent = key;
@@ -109,13 +121,19 @@ function pptJsonToHtmlTable(jsonData) {
     for (var keyRow in jsonData){
         if (jsonData.hasOwnProperty(keyRow)) {
             var row = document.createElement('tr');
+            row.style.cursor = 'pointer';
+            row.addEventListener('click',roweventaction)
+            row.style.color = 'blue';
+
             var jsonRow = jsonData[keyRow];
       
             for (var keyCol in jsonRow){
                 if (jsonRow.hasOwnProperty(keyCol)) {
-                    var td = document.createElement('td');
                     var value = jsonRow[keyCol];
-                    
+                    var td = document.createElement('td');
+                    td.style.padding = '5px';
+                    td.style.border = '1px solid black';
+                    td.setAttribute(keyCol,value);
                     td.textContent = value;
                     row.appendChild(td);                            
                 }

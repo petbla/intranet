@@ -1049,3 +1049,22 @@ pre.content{
   font-size: 16px;
   font-weight: bold;
 }
+.attachment a {
+	font-size: 18px;
+	color: blue;
+	text-decoration: none;
+}
+
+table.ppt{
+  width: 70%;
+  text-align: left;
+}
+table.ppt tr{
+  background-color: white;
+}
+table.ppt td{
+  background-color: white;
+  font-family: Arial, Times, serif;
+  text-align: left;
+  font-size: 24px;
+}

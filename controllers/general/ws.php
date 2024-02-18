@@ -13,6 +13,7 @@ class Generalws {
 	private $table;
 	private $ID;
 	private $field;
+	private $fieldlist;
 	private $result;
     
     /**
@@ -40,38 +41,47 @@ class Generalws {
 	public function main( $action )
 	{
 		$this->result = 'OK';
-		if ($this->setParam()){
-			// Action for element with <name==field>, <table==table name> , <kdID==primary Key>
-			switch ($action) {
-				case 'upd':
-					$this->update($action);
-					break;
-				case 'copyFrom':
-					$this->copyFrom($action);
-					break;
-				case 'getValue':
-					$this->result = $this->getValue($this->field);
-					break;
-				case 'getJson':
-					$this->result = $this->getJson($this->field);
-					break;
-				case 'log':
-						$this->log();
-						break;
-				default:
-					$this->result = "ERROR: Action '$action' is not specified. ";	
-			}
-		}else{
-			if($this->result == 'OK'){
-				switch ($action) {
-					case 'log':
-						$this->log();
-						break;
-					default:
-						$message = isset($_POST['message']) ? $_POST['message'] : '';
-						$this->result = "ERROR: Action '$message' of modify database field is not specified. ";	
+		switch ($action) {
+			case 'addMeetinglineattachment':
+				$this->result = $this->addMeetinglineattachment();
+				break;
+			case 'deleteMeetinglineattachment':
+				$this->result = $this->deleteMeetinglineattachment();
+				break;
+			default:
+				if ($this->setParam()){
+					// Action for element with <name==field>, <table==table name> , <kdID==primary Key>
+					switch ($action) {
+						case 'upd':
+							$this->update($action);
+							break;
+						case 'copyFrom':
+							$this->copyFrom($action);
+							break;
+						case 'getValue':
+							$this->result = $this->getValue($this->field);
+							break;
+						case 'getJson':
+							$this->result = $this->getJson();
+							break;
+						case 'log':
+								$this->log();
+								break;
+						default:
+							$this->result = "ERROR: Action '$action' is not specified. ";	
+					}
+				}else{
+					if($this->result == 'OK'){
+						switch ($action) {
+							case 'log':
+								$this->log();
+								break;
+							default:
+								$message = isset($_POST['message']) ? $_POST['message'] : '';
+								$this->result = "ERROR: Action '$message' of modify database field is not specified. ";	
+						}
+					}
 				}
-			}
 		}
 		exit($this->result);
     }
@@ -84,6 +94,7 @@ class Generalws {
 		$this->table = strtolower(isset($urlBits[3]) ? $urlBits[3] : ''); 
 		$this->ID = isset($urlBits[4]) ? $urlBits[4] : 0; 
 		$this->field = isset($urlBits[5]) ? $urlBits[5] : '';
+		$this->fieldlist = isset($urlBits[6]) ? $urlBits[6] : '';
 		if($this->table == ''){
 			$this->result = 'ERROR: Table not specific.';
 			return false;
@@ -546,16 +557,17 @@ class Generalws {
 		return $value;
 	}
 
-	private function getJson($field)
+	private function getJson()
 	{
 		$table = $this->table;
 		$ID = $this->ID;
 		$field = $this->field;
+		$fieldlist = $this->fieldlist;
 		$valueArray = '';
 		if($valueArray == ''){
 			$pkField = $this->getFieldPK($table);
 			if($pkField){
-				$this->registry->getObject('db')->initQuery($table);
+				$this->registry->getObject('db')->initQuery($table,$fieldlist);
 				$this->registry->getObject('db')->setFilter($field,$ID);
 				if ($this->registry->getObject('db')->findSet()){
 					$valueArray = $this->registry->getObject('db')->getResult();
@@ -566,6 +578,47 @@ class Generalws {
 				$valueJson = '<NULL>';
 		}
 		return $valueJson;
+	}
+	private function addMeetinglineattachment()
+	{
+		$urlBits = $this->registry->getURLBits();
+
+		$AttachmentID = isset($urlBits[3]) ? $urlBits[3] : 0; 
+		$PageID = isset($urlBits[4]) ? $urlBits[4] : 0;
+
+		if (($AttachmentID <> 0) && ($PageID <> 0)){
+			$this->registry->getObject('db')->initQuery('meetinglinepageattachment');
+			$this->registry->getObject('db')->setFilter('PageID',$PageID);
+			$this->registry->getObject('db')->setFilter('AttachmentID',$AttachmentID);
+			if ($this->registry->getObject('db')->isEmpty()){
+				$data = array();
+				$data['PageID'] = $PageID;
+				$data['AttachmentID'] = $AttachmentID;
+				$this->registry->getObject('db')->insertRecords('meetinglinepageattachment',$data);
+
+				$this->registry->getObject('db')->initQuery('meetinglinepageattachment');
+				$this->registry->getObject('db')->setFilter('PageID',$PageID);
+				$this->registry->getObject('db')->setFilter('AttachmentID',$AttachmentID);
+				if ($this->registry->getObject('db')->findFirst()) {
+					$meetinglinepageattachment = $this->registry->getObject('db')->getResult();
+					return $meetinglinepageattachment['EntryNo'];
+				}
+			}			
+		}			
+		return 0;
+	}
+
+	private function deleteMeetinglineattachment()
+	{
+		$urlBits = $this->registry->getURLBits();
+
+		$EntryNo = isset($urlBits[3]) ? $urlBits[3] : 0; 
+
+		if ($EntryNo <> 0){
+			$condition = "EntryNo = $EntryNo";
+			$this->registry->getObject('db')->deleteRecords( 'meetinglinepageattachment', $condition, 1); 
+		}
+		return true;
 	}
 
 	private function log()
