@@ -36,6 +36,12 @@ class Zobadvance
 		$template = 'zob-adv-meetingline-list.tpl.php';
 
 		switch ($action) {
+			case 'presentationcontent':
+				$template = 'presentation-content.tpl.php';
+				$MeetingID = isset($urlBits[3]) ? $urlBits[3] : '';
+				$this->presentationcontent($MeetingID);
+				$this->buildpresentation($template);
+				return;
 			case 'presentation':
 				$template = 'zob-adv-meetingline-page.tpl.php';
 				$MeetingID = isset($urlBits[3]) ? $urlBits[3] : '';
@@ -131,6 +137,42 @@ class Zobadvance
 		}
 		$this->MeetingID = $MeetingID;
 		return $template;
+	}
+
+	public function presentationcontent( $MeetingID)
+	{
+		$pages = $this->zob->synchroMeetinglinepage($MeetingID);
+		$meeting = $this->zob->getMeeting($MeetingID);
+		$MeetingTypeID = $meeting['MeetingTypeID'];
+		$meetingtype = $this->zob->getMeetingtype($MeetingTypeID);
+
+		$result = $this->zob->readMeetinglinepages($MeetingID);		
+		$meetinglinepage = array();
+		foreach($result as $rec){
+			$Point = $rec['Lin_LineNo'];
+			if ($rec['Lin_LineNo2'] <> 0){
+				$Point .= '.'.$rec['Lin_LineNo2'];
+			};
+			if ($rec['Con_LineNo'] <> 0) {
+				$Point .= ' - '.$rec['Con_LineNo'].')';
+			};
+			$rec['Point'] = $Point;
+
+			$meetinglinepage[] = $rec;
+		};
+
+		$Year = $meeting['Year'];
+		$EntryNo = $meeting['EntryNo'];
+		$○r = $meetingtype['MeetingName']." - <b>$EntryNo/$Year</b>, datum jednání: ";
+		$○r .= $this->registry->getObject('core')->formatDate($meeting['AtDate'],'d.m.Y');
+
+		$this->registry->getObject('template')->getPage()->addTag('Header', $○r);
+		$this->registry->getObject('template')->getPage()->addTag('MeetingID', $MeetingID);
+
+		$cache = $this->registry->getObject('db')->cacheData( $meetinglinepage );
+		$this->registry->getObject('template')->getPage()->addTag( 'meetinglinepageList', array( 'DATA', $cache ) );	
+
+		$this->MeetingID = $MeetingID;
 	}
 
 	/**

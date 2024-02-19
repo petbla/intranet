@@ -2,7 +2,7 @@
 <p>
     <a href="index.php?page=zob/adv/{MeetingID}" title="Zápis jednání"><img src="views/classic/images/nav/meeting48.png" /></a>
     <img src="views/classic/images/nav/line48.png"/>
-    <a href="index.php?page=zob/adv/presentation/{MeetingID}" title="Příprava prezentace"><img src="views/classic/images/nav/makepresent48.png" /></a>        
+    <a href="index.php?page=zob/adv/presentationcontent/{MeetingID}" title="Příprava prezentace"><img src="views/classic/images/nav/makepresent48.png" /></a>        
     <img src="views/classic/images/nav/line48.png"/>
     <a href="index.php?page=zob/adv/presentation/{MeetingID}" title="Prezentace"><img src="views/classic/images/nav/present48.png" /></a>        
     <img src="views/classic/images/nav/line48.png"/>
@@ -164,3 +164,11 @@
 <a href="#header" class="button"><span class="action_close">Nahorů</span></a>
 <a href="index.php?page=zob/meeting/list/{MeetingTypeID}" class="button"><span class="action_close">{lbl_Close}</span></a>
 <div id="activeMeetingLine" value="{activeMeetingLineID}" styte="display=none;"></div>
+
+<script>
+    document.addEventListener('keydown', function(event) {        
+        if (event.key === 'Backspace') {
+            window.location = "index.php?page=zob/meeting/list/{MeetingTypeID}";
+        }
+    });
+</script>

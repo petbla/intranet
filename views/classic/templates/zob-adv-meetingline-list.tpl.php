@@ -1,6 +1,6 @@
 <h1 id="header">{Header}</h1>
 <p>
-    <a href="index.php?page=zob/adv/presentation/{MeetingID}" title="Příprava prezentace"><img src="views/classic/images/nav/makepresent48.png" /></a>        
+    <a href="index.php?page=zob/adv/presentationcontent/{MeetingID}" title="Příprava prezentace"><img src="views/classic/images/nav/makepresent48.png" /></a>        
     <img src="views/classic/images/nav/line48.png"/>
     <a href="index.php?page=zob/adv/presentation/{MeetingID}" title="Prezentace"><img src="views/classic/images/nav/present48.png" /></a>        
     <img src="views/classic/images/nav/line48.png"/>
@@ -110,4 +110,11 @@
     else
       anchor = '#header'; 
     window.location = anchor;
+
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Backspace') {
+            window.location = "index.php?page=zob/meetingline/list/{MeetingID}";
+        }
+    });
+
 </script>

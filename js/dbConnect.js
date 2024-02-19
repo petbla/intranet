@@ -217,15 +217,14 @@ function wsAddMeetinglinepageattachment(e) {
                     console.log('EntryNo: ',EntryNo);
 
                     if (EntryNo != 0){
-                        var table = document.getElementById('pageattachments');
+                        var tbody = document.getElementById('pageattachments');
+                        var table = tbody.parentElement;
+                        table.style.display='inline';
                         var tr = document.createElement('tr');    
                         tr.setAttribute('id','attachmentEntryNo' + EntryNo)                            
                         tr.className = "blue";
                         var td = document.createElement('td');         
                         td.className = "attachment";  
-                        var imgAtt = document.createElement('img');
-                        imgAtt.src = "views/classic/images/icon/attachment.png";
-                        imgAtt.style.width = "24px";
                         var imgDel = document.createElement('img');
                         imgDel.src = "views/classic/images/icon/delete.png";
                         imgDel.addEventListener('click',function(){wsDeleteMeetinglinepageattachment('attachmentEntryNo' + EntryNo,EntryNo);});
@@ -239,11 +238,10 @@ function wsAddMeetinglinepageattachment(e) {
                         span.style.display = "inline";
                         span.addEventListener('click',function(){pptEditField(this,'input');});
                         span.innerHTML = Description;
-                        td.appendChild(imgAtt);
                         td.appendChild(imgDel);                    
                         td.appendChild(span);
                         tr.appendChild(td);
-                        table.appendChild(tr);
+                        tbody.appendChild(tr);
                     }            
                 }else{
                     console.log('Chyba při volání webové služby');
@@ -276,7 +274,6 @@ function wsDeleteMeetinglinepageattachment(childName,EntryNo) {
                 if(Http.status === 200){
                     val = Http.responseText;
                     console.log('OK');
-                    var table = document.getElementById('pageattachments');
                     var row = document.getElementById(childName);        
                     row.remove();            
                 }else{

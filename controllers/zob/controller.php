@@ -1558,6 +1558,36 @@ class Zobcontroller{
 		return $meetinglinecontent;
 	}
 
+	public function readMeetinglinepages( $param  )
+	{
+		if(is_array($param)){
+			$MeetingID = $param['MeetingID'];
+		}else{
+			$MeetingID = $param;
+		}
+
+		$meetinglinepage = null;
+		$sql = "SELECT mp.PageID,mp.MeetingTypeID,mp.MeetingID,mp.MeetingLineID,mp.ContentID,".
+				"mp.Order,mp.PageNo,mp.Content,mp.ImageURL,mp.ImageWidth,mp.ImageHeight,mp.System," .
+				"ml.Title as Lin_Title, ml.LineType as Lin_LineType, ml.LineNo as Lin_LineNo, ml.LineNo2 as Lin_LineNo2, ml.Content as Lin_Content,".
+				"mlc.LineNo as Con_LineNo, mlc.Content as Con_Content ".
+			"FROM " . $this->prefDb . "meetinglinepage as mp " .
+			"LEFT JOIN " . $this->prefDb . "meetingline as ml ON ml.MeetingLineID = mp.MeetingLineID ".
+			"LEFT JOIN " . $this->prefDb . "meetinglinecontent as mlc ON mlc.ContentID = mp.ContentID ".
+			"WHERE mp.MeetingID = $MeetingID ".
+			"ORDER BY PageNo" ;
+		
+		$cache = $this->registry->getObject('db')->cacheQuery( $sql );
+		if (!$this->registry->getObject('db')->isEmpty( $cache ))
+		{
+			while( $rec = $this->registry->getObject('db')->resultsFromCache( $cache ) )
+			{
+				$meetinglinepage[] = $rec;
+			}
+		}
+		return $meetinglinepage;
+	}
+
 	public function readMeetingLinePageAttachments ( $param  )
 	{
 		if(is_array($param)){
