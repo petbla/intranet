@@ -2,9 +2,9 @@
 <p>
     <a href="index.php?page=zob/adv/{MeetingID}" title="Zápis jednání"><img src="views/classic/images/nav/meeting48.png" /></a>
     <img src="views/classic/images/nav/line48.png"/>
-    <a href="index.php?page=zob/adv/presentationcontent/{MeetingID}" title="Příprava prezentace"><img src="views/classic/images/nav/makepresent48.png" /></a>        
+    <a href="index.php?page=zob/adv/presentation/content/{MeetingID}" title="Příprava prezentace"><img src="views/classic/images/nav/makepresent48.png" /></a>        
     <img src="views/classic/images/nav/line48.png"/>
-    <a href="index.php?page=zob/adv/presentation/{MeetingID}" title="Prezentace"><img src="views/classic/images/nav/present48.png" /></a>        
+    <a href="index.php?page=zob/adv/presentation/show/{MeetingID}" title="Prezentace"><img src="views/classic/images/nav/present48.png" /></a>        
     <img src="views/classic/images/nav/line48.png"/>
     <a href="index.php?page=zob/print/10000/{MeetingID}" title="Tisk zápisu" target="_blank"><img src="views/classic/images/nav/printZ48.png" /></a>
     <img src="views/classic/images/nav/line48.png"/>
@@ -18,7 +18,7 @@
     <img src="views/classic/images/nav/line48.png"/>
     <a href="index.php?page=zob/manage/backupMeeting/{MeetingID}" title="Záloha zápisu jednání (CSV Export)"><img src="views/classic/images/nav/backup48.png" /></a>        
 </p>
-<a href="index.php?page=zob/meeting/list/{MeetingTypeID}" id="closePage" class="button"><span class="action_close">{lbl_Close}</span></a>
+<a href="index.php?page=zob/meeting/list/{MeetingTypeID}" id="closePage" accesskey="x" class="button"><span class="action_close">{lbl_Close}</span></a>
 <div id="DocumentItems">
     <p id="pageMessage" class="message" onClick="this.style.display = 'none';" >{message}</p>
     <script>
@@ -167,7 +167,7 @@
 
 <script>
     document.addEventListener('keydown', function(event) {        
-        if (event.key === 'Backspace') {
+        if (event.key === 'Escape') {
             window.location = "index.php?page=zob/meeting/list/{MeetingTypeID}";
         }
     });

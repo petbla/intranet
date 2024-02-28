@@ -371,32 +371,21 @@ class Generalws {
 			return;
 		}
 
-		switch ($field) {
-			case 'Content':
-				$MeetingLineID = $meetinglinepage['MeetingLineID'];
-				$ContentID = $meetinglinepage['ContentID'];
-				if($ContentID == 0){
-					// Update Meetingline
-					$change = array();
-					$change['Content'] = $value;
-					$condition = "MeetingLineID = '$MeetingLineID'";
-					$this->registry->getObject('db')->updateRecords('meetingline',$change,$condition);
-				}else{
-					// Update Meetinglinecontent
-					$change = array();
-					$change['Content'] = $value;
-					$condition = "ContentID = '$ContentID'";
-					$this->registry->getObject('db')->updateRecords('meetinglinecontent',$change,$condition);
-				}
-				$change = array();
-				$change['Content'] = $value;
-				$condition = "PageID = '$ID'";
-				$this->registry->getObject('db')->updateRecords('meetinglinepage',$change,$condition);
-
-				break;
-			default:
-				$data[$field] = $value;
+		if ($field == 'Changed'){
+			$data['Changed'] = 0;
+			if ($meetinglinepage['Lin_Changed'] == 1){
+				$condition = "MeetingLineID = " . $meetinglinepage['MeetingLineID'];								
+				$this->registry->getObject('db')->updateRecords('meetingline',$data,$condition);	
+			}
+			if ($meetinglinepage['Con_Changed'] == 1){
+				$condition = "ContentID = " . $meetinglinepage['ContentID'];								
+				$this->registry->getObject('db')->updateRecords('meetinglinecontent',$data,$condition);	
+			}
+			return;
 		}
+
+		$data[$field] = $value;
+		
 		$condition = "PageID = $ID";								
 		if(($this->result == 'OK') && $data)
 			$this->registry->getObject('db')->updateRecords($this->table,$data,$condition);	

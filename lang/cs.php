@@ -173,6 +173,7 @@ $caption['folderName'] =     'Název složky';
 $caption['folderBlocName'] = 'Název složky/bloku';
 $caption['PlaceText'] =      'Vyhledat text...';
 $caption['View'] =           'Náhled';
+$caption['Open'] =           'Otevřít';
 $caption['Import'] =         'Import';
 $caption['ImportNote'] =     'Import poznámek';
 $caption['ContTemplateImp'] ='Šablona pro import';
@@ -263,4 +264,4 @@ $caption['ImportNotesCsv'] =       'Import poznámek z Excelu (CSV)';
  */
 $caption['PageNo'] =                     'Strana';  
  
-?>
+

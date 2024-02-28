@@ -36,18 +36,10 @@ class Zobadvance
 		$template = 'zob-adv-meetingline-list.tpl.php';
 
 		switch ($action) {
-			case 'presentationcontent':
-				$template = 'presentation-content.tpl.php';
-				$MeetingID = isset($urlBits[3]) ? $urlBits[3] : '';
-				$this->presentationcontent($MeetingID);
-				$this->buildpresentation($template);
-				return;
 			case 'presentation':
-				$template = 'zob-adv-meetingline-page.tpl.php';
-				$MeetingID = isset($urlBits[3]) ? $urlBits[3] : '';
-				$PageNo = isset($urlBits[4]) ? (int) $urlBits[4] : 1;
-				$this->meetingpresentation($MeetingID, $PageNo);
-				$this->buildpresentation($template);
+				$action = isset($urlBits[3]) ? $urlBits[3] : '';
+				$action = isset($_POST["action"]) ? $_POST["action"] : $action;
+				$this->presentation($action);
 				return;
 			case 'meetingline':
 				$action = isset($urlBits[3]) ? $urlBits[3] : '';
@@ -81,7 +73,7 @@ class Zobadvance
 	 * Sestavení stránky pro TISK
 	 * @return void
 	 */
-	public function buildpresentation($template = 'zob-adv-meetingline-page.tpl.php')
+	public function buildpresentation($template = 'presentation-edit.tpl.php')
 	{
 		// Page message
 		$this->registry->getObject('template')->getPage()->addTag('message', $this->message);
@@ -145,22 +137,8 @@ class Zobadvance
 		$meeting = $this->zob->getMeeting($MeetingID);
 		$MeetingTypeID = $meeting['MeetingTypeID'];
 		$meetingtype = $this->zob->getMeetingtype($MeetingTypeID);
-
-		$result = $this->zob->readMeetinglinepages($MeetingID);		
-		$meetinglinepage = array();
-		foreach($result as $rec){
-			$Point = $rec['Lin_LineNo'];
-			if ($rec['Lin_LineNo2'] <> 0){
-				$Point .= '.'.$rec['Lin_LineNo2'];
-			};
-			if ($rec['Con_LineNo'] <> 0) {
-				$Point .= ' - '.$rec['Con_LineNo'].')';
-			};
-			$rec['Point'] = $Point;
-
-			$meetinglinepage[] = $rec;
-		};
-
+		$meetinglinepage = $this->zob->readMeetinglinepages($MeetingID);		
+		
 		$Year = $meeting['Year'];
 		$EntryNo = $meeting['EntryNo'];
 		$○r = $meetingtype['MeetingName']." - <b>$EntryNo/$Year</b>, datum jednání: ";
@@ -179,9 +157,10 @@ class Zobadvance
 	 * Modifikace tabulky bodů jednání
 	 * @return void
 	 */
-	private function meetingpresentation($MeetingID, $PageNo)
+	private function setDatasetPresentation($MeetingID, $PageNo)
 	{
 		$pages = $this->zob->synchroMeetinglinepage($MeetingID);
+
 
 		$prevPageNo = $PageNo > 1 ? $PageNo - 1 : $PageNo;
 		$nextPageNo = $PageNo >= $pages ? $pages : $PageNo + 1;
@@ -216,6 +195,45 @@ class Zobadvance
 		}
 		
 
+		$this->MeetingID = $MeetingID;
+	}
+
+	/**
+	 * Modifikace tabulky bodů jednání
+	 * @return void
+	 */
+	private function presentation($action)
+	{
+		global $config, $caption;
+		$urlBits = $this->registry->getURLBits();
+		$MeetingLineID = 0;
+		$MeetingID = 0;
+
+		switch ($action) {
+			case 'content':
+				$template = 'presentation-content.tpl.php';
+				$MeetingID = isset($urlBits[4]) ? $urlBits[4] : '';
+				$this->presentationcontent($MeetingID);
+				$this->buildpresentation($template);
+				break;
+			case 'edit':
+				$template = 'presentation-edit.tpl.php';
+				$MeetingID = isset($urlBits[4]) ? $urlBits[4] : '';
+				$PageNo = isset($urlBits[5]) ? (int) $urlBits[5] : 1;
+				$this->setDatasetPresentation($MeetingID, $PageNo);
+				$this->buildpresentation($template);
+				break;
+			case 'show':
+				$template = 'presentation-slideshow.tpl.php';
+				$MeetingID = isset($urlBits[4]) ? $urlBits[4] : '';
+				$PageNo = isset($urlBits[5]) ? (int) $urlBits[5] : 1;
+				$this->setDatasetPresentation($MeetingID, $PageNo);
+				$this->buildpresentation($template);
+				break;
+			default:
+				$this->zob->pageNotFound();
+				break;
+		};
 		$this->MeetingID = $MeetingID;
 	}
 

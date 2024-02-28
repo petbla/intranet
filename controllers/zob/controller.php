@@ -1509,7 +1509,7 @@ class Zobcontroller{
 
 		return ($pageNo);
 	}
-
+	
 	public function readMeetingLines ( $param  )
 	{
 		if(is_array($param)){
@@ -1558,7 +1558,7 @@ class Zobcontroller{
 		return $meetinglinecontent;
 	}
 
-	public function readMeetinglinepages( $param  )
+	public function readMeetinglinepages( $param , $condition='')
 	{
 		if(is_array($param)){
 			$MeetingID = $param['MeetingID'];
@@ -1566,15 +1566,26 @@ class Zobcontroller{
 			$MeetingID = $param;
 		}
 
+		if ($MeetingID != ''){
+			$where = "WHERE mp.MeetingID = $MeetingID";
+		};
+		if ($condition != ''){
+			if ($where != '') {
+				$where .= ' AND ' . $condition;
+			}else{
+				$where = 'WHERE ' . $condition;
+			}
+		};
+
 		$meetinglinepage = null;
 		$sql = "SELECT mp.PageID,mp.MeetingTypeID,mp.MeetingID,mp.MeetingLineID,mp.ContentID,".
 				"mp.Order,mp.PageNo,mp.Content,mp.ImageURL,mp.ImageWidth,mp.ImageHeight,mp.System," .
-				"ml.Title as Lin_Title, ml.LineType as Lin_LineType, ml.LineNo as Lin_LineNo, ml.LineNo2 as Lin_LineNo2, ml.Content as Lin_Content,".
-				"mlc.LineNo as Con_LineNo, mlc.Content as Con_Content ".
+				"ml.Title as Lin_Title, ml.LineType as Lin_LineType, ml.LineNo as Lin_LineNo, ml.LineNo2 as Lin_LineNo2, ml.Content as Lin_Content,ml.Changed as Lin_Changed,".
+				"mlc.LineNo as Con_LineNo, mlc.Content as Con_Content,mlc.Changed as Con_Changed ".
 			"FROM " . $this->prefDb . "meetinglinepage as mp " .
 			"LEFT JOIN " . $this->prefDb . "meetingline as ml ON ml.MeetingLineID = mp.MeetingLineID ".
 			"LEFT JOIN " . $this->prefDb . "meetinglinecontent as mlc ON mlc.ContentID = mp.ContentID ".
-			"WHERE mp.MeetingID = $MeetingID ".
+			"$where ".
 			"ORDER BY PageNo" ;
 		
 		$cache = $this->registry->getObject('db')->cacheQuery( $sql );
@@ -1582,6 +1593,17 @@ class Zobcontroller{
 		{
 			while( $rec = $this->registry->getObject('db')->resultsFromCache( $cache ) )
 			{
+				$Point = $rec['Lin_LineNo'] . '.';
+				if ($rec['Lin_LineNo2'] <> 0){
+					$Point .= $rec['Lin_LineNo2'].'.';
+				};
+				if ($rec['Con_LineNo'] <> 0) {
+					$Point .= $rec['Con_LineNo'].')';
+				};
+				$rec['Point'] = $Point;
+				$rec['MeetingContent'] = $rec['ContentID'] > 0 ? $rec['Con_Content'] : $rec['Lin_Content'];
+				$rec['Changed'] = (($rec['Lin_Changed'] == 1) || ($rec['Con_Changed'] == 1)) ? 1 : 0;
+	
 				$meetinglinepage[] = $rec;
 			}
 		}
@@ -1792,13 +1814,8 @@ class Zobcontroller{
 
 	public function getMeetinglinepageByPageNo ( $MeetingID, $PageNo )
 	{
-		$meetinglinepage = null;
-		$this->registry->getObject('db')->initQuery('meetinglinepage');
-		$this->registry->getObject('db')->setFilter('MeetingID',$MeetingID);
-		$this->registry->getObject('db')->setFilter('PageNo',$PageNo);
-		if ($this->registry->getObject('db')->findFirst())
-			$meetinglinepage = $this->registry->getObject('db')->getResult();			
-		return $meetinglinepage;
+		$meetinglinepage = $this->readMeetinglinepages($MeetingID, 'PageNo='.$PageNo);
+		return $meetinglinepage[0];
 	}
 
 	public function getMeetinglinecontent ( $ContentID )
@@ -1813,12 +1830,8 @@ class Zobcontroller{
 
 	public function getMeetinglinepage ( $PageID )
 	{
-		$meetinglinepage = null;
-		$this->registry->getObject('db')->initQuery('meetinglinepage');
-		$this->registry->getObject('db')->setFilter('PageID',$PageID);
-		if ($this->registry->getObject('db')->findFirst())
-			$meetinglinepage = $this->registry->getObject('db')->getResult();			
-		return $meetinglinepage;
+		$meetinglinepage = $this->readMeetinglinepages('', 'PageID='.$PageID);
+		return $meetinglinepage[0];
 	}
 
 	public function getMeetinglinepageByMeeting ( $MeetingLineID, $ContentID )

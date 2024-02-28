@@ -323,6 +323,28 @@ class upgrademanagement {
             // upgrade to 2.51
             $this->upgrade_251('2.51');
         }
+        if ($this->version === '2.51') 
+        {
+            // upgrade to 2.52
+            $this->upgrade_252('2.52');
+        }
+    }
+
+    private function upgrade_252($upVer)
+    {
+		global $config;
+        $pref = $config['dbPrefix'];
+
+        // add Changed field
+        $sql = "ALTER TABLE ".$pref."meetingline".
+            " ADD `Changed` tinyint(1) NULL DEFAULT 0";
+        $this->registry->getObject('db')->executeQuery( $sql );
+
+        $sql = "ALTER TABLE ".$pref."meetinglinecontent".
+            " ADD `Changed` tinyint(1) NULL DEFAULT 0";
+        $this->registry->getObject('db')->executeQuery( $sql );
+
+        $this->setNewVersion($upVer);
     }
 
     private function upgrade_251($upVer)

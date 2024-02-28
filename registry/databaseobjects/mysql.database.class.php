@@ -64,6 +64,7 @@ class mysqldatabase
   private $querySql;
   private $queryResult;
   private $isCacheQuery;
+  private $handler;
 
   /** 
    * Konstruktor databázového objektu 
@@ -71,6 +72,7 @@ class mysqldatabase
   public function __construct($registry)
   {
     $this->registry = $registry;
+    require_once( FRAMEWORK_PATH . 'registry/databaseobjects/mysql.database.handler.php');
   }
 
   /** 
@@ -109,7 +111,7 @@ class mysqldatabase
    * @param int identifikátor nového spojení
    * @return void
    */
-  public function setActiveConnection(int $new)
+  public function setActiveConnection($new)
   {
     $this->activeConnection = $new;
   }
@@ -221,7 +223,8 @@ class mysqldatabase
         $update .= "`" . $field . "`= NULL ,";
       else
         $update .= "`" . $field . "`='{$value}',";
-    }
+    };
+    onAfterSetUpdateRecords($update, $table, $changes, $condition);
 
     // remove our trailing ,
     $update = substr($update, 0, -1);
@@ -258,7 +261,8 @@ class mysqldatabase
       } else {
         $values .= (is_numeric($v) && (intval($v) == $v)) ? $v . "," : "'$v',";
       }
-    }
+    };
+    onAfterSetInsertRecords($fields, $values, $table, $data);
 
     // odstranění koncového znaku „,“ 
     $fields = substr($fields, 0, -1);
