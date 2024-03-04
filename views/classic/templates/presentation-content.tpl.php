@@ -5,8 +5,8 @@
     <a href="index.php?page=zob/adv/presentation/show/{MeetingID}" title="Prezentace"><img src="views/classic/images/nav/present48.png" /></a>        
 </p>
 <a href="index.php?page=zob/meetingline/list/{MeetingID}" accesskey="x" id="closePage" class="button"><span class="action_close">{lbl_Close}</span></a>
-<a href="index.php?page=zob/meetingline/list/{MeetingID}" class="button"><span class="action_close">Vložit úvodní stranu</span></a>
-<a href="index.php?page=zob/meetingline/list/{MeetingID}" class="button"><span class="action_close">Vložit/aktualizovat obsah</span></a>
+<a href="index.php?page=zob/adv/presentation/addfrontpage/{MeetingID}" class="button"><span class="action_close">Vložit/aktualizovat úvodní stranu</span></a>
+<a href="index.php?page=zob/adv/presentation/addwarppage/{MeetingID}" class="button"><span class="action_close">Vložit/aktualizovat obsah</span></a>
 <div id="DocumentItems">
     <p id="pageMessage" class="message" onClick="this.style.display = 'none';" >{message}</p>
     <p id="pageErrorMesage" class="error" onClick="this.style.display = 'none';" >{errorMessage}</p>

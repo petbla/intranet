@@ -328,6 +328,40 @@ class upgrademanagement {
             // upgrade to 2.52
             $this->upgrade_252('2.52');
         }
+        if ($this->version === '2.52') 
+        {
+            // upgrade to 2.53
+            $this->upgrade_253('2.53');
+        }
+        if ($this->version === '2.53') 
+        {
+            // upgrade to 2.54
+            $this->upgrade_254('2.54');
+        }
+    }
+
+    private function upgrade_254($upVer)
+    {
+		global $config;
+        $pref = $config['dbPrefix'];
+
+        $changes['PageType'] = 'page';
+        $this->registry->getObject('db')->updateRecords('meetinglinepage',$changes, '');            
+
+        $this->setNewVersion($upVer);
+    }
+
+    private function upgrade_253($upVer)
+    {
+		global $config;
+        $pref = $config['dbPrefix'];
+
+        // add Changed field
+        $sql = "ALTER TABLE ".$pref."meetinglinepage".
+            " ADD `PageType` varchar(20) COLLATE utf8_czech_ci DEFAULT ''";
+        $this->registry->getObject('db')->executeQuery( $sql );
+
+        $this->setNewVersion($upVer);
     }
 
     private function upgrade_252($upVer)

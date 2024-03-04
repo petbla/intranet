@@ -18,7 +18,21 @@
     </table>
 </div>
 <div id="PageBody">
+    
     <textarea id="body" rows="10" cols="140" value="" class="value" style="border:0;" readonly >{page_Content}</textarea>
+    <textarea id="body_front" rows="10" cols="140" value="" class="value" style="border:0; font-size:60px; text-align:center;" readonly >{page_Content}</textarea>
+    <script>
+        var body = document.getElementById('body');
+        var bodyfront = document.getElementById('body_front');
+        if('{page_PageType}' == "front"){
+            body.style.display = 'none';
+            bodyfront.style.display = '';
+        }else{
+            body.style.display = '';
+            bodyfront.style.display = 'none';
+        }
+    </script>
+    
     <table id="tablepageattachments" visibility="{visibleattachments}" class="ppt">
         <tbody id="pageattachments">
             <!-- START pageattachments -->

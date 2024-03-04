@@ -138,7 +138,6 @@ class Zobprint {
             $meetinglinecontents = $this->zob->readMeetingLineContents ($meetingline['MeetingLineID']);
             if ($meetinglinecontents){
                 foreach($meetinglinecontents as $meetinglinecontent){
-                    $meetingline = array();
                     $meetingline['LineNo'] = null;
                     $meetingline['LineNo2'] = $meetinglinecontent['LineNo'];
                     $meetingline['Content'] = $meetinglinecontent['Content'];
@@ -183,46 +182,7 @@ class Zobprint {
         $this->registry->getObject('pdf')->NewDocument();
         
         // Záhlaví
-        $headerTitle['City'] = 'OBEC '.mb_strtoupper($config['compCity']);
-        $met = mb_strtolower($meetingtype['MeetingName']);
-        switch ($met){
-            case 'zastupitelstvo':
-                $headerTitle['FromMeting'] = 'STAROSTA OBCE '.mb_strtoupper($config['compCity']);
-                $headerTitle['FromMeting2'] = 'SVOLÁVÁ';
-                $headerTitle['MetingTitle'] = 'VEŘEJNÉ ZASEDÁNÍ';
-                $headerTitle['MetingTitle2'] = 'ZASTUPITELSTVA OBCE';
-                $headerTitle['HeadMan'] = 'starosta obce';
-                break;
-            case 'rada':
-                $headerTitle['FromMeting'] = 'STAROSTA OBCE '.mb_strtoupper($config['compCity']);
-                $headerTitle['FromMeting2'] = 'SVOLÁVÁ';
-                $headerTitle['MetingTitle'] = 'JEDNÁNÍ RADY';
-                $headerTitle['MetingTitle2'] = '';
-                $headerTitle['HeadMan'] = 'starosta obce';
-                break;
-            case 'stavební komise':
-                $headerTitle['FromMeting'] = 'předseda stavební komise obce '.$config['compCity'];
-                $headerTitle['FromMeting2'] = 'SVOLÁVÁ';
-                $headerTitle['MetingTitle'] = 'JEDNÁNÍ STAVEBNÍ KOMISE';
-                $headerTitle['MetingTitle2'] = '';
-                $headerTitle['HeadMan'] = 'předseda komise';
-                break;
-            default:
-                $headerTitle['FromMeting'] = 'pozvánka na jednání:';
-                $headerTitle['FromMeting2'] = mb_strtolower($meetingtype['MeetingName']).' obce '.$config['compCity'];
-                $headerTitle['FromMeting2'] = '';
-                $headerTitle['MetingTitle'] = '';
-                $headerTitle['HeadMan'] = 'předseda';
-                break;
-        }
-        $headerTitle['AtDate'] = 'Na den '.$this->registry->getObject('core')->formatDate($meeting['AtDate']);
-        $headerTitle['AtTime'] = 'ZAČÁTEK: '.$this->registry->getObject('core')->formatDate($meeting['AtTime'],'H:i').' HODIN';
-        $headerTitle['MeetingPlace'] = 'MÍSTO KONÁNÍ: '.$meeting['MeetingPlace'];
-        $atdate = $meeting['PostedUpDate'] != null ? $this->registry->getObject('core')->formatDate($meeting['PostedUpDate']) : '........................';
-        $headerTitle['PostedUp'] = 'Vyvěšeno: '.$atdate;
-        $atdate = $meeting['PostedDownDate'] != null ? $this->registry->getObject('core')->formatDate($meeting['PostedDownDate']) : '........................';
-        $headerTitle['PostedDown'] = 'Sňato: '.$atdate;
-
+        $headerTitle = $this->zob->getMeetingHeader($meeting);
         $this->registry->getObject('pdf')->DocumentTitle('10020',$headerTitle);
 
         // Meeting Lines - Program

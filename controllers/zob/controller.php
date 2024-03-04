@@ -794,6 +794,7 @@ class Zobcontroller{
 			$data['ContentID'] = 0; 
 			$data['Content'] = $meetingline['Content']; 
 			$data['System'] = 1;
+			$data['PageType'] = 'page';
 			$this->registry->getObject('db')->InsertRecords('meetinglinepage',$data);	
 		}else{
 			$change['PageNo'] = $pageNo;
@@ -815,11 +816,90 @@ class Zobcontroller{
 			$data['ContentID'] = $ContentID; 
 			$data['Content'] = $meetinglinecontent['Content']; 
 			$data['System'] = 1;
+			$data['PageType'] = 'page';
 			$this->registry->getObject('db')->InsertRecords('meetinglinepage',$data);	
 		}else{
 			$change['PageNo'] = $pageNo;
 			$condition = "MeetinglineID = $MeetingLineID AND ContentID = $ContentID";
 			$this->registry->getObject('db')->updateRecords('meetinglinepage',$change,$condition);
+		}
+	} 
+
+	public function addMeetinglinepageFrontPage($MeetingID){
+		global $config;
+		
+		$meeting = $this->getMeeting($MeetingID);
+		$headerTitle = $this->getMeetingHeader($meeting);
+		$meetinglinepage = $this->readMeetinglinepageByMeetingID($MeetingID, "`PageType` like 'front'");
+		if ($meetinglinepage){
+			$condition = '`MeetingID` = ' . $meetinglinepage[0]['MeetingID'] . " AND `PageType` = 'front'";
+			$this->registry->getObject('db')->deleteRecords('meetinglinepage',$condition);	
+		};
+
+		$data['MeetingID'] = $MeetingID;
+		$data['MeetingLineID'] = 0;
+		$data['PageNo'] = 1;
+		$data['System'] = 1;
+		$data['PageType'] = 'front';
+
+		$data['Content'] = '\n\n';
+		$data['Content'] .= $headerTitle['MetingTitle'] . '\n';
+		$data['Content'] .= $headerTitle['MetingTitle2'] . '\n';
+		$data['Content'] .= $this->registry->getObject('core')->formatDate($meeting['AtDate']) . ', ';
+		$data['Content'] .= $this->registry->getObject('core')->formatDate($meeting['AtTime'],'H:i').' HODIN'; 
+		$data['Content'] .= '\n'; 
+		$data['Content'] .= $config['compCity'] .', '; 
+		$data['Content'] .= $meeting['MeetingPlace']; 
+
+		$this->registry->getObject('db')->InsertRecords('meetinglinepage',$data);	
+	} 
+
+	public function addMeetinglinepageWarpPage($MeetingID){
+		global $config;
+
+		$this->addMeetinglinepageFrontPage($MeetingID);
+		$pageNo = 1;
+
+		$meeting = $this->getMeeting($MeetingID);
+		$headerTitle = $this->getMeetingHeader($meeting);
+		$meetinglinepage = $this->readMeetinglinepageByMeetingID($MeetingID, "`PageType` like 'warp'");
+		if ($meetinglinepage){
+			$condition = '`MeetingID` = ' . $meetinglinepage[0]['MeetingID'] . " AND `PageType` = 'warp'";
+			$this->registry->getObject('db')->deleteRecords('meetinglinepage',$condition);	
+		};
+
+		$data = array();
+		$data['MeetingID'] = $MeetingID;
+		$data['MeetingLineID'] = 0;
+		$data['System'] = 1;
+		$data['PageType'] = 'warp';
+		$data['Content'] = '';
+
+		// Načtu počet stran
+		$maxLine = 10;
+		$meetingline = $this->readMeetingLines($meeting);
+		if (!$meetingline)
+			return;
+		$i = 0;
+		foreach($meetingline as $rec){
+			if ($rec['LineType'] != 'Doplňující bod'){
+				$data['Content'] .= $rec['LineNo'] . '. ' . ' ' .$rec['Title'] .'\n';
+			}else{
+				$data['Content'] .= $rec['LineNo'] . '. (' . $rec['LineType']. ')  ' .$rec['Title'] .'\n';
+			}			
+			$i++;
+			if ($i == $maxLine){
+				$pageNo++;
+				$data['PageNo'] = $pageNo;
+				$this->registry->getObject('db')->InsertRecords('meetinglinepage',$data);
+				$i = 0;
+				$data['Content'] = '';
+			}
+		}
+		if($data['Content'] != ''){
+			$pageNo++;
+			$data['PageNo'] = $pageNo;
+			$this->registry->getObject('db')->InsertRecords('meetinglinepage',$data);
 		}
 	} 
 
@@ -1437,11 +1517,27 @@ class Zobcontroller{
 		return $meetingline;
 	}
 
-	public function readMeetinglinepage ( $MeetingLineID  )
+	public function readMeetinglinepageByMeetingID ( $MeetingID , $condition='' )
+	{
+		$meetinglinepages = null;
+		$this->registry->getObject('db')->initQuery('meetinglinepage');
+		$this->registry->getObject('db')->setFilter('MeetingID',$MeetingID);
+		if ($condition <> ''){
+			$this->registry->getObject('db')->setCondition($condition);
+		};
+		if ($this->registry->getObject('db')->findSet())
+			$meetinglinepages = $this->registry->getObject('db')->getResult();			
+		return $meetinglinepages;
+	}
+	
+	public function readMeetinglinepage ( $MeetingLineID , $condition='' )
 	{
 		$meetinglinepages = null;
 		$this->registry->getObject('db')->initQuery('meetinglinepage');
 		$this->registry->getObject('db')->setFilter('MeetingLineID',$MeetingLineID);
+		if ($condition <> ''){
+			$this->registry->getObject('db')->setCondition($condition);
+		};
 		if ($this->registry->getObject('db')->findSet())
 			$meetinglinepages = $this->registry->getObject('db')->getResult();			
 		return $meetinglinepages;
@@ -1484,8 +1580,23 @@ class Zobcontroller{
 		}else{
 			$MeetingID = $param;
 		}
-		$pageNo = 0;	
+		$pageNo = 0;
 
+		$meetinglinepage = $this->readMeetinglinepageByMeetingID($MeetingID, "`PageType` like 'front'");
+		if($meetinglinepage)
+			$pageNo = count($meetinglinepage);
+
+		$meetinglinepage = $this->readMeetinglinepageByMeetingID($MeetingID, "`PageType` like 'warp'");
+		if($meetinglinepage){
+			foreach($meetinglinepage as $rec){
+				$pageNo++;
+				$update = array();
+				$update['PageNo'] = $pageNo;
+				$condition = 'PageID = ' . $rec['PageID'];
+				$this->registry->getObject('db')->updateRecords('meetinglinepage',$update,$condition);
+			}
+		};
+		
 		$meetinglines = $this->readMeetingLines($MeetingID);
 		if ($meetinglines){
 			foreach ($meetinglines as $meetingline){
@@ -1579,7 +1690,7 @@ class Zobcontroller{
 
 		$meetinglinepage = null;
 		$sql = "SELECT mp.PageID,mp.MeetingTypeID,mp.MeetingID,mp.MeetingLineID,mp.ContentID,".
-				"mp.Order,mp.PageNo,mp.Content,mp.ImageURL,mp.ImageWidth,mp.ImageHeight,mp.System," .
+				"mp.Order,mp.PageNo,mp.Content,mp.ImageURL,mp.ImageWidth,mp.ImageHeight,mp.System,mp.PageType," .
 				"ml.Title as Lin_Title, ml.LineType as Lin_LineType, ml.LineNo as Lin_LineNo, ml.LineNo2 as Lin_LineNo2, ml.Content as Lin_Content,ml.Changed as Lin_Changed,".
 				"mlc.LineNo as Con_LineNo, mlc.Content as Con_Content,mlc.Changed as Con_Changed ".
 			"FROM " . $this->prefDb . "meetinglinepage as mp " .
@@ -1603,7 +1714,26 @@ class Zobcontroller{
 				$rec['Point'] = $Point;
 				$rec['MeetingContent'] = $rec['ContentID'] > 0 ? $rec['Con_Content'] : $rec['Lin_Content'];
 				$rec['Changed'] = (($rec['Lin_Changed'] == 1) || ($rec['Con_Changed'] == 1)) ? 1 : 0;
-	
+
+				if ($rec['MeetingLineID'] == 0){
+					$rec['Lin_LineNo'] = 0;
+					$rec['Lin_LineNo2'] = 0;
+					$rec['Lin_Title'] = '';
+					switch ($rec['PageType']) {
+						case 'front':
+							$rec['Lin_LineType'] = 'Úvod';
+							break;
+						case 'warp':
+							$rec['Lin_LineType'] = 'Obsah';
+							break;
+						default:
+							$rec['Lin_LineType'] = '';
+							break;
+					}
+					$rec['Point'] = '';
+					$rec['MeetingContent'] = '';
+					$rec['Changed'] = 0;
+				}
 				$meetinglinepage[] = $rec;
 			}
 		}
@@ -1778,6 +1908,54 @@ class Zobcontroller{
 		return $verifier;
 	}
 	
+	public function getMeetingHeader($meeting)
+	{
+		global $config;
+
+		$meetingtype = $this->getMeetingtype($meeting);
+		$headerTitle = array();
+        $headerTitle['City'] = 'OBEC '.mb_strtoupper($config['compCity']);
+        $met = mb_strtolower($meetingtype['MeetingName']);
+        switch ($met){
+            case 'zastupitelstvo':
+                $headerTitle['FromMeting'] = 'STAROSTA OBCE '.mb_strtoupper($config['compCity']);
+                $headerTitle['FromMeting2'] = 'SVOLÁVÁ';
+                $headerTitle['MetingTitle'] = 'VEŘEJNÉ ZASEDÁNÍ';
+                $headerTitle['MetingTitle2'] = 'ZASTUPITELSTVA OBCE';
+                $headerTitle['HeadMan'] = 'starosta obce';
+                break;
+            case 'rada':
+                $headerTitle['FromMeting'] = 'STAROSTA OBCE '.mb_strtoupper($config['compCity']);
+                $headerTitle['FromMeting2'] = 'SVOLÁVÁ';
+                $headerTitle['MetingTitle'] = 'JEDNÁNÍ RADY';
+                $headerTitle['MetingTitle2'] = '';
+                $headerTitle['HeadMan'] = 'starosta obce';
+                break;
+            case 'stavební komise':
+                $headerTitle['FromMeting'] = 'předseda stavební komise obce '.$config['compCity'];
+                $headerTitle['FromMeting2'] = 'SVOLÁVÁ';
+                $headerTitle['MetingTitle'] = 'JEDNÁNÍ STAVEBNÍ KOMISE';
+                $headerTitle['MetingTitle2'] = '';
+                $headerTitle['HeadMan'] = 'předseda komise';
+                break;
+            default:
+                $headerTitle['FromMeting'] = 'pozvánka na jednání:';
+                $headerTitle['FromMeting2'] = mb_strtolower($meetingtype['MeetingName']).' obce '.$config['compCity'];
+                $headerTitle['FromMeting2'] = '';
+                $headerTitle['MetingTitle'] = '';
+                $headerTitle['HeadMan'] = 'předseda';
+                break;
+        }
+        $headerTitle['AtDate'] = 'Na den '.$this->registry->getObject('core')->formatDate($meeting['AtDate']);
+        $headerTitle['AtTime'] = 'ZAČÁTEK: '.$this->registry->getObject('core')->formatDate($meeting['AtTime'],'H:i').' HODIN';
+        $headerTitle['MeetingPlace'] = 'MÍSTO KONÁNÍ: '.$meeting['MeetingPlace'];
+        $atdate = $meeting['PostedUpDate'] != null ? $this->registry->getObject('core')->formatDate($meeting['PostedUpDate']) : '........................';
+        $headerTitle['PostedUp'] = 'Vyvěšeno: '.$atdate;
+        $atdate = $meeting['PostedDownDate'] != null ? $this->registry->getObject('core')->formatDate($meeting['PostedDownDate']) : '........................';
+        $headerTitle['PostedDown'] = 'Sňato: '.$atdate;
+		
+		return $headerTitle;
+	}
 	public function getInbox ( $InboxID )
 	{
 		$inbox = null;

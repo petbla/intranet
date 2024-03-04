@@ -23,9 +23,11 @@
 </div>
 <div id="PageBody">
     <textarea id="body" rows="10" cols="140" value="" class="value" name="Content" pkID="{page_PageID}" table="meetinglinepage" onclick="pptEditField(this,'textarea');">{page_Content}</textarea>
-    <div id="meetingcontent" ondblclick="this.style.display='none';" style="display:none">
+    <div id="meetingcontent" ondblclick="this.style.display='none';">
         <span><b>Text zápisu</b><span><br>
-        <p class="blue" style="border:1px solid grey; font-size:16px; background-color: yellow;">{page_MeetingContent}</p>
+        <p class="blue" style="border:1px solid grey; font-size:16px; background-color: yellow;" readonly>
+            {page_MeetingContent}
+        </p>
     </div>
     <table id="tablepageattachments" visibility="{visibleattachments}" class="ppt">
         <tbody id="pageattachments">

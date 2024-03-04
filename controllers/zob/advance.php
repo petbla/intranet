@@ -154,6 +154,30 @@ class Zobadvance
 	}
 
 	/**
+	 * @return void
+	 */
+	private function addfrontpage($MeetingID)
+	{
+		// Kontrola existence frontPage a vložení nové (úvodní strana)
+		$this->zob->addMeetinglinepageFrontPage($MeetingID);
+
+		// Přerovnání stránek
+		$this->zob->synchroMeetinglinepage($MeetingID);
+	}
+
+	/**
+	 * @return void
+	 */
+	private function addwarppage($MeetingID)
+	{
+		// Kontrola existence frontPage a vložení nové (úvodní strana)
+		$this->zob->addMeetinglinepageWarpPage($MeetingID);
+
+		// Přerovnání stránek
+		$this->zob->synchroMeetinglinepage($MeetingID);
+	}
+
+	/**
 	 * Modifikace tabulky bodů jednání
 	 * @return void
 	 */
@@ -161,16 +185,29 @@ class Zobadvance
 	{
 		$pages = $this->zob->synchroMeetinglinepage($MeetingID);
 
-
 		$prevPageNo = $PageNo > 1 ? $PageNo - 1 : $PageNo;
 		$nextPageNo = $PageNo >= $pages ? $pages : $PageNo + 1;
 
 		$meetinglinepage = $this->zob->getMeetinglinepageByPageNo($MeetingID, $PageNo);
 		$meetingline = $this->zob->getMeetingline($meetinglinepage['MeetingLineID']);
-		$meetingattachment = $this->zob->readMeetingAttachments($meetingline);
-		$meetingLinepageattachment = $this->zob->readMeetingLinePageAttachments($meetinglinepage);
+		if(!$meetingline){
+			$meetingline = array();
+			$meetingline['MeetingLineID'] = 0;
+			$meetingline['MeetingID'] = $MeetingID;
+			$meetingline['LineNo'] = 0;
+			$meetingline['LineNo2'] = 0;
+			$meetingline['LineType'] = '';
+			$meetingline['Title'] = '';
+			$meetingline['Content'] = '';
+			$meetingattachment = null;
+			$meetingLinepageattachment = null;
+		}else{
+			$meetingline['LineNo'] .= $meetingline['LineNo2'] > 0 ? '.' . $meetingline['LineNo2'] . '.' : '.';
+			$meetingattachment = $this->zob->readMeetingAttachments($meetingline);
+			$meetingLinepageattachment = $this->zob->readMeetingLinePageAttachments($meetinglinepage);
+		}
 
-		$meetingline['LineNo'] .= $meetingline['LineNo2'] > 0 ? '.' . $meetingline['LineNo2'] . '.' : '.';
+
 		$this->registry->getObject('template')->dataToTags($meetinglinepage, 'page_');
 		$this->registry->getObject('template')->dataToTags($meetingline, 'line_');
 
@@ -221,6 +258,20 @@ class Zobadvance
 				$MeetingID = isset($urlBits[4]) ? $urlBits[4] : '';
 				$PageNo = isset($urlBits[5]) ? (int) $urlBits[5] : 1;
 				$this->setDatasetPresentation($MeetingID, $PageNo);
+				$this->buildpresentation($template);
+				break;
+			case 'addfrontpage':
+				$template = 'presentation-edit.tpl.php';
+				$MeetingID = isset($urlBits[4]) ? $urlBits[4] : '';
+				$this->addfrontpage($MeetingID);
+				$this->setDatasetPresentation($MeetingID, 1);
+				$this->buildpresentation($template);
+				break;
+			case 'addwarppage':
+				$template = 'presentation-edit.tpl.php';
+				$MeetingID = isset($urlBits[4]) ? $urlBits[4] : '';
+				$this->addwarppage($MeetingID);
+				$this->setDatasetPresentation($MeetingID, 2);
 				$this->buildpresentation($template);
 				break;
 			case 'show':
