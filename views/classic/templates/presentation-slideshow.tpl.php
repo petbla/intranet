@@ -1,7 +1,7 @@
 <div id="PageHeader" pageID="{page_PageID}">
     <div id="table-container" ></div>
 
-    pokud bylo něco změněno, tak nepustiti prezentaci nebo na to upozornit
+    
 
     <table>
         <tr style="background-color: white;">
