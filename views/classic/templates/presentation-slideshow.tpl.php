@@ -21,15 +21,25 @@
     
     <textarea id="body" rows="10" cols="140" value="" class="value" style="border:0;" readonly >{page_Content}</textarea>
     <textarea id="body_front" rows="10" cols="140" value="" class="value" style="border:0; font-size:60px; text-align:center;" readonly >{page_Content}</textarea>
+    <textarea id="body_warp" rows="10" cols="140" value="" class="value" style="border:0; font-size:50px;" readonly >{page_Content}</textarea>
     <script>
         var body = document.getElementById('body');
         var bodyfront = document.getElementById('body_front');
+        var bodywarp = document.getElementById('body_warp');
         if('{page_PageType}' == "front"){
             body.style.display = 'none';
             bodyfront.style.display = '';
+            bodywarp.style.display = 'none';
         }else{
-            body.style.display = '';
-            bodyfront.style.display = 'none';
+            if('{page_PageType}' == "warp"){
+                body.style.display = 'none';
+                bodyfront.style.display = 'none';
+                bodywarp.style.display = '';
+            }else{
+                body.style.display = '';
+                bodyfront.style.display = 'none';
+                bodywarp.style.display = 'none';
+            }
         }
     </script>
     

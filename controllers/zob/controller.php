@@ -876,7 +876,7 @@ class Zobcontroller{
 		$data['Content'] = '';
 
 		// Načtu počet stran
-		$maxLine = 10;
+		$maxLine = 8;
 		$meetingline = $this->readMeetingLines($meeting);
 		if (!$meetingline)
 			return;
