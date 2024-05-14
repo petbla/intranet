@@ -23,7 +23,9 @@ class Agendacontroller{
 		$this->registry = $registry;
 		$this->perSet = $this->registry->getObject('authenticate')->getPermissionSet();
         $this->prefDb = $config['dbPrefix'];
-		
+		$templateHeader = '';
+		$templateFooter = '';
+
 		if( $directCall == true )
 		{
 			$urlBits = $this->registry->getURLBits();     
@@ -79,6 +81,63 @@ class Agendacontroller{
 								break;
 						}		
 						break;				
+					case 'document':
+						require_once( FRAMEWORK_PATH . 'controllers/zob/controller.php');
+						$zob = new Zobcontroller( $this->registry , false);					
+
+						$template = 'document-new.tpl.php';
+						$templateHeader = 'print-header.tpl.php';
+						$templateFooter = 'print-footer.tpl.php';
+						$header = 'Nový dokument';
+						$formhref = '';
+						$DocumentNo = '';  // číslo jednací
+						$AgendaTypeOption = $this->createAgendaTypeOption();
+						$AgendaTypeID = 0;
+						$Today = date('Y-m-d');
+
+						$post = $_POST;
+						$action = isset($urlBits[2]) ? $urlBits[2] : '';
+						$action = isset($post['save']) ? 'save' : $action;
+						$action = isset($post['preview']) ? 'preview' : $action;
+						$action = isset($post['preview']) ? 'preview' : $action;
+
+						$Type = isset($urlBits[3]) ? $urlBits[3] : '';
+						switch ($action) {
+							case 'create':
+								$header = 'Příloha ';
+
+								switch ($Type) {
+									case 'meetingline':
+										$AgendaTypeID = isset($urlBits[4]) ? $urlBits[4] : 0;
+										$meetingline = $zob->getMeetingline($AgendaTypeID);
+										$header = $meetingline['Title'];
+										$formhref = 'zob/meetingline/list/' . $meetingline['MeetingID'];
+										break;
+									
+									default:
+										# code...
+										break;
+								}
+						
+								break;
+							case 'preview':
+								$zob->main(20000);
+								break;
+							case 'save':
+								$this->saveDocument();
+								$this->pageNotFound();
+								break;
+						}
+
+						$this->registry->getObject('template')->getPage()->addTag( 'formhref', $formhref );						
+						$this->registry->getObject('template')->getPage()->addTag( 'AgendaTypeOption', $AgendaTypeOption );						
+						$this->registry->getObject('template')->getPage()->addTag( 'AgendaTypeID', $AgendaTypeID );						
+						$this->registry->getObject('template')->getPage()->addTag( 'DocumentNo', $DocumentNo );						
+						$this->registry->getObject('template')->getPage()->addTag( 'Today', $Today );						
+						$this->registry->getObject('template')->getPage()->addTag( 'Header', $header );						
+
+						$this->build($template,$templateHeader,$templateFooter);		
+						break;
 					case 'WS':
 						// Je voláno jako XMLHttpRequest (function.js) a pouze loguje zobrazené položky
 						switch ($urlBits[2]) {
@@ -95,11 +154,12 @@ class Agendacontroller{
 			}
 		}
 	}
+
     /**
      * Sestavení stránky
      * @return void
      */
-	private function build( $template = 'page.tpl.php' ) 
+	private function build( $template = 'page.tpl.php' , $templateHeader = 'header.tpl.php' , $templateFooter = 'footer.tpl.php') 
 	{
 		// Category Menu
 		$this->createCategoryMenu();
@@ -111,7 +171,7 @@ class Agendacontroller{
 		// Build page
 		$this->registry->getObject('template')->addTemplateBit('search', 'search.tpl.php');
 		$this->registry->getObject('template')->addTemplateBit('categories', 'categorymenu-agenda.tpl.php');
-		$this->registry->getObject('template')->buildFromTemplates('header.tpl.php', $template, 'footer.tpl.php');
+		$this->registry->getObject('template')->buildFromTemplates($templateHeader, $template, $templateFooter);
 	}
 
 	/**
@@ -158,6 +218,22 @@ class Agendacontroller{
         $cacheCategory = $this->registry->getObject('db')->cacheQuery( $sql );
         $this->registry->getObject('template')->getPage()->addTag( 'categoryList', array( 'SQL', $cache ) );
     }
+
+	public function createAgendaTypeOption()
+	{
+		$element = '';
+		$this->registry->getObject('db')->initQuery('agendatype');
+
+		if ($this->registry->getObject('db')->findSet()) {
+			$agendatypes = $this->registry->getObject('db')->getResult();
+			foreach ($agendatypes as $agendatype) {
+				$TypeID = $agendatype['TypeID'];
+				$Name = $agendatype['Name'];
+				$element .= "<option TypeID='$TypeID'>$Name</option>";		
+			}
+		}		
+		return $element;
+	}
 
     /**
      * Zobrazení položek agendy
@@ -279,6 +355,31 @@ class Agendacontroller{
 		$this->model->initNew( $TypeID );
 		$this->listAgenda( $TypeID );
 	}	
+
+	private function saveDocument()
+	{
+		$urlBits = $this->registry->getURLBits();     
+
+		$Type = isset($urlBits[3]) ? $urlBits[3] : '';
+		switch ($Type) {
+			case 'meetingline':
+				// Form fields				
+				$post = $_POST;
+				$MeetingID = isset($_POST["MeetingID"]) ? $_POST["MeetingID"] : 0;
+				$MeetingLineID = isset($_POST['MeetingLineID']) ? $_POST['MeetingLineID'] : 0;
+
+				require_once( FRAMEWORK_PATH . 'controllers/contact/controller.php');
+				$contact = new Contactcontroller( $this->registry , false);
+				$doc = $contact->readFromData();
+			
+				break;
+			
+			default:
+				# code...
+				break;
+		}
+
+	}
 
 	/**
 	 * Založení nového typu dokumentu

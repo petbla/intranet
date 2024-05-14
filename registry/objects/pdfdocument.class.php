@@ -338,12 +338,8 @@ class pdfdocument extends FPDF
         // Client Address
         $yyTop = $this->GetY();
         $this->WriteCell('times','B',14, 110, 5, 50,0,$headerTitle['ClientName'],0,0,'L');
-        if ($headerTitle['ClientAddress1'])        
-          $this->WriteCell('times','',14, 110, 5, 50,0,$headerTitle['ClientAddress1'],0,0,'L');        
-        if ($headerTitle['ClientAddress2'])
-          $this->WriteCell('times','',14, 110, 5, 50,0,$headerTitle['ClientAddress2'],0,0,'L');        
-        if ($headerTitle['ClientAddress3'])
-          $this->WriteCell('times','',14, 110, 5, 50,0,$headerTitle['ClientAddress3'],0,0,'L');        
+        if ($headerTitle['ClientAddress'])        
+          $this->WriteCell('times','',14, 110, 5, 50,0,$headerTitle['ClientAddress'],0,0,'L');        
         $this->Ln(3);
         $this->WriteCell('times','',12, 110, 5, 50,0,'Tel.:'.$headerTitle['ClientPhone'],0,0,'L');        
         $this->WriteCell('times','',12, 110, 5, 50,0,'email:'.$headerTitle['ClientEmail'],0,0,'L');        

@@ -150,6 +150,13 @@ class Zobcontroller{
 		$this->build();
 	}
 
+	public function main($action)
+	{
+		require_once( FRAMEWORK_PATH . 'controllers/zob/print.php');
+		$print = new Zobprint( $this->registry );					
+		$print->main($action);
+	}
+
     /**
 	 * Generování menu
 	 * @return void
@@ -1201,6 +1208,7 @@ class Zobcontroller{
 		$this->setDatasetMeetingLine($MeetingID, $activeMeetingLineID);
 		
 		$this->registry->getObject('template')->addTemplateBit('editdMeetingLine', 'zob-meetingline-edit.tpl.php');
+		$this->registry->getObject('template')->addTemplateBit('newDocument', 'document-new.tpl.php');
 
 		$this->build('zob-meetingline-list.tpl.php');
 	}

@@ -50,6 +50,7 @@
                         <td class="col_action">
                             <img src="views/classic/images/icon/modify.png" title="{lbl_edit}" id="{MeetingLineID}" dmsClassName="{dmsClassName}"/>
                             <a href="index.php?page=zob/meetingline/delete/{MeetingID}/{MeetingLineID}"><img src="views/classic/images/icon/delete.png" title="{lbl_Delete}" onclick="return ConfirmDelete();"/></a>
+                            <a href="index.php?page=agenda/document/create/meetingline/{MeetingLineID}" title="Nový dokument"><img src="views/classic/images/icon/newfile.png" /></a>
                             <img src="views/classic/images/icon/attachment.png" title="{lbl_attachment}" MeetingLineID="{MeetingLineID}"/>
                             <small>(<b>{Attachments}</b>)</small>
                         </td>
@@ -75,6 +76,11 @@
                                 <span class="action_close" onclick="document.getElementById('editMeetingLine{MeetingLineID}').style.display = 'none';">{lbl_Close}</span>
                                 <br>
                                 {editdMeetingLine}
+                            </div>
+                            <div id="newDocument{MeetingLineID}" style="margin:0 100px; display:none;">
+                                <span class="action_close" onclick="document.getElementById('newDocument{MeetingLineID}').style.display = 'none';">{lbl_Close}</span>
+                                <br>
+                                {newDocument}
                             </div>
                         </td>
                     </tr>

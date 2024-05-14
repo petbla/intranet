@@ -57,8 +57,7 @@ class Zobprint {
                 };
                 break;
             case '20000':
-                $MeetingID = $urlBits[3];
-                $this->report20000($MeetingID);
+                $this->report20000();
                 break;
         }
 		exit;
@@ -320,7 +319,7 @@ class Zobprint {
 		exit;
 	}
 
-	private function report20000($meeting)
+	private function report20000()
 	{
         global $config;
 
@@ -331,25 +330,31 @@ class Zobprint {
         // Create PDF
         $this->registry->getObject('pdf')->SetDocument('document',$filename, $reportTitle);
         $this->registry->getObject('pdf')->NewDocument();
-        
+
+        // Read Dat from From
+        require_once( FRAMEWORK_PATH . 'controllers/contact/controller.php');
+        $contact = new Contactcontroller( $this->registry , false);
+        $doc = $contact->readFromData();
+
         // Záhlaví
-        $headerTitle['ClientName'] = 'Tomáš Chrástek';
+        $headerTitle['ClientName'] = $doc['FullName'];
+        $headerTitle['ClientAddress'] = $doc['Address'];
         $headerTitle['ClientAddress1'] = "Javorovec 4";
         $headerTitle['ClientAddress2'] = "68712 Mistřice";
         $headerTitle['ClientAddress3'] = "";
-        $headerTitle['ClientPhone'] = '723114521';
-        $headerTitle['ClientEmail'] = 'chastek.tom@centrum.cz';
-        $headerTitle['DS'] = 'zft8s4';  // datová schránka
+        $headerTitle['ClientPhone'] = $doc['Phone'];
+        $headerTitle['ClientEmail'] = $doc['Email'];
+        $headerTitle['DS'] = $doc['DataBox'];  
         
-        $headerTitle['DocumentNo'] = 'VYPD-2023-014';
-        $AtDate = '18.5.2023';
+        $headerTitle['DocumentNo'] = $doc['DocumentNo'];
+        $AtDate = $doc['AtDate'];
         $headerTitle['Name'] = 'Petr Blažek';
         $headerTitle['Phone'] = '603772658';
         
         $headerTitle['City'] = $config['compCity'];
         $headerTitle['CompName'] = 'OBEC '.mb_strtoupper($config['compCity']);
         $headerTitle['CompAddress'] = $config['compAddress'] . ', PSČ ' . $config['compZip'] . ' ' . $config['compCity'];
-        $headerTitle['AtDate'] = $this->registry->getObject('core')->formatDate($AtDate);
+        $headerTitle['AtDate'] = $this->registry->getObject('core')->formatDate($AtDate, 'd.m.Y');
         $this->registry->getObject('pdf')->DocumentTitle('20000',$headerTitle);
 
         // Lines - Program

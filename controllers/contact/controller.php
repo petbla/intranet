@@ -791,5 +791,25 @@ class Contactcontroller {
 		return $contactID;
 	}
 
+	public function readFromData()
+	{
+		$doc = array();
+		$post = $_POST;
+		$doc['FileName'] = isset($_POST['FileName']) ? $_POST['FileName'] : '';
+		$doc['Presenter'] = isset($_POST['Presenter']) ? $_POST['Presenter'] : '';
+		$doc['AtDate'] = isset($_POST['AtDate']) ? $_POST['AtDate'] : '';
+		$doc['FirstName'] = isset($_POST['FirstName']) ? $_POST['FirstName'] : '';
+		$doc['LastName'] = isset($_POST['LastName']) ? $_POST['LastName'] : '';
+		$doc['Title'] = isset($_POST['FullName']) ? $_POST['FullName'] : '';
+		$doc['Company'] = isset($_POST['Company']) ? $_POST['Company'] : '';
+		$doc['FullName'] = $this->makeFullName($doc);
+		$doc['Address'] = isset($_POST['Address']) ? $_POST['Address'] : '';
+		$doc['Email'] = isset($_POST['Email']) ? $_POST['Email'] : '';
+		$doc['Phone'] = isset($_POST['Phone']) ? $_POST['Phone'] : '';
+		$doc['DataBox'] = isset($_POST['DataBox']) ? $_POST['DataBox'] : '';
+		$doc['DocumentNo'] = isset($_POST['DocumentNo']) ? $_POST['DocumentNo'] : '';
+
+		return $doc;
+	}
 }
 ?>
