@@ -338,8 +338,83 @@ class upgrademanagement {
             // upgrade to 2.54
             $this->upgrade_254('2.54');
         }
+        if ($this->version === '2.54') 
+        {
+            // upgrade to 2.55
+            $this->upgrade_255('2.55');
+        }
+        if ($this->version === '2.55') 
+        {
+            // upgrade to 2.56
+            $this->upgrade_256('2.56');
+        }
+        if ($this->version === '2.56') 
+        {
+            // upgrade to 2.57
+            $this->upgrade_257('2.57');
+        }
+        if ($this->version === '2.57') 
+        {
+            // upgrade to 2.58
+            $this->upgrade_258('2.58');
+        }
     }
 
+    private function upgrade_258($upVer)
+    {
+        $sql = "SELECT * FROM information_schema.columns WHERE table_schema = 'intranet' AND TABLE_NAME = 'Source' AND COLUMN_NAME = 'Zobroot'";
+        $cache = $this->registry->getObject('db')->cacheQuery( $sql );
+        if ($this->registry->getObject('db')->IsEmpty( $cache ))
+        {
+            // upgrade table 'Source'
+            $sql = "ALTER TABLE source" .
+                " ADD `Zobroot` varchar(100) COLLATE utf8_czech_ci DEFAULT ''" ;
+            $this->registry->getObject('db')->executeQuery( $sql );
+        }
+        $this->setNewVersion($upVer);
+    }
+    private function upgrade_257($upVer)
+    {
+        $sql = "SELECT * FROM information_schema.columns WHERE table_schema = 'intranet' AND TABLE_NAME = 'Source' AND COLUMN_NAME = 'Website'";
+        $cache = $this->registry->getObject('db')->cacheQuery( $sql );
+        if ($this->registry->getObject('db')->IsEmpty( $cache ))
+        {
+            // upgrade table 'Source'
+            $sql = "ALTER TABLE source" .
+                " ADD `Website` varchar(100) COLLATE utf8_czech_ci DEFAULT ''" .
+                ", ADD `Facebook` varchar(100) COLLATE utf8_czech_ci DEFAULT ''";
+            $this->registry->getObject('db')->executeQuery( $sql );
+        }
+        $this->setNewVersion($upVer);
+    }
+    private function upgrade_256($upVer)
+    {
+        $sql = "SELECT * FROM information_schema.columns WHERE table_schema = 'intranet' AND TABLE_NAME = 'Source' AND COLUMN_NAME = 'Email'";
+        $cache = $this->registry->getObject('db')->cacheQuery( $sql );
+        if ($this->registry->getObject('db')->IsEmpty( $cache ))
+        {
+            // upgrade table 'Source'
+            $sql = "ALTER TABLE source".
+                    " ADD `Email` varchar(100) COLLATE utf8_czech_ci DEFAULT ''".
+                    ", ADD `Phone` varchar(30) COLLATE utf8_czech_ci DEFAULT ''".
+                    ", ADD `Web` varchar(100) COLLATE utf8_czech_ci DEFAULT ''".
+                    ", ADD `DataBox` varchar(30) COLLATE utf8_czech_ci DEFAULT ''";
+            $this->registry->getObject('db')->executeQuery( $sql );
+        }
+        $this->setNewVersion($upVer);
+    }
+    private function upgrade_255($upVer)
+    {
+		global $config;
+        $pref = $config['dbPrefix'];
+
+        // add Changed field
+        $sql = "ALTER TABLE ".$pref."contact".
+            " ADD `DataBox` varchar(20) COLLATE utf8_czech_ci DEFAULT ''";
+        $this->registry->getObject('db')->executeQuery( $sql );
+
+        $this->setNewVersion($upVer);
+    }
     private function upgrade_254($upVer)
     {
 		global $config;
@@ -1258,12 +1333,19 @@ class upgrademanagement {
         $data = array();
         $data['Webroot'] = $config['webroot'];
         $data['Fileroot'] = $config['fileroot'];
+        $data['Zobroot'] = $config['zobroot'];
         $data['DbPrefix'] = $config['dbPrefix'];
         $data['Name'] = $config['compName'];
         $data['Address'] = $config['compAddress'];
         $data['City'] = $config['compCity'];
         $data['Zip'] = $config['compZip'];
         $data['ICO'] = $config['compICO'];
+        $data['Email'] = $config['compEmail'];
+        $data['Phone'] = $config['compPhone'];
+        $data['DataBox'] = $config['compDataBox'];
+        $data['Web'] = $config['websiteName'];
+        $data['Website'] = $config['website'];
+        $data['Facebook'] = $config['facebook'];
         $this->registry->getObject('db')->insertRecords('source',$data, false);        
       }
       
@@ -1310,12 +1392,20 @@ class upgrademanagement {
      
       $config['webroot'] = $source['Webroot'];
       $config['fileroot'] = $source['Fileroot'];
+      if($source['Zobroot'])
+        $config['zobroot'] = $source['Zobroot'];
       $config['dbPrefix'] = $source['DbPrefix'];
       $config['compName'] = $source['Name'];
       $config['compAddress'] = $source['Address'];
       $config['compCity'] = $source['City'];
       $config['compZip'] = $source['Zip'];
       $config['compICO'] = $source['ICO'];
+      $config['Email'] = $source['Email'];
+      $config['Phone'] = $source['Phone'];
+      $config['DataBox'] = $source['DataBox'];
+      $config['Web'] = $source['Web'];
+      $config['Website'] = $source['Website'];
+      $config['Facebook'] = $source['Facebook'];
       $config['sourceVersion'] = $source['Version'];
       $config['sourceEntryNo'] = $source['EntryNo'];
       $this->registry->getObject('template')->dataToTags( $config, 'cfg_' );

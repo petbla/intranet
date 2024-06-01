@@ -40,6 +40,7 @@ class Generalws {
 	 */
 	public function main( $action )
 	{
+		$urlBits = $this->registry->getURLBits();     
 		$this->result = 'OK';
 		switch ($action) {
 			case 'addMeetinglineattachment':
@@ -48,6 +49,14 @@ class Generalws {
 			case 'deleteMeetinglineattachment':
 				$this->result = $this->deleteMeetinglineattachment();
 				break;
+			case 'read':
+				$result = $this->read($urlBits);
+				exit($result);
+			case 'get':
+				$result = $this->getRecord($urlBits);
+				if($result)
+					$result = json_encode($result);
+				exit($result);
 			default:
 				if ($this->setParam()){
 					// Action for element with <name==field>, <table==table name> , <kdID==primary Key>
@@ -139,6 +148,9 @@ class Generalws {
 				break;
 			case 'contact':
 				$this->updateContact($value);
+				break;
+			case 'source':
+				$this->updateSource($value);
 				break;
 			default:
 				$data = null;
@@ -500,6 +512,19 @@ class Generalws {
 			$this->registry->getObject('db')->updateRecords($this->table,$data,$condition);
 	}
 
+	private function updateSource($value)
+	{
+		$field = $this->field;
+		$data = null;
+		$EntryNo = $this->ID;
+
+		$data[$field] = $value;
+
+		$condition = "EntryNo = '$EntryNo'";
+		if(($this->result == 'OK') && $data)
+			$this->registry->getObject('db')->updateRecords($this->table,$data,$condition);
+	}
+
 	/**
 	 * general/ws/copyFrom/<table>/<ID>/<FieldName>/<fromFieldName>
 	 */
@@ -670,4 +695,100 @@ class Generalws {
 		return $rec['pocet'];				
 	}
 
+
+	private function read($urlBits){
+		global $config;
+		$pref = $config['dbPrefix'];
+		$result = ", Výběr ze seznamu\n";
+		$records = null;
+
+		$table = isset($urlBits[3]) ? $urlBits[3] : '';
+		$searchText = isset($urlBits[4]) ? $urlBits[4] : '';
+
+		switch ($table) {
+			case 'contact':
+
+				$sql = "SELECT id,FullName ".
+						"FROM ".$pref."contact ".
+						"WHERE (Close = 0) ".
+							"AND (".
+								"(FullName like '%$searchText%') OR ".
+								"(`Function` like '%$searchText%') OR ".
+								"(Company like '%$searchText%') OR ".
+								"(Address like '%$searchText%') OR ".
+								"(Note like '%$searchText%') OR ".
+								"(Phone like '%$searchText%') OR ".
+								"(DataBox like '%$searchText%') OR ".
+								"(Email like '%$searchText%') OR ".
+								"(ContactGroups like '%$searchText%')) ".
+						"ORDER BY FullName";
+				$cache = $this->registry->getObject('db')->cacheQuery( $sql );
+				if (!$this->registry->getObject('db')->isEmpty($cache)) {
+					while ($rec = $this->registry->getObject('db')->resultsFromCache($cache)) {
+						$result .= implode(', ', $rec) . "\n";
+					}
+				}else{
+					$result = '';
+				}
+				return $result;
+			case 'dmsentry':
+
+				$sql = "SELECT id,Name ".
+						"FROM ".$pref."dmsentry ".
+						"WHERE `Name` like '%$searchText%' AND `Type` = 20 AND `Archived`= 0 ".						
+						"ORDER BY Name ";
+				$cache = $this->registry->getObject('db')->cacheQuery( $sql );
+				if (!$this->registry->getObject('db')->isEmpty($cache)) {
+					while ($rec = $this->registry->getObject('db')->resultsFromCache($cache)) {
+						$result .= implode(', ', $rec) . "\n";
+					}
+				}else{
+					$result = '';
+				}
+				return $result;
+
+			case 'user':
+				$this->registry->getObject('db')->initQuery('user','id,FullName');
+				$this->registry->getObject('db')->setOrderBy('FullName');
+				break;
+			default:
+				$this->registry->getObject('db')->initQuery($table);
+				break;
+		}
+		if ($this->registry->getObject('db')->findSet()) {
+			$records = $this->registry->getObject('db')->getResult();
+			foreach ($records as $row) {
+				$result .= implode(', ', $row) . "\n";
+			}								
+		}else{
+			$result = '';
+		};
+		return $result;
+	}
+
+	private function getRecord($urlBits){
+		$result = '';
+
+		$table = isset($urlBits[3]) ? $urlBits[3] : '';
+		$id = isset($urlBits[4]) ? $urlBits[4] : '';
+
+		switch ($table) {
+			case 'contact':
+				$result = $this->zob->getContactByID($id);
+				break;
+			case 'dmsentry':
+				
+				require_once( FRAMEWORK_PATH . 'models/entry/model.php');
+				$model = new Entry( $this->registry, $id );
+				$entry = $model->getData();
+				if ($model->isValid()) {
+					$result = $entry;
+				}
+				break;
+			default:
+				$result = "$table neni definoivana v getRecord.";
+				break;
+		}
+		return $result;
+	}
 }

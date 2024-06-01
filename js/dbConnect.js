@@ -396,6 +396,76 @@ function wsUnlinkAgenda(AgendaID) {
     };
 }
 
+// 
+function wsGetNextDocumentNo(agendaTypeName,update,callback) {
+    const Http = new XMLHttpRequest();
+    var url, result;
+    var val = null;
+    url = window.location.origin + window.location.pathname;
+    url = url + '?page=agenda/WS/getnextdocumentno/' + agendaTypeName + '/' + (update ? 'true':'false');
+    Http.open("GET", url, true);
+    Http.onreadystatechange = function(){
+        if (Http.readyState === 4){
+            if(Http.status === 200){
+                val = Http.responseText;
+                callback(null, val);
+            }else{
+                callback(new Error('Chyba při volání webové služby'));
+            }
+        }       
+        if(val == '<NULL>'){ 
+            val = null;
+        }
+    }    
+    Http.send();
+}
+
+function wsReadTable(table,param,callback) {
+    const Http = new XMLHttpRequest();
+    var url, result;
+    var val = null;
+    url = window.location.origin + window.location.pathname;
+    url = url + '?page=general/ws/read/' + table + (param ? '/' + param : '');
+    Http.open("GET", url, true);
+    Http.onreadystatechange = function(){
+        if (Http.readyState === 4){
+            if(Http.status === 200){
+                val = Http.responseText;
+                callback(null, val);
+            }else{
+                callback(new Error('Chyba při volání webové služby'));
+            }
+        }       
+        if(val == '<NULL>'){ 
+            val = null;
+        }
+    }    
+    Http.send();
+}
+
+function wsGetRecord(table,param,callback) {
+    const Http = new XMLHttpRequest();
+    var url, result;
+    var val = null;
+    url = window.location.origin + window.location.pathname;
+    url = url + '?page=general/ws/get/' + table + (param ? '/' + param : '');
+    Http.open("GET", url, true);
+    Http.onreadystatechange = function(){
+        if (Http.readyState === 4){
+            if(Http.status === 200){
+                val = Http.responseText;
+                callback(null, val);
+            }else{
+                callback(new Error('Chyba při volání webové služby'));
+            }
+        }       
+        if(val == '<NULL>'){ 
+            val = null;
+        }
+    }    
+    Http.send();
+}
+
 
 // ************************************************************************************
 //    DATABASE functions - log event to the database 

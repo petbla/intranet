@@ -43,8 +43,13 @@ class pdfdocument extends FPDF
   private $isHeader = false;  // Tisk záhlaví Header() dokumentu na každý list
   private $isFooter = false;  // Tisk patičky Footer() dokumentu na každý list
   private $reportTitle;       // Název tiskové sestavy  
-  private $pageNo;
-  
+  private $pageNo; 
+  private $B=0;
+  private $I=0;
+  private $U=0;
+  private $HREF='';
+  private $ALIGN='';
+
   public function __construct( $registry ) 
   {
 		$this->registry = $registry;
@@ -338,12 +343,19 @@ class pdfdocument extends FPDF
         // Client Address
         $yyTop = $this->GetY();
         $this->WriteCell('times','B',14, 110, 5, 50,0,$headerTitle['ClientName'],0,0,'L');
-        if ($headerTitle['ClientAddress'])        
-          $this->WriteCell('times','',14, 110, 5, 50,0,$headerTitle['ClientAddress'],0,0,'L');        
+        if ($headerTitle['ClientAddress']){
+          $adr = explode(chr(13).chr(10), $headerTitle['ClientAddress']);
+          foreach ($adr as $adrline) {
+            $this->WriteCell('times','',14, 110, 5, 50,0,$adrline,0,0,'L');        
+          }
+        }        
         $this->Ln(3);
-        $this->WriteCell('times','',12, 110, 5, 50,0,'Tel.:'.$headerTitle['ClientPhone'],0,0,'L');        
-        $this->WriteCell('times','',12, 110, 5, 50,0,'email:'.$headerTitle['ClientEmail'],0,0,'L');        
-        $this->WriteCell('times','',12, 110, 5, 50,0,'Datová schránka:'.$headerTitle['DS'],0,0,'L');        
+        if($headerTitle['ClientPhone'])
+          $this->WriteCell('times','',12, 110, 5, 50,0,'Tel.:'.$headerTitle['ClientPhone'],0,0,'L');        
+        if($headerTitle['ClientEmail'])
+          $this->WriteCell('times','',12, 110, 5, 50,0,'email:'.$headerTitle['ClientEmail'],0,0,'L');        
+        if($headerTitle['DS'])
+          $this->WriteCell('times','',12, 110, 5, 50,0,'Datová schránka:'.$headerTitle['DS'],0,0,'L');        
 
         // border client addres
         $yyAct = $this->GetY();
@@ -366,11 +378,13 @@ class pdfdocument extends FPDF
     }
   }
 
-  public function DocumentLine($report, $subject, $lines, $sing)
+  public function DocumentLine($report, $subject, $content, $sing)
   {
     global $config;
     $skin = $config['skin'];
     $yy = $this->tMargin;
+
+    $lines = is_array($content) ? $content : null;
 
     switch ($report) {
       case '20000':
@@ -380,24 +394,25 @@ class pdfdocument extends FPDF
         $this->Ln(5);
 
         // lines
-        foreach ($lines as $line) {        
+        if($lines){
+          foreach ($lines as $line) {        
+            $yy = $this->GetY();
+            $xx = 20;
+            $align = 'L';
+            $this->SetFont('times','',12);
+            $this->SetXY($xx,$yy);
+            $this->MultiCell(170,5,$this->_utf2win($line),0,$align);
+            $yy = $this->GetY();        
+          }
+        }else{
           $yy = $this->GetY();
           $xx = 20;
           $align = 'L';
           $this->SetFont('times','',12);
-          switch ($line[0]) {
-            case '-':
-              $this->SetXY($xx,$yy + 2);
-              $this->WriteCell('times','',12, 20, 0, 50,0,'-',0,0,'L');
-              $xx = 25;        
-              break;            
-            case 'CB':
-              $align = 'C';
-              $this->SetFont('times','B',12);
-              break;            
-          }
           $this->SetXY($xx,$yy);
-          $this->MultiCell(170,5,$this->_utf2win($line[1]),0,$align);
+          
+          $this->WriteHTML($this->_utf2win($content));
+          
           $yy = $this->GetY();        
         }
         $this->Ln(30);
@@ -886,5 +901,118 @@ class pdfdocument extends FPDF
   function tPrice( $fPrice ){
     return sprintf( '%01.2f', $fPrice );
   } // end function tPrice
+
+  function WriteHTML($html)
+  {
+      //HTML parser
+      $html=str_replace("\n",' ',$html);
+      $a=preg_split('/<(.*)>/U',$html,-1,PREG_SPLIT_DELIM_CAPTURE);
+      foreach($a as $i=>$e)
+      {
+          if($i%2==0)
+          {
+              //Text
+              if($this->HREF)
+                  $this->PutLink($this->HREF,$e);
+              elseif($this->ALIGN=='center')
+                  $this->Cell(0,5,$e,0,1,'C');
+              else {
+                  $yy = $this->GetY();
+                  $this->SetFont('times','',12);
+                  $yy += 2;
+                  $this->SetY($yy);
+                  $this->Write(5, $e);
+              }
+          }
+          else
+          {
+              //Tag
+              if($e[0]=='/')
+                  $this->CloseTag(strtoupper(substr($e,1)));
+              else
+              {
+                  //Extract properties
+                  $a2=explode(' ',$e);
+                  $tag=strtoupper(array_shift($a2));
+                  $prop=array();
+                  foreach($a2 as $v)
+                  {
+                      if(preg_match('/([^=]*)=["\']?([^"\']*)/',$v,$a3))
+                          $prop[strtoupper($a3[1])]=$a3[2];
+                  }
+                  $this->OpenTag($tag,$prop);
+              }
+          }
+      }
+  }
+
+  function OpenTag($tag,$prop)
+  {
+      if(! isset($prop['HREF'])){
+        $prop['HREF'] = '';
+      };
+      if(! isset($prop['ALIGN'])){
+        $prop['ALIGN'] = '';
+      };
+      if(! isset($prop['WIDTH'])){
+        $prop['WIDTH'] = '';
+      };
+    
+      //Opening tag
+      if($tag=='B' || $tag=='I' || $tag=='U')
+          $this->SetStyle($tag,true);
+      if($tag=='A')
+          $this->HREF=$prop['HREF'];
+      if($tag=='BR')
+          $this->Ln(5);
+      if($tag=='P')
+          $this->ALIGN=$prop['ALIGN'];
+      if($tag=='HR')
+      {
+          if( !empty($prop['WIDTH']) )
+              $Width = $prop['WIDTH'];
+          else
+              $Width = $this->w - $this->lMargin-$this->rMargin;
+          $this->Ln(2);
+          $x = $this->GetX();
+          $y = $this->GetY();
+          $this->SetLineWidth(0.4);
+          $this->Line($x,$y,$x+$Width,$y);
+          $this->SetLineWidth(0.2);
+          $this->Ln(2);
+      }
+  }
+
+  function CloseTag($tag)
+  {
+      //Closing tag
+      if($tag=='B' || $tag=='I' || $tag=='U')
+          $this->SetStyle($tag,false);
+      if($tag=='A')
+          $this->HREF='';
+      if($tag=='P')
+          $this->ALIGN='';
+  }
+
+  function SetStyle($tag,$enable)
+  {
+      //Modify style and select corresponding font
+      $this->$tag+=($enable ? 1 : -1);
+      $style='';
+      foreach(array('B','I','U') as $s)
+          if($this->$s>0)
+              $style.=$s;
+      $this->SetFont('',$style);
+  }
+
+  function PutLink($URL,$txt)
+  {
+      //Put a hyperlink
+      $this->SetTextColor(0,0,255);
+      $this->SetStyle('U',true);
+      $this->Write(5,$txt,$URL);
+      $this->SetStyle('U',false);
+      $this->SetTextColor(0);
+  }
 
 } // END class PdfDocument

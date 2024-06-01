@@ -214,8 +214,9 @@ class mysqldatabase
   public function updateRecords($table, $changes, $condition, $withPrefix = true)
   {
     global $config;
-    if ($withPrefix)
-      $table = $config['dbPrefix'] . $table;
+    if ($table != 'source')
+      if ($withPrefix)
+        $table = $config['dbPrefix'] . $table;
 
     $update = "UPDATE " . $table . " SET ";
     foreach ($changes as $field => $value) {

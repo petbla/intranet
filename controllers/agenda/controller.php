@@ -26,6 +26,8 @@ class Agendacontroller{
 		$templateHeader = '';
 		$templateFooter = '';
 
+		$post = $_POST;
+
 		if( $directCall == true )
 		{
 			$urlBits = $this->registry->getURLBits();     
@@ -85,35 +87,49 @@ class Agendacontroller{
 						require_once( FRAMEWORK_PATH . 'controllers/zob/controller.php');
 						$zob = new Zobcontroller( $this->registry , false);					
 
-						$template = 'document-new.tpl.php';
-						$templateHeader = 'print-header.tpl.php';
-						$templateFooter = 'print-footer.tpl.php';
+						$template = 'document-edit.tpl.php';
+						$templateHeader = 'document-edit-header.tpl.php';
+						$templateFooter = 'document-edit-footer.tpl.php';
 						$header = 'Nový dokument';
 						$formhref = '';
 						$DocumentNo = '';  // číslo jednací
 						$AgendaTypeOption = $this->createAgendaTypeOption();
 						$AgendaTypeID = 0;
+						$ParentID = '';
+						$Breads = '';
+						$ParentName = '';
 						$Today = date('Y-m-d');
 
 						$post = $_POST;
 						$action = isset($urlBits[2]) ? $urlBits[2] : '';
 						$action = isset($post['save']) ? 'save' : $action;
 						$action = isset($post['preview']) ? 'preview' : $action;
-						$action = isset($post['preview']) ? 'preview' : $action;
+						$action = isset($post['findcontact']) ? 'findcontact' : $action;
 
 						$Type = isset($urlBits[3]) ? $urlBits[3] : '';
 						switch ($action) {
 							case 'create':
 								$header = 'Příloha ';
-
+								
 								switch ($Type) {
 									case 'meetingline':
-										$AgendaTypeID = isset($urlBits[4]) ? $urlBits[4] : 0;
-										$meetingline = $zob->getMeetingline($AgendaTypeID);
+										$MeetinglineID = isset($urlBits[4]) ? $urlBits[4] : 0;
+										$meetingline = $zob->getMeetingline($MeetinglineID);
+										$meeting = $zob->getMeeting($meetingline['MeetingID']);
+										$ParentID = $meeting['ParentID'];
 										$header = $meetingline['Title'];
 										$formhref = 'zob/meetingline/list/' . $meetingline['MeetingID'];
-										break;
-									
+
+
+										require_once( FRAMEWORK_PATH . 'models/entry/model.php');
+										$this->model = new Entry( $this->registry, $ParentID );
+										$entry = $this->model->getData();
+										if ($this->model->isValid()) {
+											$Breads = $entry['breads'];
+											$ParentName = $entry['Name'];
+										}
+								
+										break;									
 									default:
 										# code...
 										break;
@@ -121,17 +137,29 @@ class Agendacontroller{
 						
 								break;
 							case 'preview':
-								$zob->main(20000);
+								$template = 'document-preview.tpl.php';
+								$templateHeader = 'document-preview-header.tpl.php';
+								$templateFooter = 'document-preview-footer.tpl.php';
+
+								require_once( FRAMEWORK_PATH . 'controllers/contact/controller.php');
+								$contact = new Contactcontroller( $this->registry , false);
+								$doc = $contact->readFromData();
+
+								$registry->getObject('template')->dataToTags( $doc, '' );
+
 								break;
 							case 'save':
 								$this->saveDocument();
-								$this->pageNotFound();
+								//$this->pageNotFound();
 								break;
 						}
 
 						$this->registry->getObject('template')->getPage()->addTag( 'formhref', $formhref );						
 						$this->registry->getObject('template')->getPage()->addTag( 'AgendaTypeOption', $AgendaTypeOption );						
 						$this->registry->getObject('template')->getPage()->addTag( 'AgendaTypeID', $AgendaTypeID );						
+						$this->registry->getObject('template')->getPage()->addTag( 'ParentID', $ParentID );						
+						$this->registry->getObject('template')->getPage()->addTag( 'Breads', $Breads );						
+						$this->registry->getObject('template')->getPage()->addTag( 'ParentName', $ParentName );						
 						$this->registry->getObject('template')->getPage()->addTag( 'DocumentNo', $DocumentNo );						
 						$this->registry->getObject('template')->getPage()->addTag( 'Today', $Today );						
 						$this->registry->getObject('template')->getPage()->addTag( 'Header', $header );						
@@ -144,7 +172,41 @@ class Agendacontroller{
 							case 'unlink':
 								$ID = isset($urlBits[3]) ? $urlBits[3] : '';
 								$result = $this->wsUnlinkAgenda($ID);
-								exit($result);		
+								exit($result);
+							case 'getContacts':
+								$company = isset($urlBits[3]) ? $urlBits[3] : '';
+								$firstname = isset($urlBits[4]) ? $urlBits[4] : '';
+								$lastname = isset($urlBits[5]) ? $urlBits[5] : '';
+								$result = '';
+
+								$this->registry->getObject('db')->initQuery('contact','id,FullName');
+								$this->registry->getObject('db')->setOrderBy('FullName');
+								if($company)
+									$this->registry->getObject('db')->setCondition("Company like '%$company%'");
+								if($firstname)
+									$this->registry->getObject('db')->setCondition("FirstName like '%$firstname%'");
+								if($lastname)
+									$this->registry->getObject('db')->setCondition("LastName like '%$lastname%'");
+								if ($this->registry->getObject('db')->findSet()) {
+									$contacts = $this->registry->getObject('db')->getResult();
+									foreach ($contacts as $row) {
+										$result .= implode(', ', $row) . "\n";
+									}								
+								};
+								exit($result);
+							case 'getnextdocumentno':
+								$agendaTypeName = isset($urlBits[3]) ? $urlBits[3] : '';
+								$update = isset($urlBits[4]) ? $urlBits[4] : 'false';
+
+								$result = $agendaTypeName;
+
+								$this->registry->getObject('db')->initQuery('agendatype');
+								$this->registry->getObject('db')->setFilter('Name',$agendaTypeName);
+								if ($this->registry->getObject('db')->findFirst()) {
+									$agendatype = $this->registry->getObject('db')->getResult();
+									$result = $this->getNextDocumentNo($agendatype['TypeID'],false);
+								}
+								exit($result);
 						}
 						break;
 					default:
@@ -221,7 +283,7 @@ class Agendacontroller{
 
 	public function createAgendaTypeOption()
 	{
-		$element = '';
+		$element = "<option TypeID='0'></option>";		
 		$this->registry->getObject('db')->initQuery('agendatype');
 
 		if ($this->registry->getObject('db')->findSet()) {
@@ -360,13 +422,20 @@ class Agendacontroller{
 	{
 		$urlBits = $this->registry->getURLBits();     
 
-		$Type = isset($urlBits[3]) ? $urlBits[3] : '';
-		switch ($Type) {
+		$Table = isset($_POST["Table"]) ? $_POST["Table"] : 0;
+		switch ($Table) {
 			case 'meetingline':
 				// Form fields				
 				$post = $_POST;
 				$MeetingID = isset($_POST["MeetingID"]) ? $_POST["MeetingID"] : 0;
 				$MeetingLineID = isset($_POST['MeetingLineID']) ? $_POST['MeetingLineID'] : 0;
+				
+				
+				$ContactID = isset($_POST['ContactID']) ? $_POST['ContactID'] : '';
+				$ParentID = isset($_POST['ParentID']) ? $_POST['ParentID'] : '';
+				$AgendaTypeID = isset($_POST['AgendaTypeID']) ? $_POST['AgendaTypeID'] : '';
+				$ParentName = isset($_POST['ParentName']) ? $_POST['ParentName'] : '';
+				$FileName = isset($_POST['FileName']) ? $_POST['FileName'] : '';
 
 				require_once( FRAMEWORK_PATH . 'controllers/contact/controller.php');
 				$contact = new Contactcontroller( $this->registry , false);
@@ -533,7 +602,7 @@ class Agendacontroller{
 	 * @param int $TypeID
 	 * @return string $DocumentNo	 * 
 	 */
-	function getNextDocumentNo( $TypeID )
+	function getNextDocumentNo( $TypeID , $update = true)
 	{
 		$agendatype = $this->getAgendatype( $TypeID );
 		$noSeries = $agendatype['NoSeries'];
@@ -560,10 +629,12 @@ class Agendacontroller{
 			$this->registry->getObject('db')->insertRecords('agenda',$data);			
 
 			// Update
-			$changes = array();
-			$changes['LastNo'] = $DocumentNo;
-			$condition = "TypeID = '$TypeID'";
-			$this->registry->getObject('db')->updateRecords('agendatype',$changes, $condition);			
+			if ($update) {
+				$changes = array();
+				$changes['LastNo'] = $DocumentNo;
+				$condition = "TypeID = '$TypeID'";
+				$this->registry->getObject('db')->updateRecords('agendatype', $changes, $condition);
+			}
 		};
 		return $DocumentNo;
 	}

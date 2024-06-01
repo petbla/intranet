@@ -988,6 +988,11 @@ div#DocumentItems textarea{
 .col_text{
   font-size: 20px;
 }
+.weblink{
+  color: blue;
+  text-decoration: underline;
+  font-weight: bold;
+}
 .col_address{
   width: 370px;
 }

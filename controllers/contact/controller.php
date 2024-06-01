@@ -458,6 +458,13 @@ class Contactcontroller {
 							$data['Email'] = $_POST['Email'];
 						}
 					}
+					if(isset($_POST['DataBox']))
+					{
+						if($contact['DataBox'] !== $_POST['DataBox'])
+						{
+							$data['DataBox'] = $_POST['DataBox'];
+						}
+					}
 					if(isset($_POST['Phone']))
 					{
 						if($contact['Phone'] !== $_POST['Phone'])
@@ -535,7 +542,7 @@ class Contactcontroller {
 		require_once( FRAMEWORK_PATH . 'models/contact/model.php');
 		
 		$sql = "SELECT c.ID, c.FullName, c.FirstName, c.LastName, c.Title, c.Function, c.Company, ".
-						"c.Email, c.Phone, c.Web, c.Note, c.Address, c.Close, c.Note, c.ContactGroups, c.BirthDate ".
+						"c.Email, c.Phone, c.Web, c.Note, c.Address, c.Close, c.Note, c.ContactGroups, c.BirthDate, c.DataBox ".
 					"FROM ".$pref."Contact c ".
 					"WHERE  Close=0 ".
 					"ORDER BY c.FullName ";
@@ -571,6 +578,7 @@ class Contactcontroller {
 					$rec['Note'] = $contact['Note'];
 					$rec['Phone'] = $contact['Phone'];
 					$rec['Email'] = $contact['Email'];
+					$rec['DataBox'] = $contact['DataBox'];
 					$rec['Web'] = $contact['Web'];
 					$rec['ContactGroups'] = $contact['ContactGroups'];
 					
@@ -608,6 +616,7 @@ class Contactcontroller {
 			$this->registry->getObject('template')->getPage()->addTag( 'Web', '' );
 			$this->registry->getObject('template')->getPage()->addTag( 'Phone', '' );
 			$this->registry->getObject('template')->getPage()->addTag( 'Email', '' );
+			$this->registry->getObject('template')->getPage()->addTag( 'DataBox', '' );
 			$this->registry->getObject('template')->getPage()->addTag( 'Note', '' );
 			$this->registry->getObject('template')->getPage()->addTag( 'ContactGroups', '' );
 
@@ -796,20 +805,38 @@ class Contactcontroller {
 		$doc = array();
 		$post = $_POST;
 		$doc['FileName'] = isset($_POST['FileName']) ? $_POST['FileName'] : '';
-		$doc['Presenter'] = isset($_POST['Presenter']) ? $_POST['Presenter'] : '';
+		$doc['PresenterName'] = isset($_POST['PresenterName']) ? $_POST['PresenterName'] : '';
+		$doc['PresenterPhone'] = isset($_POST['PresenterPhone']) ? $_POST['PresenterPhone'] : '';
 		$doc['AtDate'] = isset($_POST['AtDate']) ? $_POST['AtDate'] : '';
 		$doc['FirstName'] = isset($_POST['FirstName']) ? $_POST['FirstName'] : '';
 		$doc['LastName'] = isset($_POST['LastName']) ? $_POST['LastName'] : '';
-		$doc['Title'] = isset($_POST['FullName']) ? $_POST['FullName'] : '';
+		$doc['Title'] = '';
 		$doc['Company'] = isset($_POST['Company']) ? $_POST['Company'] : '';
+		
 		$doc['FullName'] = $this->makeFullName($doc);
+		$doc['Title'] = isset($_POST['Title']) ? $_POST['Title'] : '';
+		if ($doc['Title'])
+			$doc['FullName'] = $doc['Title'] . " " . $doc['FullName'];
+		
 		$doc['Address'] = isset($_POST['Address']) ? $_POST['Address'] : '';
 		$doc['Email'] = isset($_POST['Email']) ? $_POST['Email'] : '';
-		$doc['Phone'] = isset($_POST['Phone']) ? $_POST['Phone'] : '';
 		$doc['DataBox'] = isset($_POST['DataBox']) ? $_POST['DataBox'] : '';
+		$doc['Phone'] = isset($_POST['Phone']) ? $_POST['Phone'] : '';
 		$doc['DocumentNo'] = isset($_POST['DocumentNo']) ? $_POST['DocumentNo'] : '';
+
+		$doc['FullHtmlAddress'] = '';
+		$doc['FullHtmlAddress'] .= $doc['Company'] ? '<b>'.$doc['Company'].'</b><br>' : '';
+		$doc['FullHtmlAddress'] .= $doc['FullName'] ? '<b>'.$doc['FullName'].'</b><br>' : '';
+		$doc['FullHtmlAddress'] .= str_replace(chr(13), '<br>', $doc['Address'].'<br>'.'<br>');
+		$doc['FullHtmlAddress'] .= $doc['Email'] ? 'Email: '.$doc['Email'].'<br>' : '';
+		$doc['FullHtmlAddress'] .= $doc['Phone'] ? 'Tel.: '.$doc['Phone'].'<br>' : '';
+		$doc['FullHtmlAddress'] .= $doc['DataBox'] ? 'Datová schránka: '.$doc['DataBox'].'<br>' : '';
+
+		$doc['Subject'] = isset($_POST['Subject']) ? $_POST['Subject'] : '';
+		$doc['Content'] = isset($_POST['Content']) ? $_POST['Content'] : '';
+		$doc['SignatureName'] = isset($_POST['SignatureName']) ? $_POST['SignatureName'] : '';
+		$doc['SignatureFunction'] = isset($_POST['SignatureFunction']) ? $_POST['SignatureFunction'] : '';
 
 		return $doc;
 	}
 }
-?>

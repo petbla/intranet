@@ -655,7 +655,7 @@ class Todocontroller{
 						if($meeting){
 							// Pokud dokument nebyl ještě zařazen do složky, tak se nyní přesune do 
 							// výchozí složky podkladů jednání
-							// <rootZOB>/_<MeetingName>/<PeriodName>/<EntryNo>/Přílohy
+							// <zobroot>/_<MeetingName>/<PeriodName>/<EntryNo>/Přílohy
 							// Příklad: Obecní úřad/_Rada/2018-2022/10/Přílohy					 
 							if($inbox['DmsEntryID'] == '00000000-0000-0000-0000-000000000000'){
 								

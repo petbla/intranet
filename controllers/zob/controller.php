@@ -1208,7 +1208,7 @@ class Zobcontroller{
 		$this->setDatasetMeetingLine($MeetingID, $activeMeetingLineID);
 		
 		$this->registry->getObject('template')->addTemplateBit('editdMeetingLine', 'zob-meetingline-edit.tpl.php');
-		$this->registry->getObject('template')->addTemplateBit('newDocument', 'document-new.tpl.php');
+		$this->registry->getObject('template')->addTemplateBit('newDocument', 'document-edit.tpl.php');
 
 		$this->build('zob-meetingline-list.tpl.php');
 	}
@@ -2211,7 +2211,7 @@ class Zobcontroller{
 		// Create FOLDER new
 		$meetingtype = $this->getMeetingtype($meeting['MeetingTypeID']);
 		$electionperiod = $this->getElectionperiod($meetingtype['ElectionPeriodID']);
-		$parentFolder = $config['rootZOB']."/_".$meetingtype['MeetingName']."/";
+		$parentFolder = $config['zobroot']."/_".$meetingtype['MeetingName']."/";
 		$parentFolder .= $electionperiod['PeriodName']."/".$meeting['EntryNo']."/Přílohy";
 		$DmsParentEntryNo = $this->registry->getObject('file')->findItem( $parentFolder, true );
 		if(($DmsParentEntryNo) && ($meeting['MeetingID'] > 0)){
@@ -2223,7 +2223,7 @@ class Zobcontroller{
 		}
 		return $DmsParentEntryNo;
 	}
-
+	
 	public function setElectionperiodActive ( $ElectionPeriodID )
 	{
 		// Reset pole Actual na všech záznamech

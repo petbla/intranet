@@ -289,7 +289,7 @@ class Zobmanage {
 		$electionperiod = $this->zob->getElectionperiod($meeting['ElectionPeriodID']);
 
 		global $config;
-		$fileroot = $config['fileroot'].$config['rootZOB'];
+		$fileroot = $config['fileroot'].$config['zobroot'];
 		$EntryNo = $meeting['EntryNo'];
 
 		$parentPath = $fileroot."/_".$meetingtype['MeetingName']."/".$electionperiod['PeriodName']."/";
@@ -301,7 +301,7 @@ class Zobmanage {
 	private function scanAllMeeting(){
 		global $config;
 
-		$fileroot = $config['fileroot'].$config['rootZOB'];
+		$fileroot = $config['fileroot'].$config['zobroot'];
 		$content = '';
 
 		$electionperiod = $this->zob->getActualElectionperiod();

@@ -5,15 +5,21 @@
             {FullName}<br>
             {Function}
         </td>
-        <td class="label">{lbl_Phone}</td>
-        <td><span class="phone" >{Phone}</span></td>
+        <td class="label">
+            {lbl_Phone}<br>
+            {lbl_Email}
+        </td>
+        <td>
+            <span class="phone">{Phone}</span><br>
+            <span class="col_email">{Email}</span>
+        </td>
     </tr>
     <tr>
         <td class="label">{lbl_Company}</td>    
         <td class="col_company">{Company}</td>
-        <td class="label">{lbl_Email}</td>
-        <td class="col_email">
-            <a href="mailto:{Email}">{Email}</a>
+        <td class="label">{lbl_DataBox}</td>
+        <td class="value">
+            <span>{DataBox}</span>
         </td>
     </tr>
     <tr>

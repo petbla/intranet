@@ -72,6 +72,7 @@ $caption['Phone'] =          'Telefon';
 $caption['Address'] =        'Adresa';
 $caption['ShippAddress']  =  'Adresa doručení';
 $caption['Email'] =          'E-mail';
+$caption['DataBox'] =        'Datová schránka';
 $caption['Web'] =            'Webové stránky';
 $caption['PermissionSet'] =  'Sada práv';
 $caption['Comment'] =        'Poznámka';

@@ -122,7 +122,7 @@
                 Webroot
             </td>
             <td class="value">
-                <span>{cfg_webroot}</span>
+                <input type="Text" name="Webroot" class="value" value="{cfg_webroot}" pkID="1" table="source" onchange="wsUpdate(this);">
             </td>
             <td class="action">
                 <img id="fld_webroot" src='views/classic/images/icon/trafficUnknown.png' data-dms-server="{cfg_webroot}"/>
@@ -133,7 +133,17 @@
                 Fileroot 
             </td>
             <td class="value">
-                <span>{cfg_fileroot}</span>
+                <input type="Text" name="Fileroot" class="value" value="{cfg_fileroot}" pkID="1" table="source" onchange="wsUpdate(this);">
+            </td>
+            <td class="action">
+            </td>
+        </tr>
+        <tr>
+            <td class="name">
+                ZOBroot 
+            </td>
+            <td class="value">
+                <input type="Text" name="Zobroot" class="value" value="{cfg_zobroot}" pkID="1" table="source" onchange="wsUpdate(this);">
             </td>
             <td class="action">
             </td>
@@ -147,23 +157,110 @@
         </tr>
         <tr>
             <td class="name">
-                název
+                Název
             </td>
             <td class="value">
-                <span>{cfg_compName}</span><br>
+                <input type="Text" name="Name" class="col_fullname" value="{cfg_compName}" pkID="1" table="source" onchange="wsUpdate(this);">
             </td>
             <td class="action">
             </td>
         </tr>
         <tr>
             <td class="name">
-                Adresa
+                <span>Adresa - ulice,číslo</span>
             </td>
             <td class="value">
-                <span>{cfg_compAddress}</span><br>
-                <span>{cfg_compCity}</span><br>
-                <span>{cfg_compZip}</span><br>
-                <span>{cfg_compICO}</span><br>
+                <input type="Text" name="Address" class="value" value="{cfg_compAddress}" pkID="1" table="source" onchange="wsUpdate(this);">
+            </td>
+            <td class="action">
+            </td>
+        </tr>
+        <tr>
+            <td class="name">
+                <span>Město</span>
+            </td>
+            <td class="value">
+                <input type="Text" name="City" class="value" value="{cfg_compCity}" pkID="1" table="source" onchange="wsUpdate(this);"><br>
+            </td>
+            <td class="action">
+            </td>
+        </tr>
+        <tr>
+            <td class="name">
+                <span>PSČ</span>
+            </td>
+            <td class="value">
+                <input type="Text" name="Zip" class="value" value="{cfg_compZip}" pkID="1" table="source" onchange="wsUpdate(this);">
+            </td>
+            <td class="action">
+            </td>
+        </tr>
+        <tr>
+            <td class="name">
+                <span>IČO</span>
+            </td>
+            <td class="value">
+                <input type="Text" name="ICO" class="value" value="{cfg_compICO}" pkID="1" table="source" onchange="wsUpdate(this);">
+            </td>
+            <td class="action">
+            </td>
+        </tr>
+        <tr>
+            <td class="name">
+                <span>E-mail</span>
+            </td>
+            <td class="value">
+                <input type="Text" name="Email" class="value" value="{cfg_compEmail}" pkID="1" table="source" onchange="wsUpdate(this);">
+            </td>
+            <td class="action">
+            </td>
+        </tr>
+        <tr>
+            <td class="name">
+                <span>Telefon</span>
+            </td>
+            <td class="value">
+                <input type="Text" name="Phone" class="value" value="{cfg_compPhone}" pkID="1" table="source" onchange="wsUpdate(this);">
+            </td>
+            <td class="action">
+            </td>
+        </tr>
+        <tr>
+            <td class="name">
+                <span>Web - název</span>
+            </td>
+            <td class="value">
+                <input type="Text" name="Web" class="value" value="{cfg_websiteName}" pkID="1" table="source" onchange="wsUpdate(this);">
+            </td>
+            <td class="action">
+            </td>
+        </tr>
+        <tr>
+            <td class="name">
+                <span>Web - link</span>
+            </td>
+            <td class="value">
+                <input type="Text" name="Website" class="value" value="{cfg_website}" pkID="1" table="source" onchange="wsUpdate(this);">
+            </td>
+            <td class="action">
+            </td>
+        </tr>
+        <tr>
+            <td class="name">
+                <span>Facebook</span>
+            </td>
+            <td class="value">
+                <input type="Text" name="Facebook" class="value" value="{cfg_facebook}" pkID="1" table="source" onchange="wsUpdate(this);">
+            </td>
+            <td class="action">
+            </td>
+        </tr>
+        <tr>
+            <td class="name">
+                <span>Datová schránka </span>
+            </td>
+            <td class="value">
+                <input type="Text" name="DataBox" class="value" value="{cfg_compDataBox}" pkID="1" table="source" onchange="wsUpdate(this);">
             </td>
             <td class="action">
             </td>

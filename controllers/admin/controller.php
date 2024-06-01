@@ -466,4 +466,3 @@ class Admincontroller {
 		$this->listPortal();
 	}
 }
-?>

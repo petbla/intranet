@@ -20,6 +20,8 @@ $config['skin']             = 'classic';   // classic,modern
 $config['metakeywords']		= '';
 $config['Copyright']        = '&copy; DMS 2022';
 
+$config['zobroot'] = $config['rootZOB'];
+
 $registry->storeSetting('lang','cs');
 require_once('lang/'.$registry->getSetting('lang').'.php');
 

@@ -17,6 +17,7 @@ class Contact{
 	private $Function;
 	private $Company;
 	private $Email;
+	private $DataBox;
 	private $Phone;
 	private $Web;
 	private $Note;
@@ -37,7 +38,7 @@ class Contact{
 		if( $id != '' )
 		{
 			$sql = "SELECT c.ID, c.FullName, c.FirstName, c.LastName, c.Title, c.Function, c.Company, ".
-							"c.Email, c.Phone, c.Web, c.Note, c.Address, c.Close, c.ContactGroups, c.BirthDate ".
+							"c.Email, c.Phone, c.Web, c.Note, c.Address, c.Close, c.ContactGroups, c.BirthDate, c.DataBox ".
                 		"FROM ".$pref."Contact c ".
                 		"WHERE  ID='$id'";
 
@@ -53,6 +54,7 @@ class Contact{
 				$this->Function = $data['Function'];
 				$this->Company = $data['Company'];
 				$this->Email = $data['Email'];
+				$this->DataBox = $data['DataBox'];
 				$this->Phone = $data['Phone'];
 				$this->Web = $data['Web'];
 				$this->Note = $data['Note'];
@@ -74,6 +76,7 @@ class Contact{
 			$this->Function = '';
 			$this->Company = '';
 			$this->Email = '';
+			$this->DataBox = '';
 			$this->Phone = '';
 			$this->Web = '';
 			$this->Note = '';
@@ -116,4 +119,3 @@ class Contact{
 		return $this->Groups;
 	}
 }
-?>

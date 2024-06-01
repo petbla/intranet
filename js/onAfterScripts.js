@@ -68,146 +68,133 @@ activeMemberType = document.getElementById('activeMemberType');
 activeMeetingLine = document.getElementById('activeMeetingLine');
 
 // ----------------------------------------------------------------------------------------
-// Functions
+// Agenda Functions
 // ----------------------------------------------------------------------------------------
-function tags2Html( arr ){
-    var newval='';
-    arr.forEach(str => {
-        str = "<span class='tags-item'>" + str + "</span>";
-        newval += str;
+function getDocumentNo(e,agendaTypeName) {
+    wsGetNextDocumentNo(agendaTypeName,false,function(chyba,odpoved){
+        if (chyba){
+            console.error('Chyba:',chyba);
+        }else{
+            setElementValue('DocumentNo',odpoved);
+            setElementValue('FileName',agendaTypeName + '_' + odpoved);
+            setElementValue('Subject',agendaTypeName);
+        }    
     });
-    return newval;
 }
 
-function validatePassword () {
-    if (password.value != password_confirm.value) {
-        password_confirm.setCustomValidity('Heslo se neshoduje.');
-    }    
-    else
-    {
-        password_confirm.setCustomValidity('');
-    }
-}
+// ----------------------------------------------------------------------------------------
+// Form element Functions BY tables
+// ----------------------------------------------------------------------------------------
+function formRefreshRecord(table){
+    var recordId = getElementValue(table + 'RecordID');
 
-function formatElementClass (classText) {
-    var att,e,i;
-    att = '[class="' + classText + '"]';
-    e = document.querySelectorAll(att);
-    for (i = 0; i < e.length; i++) {
-        e[i].innerHTML = formatText(e[i].innerHTML,classText);
-    }   
-}
+    if(recordId == null){
+        return;
+    }       
+    wsGetRecord(table,recordId,function(err,result){
+        if (err){
+            console.error('Chyba:',err);
+        }else{
+            if (result){
+                var jsonData = JSON.parse(result);
 
-function formatText (text, field)
-{
-    var newtext = ''
-    var arr,val;        
-    if(field === '')
-    {
-        return text;
-    }
-    field = field.toLowerCase();
-    if(text === '')
-    {
-        return '';
-    }
-    arr = text.split(',');              
-    arr.forEach(val => {
-        switch (field) {
-            case 'phone':
-                val = formatPhoneNumber(val);
-                break;
-            case 'email':
-                val = formatEmailTo(val);
-                break;
+                switch (table) {
+                    case 'contact':
+                            setElementValue('FullName',jsonData.FullName);
+                            setElementValue('Company',jsonData.Company);
+                            setElementValue('FirstName',jsonData.FirstName);
+                            setElementValue('LastName',jsonData.LastName);
+                            setElementValue('Title',jsonData.Title);
+                            setElementValue('Address',jsonData.Address);
+                            setElementValue('Email',jsonData.Email);
+                            setElementValue('Phone',jsonData.Phone);
+                            setElementValue('DataBox',jsonData.DataBox);
+                            break;
+                    case 'dmsentry':
+                            console.log(jsonData.Name);
+                            setElementValue('ParentName',jsonData.Name);
+                            break;
+                }
+            }
         }
-        if(newtext)
-        {
-            newtext = newtext + '<br>';
-        }
-        newtext = newtext + val;
     });
-    return(newtext);
-}   
-
-function formatPhoneNumber (phone)
-{
-    var newphone;
-    if(phone.length == 9) {
-        newphone = phone.replace(/(\d{3})(\d{3})(\d{3})/, '$1 $2 $3'); 
-    }
-    if(phone.length == 14) {
-        newphone = phone.replace(/(\d{5})(\d{3})(\d{3})(\d{3})/, '$1 $2 $3 $4'); 
-    }
-    else if(phone[0] == '+'){
-        newphone = phone.replace(/(\+\d{3})(\d{3})(\d{3})(\d{3})/, '$1 $2 $3 $4'); 
-    }            
-    if(newphone !== '')
-    {
-        newphone = "<a href='tel:" + newphone + "'>" + newphone + "</a>";
-    }    
-    return(newphone);
 }
 
-function formatEmailTo (email)
-{
-    var newemail = '';
-    if(email !== '')
-    {
-        newemail = "<a href='mailto:" + email + "'>" + email + "</a>";
-    }    
-    return(newemail);
-}
-
-function dragElement(elmnt) {
-    var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-    var ID;
-    ID = elmnt.getAttribute('form_id');
-    if (document.getElementById(elmnt.id + "header" + ID)) {
-        // if present, the header is where you move the DIV from:
-        document.getElementById(elmnt.id + "header" + ID).onmousedown = dragMouseDown;
-    } else {
-        // otherwise, move the DIV from anywhere inside the DIV: 
-        elmnt.onmousedown = dragMouseDown;
-    }
-
-    function dragMouseDown(e) {
-        e = e || window.event;
-        e.preventDefault();
-        // get the mouse cursor position at startup:
-        pos3 = e.clientX;
-        pos4 = e.clientY;
-        document.onmouseup = closeDragElement;
-        // call a function whenever the cursor moves:
-        document.onmousemove = elementDrag;
-    }
-
-    function closeDragElement() {
-        // stop moving when mouse button is released:
-        document.onmouseup = null;
-        document.onmousemove = null;
-    }
-
-    function elementDrag(e) {
-        e = e || window.event;
-        e.preventDefault();
-        // calculate the new cursor position:
-        pos1 = pos3 - e.clientX;
-        pos2 = pos4 - e.clientY;
-        pos3 = e.clientX;
-        pos4 = e.clientY;
-        // set the element's new position:
-        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
-        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+function formClearhRecord(table){
+    switch (table) {
+        case 'contact':
+            setElementValue('FullName');
+            setElementValue('FirstName');
+            setElementValue('LastName');
+            setElementValue('Title');
+            setElementValue('Function');
+            setElementValue('Company');
+            setElementValue('Note');
+            setElementValue('Phone');
+            setElementValue('Email');
+            setElementValue('Web');
+            setElementValue('Address');
+            setElementValue('DataBox');
+            break;
     }
 }
 
-function getCookie(name) {
-    var value = "; " + document.cookie;
-    var parts = value.split("; " + name + "=");
-    if (parts.length == 2) return parts.pop().split(";").shift();
-}
+function selectRecord(e){
+    
+    var table = e.getAttribute('table');
+    var divId = e.getAttribute('divId');
+    var param = '';
 
+    switch (table) {
+        case 'contact':
+            var param = getElementValue('Company');
+            break;
+        case 'dmsentry':
+            var param = getElementValue('ParentName');
+            break;
+    }  
+
+    wsReadTable(table,param,function(err,result){
+        if (err){
+            console.error('Chyba:',err);
+        }else{
+            var selectDiv, selectElement;
+            selectDiv = document.getElementById(divId);
+
+            var records = stringToArray(result);
+            var selectDivName = 'table + SelectRecordId'
+
+            // SELECT element
+            selectElement = document.getElementById(selectDivName);
+            if(selectElement){
+                selectElement.remove();
+            }
+            selectElement = document.createElement('select')
+            selectElement.id = selectDivName;
+            selectElement.onchange = function (e) {
+                const selectedOption = selectElement.options[selectElement.selectedIndex];
+                selectElement.style.display = "none";
+
+                setElementValue(table + 'RecordID',selectedOption.id);
+                formRefreshRecord(table);
+            };
+
+            // OPTION elements
+            records.forEach((rec) => {
+                var id = rec[0];
+                var name = rec[1];
+                const optionElement = document.createElement('option');
+                optionElement.id = id;
+                optionElement.value = name;
+                optionElement.textContent = name;
+                selectElement.appendChild(optionElement);
+            });
+            if (selectDiv){
+                selectDiv.appendChild(selectElement);
+            }            
+        }
+    });
+}
 
 // ----------------------------------------------------------------------------------------
 // Code
@@ -646,29 +633,9 @@ if(a_inbox){
     })
 }
 
-function initForm(tag,id) {
-    var element, oldelement;
-
-    element = document.querySelector( '[' + tag + 'ID="' + id + '"]' );
-    oldelement = document.querySelector( '[old' + tag + 'ID="' + id + '"]' );
-    if (element){
-        if (oldelement){
-            switch (element.type) {
-                case 'checkbox':
-                    if (oldelement.getAttribute('value') == '1'){
-                        element.checked = true;
-                    }else{
-                        element.checked = false;
-                    }
-                    break;
-                default:
-                    element.value = oldelement.value;
-                    break;
-            }
-        }
-    }
-}
-
+// ----------------------------------------------------------------------------------------
+// DMS Table elements Functions
+// ----------------------------------------------------------------------------------------
 function doesFileExist(urlToFile) {  
     var response = $.ajax({
         url: urlToFile,
@@ -683,40 +650,59 @@ function doesFileExist(urlToFile) {
     }
 }
 
+// ----------------------------------------------------------------------------------------
+// Contact Table elements Functions
+// ----------------------------------------------------------------------------------------
 function modifyContactGroup(Code,Name,Action,read){
-    document.getElementById("fieldName").value = Name;
-    document.getElementById("fieldCode").value = Code;
-    document.getElementById("fieldCode").readOnly = read;
-    document.getElementById("fieldAction").value = Action;
+    setElementValue('fieldName',Name);
+    setElementValue('fieldCode',Code);
+    var e = document.getElementById('fieldCode');
+    if(e){
+        e.readOnly = read;
+    }
+    setElementValue('fieldAction',Action);
 }
 
+// ----------------------------------------------------------------------------------------
+// Agenda Table elements Functions
+// ----------------------------------------------------------------------------------------
 function modifyAgendaType(TypeID,Name,NoSeries,Action){
-    document.getElementById("fieldTypeID").value = TypeID;
-    document.getElementById("fieldName").value = Name;
-    document.getElementById("fieldNoSeries").value = NoSeries;
-    document.getElementById("fieldAction").value = Action;
+    setElementValue('fieldTypeID',TypeID);
+    setElementValue('fieldName', Name);
+    setElementValue('fieldNoSeries', NoSeries);
+    setElementValue('fieldAction', Action);
 }
 
+// ----------------------------------------------------------------------------------------
+// User Table elements Functions
+// ----------------------------------------------------------------------------------------
 function modifyUser(ID,Name,FullName,PermissionSet,Action,read){
     var e;
 
-    document.getElementById("fieldID").value = ID;
-    document.getElementById("fieldName").value = Name;
-    document.getElementById("fieldName").readOnly = read;    
-    document.getElementById("fieldFullName").value = FullName;
-    document.getElementById("fieldPerSet").value = PermissionSet;
-    document.getElementById("fieldAction").value = Action;
+    setElementValue('fieldID', ID);
+    setElementValue('fieldName', Name);
+    e = document.getElementById("fieldName");
+    if(e){
+        e.readOnly = read;    
+    }    
+    setElementValue('fieldFullName', FullName);
+    setElementValue('fieldPerSet', PermissionSet);
+    setElementValue('fieldAction', Action);
+    
     e = document.getElementById("fieldPerSet" + Name);
     if(e){
         e.setAttribute('selected','selected');
     }
 }
 
+// ----------------------------------------------------------------------------------------
+// ZOB Table elements Functions
+// ----------------------------------------------------------------------------------------
 function modifyZobElectionPeriod(ElectionPeriodID,Name,Actual,Action){
     var e;
-    document.getElementById("fieldEpElectionPeriodID").value = ElectionPeriodID;
-    document.getElementById("fieldEpPeriodName").value = Name;
-    e = document.getElementById("fieldEpActual");
+    setElementValue('fieldEpElectionPeriodID', ElectionPeriodID);
+    setElementValue('fieldEpPeriodName', Name);
+    var e = document.getElementById("fieldEpActual");
     e.value = Actual;
     if (Actual == '1'){
         e.checked = true;
@@ -727,28 +713,31 @@ function modifyZobElectionPeriod(ElectionPeriodID,Name,Actual,Action){
 }
 
 function modifyZobMeetingType(MeetingTypeID,ElectionPeriodID,MeetingName,Members,Action){
-    document.getElementById("fieldMtMeetingTypeID" + ElectionPeriodID).value = MeetingTypeID;
-    document.getElementById("fieldMtElectionPeriodID" + ElectionPeriodID).value = ElectionPeriodID;
-    document.getElementById("fieldMtMeetingName" + ElectionPeriodID).value = MeetingName;
-    document.getElementById("fieldMtMembers" + ElectionPeriodID).value = Members;
-    document.getElementById("fieldMtAction" + ElectionPeriodID).value = Action;
+    setElementValue('fieldMtMeetingTypeID' + ElectionPeriodID, MeetingTypeID);
+    setElementValue('fieldMtElectionPeriodID' + ElectionPeriodID, ElectionPeriodID);
+    setElementValue('fieldMtMeetingName' + ElectionPeriodID, MeetingName);
+    setElementValue('fieldMtMembers' + ElectionPeriodID, Members);
+    setElementValue('fieldMtAction' + ElectionPeriodID, Action);
 }
 
 function modifyZobMember(MemberID,MeetingTypeID,ContactName,MemberTypeCSY,MemberType,Action){
-    document.getElementById("fieldMemMemberID" + MeetingTypeID).value = MemberID;
-    document.getElementById("fieldMemMeetingTypeID" + MeetingTypeID).value = MeetingTypeID;
-    document.getElementById("fieldMemMemberType" + MeetingTypeID).value = MemberTypeCSY;
-    
-    document.getElementById(MemberType + MeetingTypeID).selected = 'selected';
-    
-    document.getElementById("fieldMemContactName" + MeetingTypeID).value = ContactName;
-    document.getElementById("fieldMemAction" + MeetingTypeID).value = Action;
+    setElementValue('fieldMemMemberID' + MeetingTypeID, MemberID);
+    setElementValue('fieldMemMeetingTypeID' + MeetingTypeID, MeetingTypeID);
+    setElementValue('fieldMemMemberType' + MeetingTypeID, MemberTypeCSY);    
+    var e = document.getElementById(MemberType + MeetingTypeID);
+    if(e){
+        e.selected = 'selected';
+    }
+    setElementValue('fieldMemContactName' + MeetingTypeID, ContactName);
+    setElementValue('fieldMemAction' + MeetingTypeID, Action);
 }
 
 function modifyTodoInbox(InboxID){
-    document.getElementById("editInbox" + InboxID).style.display = 'block';    
+    var e = document.getElementById("editInbox" + InboxID);
+    if(e){
+        e.style.display = 'block';    
+    }
 }
-
 
 function validateCheckbox( e ){
     if (e.checked) {

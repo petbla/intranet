@@ -30,6 +30,8 @@
                 <input type="tel" class="value" value="{Phone}" recID="contact{ID}" pkID="{ID}" table="contact" name="Phone" onchange="wsUpdate(this);"/><br>
                 <label class="title">{lbl_Email}</label><br>
                 <input type="text" class="value col_email" value="{Email}" recID="contact{ID}" pkID="{ID}" table="contact" name="Email" onchange="wsUpdate(this);"/>
+                <label class="title">{lbl_DataBox}</label><br>
+                <input type="text" class="value" value="{DataBox}" recID="contact{ID}" pkID="{ID}" table="contact" name="DataBox" onchange="wsUpdate(this);"/><br>
                 <label class="title">{lbl_CloseCard}</label>
                 <input type="checkbox" id = "Close{ID}" class="value" value="{Close}" recID="contact{ID}" pkID="{ID}" table="contact" name="Close" onchange = "validateCheckbox(this);"/ >
                 <script>

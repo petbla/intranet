@@ -269,6 +269,7 @@ class Generalcontroller {
 							"(Address like '%$searchText%') OR ".
 							"(Note like '%$searchText%') OR ".
 							"(Phone like '%$searchText%') OR ".
+							"(DataBox like '%$searchText%') OR ".
 							"(Email like '%$searchText%') OR ".
 							"(ContactGroups like '%$searchText%'))";
 			$this->registry->getObject('db')->executeQuery($sql);
@@ -545,4 +546,3 @@ class Generalcontroller {
 	}
 
 }
-?>
