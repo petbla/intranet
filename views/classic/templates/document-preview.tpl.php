@@ -1,3 +1,5 @@
+        <button onclick="printToPDF()">Print to PDF</button>
+        <div id="Content">
         <header>
             <table>
                 <tr>
@@ -119,3 +121,4 @@
                 </tr>
             </table>
         </main>
+        </div>

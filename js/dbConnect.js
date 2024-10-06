@@ -64,6 +64,109 @@ function wsUpdate(e) {
     }
 }
 
+// ************************************************************************************
+//    DATABASE functions - Update fields 
+//
+//    Required HTML elenets  :  name, table, pkID
+//    JS script              :  wsUpdate(this);
+//    element for whow ERROR :  id="pageErrorMesage"
+//    ID pro set position    :  id="header" 
+//    Rest API               :  POST 
+// ************************************************************************************
+function wsUpdateNew(e) {
+    var url;
+    var table,pkID,field,newvalue;
+    var parentPkID,parentTable;
+    var err;
+    url = window.location.origin + window.location.pathname + "?page=general/ws/upd";
+
+    if(e){
+        // Parse parameters
+        table = e.getAttribute('table'); 
+        pkID = e.getAttribute('pkID');
+        field = e.getAttribute('name'); 
+        parentPkID = e.getAttribute('parentPkID'); 
+        parentTable = e.getAttribute('parentTable'); 
+        newvalue = e.value;         
+        if(newvalue == undefined)
+            newvalue = e.getAttribute('value'); 
+
+        const formData = new FormData();
+        formData.append('table', table);
+        formData.append('pkID', pkID);
+        formData.append('field', field);
+        formData.append('value', newvalue);
+        if(parentPkID){
+            formData.append('parentPkID', parentPkID);
+            formData.append('parentTable', parentTable);
+        }
+
+        fetch(url, {
+            method: 'POST',
+            body: formData
+        }).then(response => response.text())
+          .then(result => {
+            if((result == 'OK' ) || (result == '' )){
+                console.log("Update DB:" + result);
+                if((field == 'Close') || (field == 'Actual') || (field == 'NewDocumentNo') || (pkID == 0))
+                    window.location.reload();      
+                    refreshRec(e);
+            }else{
+                console.log("Error update record.");
+                err = document.getElementById('pageErrorMesage');
+                if(err){
+                    err.innerText = result;
+                    err.style.display = 'block';
+                    window.location = "#header";
+                }
+            }
+        });
+    }
+}
+// ************************************************************************************
+//    DATABASE functions - Delete revord
+//
+//    Required HTML elenets  :  name, table, pkID
+//    JS script              :  wsDelete(this);
+//    element for whow ERROR :  id="pageErrorMesage"
+//    ID pro set position    :  id="header" 
+//    Rest API               :  POST 
+// ************************************************************************************
+function wsDelete(e) {
+    var url,param;
+    var table,pkID;
+    var err;
+    url = window.location.origin + window.location.pathname + "?page=general/ws/delete";
+
+    if(e){
+        // Parse parameters
+        table = e.getAttribute('table'); 
+        pkID = e.getAttribute('pkID');
+
+        param = "&table=" + table + "&pkID=" + pkID;
+
+        fetch(url + param, {
+            method: 'DELETE',
+        }).then(response => response.text())
+          .then(result => {
+            if((result == 'OK' ) || (result == '' )){
+                console.log("Delete record:" + result);
+                window.location.reload();
+            }else{
+                console.log("Error delete record.");
+                err = document.getElementById('pageErrorMesage');
+                if(err){
+                    err.innerText = result;
+                    err.style.display = 'block';
+                    window.location = "#header";
+                }
+            }
+        });
+    }
+}
+        
+
+
 
 
 

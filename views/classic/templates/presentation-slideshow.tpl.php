@@ -19,6 +19,19 @@
 </div>
 <div id="PageBody">
     
+    <!-- START meetinglinepagelines -->
+    <div>
+        <textarea id="ContentLine{EntryNo}" class="autosize par noborder" style="padding:0;" name="Content" pkID="{EntryNo}" table="meetinglinepageline">{Content}</textarea>
+        <img src="{ImageURL}" height="{ImageHeight}" width="{ImageWidth}" id="Image{EntryNo}" style="display:none;" />
+        <input type="hidden" id="FontStyle{EntryNo}" value="{FontStyle}" pkID="{EntryNo}" table="meetinglinepageline"" />
+        <script>
+            e = document.getElementById("FontStyle{EntryNo}");
+            if(e)
+                onChangeFontStyle(e);
+        </script>
+    </div>        
+    <!-- END meetinglinepagelines -->
+    
     <textarea id="body" rows="10" cols="140" value="" class="value" style="border:0;" readonly >{page_Content}</textarea>
     <textarea id="body_front" rows="10" cols="140" value="" class="value" style="border:0; font-size:60px; text-align:center;" readonly >{page_Content}</textarea>
     <textarea id="body_warp" rows="10" cols="140" value="" class="value" style="border:0; font-size:50px;" readonly >{page_Content}</textarea>
@@ -63,6 +76,10 @@
     </script>
 </div>
 <div id="PageFooter">
+    <a href="index.php?page=zob/adv/presentation/show/{MeetingID}/1" title="Úvodní strana (Home)"><img src="views/classic/images/nav/homepage24.png"/></a>
+    <span>&nbsp;</span>
+    <a href="index.php?page=zob/adv/presentation/content/{MeetingID}" title="Zavřít (ESC)"><img src="views/classic/images/nav/escpage24.png"/></a>
+    <span>&nbsp;</span>
     <a href="index.php?page=zob/adv/presentation/show/{MeetingID}/{prevPageNo}" title="Předchozí (Alt+Q)"><img src="views/classic/images/nav/prevpage24.png"/></a>
     <span class="pageno">{PageNo}</span>
     <a href="index.php?page=zob/adv/presentation/show/{MeetingID}/{nextPageNo}" title="Následující (Alt+W)"><img src="views/classic/images/nav/nextpage24.png" /></a>

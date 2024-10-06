@@ -145,3 +145,52 @@ function pptJsonToHtmlTable(jsonData,tableContainerId,roweventaction) {
     return table;
 }
 
+function onChangeFontStyle(e){
+    var entryNo = e.getAttribute("pkID");
+    var e_content = document.getElementById("ContentLine" + entryNo);
+    var e_image = document.getElementById("Image" + entryNo);
+    var val = ""
+    val = e.getAttribute("value");
+    
+
+    if((e_image) && (e_content)){
+        switch (val) {
+            case "IMG":
+                e_image.style.display="inline";
+                e_content.style.display="none";
+                break;                    
+            default:
+                e_image.style.display="none";
+                e_content.style.display="inline";
+                
+                //Reset
+                switch (val) {
+                    case "H1":
+                        e_content.style.textDecoration = "none";
+                        e_content.style.fontWeight = "bold";
+                        e_content.style.fontStyle = "normal";
+                        e_content.style.fontSize = "72px";
+                        break
+                    case "H2":
+                        e_content.style.textDecoration = "none";
+                        e_content.style.fontWeight = "bold";
+                        e_content.style.fontStyle = "normal";
+                        e_content.style.fontSize = "48px";
+                        break
+                    case "H3":
+                        e_content.style.textDecoration = "none";
+                        e_content.style.fontWeight = "bold";
+                        e_content.style.fontStyle = "normal";
+                        e_content.style.fontSize = "32px";
+                        break
+                    case "T1":
+                        e_content.style.textDecoration = "none";
+                        e_content.style.fontWeight = "bold";
+                        e_content.style.fontStyle = "normal";
+                        e_content.style.fontSize = "24px";
+                        break
+                }
+            
+        }
+    }
+}

@@ -120,11 +120,8 @@ class Agendacontroller{
 										$header = $meetingline['Title'];
 										$formhref = 'zob/meetingline/list/' . $meetingline['MeetingID'];
 
-
-										require_once( FRAMEWORK_PATH . 'models/entry/model.php');
-										$this->model = new Entry( $this->registry, $ParentID );
-										$entry = $this->model->getData();
-										if ($this->model->isValid()) {
+										$entry = $this->getDmsEntry($ParentID);
+										if ($entry) {
 											$Breads = $entry['breads'];
 											$ParentName = $entry['Name'];
 										}
@@ -141,9 +138,7 @@ class Agendacontroller{
 								$templateHeader = 'document-preview-header.tpl.php';
 								$templateFooter = 'document-preview-footer.tpl.php';
 
-								require_once( FRAMEWORK_PATH . 'controllers/contact/controller.php');
-								$contact = new Contactcontroller( $this->registry , false);
-								$doc = $contact->readFromData();
+								$doc = $this->readDocument();
 
 								$registry->getObject('template')->dataToTags( $doc, '' );
 
@@ -431,16 +426,11 @@ class Agendacontroller{
 				$MeetingLineID = isset($_POST['MeetingLineID']) ? $_POST['MeetingLineID'] : 0;
 				
 				
-				$ContactID = isset($_POST['ContactID']) ? $_POST['ContactID'] : '';
-				$ParentID = isset($_POST['ParentID']) ? $_POST['ParentID'] : '';
 				$AgendaTypeID = isset($_POST['AgendaTypeID']) ? $_POST['AgendaTypeID'] : '';
-				$ParentName = isset($_POST['ParentName']) ? $_POST['ParentName'] : '';
-				$FileName = isset($_POST['FileName']) ? $_POST['FileName'] : '';
 
-				require_once( FRAMEWORK_PATH . 'controllers/contact/controller.php');
-				$contact = new Contactcontroller( $this->registry , false);
-				$doc = $contact->readFromData();
-			
+				// Data Contact => $doc
+				$doc = $this->readDocument();			
+		
 				break;
 			
 			default:
@@ -640,6 +630,35 @@ class Agendacontroller{
 	}
 
 	/**
+	 * Get record Dmsentry by ID
+	 * @param mixed $ID
+	 * @return array
+	 */
+	function getDmsEntry($ID)
+	{
+		require_once( FRAMEWORK_PATH . 'models/entry/model.php');
+		$this->model = new Entry( $this->registry, $ID );
+		if ($this->model->isValid()) {
+			$entry = $this->model->getData();
+		}else{
+			$entry = null;
+		}
+		return $entry;
+	}
+
+	/**
+	 * Read data from HTML form do array 
+	 * @return array
+	 */
+	function readDocument()
+	{
+		require_once( FRAMEWORK_PATH . 'controllers/contact/controller.php');
+		$contact = new Contactcontroller( $this->registry , false);
+		$doc = $contact->readFromData();
+		return $doc;
+	}
+
+	/**
 	 * Odstranení odkazu agendy na dokument (číslo jednací)
 	 * @param string $ID = ID agendy
 	 */
@@ -672,13 +691,10 @@ class Agendacontroller{
 	private function wsUnlinkAgenda( $ID )
 	{
 		global $deb;
-		require_once( FRAMEWORK_PATH . 'models/agenda/model.php');
-		$this->model = new Agenda( $this->registry, $ID );
 
-		if( $this->model->isValid() )
+		$agenda = $this->getDmsEntry($ID);
+		if( $agenda )
 		{
-			$agenda = $this->model->getData();
-	
 			$changes =  array();
 			$changes['Description'] = '';
 			$changes['EntryID'] = '';

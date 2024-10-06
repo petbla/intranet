@@ -157,4 +157,3 @@ print $registry->getObject('template')->getPage()->getContent();
 
 exit();
 
-?>

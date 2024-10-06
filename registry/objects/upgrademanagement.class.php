@@ -358,8 +358,148 @@ class upgrademanagement {
             // upgrade to 2.58
             $this->upgrade_258('2.58');
         }
+        if ($this->version === '2.58') 
+        {
+            // upgrade to 2.61
+            $this->upgrade_261('2.61');
+        }
+        if ($this->version === '2.59') 
+        {
+            // upgrade to 2.61
+            $this->upgrade_261('2.61');
+        }
+        if ($this->version === '2.60') 
+        {
+            // upgrade to 2.61
+            $this->upgrade_261('2.61');
+        }
+        if ($this->version === '2.61') 
+        {
+            // upgrade to 2.62
+            $this->upgrade_262('2.62');
+        }
+        if ($this->version === '2.62') 
+        {
+            // upgrade to 2.63
+            $this->upgrade_263('2.63');
+        }
+        if ($this->version === '2.63') 
+        {
+            // upgrade to 2.64
+            $this->upgrade_264('2.64');
+        }
     }
 
+    private function upgrade_264($upVer)
+    {
+		global $config;
+        $pref = $config['dbPrefix'];
+
+        // add Changed field
+        $sql = "DROP TABLE ".$pref."meetinglinepageline";
+        $this->registry->getObject('db')->executeQuery( $sql );
+
+        $sql = "CREATE TABLE IF NOT EXISTS `".$pref."meetinglinepageline` (
+            `EntryNo` int(11) NOT NULL AUTO_INCREMENT,
+            `PageID` int(11) DEFAULT 0,
+            `MeetingLineID` int(11) NOT NULL,
+            `MeetingID` int(11) DEFAULT 0,
+            `MeetingTypeID` int(11) DEFAULT 0,
+            `Order` int(11) DEFAULT 0,
+            `Colums` int(11) DEFAULT 0,
+            `Content` varchar(5000) COLLATE utf8_czech_ci DEFAULT '',
+            `ImageURL` varchar(250) COLLATE utf8_czech_ci DEFAULT '',
+            `ImageWidth` int(11) DEFAULT 0,
+            `ImageHeight` int(11) DEFAULT 0,
+            `FontStyle` varchar(30) COLLATE utf8_czech_ci DEFAULT '',
+            PRIMARY KEY (`EntryNo`)
+            ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci";
+        $this->registry->getObject('db')->executeQuery( $sql );
+
+        $this->setNewVersion($upVer);
+    }
+    private function upgrade_263($upVer)
+    {
+		global $config;
+        $pref = $config['dbPrefix'];
+
+        // add Changed field
+        $sql = "DROP TABLE ".$pref."meetinglinepageline";
+        $this->registry->getObject('db')->executeQuery( $sql );
+
+        $sql = "CREATE TABLE IF NOT EXISTS `".$pref."meetinglinepageline` (
+            `EntryNo` int(11) NOT NULL AUTO_INCREMENT,
+            `PageID` int(11) DEFAULT 0,
+            `MeetingLineID` int(11) NOT NULL,
+            `MeetingID` int(11) DEFAULT 0,
+            `MeetingTypeID` int(11) DEFAULT 0,
+            `Order` int(11) DEFAULT 0,
+            `Colums` int(11) DEFAULT 0,
+            `Content` varchar(5000) COLLATE utf8_czech_ci DEFAULT '',
+            `ImageURL` varchar(250) COLLATE utf8_czech_ci DEFAULT '',
+            `ImageWidth` int(11) DEFAULT 0,
+            `ImageHeight` int(11) DEFAULT 0,
+            `FontStyle` varchar(30) COLLATE utf8_czech_ci DEFAULT '',
+            `FontSize` int(11) NULL DEFAULT 12,
+            PRIMARY KEY (`EntryNo`)
+            ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci";
+        $this->registry->getObject('db')->executeQuery( $sql );
+
+        $this->setNewVersion($upVer);
+    }
+
+    private function upgrade_262($upVer)
+    {
+		global $config;
+        $pref = $config['dbPrefix'];
+
+        // add Changed field
+        $sql = "ALTER TABLE ".$pref."meetinglinepageline".
+            " ADD `ContentShowLeft` tinyint(1) NULL DEFAULT 1".
+            " ,ADD `ContentShowMiddle` tinyint(1) NULL DEFAULT 0".
+            " ,ADD `ContentShowRight` tinyint(1) NULL DEFAULT 0".
+            " ,ADD `ContentFontStyleLeft` varchar(30) COLLATE utf8_czech_ci DEFAULT ''".
+            " ,ADD `ContentFontStyleMiddle` varchar(30) COLLATE utf8_czech_ci DEFAULT ''".
+            " ,ADD `ContentFontStyleRight` varchar(30) COLLATE utf8_czech_ci DEFAULT ''".
+            " ,ADD `ContentFontSizeLeft` int(11) NULL DEFAULT 12".
+            " ,ADD `ContentFontSizeMiddle` int(11) NULL DEFAULT 12".
+            " ,ADD `ContentFontSizeRight` int(11) NULL DEFAULT 12";
+        $this->registry->getObject('db')->executeQuery( $sql );
+
+        $this->setNewVersion($upVer);
+    }
+
+    private function upgrade_261($upVer)
+    {
+		global $config;
+        $pref = $config['dbPrefix'];
+
+        $sql = "CREATE TABLE IF NOT EXISTS `".$pref."meetinglinepageline` (
+            `EntryNo` int(11) NOT NULL AUTO_INCREMENT,
+            `PageID` int(11) DEFAULT 0,
+            `MeetingLineID` int(11) NOT NULL,
+            `MeetingID` int(11) DEFAULT 0,
+            `MeetingTypeID` int(11) DEFAULT 0,
+            `Order` int(11) DEFAULT 0,
+            `Colums` int(11) DEFAULT 0,
+            `ContentLeft` varchar(5000) COLLATE utf8_czech_ci DEFAULT '',
+            `ContentMiddle` varchar(5000) COLLATE utf8_czech_ci DEFAULT '',
+            `ContentRight` varchar(5000) COLLATE utf8_czech_ci DEFAULT '',
+            `ImageURLLeft` varchar(250) COLLATE utf8_czech_ci DEFAULT '',
+            `ImageURLMiddle` varchar(250) COLLATE utf8_czech_ci DEFAULT '',
+            `ImageURLRight` varchar(250) COLLATE utf8_czech_ci DEFAULT '',
+            `ImageLeftWidth` int(11) DEFAULT 0,
+            `ImageLeftHeight` int(11) DEFAULT 0,
+            `ImageMiddleWidth` int(11) DEFAULT 0,
+            `ImageMiddleHeight` int(11) DEFAULT 0,
+            `ImageRightWidth` int(11) DEFAULT 0,
+            `ImageRightHeight` int(11) DEFAULT 0,
+            PRIMARY KEY (`EntryNo`)
+            ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci";
+        $this->registry->getObject('db')->executeQuery( $sql );
+
+        $this->setNewVersion($upVer);
+    }
     private function upgrade_258($upVer)
     {
         $sql = "SELECT * FROM information_schema.columns WHERE table_schema = 'intranet' AND TABLE_NAME = 'Source' AND COLUMN_NAME = 'Zobroot'";

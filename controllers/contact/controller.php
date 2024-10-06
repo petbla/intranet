@@ -804,10 +804,26 @@ class Contactcontroller {
 	{
 		$doc = array();
 		$post = $_POST;
+		
+		// File and Parent Name
+		//
 		$doc['FileName'] = isset($_POST['FileName']) ? $_POST['FileName'] : '';
+		$doc['ParentID'] = isset($_POST['ParentID']) ? $_POST['ParentID'] : null;
+		$doc['ParentName'] = isset($_POST['ParentName']) ? $_POST['ParentName'] : '';
+		$doc['DocumentNo'] = isset($_POST['DocumentNo']) ? $_POST['DocumentNo'] : '';
+		$doc['Parent'] = null;
+		if ($doc['ParentID']) {
+			$doc['Parent'] = $this->getDmsEntry($doc['ParentID']);
+		}
+
+		// Company information
+		//
 		$doc['PresenterName'] = isset($_POST['PresenterName']) ? $_POST['PresenterName'] : '';
 		$doc['PresenterPhone'] = isset($_POST['PresenterPhone']) ? $_POST['PresenterPhone'] : '';
 		$doc['AtDate'] = isset($_POST['AtDate']) ? $_POST['AtDate'] : '';
+		
+		// Contact information, name, address
+		//
 		$doc['FirstName'] = isset($_POST['FirstName']) ? $_POST['FirstName'] : '';
 		$doc['LastName'] = isset($_POST['LastName']) ? $_POST['LastName'] : '';
 		$doc['Title'] = '';
@@ -816,14 +832,22 @@ class Contactcontroller {
 		$doc['FullName'] = $this->makeFullName($doc);
 		$doc['Title'] = isset($_POST['Title']) ? $_POST['Title'] : '';
 		if ($doc['Title'])
-			$doc['FullName'] = $doc['Title'] . " " . $doc['FullName'];
-		
+			$doc['FullName'] = $doc['Title'] . " " . $doc['FullName'];	
 		$doc['Address'] = isset($_POST['Address']) ? $_POST['Address'] : '';
 		$doc['Email'] = isset($_POST['Email']) ? $_POST['Email'] : '';
 		$doc['DataBox'] = isset($_POST['DataBox']) ? $_POST['DataBox'] : '';
 		$doc['Phone'] = isset($_POST['Phone']) ? $_POST['Phone'] : '';
-		$doc['DocumentNo'] = isset($_POST['DocumentNo']) ? $_POST['DocumentNo'] : '';
 
+		// Contact (array) from database
+		//
+		$doc['ContactID'] = isset($_POST['ContactID']) ? $_POST['ContactID'] : null;
+		$doc['Contact'] = null;
+		if($doc['ContactID']){
+			$doc['Contact'] = $this->getContact($doc['ContactID']);
+		}
+
+		// Full HTML format address for print
+		//
 		$doc['FullHtmlAddress'] = '';
 		$doc['FullHtmlAddress'] .= $doc['Company'] ? '<b>'.$doc['Company'].'</b><br>' : '';
 		$doc['FullHtmlAddress'] .= $doc['FullName'] ? '<b>'.$doc['FullName'].'</b><br>' : '';
@@ -832,6 +856,8 @@ class Contactcontroller {
 		$doc['FullHtmlAddress'] .= $doc['Phone'] ? 'Tel.: '.$doc['Phone'].'<br>' : '';
 		$doc['FullHtmlAddress'] .= $doc['DataBox'] ? 'Datová schránka: '.$doc['DataBox'].'<br>' : '';
 
+		// Document informations
+		//
 		$doc['Subject'] = isset($_POST['Subject']) ? $_POST['Subject'] : '';
 		$doc['Content'] = isset($_POST['Content']) ? $_POST['Content'] : '';
 		$doc['SignatureName'] = isset($_POST['SignatureName']) ? $_POST['SignatureName'] : '';
@@ -839,4 +865,22 @@ class Contactcontroller {
 
 		return $doc;
 	}
+
+	/**
+	 * Get record Dmsentry by ID
+	 * @param mixed $ID
+	 * @return array
+	 */
+	function getDmsEntry($ID)
+	{
+		require_once( FRAMEWORK_PATH . 'models/entry/model.php');
+		$this->model = new Entry( $this->registry, $ID );
+		if ($this->model->isValid()) {
+			$entry = $this->model->getData();
+		}else{
+			$entry = null;
+		}
+		return $entry;
+	}
+
 }

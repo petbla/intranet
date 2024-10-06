@@ -189,6 +189,7 @@ class Zobadvance
 		$nextPageNo = $PageNo >= $pages ? $pages : $PageNo + 1;
 
 		$meetinglinepage = $this->zob->getMeetinglinepageByPageNo($MeetingID, $PageNo);
+		$meetinglinepageline = $this->zob->readMeetinglinepagelines($meetinglinepage);
 		$meetingline = $this->zob->getMeetingline($meetinglinepage['MeetingLineID']);
 		if(!$meetingline){
 			$meetingline = array();
@@ -207,9 +208,15 @@ class Zobadvance
 			$meetingLinepageattachment = $this->zob->readMeetingLinePageAttachments($meetinglinepage);
 		}
 
-
-		$this->registry->getObject('template')->dataToTags($meetinglinepage, 'page_');
+		$this->registry->getObject('template')->dataToTags($meetinglinepage, 'page_');		
 		$this->registry->getObject('template')->dataToTags($meetingline, 'line_');
+
+		if($meetinglinepageline){
+			$cache = $this->registry->getObject('db')->cacheData( $meetinglinepageline );
+			$this->registry->getObject('template')->getPage()->addTag( 'meetinglinepagelines', array( 'DATA', $cache ) );	
+		}else{
+			$this->registry->getObject('template')->getPage()->addTag( 'meetinglinepagelines', '' );
+		};
 
 		if($meetingLinepageattachment){
 			$cache = $this->registry->getObject('db')->cacheData( $meetingLinepageattachment );

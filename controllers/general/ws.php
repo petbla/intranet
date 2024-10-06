@@ -12,6 +12,8 @@ class Generalws {
     private $contact;
 	private $table;
 	private $ID;
+	private $parentTable;
+	private $parentID;
 	private $field;
 	private $fieldlist;
 	private $result;
@@ -64,6 +66,9 @@ class Generalws {
 						case 'upd':
 							$this->update($action);
 							break;
+						case 'delete':
+							$this->delete($action);
+							break;
 						case 'copyFrom':
 							$this->copyFrom($action);
 							break;
@@ -98,6 +103,27 @@ class Generalws {
 	private function setParam()
 	{
 		$urlBits = $this->registry->getURLBits();
+
+		// New Update
+		$metod = $_SERVER['REQUEST_METHOD'];
+		$get = $_GET;
+
+		if($metod === "DELETE"){
+			$this->table = isset($_GET['table']) ? $_GET['table'] : '';
+			$this->ID = isset($_GET['pkID']) ? $_GET['pkID'] : '';
+			if(($this->table) && ($this->ID))
+				return true;
+			return false;
+		};
+
+		$this->table = isset($_POST['table']) ? $_POST['table'] : '';
+		$this->ID = isset($_POST['pkID']) ? $_POST['pkID'] : '';
+		$this->parentTable = isset($_POST['parentTable']) ? $_POST['parentTable'] : '';
+		$this->parentID = isset($_POST['parentPkID']) ? $_POST['parentPkID'] : '';
+		$this->field = isset($_POST['field']) ? $_POST['field'] : '';
+		$this->fieldlist = isset($_POST['fieldlist']) ? $_POST['fieldlist'] : '';
+		if(($this->table) && ($this->field))
+			return true;
 
 		# URL: general/ws/<action>/<table>/<ID>/<FieldName>
 		$this->table = strtolower(isset($urlBits[3]) ? $urlBits[3] : ''); 
@@ -146,6 +172,9 @@ class Generalws {
 			case 'meetinglinepage':
 				$this->updateMeetinglinepage($value);
 				break;
+			case 'meetinglinepageline':
+				$this->updateMeetinglinepageline($value);
+				break;
 			case 'contact':
 				$this->updateContact($value);
 				break;
@@ -161,6 +190,14 @@ class Generalws {
 					$this->registry->getObject('db')->updateRecords($this->table,$data,$condition);	
 				break;
 		}
+	}
+	
+	private function delete($action)
+	{		
+		$pk = $this->getFieldPK($this->table);
+		$condition = "`$pk` = '".$this->ID."'";
+		if($this->result == 'OK') 
+			$this->registry->getObject('db')->deleteRecords($this->table,$condition);	
 	}
 
 	private function updateMeeting($value)
@@ -401,6 +438,32 @@ class Generalws {
 		$condition = "PageID = $ID";								
 		if(($this->result == 'OK') && $data)
 			$this->registry->getObject('db')->updateRecords($this->table,$data,$condition);	
+	}
+	private function updateMeetinglinepageline($value)
+	{
+		$ID = $this->ID;
+		$field = $this->field;
+		$data = null;
+		$pkField = $this->getFieldPK($this->table);
+		$data = null;
+		$parentID = $this->parentID;
+
+		if($ID){
+			// Update
+			$data[$this->field] = $value;
+			$condition = "`$pkField` = '$ID'";
+			if($this->result == 'OK') 
+				$this->registry->getObject('db')->updateRecords($this->table,$data,$condition);	
+		}else{
+			// Insert New
+			$data[$this->field] = $value;
+			$meetinglinepage = $this->zob->getMeetinglinepage($parentID);
+			$data['PageID'] = $meetinglinepage['PageID'];
+			$data['MeetingLineID'] = $meetinglinepage['MeetingLineID'];
+			$data['MeetingID'] = $meetinglinepage['MeetingID'];
+			$data['MeetingTypeID'] = $meetinglinepage['MeetingTypeID'];
+			$this->registry->getObject('db')->InsertRecords('meetinglinepageline', $data);				
+		}
 	}
 
 	private function updateDmsentry($value)
@@ -676,6 +739,8 @@ class Generalws {
 				return 'AttachmentID';
 			case 'meetinglinepage':
 				return 'PageID';
+			case 'meetinglinepageline':
+				return 'EntryNo';
 			default:
 				$this->result = "ERROR: Unknown table name '$table'.";
 		}

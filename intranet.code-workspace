@@ -2,10 +2,6 @@
 	"folders": [
 		{
 			"path": "."
-		},
-		{
-			"name": "Trimmer_LCD",
-			"path": "../../../Users/petr/Documents/PlatformIO/Projects/Trimmer_LCD"
 		}
 	],
 	"settings": {}
