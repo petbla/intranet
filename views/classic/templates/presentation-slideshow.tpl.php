@@ -8,7 +8,7 @@
             <td width="auto">    
                 <h1> 
                     <span style="font-size: 30px;">{page_Point}&nbsp;</span>
-                    <span id="header" style="font-size: 30px; width:90%;">{line_Title}</span>
+                    <span id="header" style="font-size: 32px; width:90%;">{line_Title}</span>
                 </h1>
             </td>
             <td width="100">
@@ -22,12 +22,15 @@
     <!-- START meetinglinepagelines -->
     <div>
         <textarea id="ContentLine{EntryNo}" class="autosize par noborder" style="padding:0;" name="Content" pkID="{EntryNo}" table="meetinglinepageline">{Content}</textarea>
-        <img src="{ImageURL}" height="{ImageHeight}" width="{ImageWidth}" id="Image{EntryNo}" style="display:none;" />
-        <input type="hidden" id="FontStyle{EntryNo}" value="{FontStyle}" pkID="{EntryNo}" table="meetinglinepageline"" />
+        <img src="http://localhost:90/Obecn%C3%AD%20%C3%BA%C5%99ad/_Zastupitelstvo/2022-2026/7/Image/{ImageURL}" id="Image{EntryNo}" />        
+        <input type="hidden" id="FontStyle{EntryNo}" value="{FontStyle}" pkID="{EntryNo}" />
+        <input type="hidden" id="Align{EntryNo}" value="{Align}" pkID="{EntryNo}" />        
+        <input type="hidden" id="ImageWidth{EntryNo}" value="{ImageWidth}" pkID="{EntryNo}" />        
+        <input type="hidden" id="ImageHeight{EntryNo}" value="{ImageHeight}" pkID="{EntryNo}" />        
         <script>
             e = document.getElementById("FontStyle{EntryNo}");
             if(e)
-                onChangeFontStyle(e);
+                formatContentLine(e);
         </script>
     </div>        
     <!-- END meetinglinepagelines -->

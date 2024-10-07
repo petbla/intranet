@@ -145,52 +145,91 @@ function pptJsonToHtmlTable(jsonData,tableContainerId,roweventaction) {
     return table;
 }
 
-function onChangeFontStyle(e){
+function formatContentLine(e){
     var entryNo = e.getAttribute("pkID");
     var e_content = document.getElementById("ContentLine" + entryNo);
     var e_image = document.getElementById("Image" + entryNo);
-    var val = ""
-    val = e.getAttribute("value");
-    
+    var e_fontstyle = document.getElementById("FontStyle" + entryNo)
+    var e_align = document.getElementById("Align" + entryNo)
+    var e_imageWidth = document.getElementById("ImageWidth" + entryNo)
+    var e_imageHeight = document.getElementById("ImageHeight" + entryNo)
+    var fontstyle = "";
+    if(e_fontstyle)
+        fontstyle = e_fontstyle.getAttribute("value");
+    var align = "";
+    if(e_align)
+        align = e_align.getAttribute("value");
+    var imageWidth = "";
+    if(e_imageWidth)
+        imageWidth = e_imageWidth.getAttribute("value");
+    var imageHeight = "";
+    if(e_imageHeight)
+        imageHeight = e_imageHeight.getAttribute("value");
+
 
     if((e_image) && (e_content)){
-        switch (val) {
+        switch (fontstyle) {
             case "IMG":
                 e_image.style.display="inline";
                 e_content.style.display="none";
+                e_align.style.display="none";
+                e_image.style.display="inline";
+                e_image.style.display="inline";
+                console.log(imageHeight);
+                if(imageWidth)
+                    e_image.width = imageWidth;
+                if(imageHeight)
+                    e_image.height = imageHeight;
                 break;                    
             default:
                 e_image.style.display="none";
                 e_content.style.display="inline";
+                e_align.style.display="inline";
+                e_image.style.display="none";
+                e_image.style.display="none";
                 
                 //Reset
-                switch (val) {
+                e_content.style.textDecoration = "none";
+                e_content.style.fontWeight = "normal";
+                e_content.style.fontStyle = "normal";
+                e_content.style.textAlign = 'Left';
+                switch (fontstyle) {
                     case "H1":
-                        e_content.style.textDecoration = "none";
                         e_content.style.fontWeight = "bold";
-                        e_content.style.fontStyle = "normal";
-                        e_content.style.fontSize = "72px";
+                        e_content.style.fontSize = "60px";
                         break
                     case "H2":
-                        e_content.style.textDecoration = "none";
                         e_content.style.fontWeight = "bold";
-                        e_content.style.fontStyle = "normal";
-                        e_content.style.fontSize = "48px";
-                        break
-                    case "H3":
-                        e_content.style.textDecoration = "none";
-                        e_content.style.fontWeight = "bold";
-                        e_content.style.fontStyle = "normal";
                         e_content.style.fontSize = "32px";
                         break
-                    case "T1":
-                        e_content.style.textDecoration = "none";
+                    case "H3":
                         e_content.style.fontWeight = "bold";
-                        e_content.style.fontStyle = "normal";
+                        e_content.style.fontSize = "28px";
+                        break
+                    case "T1":
+                        e_content.style.fontWeight = "bold";
                         e_content.style.fontSize = "24px";
                         break
+                    case "T2":
+                        e_content.style.fontWeight = "bold";
+                        e_content.style.fontSize = "20px";
+                        break
+                    case "T3":
+                        e_content.style.fontWeight = "bold";
+                        e_content.style.fontSize = "18px";
+                        break
                 }
-            
+                switch (align) {
+                    case "Left":
+                        e_content.style.textAlign = 'Left';
+                        break;
+                    case "Center":
+                        e_content.style.textAlign = 'Center';
+                        break;
+                    case "Right":
+                        e_content.style.textAlign = 'Right';
+                        break;
+                }
         }
     }
 }

@@ -388,8 +388,41 @@ class upgrademanagement {
             // upgrade to 2.64
             $this->upgrade_264('2.64');
         }
+        if ($this->version === '2.64') 
+        {
+            // upgrade to 2.65
+            $this->upgrade_265('2.65');
+        }
     }
 
+    private function upgrade_265($upVer)
+    {
+		global $config;
+        $pref = $config['dbPrefix'];
+
+        // add Changed field
+        $sql = "DROP TABLE ".$pref."meetinglinepageline";
+        $this->registry->getObject('db')->executeQuery( $sql );
+
+        $sql = "CREATE TABLE IF NOT EXISTS `".$pref."meetinglinepageline` (
+            `EntryNo` int(11) NOT NULL AUTO_INCREMENT,
+            `PageID` int(11) DEFAULT 0,
+            `MeetingLineID` int(11) NOT NULL,
+            `MeetingID` int(11) DEFAULT 0,
+            `MeetingTypeID` int(11) DEFAULT 0,
+            `Order` int(11) DEFAULT 0,
+            `Content` varchar(5000) COLLATE utf8_czech_ci DEFAULT '',
+            `ImageURL` varchar(250) COLLATE utf8_czech_ci DEFAULT '',
+            `ImageWidth` int(11) DEFAULT 0,
+            `ImageHeight` int(11) DEFAULT 0,
+            `Align` varchar(30) COLLATE utf8_czech_ci DEFAULT '',
+            `FontStyle` varchar(30) COLLATE utf8_czech_ci DEFAULT '',
+            PRIMARY KEY (`EntryNo`)
+            ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci";
+        $this->registry->getObject('db')->executeQuery( $sql );
+
+        $this->setNewVersion($upVer);
+    }
     private function upgrade_264($upVer)
     {
 		global $config;

@@ -789,13 +789,14 @@ class Zobcontroller{
 		return true;
 	}
 
-	public function addMeetinglinepageline($meetinglinepage, $content)
+	public function addMeetinglinepageline($meetinglinepage, $content, $FontStyle = 'T1')
 	{
 		$data['PageID'] = $meetinglinepage['PageID'];
 		$data['MeetingLineID'] = $meetinglinepage['MeetingLineID'];
 		$data['MeetingID'] = $meetinglinepage['MeetingID'];
 		$data['MeetingTypeID'] = $meetinglinepage['MeetingTypeID'];
 		$data['Content'] = $content;
+		$data['FontStyle'] = $FontStyle;
 		$this->registry->getObject('db')->InsertRecords('meetinglinepageline', $data);
 	}
 	public function addMeetinglinepageFromMeetingline($meetingline, $pageNo){
@@ -876,15 +877,14 @@ class Zobcontroller{
 		$this->registry->getObject('db')->setOrderBy('PageID');
 		if ($this->registry->getObject('db')->findLast()){
 			$meetinglinepage = $this->registry->getObject('db')->getResult();			
-			$this->addMeetinglinepageline($meetinglinepage, $headerTitle['MetingTitle']);
-			$this->addMeetinglinepageline($meetinglinepage, $headerTitle['MetingTitle2']);
+			$this->addMeetinglinepageline($meetinglinepage, $headerTitle['MetingTitle'], 'H1');
+			$this->addMeetinglinepageline($meetinglinepage, $headerTitle['MetingTitle2'], 'H1');
 			$content = $this->registry->getObject('core')->formatDate($meeting['AtDate']) . ', ';
-			$content .= $this->registry->getObject('core')->formatDate($meeting['AtTime'],'H:i').' HODIN';
-			$this->addMeetinglinepageline($meetinglinepage, $content);
+			$content .= $this->registry->getObject('core')->formatDate($meeting['AtTime'],'H:i').' hodin';
+			$this->addMeetinglinepageline($meetinglinepage, $content, 'H3');
 			$content = $config['compCity'] .', ' . $meeting['MeetingPlace'];
-			$this->addMeetinglinepageline($meetinglinepage, $content);
+			$this->addMeetinglinepageline($meetinglinepage, $content, 'H3');
 		}
-
 	} 
 
 	public function addMeetinglinepageWarpPage($MeetingID){
@@ -1971,21 +1971,21 @@ class Zobcontroller{
             case 'zastupitelstvo':
                 $headerTitle['FromMeting'] = 'STAROSTA OBCE '.mb_strtoupper($config['compCity']);
                 $headerTitle['FromMeting2'] = 'SVOLÁVÁ';
-                $headerTitle['MetingTitle'] = 'VEŘEJNÉ ZASEDÁNÍ';
-                $headerTitle['MetingTitle2'] = 'ZASTUPITELSTVA OBCE';
+                $headerTitle['MetingTitle'] = 'Veřejné zasedání';
+                $headerTitle['MetingTitle2'] = 'zastupitelstva obce';
                 $headerTitle['HeadMan'] = 'starosta obce';
                 break;
             case 'rada':
                 $headerTitle['FromMeting'] = 'STAROSTA OBCE '.mb_strtoupper($config['compCity']);
                 $headerTitle['FromMeting2'] = 'SVOLÁVÁ';
-                $headerTitle['MetingTitle'] = 'JEDNÁNÍ RADY';
+                $headerTitle['MetingTitle'] = 'Jednání rady';
                 $headerTitle['MetingTitle2'] = '';
                 $headerTitle['HeadMan'] = 'starosta obce';
                 break;
             case 'stavební komise':
                 $headerTitle['FromMeting'] = 'předseda stavební komise obce '.$config['compCity'];
                 $headerTitle['FromMeting2'] = 'SVOLÁVÁ';
-                $headerTitle['MetingTitle'] = 'JEDNÁNÍ STAVEBNÍ KOMISE';
+                $headerTitle['MetingTitle'] = 'Jednání stavební komise';
                 $headerTitle['MetingTitle2'] = '';
                 $headerTitle['HeadMan'] = 'předseda komise';
                 break;

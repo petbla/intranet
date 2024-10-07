@@ -153,4 +153,3 @@ class page {
 	    return $this->content;
     } // end function getContent
 }
-?>

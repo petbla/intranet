@@ -316,9 +316,9 @@ class pdfdocument extends FPDF
           $this->WriteCell('times','B',16, 40, 10, 150,0,$headerTitle['FromMeting2'],0,0,'C');        
         $this->WriteCell('times','I',18, 40, 10, 150,0,$headerTitle['AtDate'],0,0,'C');
         if($headerTitle['MetingTitle'] != '')
-          $this->WriteCell('times','BU',20, 40, 12, 150,0,$headerTitle['MetingTitle'],0,0,'C');        
+          $this->WriteCell('times','BU',20, 40, 12, 150,0, strtoupper($headerTitle['MetingTitle']),0,0,'C');        
         if($headerTitle['MetingTitle'] != '')
-          $this->WriteCell('times','BU',20, 40, 12, 150,0,$headerTitle['MetingTitle2'],0,0,'C');        
+          $this->WriteCell('times','BU',20, 40, 12, 150,0,strtoupper($headerTitle['MetingTitle2']),0,0,'C');        
         $this->WriteCell('times','B',16, 40, 8, 150,0,$headerTitle['AtTime'],0,0,'C');        
         $this->WriteCell('times','B',16, 40, 8, 150,0,$headerTitle['MeetingPlace'],0,0,'C');        
 

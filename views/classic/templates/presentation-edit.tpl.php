@@ -56,26 +56,38 @@
 <div id="PageBody">
     <!-- START meetinglinepagelines -->
     <div class="textbox-container">
-        <select id="FontStyle{EntryNo}" class="lineoptions" name="FontStyle" value="{FontStyle}" pkID="{EntryNo}" table="meetinglinepageline" onchange="this.setAttribute('value',this.options[this.selectedIndex].text); wsUpdate(this); onChangeFontStyle(this);">
-            <option id="X{EntryNo}"></option>
+        <select id="FontStyle{EntryNo}" class="lineoptions" name="FontStyle" value="{FontStyle}" pkID="{EntryNo}" table="meetinglinepageline" onchange="this.setAttribute('value',this.options[this.selectedIndex].text); wsUpdate(this); formatContentLine(this);">
+            <option id="FS{EntryNo}"></option>
             <option id="H1{EntryNo}">H1</option>
             <option id="H2{EntryNo}">H2</option>
             <option id="H3{EntryNo}">H3</option>
             <option id="T1{EntryNo}">T1</option>
             <option id="T2{EntryNo}">T2</option>
+            <option id="T3{EntryNo}">T3</option>
             <option id="IMG{EntryNo}">IMG</option>
         </select>
+        <select id="Align{EntryNo}" class="lineoptions" name="Align" value="{Align}" pkID="{EntryNo}" table="meetinglinepageline" onchange="this.setAttribute('value',this.options[this.selectedIndex].text); wsUpdate(this); formatContentLine(this);">
+            <option id="A{EntryNo}"></option>
+            <option id="Left{EntryNo}">Left</option>
+            <option id="Center{EntryNo}">Center</option>
+            <option id="Right{EntryNo}">Right</option>
+        </select>
+        <input type="text" id="ImageWidth{EntryNo}" style="display:none;" value="{ImageWidth}" class="lineoptions" title="šířka" name="ImageWidth" pkID="{EntryNo}" table="meetinglinepageline" onchange="wsUpdate(this);" />
+        <input type="text" id="ImageHeight{EntryNo}" style="display:none;" value="{ImageHeight}" class="lineoptions" title="výška" name="ImageHeight" pkID="{EntryNo}" table="meetinglinepageline" onchange="wsUpdate(this);" />
         <img src="views/classic/images/icon/delete.png" id="Deleteline{EntryNo}" height ="24" pkID="{EntryNo}" table="meetinglinepageline" onclick="wsDelete(this);" />
         <textarea id="ContentLine{EntryNo}" style="display:inline;" rows="1" cols="40" value="" class="autosize par" name="Content" pkID="{EntryNo}" table="meetinglinepageline" onchange="wsUpdate(this);">{Content}</textarea>
-        <input type="text" id="Image{EntryNo}" style="display:none; width:100%;" value="ImageURL" class="lineoptions" name="ImageURL" pkID="{EntryNo}" table="meetinglinepageline" onchange="wsUpdate(this);">{ImageURL}</input>
+        <input type="text" id="Image{EntryNo}" style="display:none; width:100%;" value="{ImageURL}" class="lineoptions" name="ImageURL" pkID="{EntryNo}" table="meetinglinepageline" onchange="wsUpdate(this);" />
         <script>
             var e;
             e = document.getElementById("{FontStyle}{EntryNo}");
             if(e)
                 e.setAttribute('selected',true);
+            e = document.getElementById("{Align}{EntryNo}");
+            if(e)
+                e.setAttribute('selected',true);
             e = document.getElementById("FontStyle{EntryNo}");
             if(e)
-                onChangeFontStyle(e);
+                formatContentLine(e);
         </script>
     </div>        
     <!-- END meetinglinepagelines -->
