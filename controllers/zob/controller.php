@@ -887,52 +887,41 @@ class Zobcontroller{
 		}
 	} 
 
-	public function addMeetinglinepageWarpPage($MeetingID){
+	public function addMeetinglinepageWarpPage($MeetingID,$PageID){
 		global $config;
 
-		$this->addMeetinglinepageFrontPage($MeetingID);
-		$pageNo = 1;
-
 		$meeting = $this->getMeeting($MeetingID);
-		$headerTitle = $this->getMeetingHeader($meeting);
-		$meetinglinepage = $this->readMeetinglinepageByMeetingID($MeetingID, "`PageType` like 'warp'");
-		if ($meetinglinepage){
-			$condition = '`MeetingID` = ' . $meetinglinepage[0]['MeetingID'] . " AND `PageType` = 'warp'";
-			$this->registry->getObject('db')->deleteRecords('meetinglinepage',$condition);	
-		};
+		$meetinglinepage = $this->getMeetinglinepage($PageID);
 
-		$data = array();
-		$data['MeetingID'] = $MeetingID;
-		$data['MeetingLineID'] = 0;
-		$data['System'] = 1;
-		$data['PageType'] = 'warp';
-		$data['Content'] = '';
+		$condition = "PageID = ".$PageID;
+		$this->registry->getObject('db')->deleteRecords( 'meetinglinepageline', $condition); 
 
 		// Načtu počet stran
 		$maxLine = 8;
 		$meetingline = $this->readMeetingLines($meeting);
 		if (!$meetingline)
 			return;
-		$i = 0;
+		if(!$meetinglinepage)
+			return;
+		$suppPoit = 0;
+
 		foreach($meetingline as $rec){
-			if ($rec['LineType'] != 'Doplňující bod'){
-				$data['Content'] .= $rec['LineNo'] . '. ' . ' ' .$rec['Title'] .'\n';
+			$content = "";
+			if ($rec['LineType'] == 'Doplňující bod') {
+				$suppPoit++;
+				if ($suppPoit == 1){
+					$content = "\n\nDoplňující body\n";
+					$this->addMeetinglinepageline($meetinglinepage, $content, 'T2');		
+				}
+				$content = $rec['LineNo'] . '. (' . $rec['LineType']. ')  ' .$rec['Title'];
 			}else{
-				$data['Content'] .= $rec['LineNo'] . '. (' . $rec['LineType']. ')  ' .$rec['Title'] .'\n';
-			}			
-			$i++;
-			if ($i == $maxLine){
-				$pageNo++;
-				$data['PageNo'] = $pageNo;
-				$this->registry->getObject('db')->InsertRecords('meetinglinepage',$data);
-				$i = 0;
-				$data['Content'] = '';
-			}
-		}
-		if($data['Content'] != ''){
-			$pageNo++;
-			$data['PageNo'] = $pageNo;
-			$this->registry->getObject('db')->InsertRecords('meetinglinepage',$data);
+				if ($suppPoit > 0) {
+					$suppPoit = 0;
+					$this->addMeetinglinepageline($meetinglinepage, "", 'T1');		
+				}
+				$content = $rec['LineNo'] . '. ' . ' ' .$rec['Title'];
+			}	
+			$this->addMeetinglinepageline($meetinglinepage, $content, 'T1');
 		}
 	} 
 

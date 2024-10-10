@@ -32,9 +32,12 @@
 <div id="PageHeader" pageID="{page_PageID}">
     <a href="index.php?page=zob/adv/presentation/content/{MeetingID}" id="closePage" accesskey="x" class="button"><span class="action_close">{lbl_Close}</span></a>    
     <a href="index.php?page=zob/adv/presentation/show/{MeetingID}/{PageNo}" title="Náhled" target="_blank" class="button"><span class="action_close">Náhled</span></a>    
+    
+    <a href="index.php?page=zob/adv/presentation/addfrontpage/{MeetingID}" class="button" onclick="return ConfirmAction('Vložit úvodní stranu?');"><span class="action_close">Vložit/aktualizovat úvodní stranu</span></a>
+    <a href="index.php?page=zob/adv/presentation/addwarppage/{MeetingID}/{page_PageID}" class="button" onclick="return ConfirmAction('Vložit nebo aktualizovat obsah na tuto stranu?');"><span class="action_close">Vložit/aktualizovat obsah</span></a>
 
-    <span class="action_close" onclick="pptCreateTable('meetingattachment',{line_MeetingLineID},'MeetingLineID','AttachmentID,Description,DmsEntryID',function(e){wsAddMeetinglinepageattachment(this);})">Přílohy {AttachmentCount}</span>        
     <span class="action_close" onclick="document.getElementById('meetingcontent').style.display='';">Text zápisu</span>        
+    <span class="action_close" onclick="pptCreateTable('meetingattachment',{line_MeetingLineID},'MeetingLineID','AttachmentID,Description,DmsEntryID',function(e){wsAddMeetinglinepageattachment(this);})">Přílohy {AttachmentCount}</span>        
     <div id="table-container" ></div>
     <table>
         <tr style="background-color: white;">
@@ -92,8 +95,8 @@
     </div>        
     <!-- END meetinglinepagelines -->
     <br>
-    <textarea id="ContentLine0" style="display:inline;" rows="1" cols="40" value="" class="autosize par" name="Content" pkID="0" table="meetinglinepageline" parentPkID="{page_PageID}" parentTable="meetinglinepage" onchange="wsUpdateNew(this);" placeholder="Vložit řádek"></textarea>
-    <div id="meetingcontent" ondblclick="this.style.display='none';">
+    <textarea id="ContentLine0" style="display:inline;" rows="1" cols="40" value="" class="autosize par" name="Content" pkID="0" table="meetinglinepageline" parentPkID="{page_PageID}" parentTable="meetinglinepage" onchange="wsUpdateNew(this);" placeholder="Nový řádek"></textarea>
+    <div id="meetingcontent" ondblclick="this.style.display='none';" style="display:none;" title="Dvojklik - zavření">
         <span><b>Text zápisu</b><span><br>
         <p class="blue" style="border:1px solid grey; font-size:16px; background-color: yellow;" readonly>
             {page_MeetingContent}
@@ -119,19 +122,37 @@
     </script>
 </div>
 <div id="PageFooter">
-    <a href="index.php?page=zob/adv/presentation/edit/{MeetingID}/1" title="Úvodní strana (Home)"><img src="views/classic/images/nav/homepage24.png"/></a>
+    <a href="index.php?page=zob/adv/presentation/edit/{MeetingID}/1" accesskey="" title="Úvodní strana"><img src="views/classic/images/nav/homepage24.png"/></a>
     <span>&nbsp;</span>
-    <a href="index.php?page=zob/adv/presentation/content/{MeetingID}" title="Zavřít (ESC)"><img src="views/classic/images/nav/escpage24.png"/></a>
+    <a href="index.php?page=zob/adv/presentation/content/{MeetingID}" title="Zavřít"><img src="views/classic/images/nav/escpage24.png"/></a>
     <span>&nbsp;</span>
-    <a href="index.php?page=zob/adv/presentation/edit/{MeetingID}/{prevPageNo}" title="Předchozí (Alt+Q)"><img src="views/classic/images/nav/prevpage24.png"/></a>
+    <a href="index.php?page=zob/adv/presentation/edit/{MeetingID}/{prevPageNo}" title="Předchozí (Alt + RollDown)"><img src="views/classic/images/nav/prevpage24.png"/></a>
     <span class="pageno">{PageNo}</span>
-    <a href="index.php?page=zob/adv/presentation/edit/{MeetingID}/{nextPageNo}" title="Následující (Alt+W)"><img src="views/classic/images/nav/nextpage24.png" /></a>
+    <a href="index.php?page=zob/adv/presentation/edit/{MeetingID}/{nextPageNo}" title="Následující (Alt + RollUp)"><img src="views/classic/images/nav/nextpage24.png" /></a>
 </div>
 <script>
     var e =document.getElementById('changeMark{page_PageID}');
     if('{page_Changed}' != '1'){
         e.style.display = 'none';
     }
+    document.addEventListener('keydown', function(event) {
+        if (event.altKey) {
+            if (event.key === 'ArrowLeft') {            
+                window.location = "index.php?page=zob/adv/presentation/edit/{MeetingID}/{prevPageNo}";
+            } else if (event.key === 'ArrowRight') {
+                window.location = "index.php?page=zob/adv/presentation/edit/{MeetingID}/{nextPageNo}";
+            }
+        }
+    });
+    document.addEventListener('wheel', function(event) {
+        if (event.altKey) {
+            if (event.deltaY < 0) {
+                window.location = "index.php?page=zob/adv/presentation/edit/{MeetingID}/{nextPageNo}";
+            } else {
+                window.location = "index.php?page=zob/adv/presentation/edit/{MeetingID}/{prevPageNo}";
+            }
+        }
+    });
 </script>
 
 

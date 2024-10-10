@@ -168,10 +168,10 @@ class Zobadvance
 	/**
 	 * @return void
 	 */
-	private function addwarppage($MeetingID)
+	private function addwarppage($MeetingID,$PageID)
 	{
 		// Kontrola existence frontPage a vložení nové (úvodní strana)
-		$this->zob->addMeetinglinepageWarpPage($MeetingID);
+		$this->zob->addMeetinglinepageWarpPage($MeetingID,$PageID);
 
 		// Přerovnání stránek
 		$this->zob->synchroMeetinglinepage($MeetingID);
@@ -276,8 +276,9 @@ class Zobadvance
 				break;
 			case 'addwarppage':
 				$template = 'presentation-edit.tpl.php';
-				$MeetingID = isset($urlBits[4]) ? $urlBits[4] : '';
-				$this->addwarppage($MeetingID);
+				$MeetingID = isset($urlBits[4]) ? $urlBits[4] : 0;
+				$PageID = isset($urlBits[4]) ? $urlBits[5] : 0;
+				$this->addwarppage($MeetingID,$PageID);
 				$this->setDatasetPresentation($MeetingID, 2);
 				$this->buildpresentation($template);
 				break;

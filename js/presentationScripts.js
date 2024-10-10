@@ -166,27 +166,29 @@ function formatContentLine(e){
     if(e_imageHeight)
         imageHeight = e_imageHeight.getAttribute("value");
 
-
-    if((e_image) && (e_content)){
+    if(e_content){
         switch (fontstyle) {
             case "IMG":
-                e_image.style.display="inline";
+                if(e_image){
+                    e_image.style.display="inline";
+                    e_imageWidth.style.display="inline";
+                    e_imageHeight.style.display="inline";
+                    if(imageWidth > 0)
+                        e_image.width = imageWidth;
+                    if(imageHeight > 0)
+                        e_image.height = imageHeight;
+                }
                 e_content.style.display="none";
-                e_align.style.display="none";
-                e_image.style.display="inline";
-                e_image.style.display="inline";
-                console.log(imageHeight);
-                if(imageWidth)
-                    e_image.width = imageWidth;
-                if(imageHeight)
-                    e_image.height = imageHeight;
+                e_align.style.display="none";                
                 break;                    
             default:
-                e_image.style.display="none";
+                if(e_image){
+                    e_image.style.display="none";
+                    e_imageWidth.style.display="none";
+                    e_imageHeight.style.display="none";
+                }
                 e_content.style.display="inline";
                 e_align.style.display="inline";
-                e_image.style.display="none";
-                e_image.style.display="none";
                 
                 //Reset
                 e_content.style.textDecoration = "none";
@@ -196,26 +198,25 @@ function formatContentLine(e){
                 switch (fontstyle) {
                     case "H1":
                         e_content.style.fontWeight = "bold";
-                        e_content.style.fontSize = "60px";
+                        e_content.style.fontFamily = "Calibri,Arial";
+                        e_content.style.fontSize = "100px";
                         break
                     case "H2":
                         e_content.style.fontWeight = "bold";
-                        e_content.style.fontSize = "32px";
+                        e_content.style.fontSize = "54px";
                         break
                     case "H3":
                         e_content.style.fontWeight = "bold";
-                        e_content.style.fontSize = "28px";
+                        e_content.style.fontSize = "34px";
                         break
                     case "T1":
-                        e_content.style.fontWeight = "bold";
-                        e_content.style.fontSize = "24px";
+                        e_content.style.fontSize = "26px";
                         break
                     case "T2":
                         e_content.style.fontWeight = "bold";
-                        e_content.style.fontSize = "20px";
+                        e_content.style.fontSize = "26px";
                         break
                     case "T3":
-                        e_content.style.fontWeight = "bold";
                         e_content.style.fontSize = "18px";
                         break
                 }
