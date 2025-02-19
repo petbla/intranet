@@ -22,6 +22,9 @@ class Agendacontroller{
 		global $config, $caption;
 		$this->registry = $registry;
 		$this->perSet = $this->registry->getObject('authenticate')->getPermissionSet();
+		$meetinginstance = new Meetingcontroller($this->registry);
+		$meetinglineinstance = new Meetinglinecontroller($this->registry);
+
         $this->prefDb = $config['dbPrefix'];
 		$templateHeader = '';
 		$templateFooter = '';
@@ -114,8 +117,8 @@ class Agendacontroller{
 								switch ($Type) {
 									case 'meetingline':
 										$MeetinglineID = isset($urlBits[4]) ? $urlBits[4] : 0;
-										$meetingline = $zob->getMeetingline($MeetinglineID);
-										$meeting = $zob->getMeeting($meetingline['MeetingID']);
+										$meetingline = $meetinglineinstance->getMeetingline($MeetinglineID);
+										$meeting = $meetinginstance->getMeeting($meetingline['MeetingID']);
 										$ParentID = $meeting['ParentID'];
 										$header = $meetingline['Title'];
 										$formhref = 'zob/meetingline/list/' . $meetingline['MeetingID'];

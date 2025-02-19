@@ -601,6 +601,7 @@ class Documentcontroller{
 	 */
 	public function choiceDocument($action, $Type, $TypeID, $DmsParentEntryNo)	
 	{
+		$meetinglineinstance = new Meetinglinecontroller($this->registry);
 		// Najít ParentFolder - pokud byl zadán - a určit level složky pro výběr
 		$parentPath = '';
 		$ParentID = '';
@@ -666,13 +667,13 @@ class Documentcontroller{
 				switch ($Type){
 					case 'meetinglineadv':
 						$zob->addMeetingLineAttachment($TypeID, $DmsParentEntryNo);
-						$meetingline = $zob->getMeetingline($TypeID);
+						$meetingline = $meetinglineinstance->getMeetingline($TypeID);
 						$adv->MeetingID = $meetingline['MeetingID'];
 						$adv->main($meetingline['MeetingID']);
 						return;
 					case 'meetingline':
 						$zob->addMeetingLineAttachment($TypeID, $DmsParentEntryNo);
-						$meetingline = $zob->getMeetingline($TypeID);
+						$meetingline = $meetinglineinstance->getMeetingline($TypeID);
 						$zob->listMeetingLine($meetingline['MeetingID'],$meetingline['MeetingLineID']);
 						return;
 				}
@@ -909,4 +910,3 @@ class Documentcontroller{
 	}
 
 }
-?>

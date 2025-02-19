@@ -4,11 +4,11 @@
  * @version 2.0
  * @date    6.1.2023
  */
-class Zobadvance
+class Zobadvance 
 {
 
 	private $registry;
-	private $zob;
+	private $db;
 	private $message;
 	private $errorMessage;
 	public $MeetingID;
@@ -20,7 +20,7 @@ class Zobadvance
 	public function __construct(Registry $registry)
 	{
 		$this->registry = $registry;
-		$this->zob = new Zobcontroller($this->registry, false);
+		$this->db = $this->registry->getObject('db');
 	}
 
 	/**
@@ -90,7 +90,8 @@ class Zobadvance
 	 */
 	public function build($template = 'zob-adv-meetingline-list.tpl.php')
 	{
-		$this->zob->setDatasetMeetingLine($this->MeetingID);
+		$zob = new Zobcontroller($this->registry, false);
+		$zob->setDatasetMeetingLine($this->MeetingID);
 
 		$this->registry->getObject('template')->addTemplateBit('editdMeetingLine', 'zob-adv-meetingline-edit.tpl.php');
 
@@ -112,10 +113,13 @@ class Zobadvance
 	private function print($action)
 	{
 		global $config, $caption;
+		$zob = new Zobcontroller($this->registry, false);
+		$meetinginstance = new Meetingcontroller($this->registry);
+
 		$urlBits = $this->registry->getURLBits();
 		$template = '';
 		$MeetingID = $urlBits[4];
-		$meeting = $this->zob->getMeeting($MeetingID);
+		$meeting = $meetinginstance->getMeeting($MeetingID);
 		if (!$meeting) {
 			$this->errorMessage = 'ERROR: Nezadáno číslo jednání nebo jednání $MeetingID neexistuje.';
 			return '';
@@ -133,11 +137,15 @@ class Zobadvance
 
 	public function presentationcontent( $MeetingID)
 	{
-		$pages = $this->zob->synchroMeetinglinepage($MeetingID);
-		$meeting = $this->zob->getMeeting($MeetingID);
+		$meetingtypeinstance = new Meetingtypecontroller($this->registry);
+		$zob = new Zobcontroller($this->registry, false);
+		$meetinginstance = new Meetingcontroller($this->registry);
+
+		$pages = $zob->synchroMeetinglinepage($MeetingID);
+		$meeting = $meetinginstance->getMeeting($MeetingID);
 		$MeetingTypeID = $meeting['MeetingTypeID'];
-		$meetingtype = $this->zob->getMeetingtype($MeetingTypeID);
-		$meetinglinepage = $this->zob->readMeetinglinepages($MeetingID);		
+		$meetingtype = $meetingtypeinstance->getMeetingtype($MeetingTypeID);
+		$meetinglinepage = $zob->readMeetinglinepages($MeetingID);		
 		
 		$Year = $meeting['Year'];
 		$EntryNo = $meeting['EntryNo'];
@@ -147,7 +155,7 @@ class Zobadvance
 		$this->registry->getObject('template')->getPage()->addTag('Header', $○r);
 		$this->registry->getObject('template')->getPage()->addTag('MeetingID', $MeetingID);
 
-		$cache = $this->registry->getObject('db')->cacheData( $meetinglinepage );
+		$cache = $this->db->cacheData( $meetinglinepage );
 		$this->registry->getObject('template')->getPage()->addTag( 'meetinglinepageList', array( 'DATA', $cache ) );	
 
 		$this->MeetingID = $MeetingID;
@@ -158,11 +166,12 @@ class Zobadvance
 	 */
 	private function addfrontpage($MeetingID)
 	{
+		$zob = new Zobcontroller($this->registry, false);
 		// Kontrola existence frontPage a vložení nové (úvodní strana)
-		$this->zob->addMeetinglinepageFrontPage($MeetingID);
+		$zob->addMeetinglinepageFrontPage($MeetingID);
 
 		// Přerovnání stránek
-		$this->zob->synchroMeetinglinepage($MeetingID);
+		$zob->synchroMeetinglinepage($MeetingID);
 	}
 
 	/**
@@ -170,11 +179,12 @@ class Zobadvance
 	 */
 	private function addwarppage($MeetingID,$PageID)
 	{
+		$zob = new Zobcontroller($this->registry, false);
 		// Kontrola existence frontPage a vložení nové (úvodní strana)
-		$this->zob->addMeetinglinepageWarpPage($MeetingID,$PageID);
+		$zob->addMeetinglinepageWarpPage($MeetingID,$PageID);
 
 		// Přerovnání stránek
-		$this->zob->synchroMeetinglinepage($MeetingID);
+		$zob->synchroMeetinglinepage($MeetingID);
 	}
 
 	/**
@@ -183,14 +193,16 @@ class Zobadvance
 	 */
 	private function setDatasetPresentation($MeetingID, $PageNo)
 	{
-		$pages = $this->zob->synchroMeetinglinepage($MeetingID);
+		$zob = new Zobcontroller($this->registry, false);
+		$meetinglineinstance = new Meetinglinecontroller($this->registry);
 
+		$pages = $zob->synchroMeetinglinepage($MeetingID);
 		$prevPageNo = $PageNo > 1 ? $PageNo - 1 : $PageNo;
 		$nextPageNo = $PageNo >= $pages ? $pages : $PageNo + 1;
 
-		$meetinglinepage = $this->zob->getMeetinglinepageByPageNo($MeetingID, $PageNo);
-		$meetinglinepageline = $this->zob->readMeetinglinepagelines($meetinglinepage);
-		$meetingline = $this->zob->getMeetingline($meetinglinepage['MeetingLineID']);
+		$meetinglinepage = $zob->getMeetinglinepageByPageNo($MeetingID, $PageNo);
+		$meetinglinepageline = $zob->readMeetinglinepagelines($meetinglinepage);
+		$meetingline = $meetinglineinstance->getMeetingline($meetinglinepage['MeetingLineID']);
 		if(!$meetingline){
 			$meetingline = array();
 			$meetingline['MeetingLineID'] = 0;
@@ -204,22 +216,22 @@ class Zobadvance
 			$meetingLinepageattachment = null;
 		}else{
 			$meetingline['LineNo'] .= $meetingline['LineNo2'] > 0 ? '.' . $meetingline['LineNo2'] . '.' : '.';
-			$meetingattachment = $this->zob->readMeetingAttachments($meetingline);
-			$meetingLinepageattachment = $this->zob->readMeetingLinePageAttachments($meetinglinepage);
+			$meetingattachment = $zob->readMeetingAttachments($meetingline);
+			$meetingLinepageattachment = $zob->readMeetingLinePageAttachments($meetinglinepage);
 		}
 
 		$this->registry->getObject('template')->dataToTags($meetinglinepage, 'page_');		
 		$this->registry->getObject('template')->dataToTags($meetingline, 'line_');
 
 		if($meetinglinepageline){
-			$cache = $this->registry->getObject('db')->cacheData( $meetinglinepageline );
+			$cache = $this->db->cacheData( $meetinglinepageline );
 			$this->registry->getObject('template')->getPage()->addTag( 'meetinglinepagelines', array( 'DATA', $cache ) );	
 		}else{
 			$this->registry->getObject('template')->getPage()->addTag( 'meetinglinepagelines', '' );
 		};
 
 		if($meetingLinepageattachment){
-			$cache = $this->registry->getObject('db')->cacheData( $meetingLinepageattachment );
+			$cache = $this->db->cacheData( $meetingLinepageattachment );
 			$this->registry->getObject('template')->getPage()->addTag( 'pageattachments', array( 'DATA', $cache ) );	
 			$this->registry->getObject('template')->getPage()->addTag( 'visibleattachments', 'yes' );	
 		}else{
@@ -249,6 +261,8 @@ class Zobadvance
 	private function presentation($action)
 	{
 		global $config, $caption;
+		$zob = new Zobcontroller($this->registry, false);
+
 		$urlBits = $this->registry->getURLBits();
 		$MeetingLineID = 0;
 		$MeetingID = 0;
@@ -290,7 +304,7 @@ class Zobadvance
 				$this->buildpresentation($template);
 				break;
 			default:
-				$this->zob->pageNotFound();
+				$zob->pageNotFound();
 				break;
 		};
 		$this->MeetingID = $MeetingID;
@@ -303,6 +317,9 @@ class Zobadvance
 	private function meetingline($action)
 	{
 		global $config, $caption;
+		$zob = new Zobcontroller($this->registry, false);
+		$meetinglineinstance = new Meetinglinecontroller($this->registry);
+
 		$urlBits = $this->registry->getURLBits();
 		$MeetingLineID = 0;
 		$MeetingID = 0;
@@ -312,7 +329,7 @@ class Zobadvance
 				$MeetingID = isset($urlBits[4]) ? $urlBits[4] : null;
 				$MeetingLineID = isset($urlBits[5]) ? $urlBits[5] : null;
 				if ($MeetingLineID) {
-					$this->zob->moveMeetingline($MeetingLineID, -1);
+					$meetinglineinstance->moveMeetingline($MeetingLineID, -1);
 				}
 				$MeetingLineID = 0;
 				break;
@@ -320,21 +337,21 @@ class Zobadvance
 				$MeetingID = isset($urlBits[4]) ? $urlBits[4] : null;
 				$MeetingLineID = isset($urlBits[5]) ? $urlBits[5] : null;
 				if ($MeetingLineID) {
-					$this->zob->moveMeetingline($MeetingLineID, 1);
+					$meetinglineinstance->moveMeetingline($MeetingLineID, 1);
 				}
 				$MeetingLineID = 0;
 				break;
 			case 'delete':
 				$MeetingID = isset($urlBits[4]) ? $urlBits[4] : null;
 				$MeetingLineID = isset($urlBits[5]) ? $urlBits[5] : null;
-				$this->zob->deleteMeetingline($MeetingLineID);
+				$meetinglineinstance->deleteMeetingline($MeetingLineID);
 				break;
 			case 'add':
 				$MeetingID = isset($_POST["MeetingID"]) ? $_POST["MeetingID"] : $MeetingID;
-				$this->zob->addMeetingline($MeetingID);
+				$meetinglineinstance->addMeetingline($MeetingID);
 				break;
 			default:
-				$this->zob->pageNotFound();
+				$zob->pageNotFound();
 				return;
 		}
 		$this->MeetingID = $MeetingID;
@@ -346,18 +363,22 @@ class Zobadvance
 	 */
 	private function meetinglinecontent($action)
 	{
+		$zob = new Zobcontroller($this->registry, false);
+		$meetinginstance = new Meetingcontroller($this->registry);
+		$meetinglineinstance = new Meetinglinecontroller($this->registry);
+		
 		$urlBits = $this->registry->getURLBits();
 		$MeetingID = 0;
 		$MeetingLineID = 0;
 		switch ($action) {
 			case 'delete':
 				$ContentID = isset($urlBits['4']) ? $urlBits['4'] : 0;
-				$meetinglinecontent = $this->zob->getMeetinglinecontent($ContentID);
+				$meetinglinecontent = $zob->getMeetinglinecontent($ContentID);
 				$MeetingLineID = $meetinglinecontent['MeetingLineID'];
 				$MeetingID = $meetinglinecontent['MeetingID'];
 				$condition = "ContentID = $ContentID";
-				$this->registry->getObject('db')->deleteRecords('meetinglinecontent', $condition, 1);
-				$meetinglinecontents = $this->zob->readMeetingLineContents($MeetingLineID);
+				$this->db->deleteRecords('meetinglinecontent', $condition, 1);
+				$meetinglinecontents = $zob->readMeetingLineContents($MeetingLineID);
 				if ($meetinglinecontents) {
 					$i = 0;
 					foreach ($meetinglinecontents as $meetinglinecontent) {
@@ -366,23 +387,23 @@ class Zobadvance
 						$changes = array();
 						$changes['LineNo'] = $i;
 						$condition = "ContentID = $ContentID";
-						$this->registry->getObject('db')->updateRecords('meetinglinecontent', $changes, $condition);
+						$this->db->updateRecords('meetinglinecontent', $changes, $condition);
 					}
 				}
 				break;
 			case 'add':
 				$MeetingLineID = isset($urlBits['4']) ? $urlBits['4'] : 0;
-				$meetingline = $this->zob->getMeetingline($MeetingLineID);
+				$meetingline = $meetinglineinstance->getMeetingline($MeetingLineID);
 				$MeetingID = $meetingline['MeetingID'];
-				$meeting = $this->zob->getMeeting($MeetingID);
+				$meeting = $meetinginstance->getMeeting($MeetingID);
 				if ($meeting['Close'] == 1) {
 					$this->errorMessage = 'Nelze editovat uzavřený zápis.';
 				} else {
 					$data['MeetingLineID'] = $MeetingLineID;
 					$data['MeetingID'] = $MeetingID;
 					$data['MeetingTypeID'] = $meetingline['MeetingTypeID'];
-					$data['LineNo'] = $this->zob->getNextMeetinglineContentLineNo($MeetingLineID);
-					$this->registry->getObject('db')->insertRecords('meetinglinecontent', $data);
+					$data['LineNo'] = $zob->getNextMeetinglineContentLineNo($MeetingLineID);
+					$this->db->insertRecords('meetinglinecontent', $data);
 					$this->anchor = "anchor" . $MeetingLineID;
 				}
 				break;
@@ -397,6 +418,9 @@ class Zobadvance
 	private function meetingattachment($action)
 	{
 		global $config, $caption;
+		$zob = new Zobcontroller($this->registry, false);
+		$meetinglineinstance = new Meetinglinecontroller($this->registry);
+
 		$urlBits = $this->registry->getURLBits();
 		$MeetingID = 0;
 		$MeetingLineID = 0;
@@ -405,26 +429,26 @@ class Zobadvance
 		switch ($action) {
 			case 'delete':
 				$AttachmentID = isset($urlBits['4']) ? $urlBits['4'] : 0;
-				$meetingattachment = $this->zob->getMeetingattachment($AttachmentID);
+				$meetingattachment = $zob->getMeetingattachment($AttachmentID);
 				$MeetingID = $meetingattachment['MeetingID'];
 				$MeetingLineID = $meetingattachment['MeetingLineID'];
 				$condition = 'AttachmentID = ' . $AttachmentID;
-				$this->registry->getObject('db')->deleteRecords('meetingattachment', $condition, 1);
+				$this->db->deleteRecords('meetingattachment', $condition, 1);
 				break;
 			case 'assign':
 				$AttachmentID = isset($urlBits['4']) ? $urlBits['4'] : 0;
 				$MeetingLineID = isset($urlBits['5']) ? $urlBits['5'] : 0;
-				$meetingline = $this->zob->getMeetingline($MeetingLineID);
+				$meetingline = $meetinglineinstance->getMeetingline($MeetingLineID);
 				if ($meetingline) {
 					$MeetingID = $meetingline['MeetingID'];
 				} else {
-					$meetingattachment = $this->zob->getMeetingattachment($AttachmentID);
+					$meetingattachment = $zob->getMeetingattachment($AttachmentID);
 					if ($meetingattachment)
-						$meetingline = $this->zob->getMeetingline($meetingattachment['MeetingLineID']);
+						$meetingline = $meetinglineinstance->getMeetingline($meetingattachment['MeetingLineID']);
 					$MeetingID = $meetingline['MeetingID'];
 				}
 
-				$this->zob->assignMeetingattachment($AttachmentID, $MeetingLineID);
+				$zob->assignMeetingattachment($AttachmentID, $MeetingLineID);
 				$MeetingLineID = 0;
 				break;
 		}

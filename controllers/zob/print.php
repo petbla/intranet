@@ -14,7 +14,6 @@
 class Zobprint {
 	
     private $registry;
-    private $zob;
     private $errorMessage;
     
     /**
@@ -23,7 +22,6 @@ class Zobprint {
 	public function __construct( Registry $registry )
 	{
         $this->registry = $registry;
-        $this->zob = new Zobcontroller( $this->registry, false );					
     }
 
 	/**
@@ -32,6 +30,8 @@ class Zobprint {
 	 */
 	public function main( $action )
 	{
+        $zob = new Zobcontroller( $this->registry, false );					
+        $meetinginstance = new Meetingcontroller( $this->registry );					
 		$urlBits = $this->registry->getURLBits();     
 
 		switch ($action) {
@@ -39,7 +39,7 @@ class Zobprint {
 			case '10020':
 			case '10030':
                 $MeetingID = $urlBits[3];
-                $meeting = $this->zob->getMeeting($MeetingID);
+                $meeting = $meetinginstance->getMeeting($MeetingID);
                 if(!$meeting){
                     $this->errorMessage = 'ERROR: Nezadáno číslo jednání nebo jednání $MeetingID neexistuje.';
                     return;
@@ -66,9 +66,13 @@ class Zobprint {
 	private function report10000($meeting)
 	{
         global $config;
+        $zob = new Zobcontroller( $this->registry, false );					
+        $meetingtypeinstance = new Meetingtypecontroller( $this->registry );					
+        $meetinginstance = new Meetingcontroller( $this->registry );					
+        $meetinglineinstance = new Meetinglinecontroller($this->registry);
 
-        $meetingtype = $this->zob->getMeetingtype($meeting);        
-        $meetinglines = $this->zob->readMeetingLines($meeting);
+        $meetingtype = $meetingtypeinstance->getMeetingtype($meeting);        
+        $meetinglines = $meetinglineinstance->readMeetingLines($meeting);
         $filename = 'document.pdf';
         $reportTitle = '';
 
@@ -105,14 +109,14 @@ class Zobprint {
         $headerTitle['AtDate'] = 'dne '.$this->registry->getObject('core')->formatDate($meeting['AtDate']);
         $headerTitle['MeetingNo'] = 'číslo '. $meeting['EntryNo'];
         $headerTitle['PresentMembers'] = 'Přítomno: '.$meeting['Present'];
-        if($this->zob->getMeetingExcused($meeting) == '')
+        if($meetinginstance->getMeetingExcused($meeting) == '')
             $headerTitle['ExcusedMemberNames'] = '';
         else 
-            $headerTitle['ExcusedMemberNames'] = 'Omluveni: '.$this->zob->getMeetingExcused($meeting);
-        if($this->zob->getMeetingVerifierBy($meeting) == '')
+            $headerTitle['ExcusedMemberNames'] = 'Omluveni: '.$meetinginstance->getMeetingExcused($meeting);
+        if($meetinginstance->getMeetingVerifierBy($meeting) == '')
             $headerTitle['VerifiedMemberNames'] = '';
         else
-            $headerTitle['VerifiedMemberNames'] = 'Ověrovatelé zápisu: '.$this->zob->getMeetingVerifierBy($meeting);
+            $headerTitle['VerifiedMemberNames'] = 'Ověrovatelé zápisu: '.$meetinginstance->getMeetingVerifierBy($meeting);
         $this->registry->getObject('pdf')->DocumentTitle('10000',$headerTitle);
 
         // Meeting Lines - Program
@@ -134,7 +138,7 @@ class Zobprint {
             $this->registry->getObject('pdf')->MeetingLineZapis($meetingline);
             
             // Line Contents
-            $meetinglinecontents = $this->zob->readMeetingLineContents ($meetingline['MeetingLineID']);
+            $meetinglinecontents = $zob->readMeetingLineContents ($meetingline['MeetingLineID']);
             if ($meetinglinecontents){
                 foreach($meetinglinecontents as $meetinglinecontent){
                     $meetingline['LineNo'] = null;
@@ -170,9 +174,12 @@ class Zobprint {
 	private function report10020($meeting)
 	{
         global $config;
+        $zob = new Zobcontroller( $this->registry, false );					
+        $meetingtypeinstance = new Meetingtypecontroller( $this->registry );					
+        $meetinglineinstance = new Meetinglinecontroller($this->registry);
 
-        $meetingtype = $this->zob->getMeetingtype($meeting);        
-        $meetinglines = $this->zob->readMeetingLines($meeting);
+        $meetingtype = $meetingtypeinstance->getMeetingtype($meeting);        
+        $meetinglines = $meetinglineinstance->readMeetingLines($meeting);
         $filename = 'document.pdf';
         $reportTitle = '';
 
@@ -181,7 +188,7 @@ class Zobprint {
         $this->registry->getObject('pdf')->NewDocument();
         
         // Záhlaví
-        $headerTitle = $this->zob->getMeetingHeader($meeting);
+        $headerTitle = $zob->getMeetingHeader($meeting);
         $this->registry->getObject('pdf')->DocumentTitle('10020',$headerTitle);
 
         // Meeting Lines - Program
@@ -214,9 +221,12 @@ class Zobprint {
     private function report10030($meeting)
 	{
         global $config;
+        $zob = new Zobcontroller( $this->registry, false );					
+        $meetingtypeinstance = new Meetingtypecontroller( $this->registry );					
+        $meetinglineinstance = new Meetinglinecontroller($this->registry);
 
-        $meetingtype = $this->zob->getMeetingtype($meeting);        
-        $meetinglines = $this->zob->readMeetingLines($meeting);
+        $meetingtype = $meetingtypeinstance->getMeetingtype($meeting);        
+        $meetinglines = $meetinglineinstance->readMeetingLines($meeting);
         $filename = 'document.pdf';
         $reportTitle = '';
 
@@ -286,7 +296,7 @@ class Zobprint {
             }
            
             // Line Contents
-            $meetinglinecontents = $this->zob->readMeetingLineContents ($meetingline['MeetingLineID']);
+            $meetinglinecontents = $zob->readMeetingLineContents ($meetingline['MeetingLineID']);
             if ($meetinglinecontents){
                 foreach($meetinglinecontents as $meetinglinecontent){
                     $meetingline = array();

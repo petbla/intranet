@@ -624,4 +624,85 @@ class mysqldatabase
     $this->registry->getObject('template')->addTemplateBit('categories', 'categorymenu-empty.tpl.php');
     $this->registry->getObject('template')->buildFromTemplates('header.tpl.php', $template, 'footer.tpl.php');
   }
+
+	private function getFieldPK($table){
+		switch (strtolower($table)) {	
+			case 'agenda':
+				return 'ID';
+			case 'agendatype':
+				return 'TypeID';
+			case 'contact':
+				return 'ID';
+			case 'contactgroup':
+				return 'Code';
+			case 'dmsentry':
+				return 'ID';
+			case 'inbox':
+				return 'InboxID';
+			case 'log':
+				return 'EntryNo';
+			case 'user':
+				return 'ID';
+			case 'electionperiod':
+				return 'ElectionPeriodID';
+			case 'meetingtype':
+				return 'MeetingTypeID';
+			case 'member':
+				return 'MemberID';
+			case 'meeting':
+				return 'MeetingID';
+			case 'meetingline':
+				return 'MeetingLineID';
+			case 'meetinglinecontent':
+				return 'ContentID';
+			case 'meetingattachment':
+				return 'AttachmentID';
+			case 'meetinglinepage':
+				return 'PageID';
+			case 'meetinglinepageattachment':
+				return 'EntryNo';
+			case 'meetinglinepageline':
+				return 'EntryNo';
+			case 'meetinglinetask':
+				return 'TaskID';
+		}
+		return null;
+	}
+  /**
+   * Summary of update
+   * @param string $table
+   * @param int $ID
+   * @param string $key
+   * @param mixed $value
+   * @return bool
+   */
+  private function update(String $table, int $ID, String $key, mixed $value): bool
+  {
+    $pk = $this->getFieldPK($table);
+    if ((!$pk) || ($key == "") || (!$value))
+      return false;
+    $changes = array();
+    $changes[$key] = $value;
+    $condition = "$pk = $ID";
+    $this->updateRecords($table,$changes,$condition);
+    return true;
+  }
+  /**
+   * Summary of updateall
+   * @param string $table
+   * @param string $condition
+   * @param string $key
+   * @param mixed $value
+   * @return bool
+   */
+  private function updateall(String $table, String $condition, String $key, mixed $value): bool
+  {
+    $pk = $this->getFieldPK($table);
+    if ((!$pk) || ($key == "") || (!$value))
+      return false;
+    $changes = array();
+    $changes[$key] = $value;
+    $this->updateRecords($table,$changes,$condition);
+    return true;
+  }
 }

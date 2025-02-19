@@ -119,7 +119,7 @@ class Agenda{
      * @param $TypeID - kód typu agendy pro určení masky číselné řady
      * @return boolean $success - výsledek založení nového záznamu
      */
-    function initNew( $TypeID )
+    function initNew( int $TypeID ): bool
     {
 		global $config;
         $pref = $config['dbPrefix'];

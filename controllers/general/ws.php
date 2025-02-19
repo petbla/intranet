@@ -7,9 +7,6 @@
 class Generalws {
 	
     private $registry;
-    private $zob;
-    private $agenda;
-    private $contact;
 	private $table;
 	private $ID;
 	private $parentTable;
@@ -26,14 +23,10 @@ class Generalws {
 		$this->registry = $registry;
 
 		require_once( FRAMEWORK_PATH . 'controllers/zob/controller.php');
-		$this->zob = new Zobcontroller( $this->registry, false );					
-        
+		require_once( FRAMEWORK_PATH . 'controllers/zob/electionperiod.php');
 		require_once( FRAMEWORK_PATH . 'controllers/agenda/controller.php');
-		$this->agenda = new Agendacontroller( $this->registry, false );					
-        
 		require_once( FRAMEWORK_PATH . 'controllers/contact/controller.php');
-		$this->contact = new Contactcontroller( $this->registry, false );					
-        
+       
     }
 
 	/**
@@ -202,12 +195,17 @@ class Generalws {
 
 	private function updateMeeting($value)
 	{
+		$zob = new Zobcontroller( $this->registry, false );					       
+		$contact = new Contactcontroller( $this->registry, false );
+		$electionperiodinstance = new Electionperiodcontroller($this->registry);					
+		$meetinginstance = new Meetingcontroller($this->registry);
+
 		$ID = $this->ID;
 		$field = $this->field;
 		$data = null;
 
-		$meeting = $this->zob->getMeeting($ID);
-		$isTemplate = $this->zob->isElectionperiodTemplate( $meeting['ElectionPeriodID'] );
+		$meeting = $meetinginstance->getMeeting($ID);
+		$isTemplate = $electionperiodinstance->isElectionperiodTemplate( $meeting['ElectionPeriodID'] );
 		if(($meeting['Close'] == 1) && ($field != 'Close')){
 			$this->result = 'Nelze editovat uzavřený zápis jednání;';
 			return;
@@ -254,7 +252,7 @@ class Generalws {
 			case 'VerifierBy1':
 			case 'VerifierBy2':
 				if(!$isTemplate)
-					$data[$field] = $this->contact->getContactID($value);
+					$data[$field] = $contact->getContactID($value);
 				break;
 			case 'Actual':
 				// Reset pole Actual na všech záznamech
@@ -275,13 +273,19 @@ class Generalws {
 
 	private function updateMeetingline($value)
 	{
+		$meetingtypeinstance = new Meetingtypecontroller($this->registry);
+		$meetinginstance = new Meetingcontroller($this->registry);		
+		$meetinglineinstance = new Meetinglinecontroller($this->registry);
+		$zob = new Zobcontroller( $this->registry, false );					       
+		$contact = new Contactcontroller( $this->registry, false );
+
 		$ID = $this->ID;
 		$field = $this->field;
 		$data = null;
 		
-		$meetingline = $this->zob->getMeetingline($ID);
-		$meeting = $this->zob->getMeeting($meetingline['MeetingID']);
-		$meetingtype = $this->zob->getMeetingtype($meeting['MeetingTypeID']);
+		$meetingline = $meetinglineinstance->getMeetingline($ID);
+		$meeting = $meetinginstance->getMeeting($meetingline['MeetingID']);
+		$meetingtype = $meetingtypeinstance->getMeetingtype($meeting['MeetingTypeID']);
 
 		if($meeting['Close'] == 1){
 			$this->result = 'Nelze editovat uzavřený zápis jednání;';
@@ -334,7 +338,7 @@ class Generalws {
 				if($value == '')
 					$data['PresenterID'] = '00000000-0000-0000-0000-000000000000';
 				else{
-					$contact = $this->zob->getContactByName($value);
+					$contact = $zob->getContactByName($value);
 					if($contact){
 						$data['PresenterID'] = $contact['ID'];
 					}else{
@@ -353,12 +357,15 @@ class Generalws {
 
 	private function updateMeetinglinecontent($value)
 	{
+		$zob = new Zobcontroller( $this->registry, false );					       
+		$meetinginstance = new Meetingcontroller($this->registry);
+
 		$ID = $this->ID;
 		$field = $this->field;
 		$data = null;
 
-		$meetinglinecontent = $this->zob->getMeetinglinecontent($ID);
-		$meeting = $this->zob->getMeeting($meetinglinecontent['MeetingID']);
+		$meetinglinecontent = $zob->getMeetinglinecontent($ID);
+		$meeting = $meetinginstance->getMeeting($meetinglinecontent['MeetingID']);
 		if($meeting['Close'] == 1){
 			$this->result = 'Nelze editovat uzavřený zápis jednání;';
 			return;
@@ -409,12 +416,15 @@ class Generalws {
 
 	private function updateMeetinglinepage($value)
 	{
+		$zob = new Zobcontroller( $this->registry, false );					       
+		$meetinginstance = new Meetingcontroller($this->registry);
+
 		$ID = $this->ID;
 		$field = $this->field;
 		$data = null;
 
-		$meetinglinepage = $this->zob->getMeetinglinepage($ID);
-		$meeting = $this->zob->getMeeting($meetinglinepage['MeetingID']);
+		$meetinglinepage = $zob->getMeetinglinepage($ID);
+		$meeting = $meetinginstance->getMeeting($meetinglinepage['MeetingID']);
 		if($meeting['Close'] == 1){
 			$this->result = 'Nelze editovat uzavřený zápis jednání;';
 			return;
@@ -441,6 +451,8 @@ class Generalws {
 	}
 	private function updateMeetinglinepageline($value)
 	{
+		$zob = new Zobcontroller( $this->registry, false );					       
+
 		$ID = $this->ID;
 		$field = $this->field;
 		$data = null;
@@ -457,7 +469,7 @@ class Generalws {
 		}else{
 			// Insert New
 			$data[$this->field] = $value;
-			$meetinglinepage = $this->zob->getMeetinglinepage($parentID);
+			$meetinglinepage = $zob->getMeetinglinepage($parentID);
 			$data['PageID'] = $meetinglinepage['PageID'];
 			$data['MeetingLineID'] = $meetinglinepage['MeetingLineID'];
 			$data['MeetingID'] = $meetinglinepage['MeetingID'];
@@ -468,7 +480,11 @@ class Generalws {
 
 	private function updateDmsentry($value)
 	{
-		$dmsentry = $this->zob->getDmsentryByID($this->ID);
+		$zob = new Zobcontroller( $this->registry, false );					       
+		$meetinginstance = new Meetingcontroller($this->registry);
+		$agenda = new Agendacontroller( $this->registry, false );					       
+
+		$dmsentry = $meetinginstance->getDmsentryByID($this->ID);
 		$field = $this->field;
 		$data = null;
 		$ID = $this->ID;
@@ -493,7 +509,7 @@ class Generalws {
 			case 'NewDocumentNo':
 				// $value == agendatype.TypeID
 
-				$DocumentNo = $this->agenda->getNextDocumentNo($value);
+				$DocumentNo = $agenda->getNextDocumentNo($value);
 				$changes = array();
 				$changes['EntryID']	= $ID;
 				$changes['Description'] = $dmsentry['Title'];				
@@ -512,7 +528,9 @@ class Generalws {
 
 	private function updateInbox($value)
 	{
-		$inbox = $this->zob->getInbox($this->ID);
+		$zob = new Zobcontroller( $this->registry, false );					       
+
+		$inbox = $zob->getInbox($this->ID);
 		$field = $this->field;
 		$data = null;
 		$ID = $this->ID;
@@ -550,7 +568,10 @@ class Generalws {
 
 	private function updateContact($value)
 	{
-		$contact = $this->zob->getContactByID($this->ID);
+		$zob = new Zobcontroller( $this->registry, false );					       
+		$contact = new Contactcontroller( $this->registry, false );
+
+		$contact = $zob->getContactByID($this->ID);
 		$field = $this->field;
 		$data = null;
 		$ID = $this->ID;
@@ -565,7 +586,7 @@ class Generalws {
 				$data['Title'] = $contact['Title'];
 				$data['Company'] = $contact['Company'];
 				$data[$field] = $value;
-				$data['FullName'] = $this->contact->makeFullName($data);
+				$data['FullName'] = $contact->makeFullName($data);
 				break;
 			default:
 				$data[$field] = $value;
@@ -593,14 +614,18 @@ class Generalws {
 	 */
 	private function copyFrom($action)
 	{
+		$zob = new Zobcontroller( $this->registry, false );					       
+		$meetinginstance = new Meetingcontroller($this->registry);
+		$meetinglineinstance = new Meetinglinecontroller($this->registry);
+
 		$urlBits = $this->registry->getURLBits();
 
 		$fieldFrom = isset($urlBits[6]) ? $urlBits[6] : '';
 		if($fieldFrom == '')
 			$this->result = 'Error: Field from not specified';
 		if($this->table == 'meetingline'){
-			$meetingline = $this->zob->getMeetingline($this->ID);
-			$meeting = $this->zob->getMeeting($meetingline['MeetingID']);
+			$meetingline = $meetinglineinstance->getMeetingline($this->ID);
+			$meeting = $meetinginstance->getMeeting($meetingline['MeetingID']);
 			if($meeting['Close'] == 1)
 				$this->result = 'Nelze editovat uzavřený zápis jednání;';
 		}
@@ -700,12 +725,14 @@ class Generalws {
 
 	private function log()
 	{
+		$contact = new Contactcontroller( $this->registry, false );
+
 		$ID = $this->ID;
 		$table = $this->table;
 		$message = null;
 		switch ($table) {	
 			case 'contact':
-				$contact = $this->contact->getContact($ID);
+				$contact = $contact->getContact($ID);
 				if($contact)
 					$message = "Zobrazení kontaktu. ".$contact['FullName'];
 				break;
@@ -721,14 +748,26 @@ class Generalws {
 		switch (strtolower($table)) {	
 			case 'agenda':
 				return 'ID';
+			case 'agendatype':
+				return 'TypeID';
 			case 'contact':
 				return 'ID';
-			case 'user':
-				return 'ID';
+			case 'contactgroup':
+				return 'Code';
 			case 'dmsentry':
 				return 'ID';
 			case 'inbox':
 				return 'InboxID';
+			case 'log':
+				return 'EntryNo';
+			case 'user':
+				return 'ID';
+			case 'electionperiod':
+				return 'ElectionPeriodID';
+			case 'meetingtype':
+				return 'MeetingTypeID';
+			case 'member':
+				return 'MemberID';
 			case 'meeting':
 				return 'MeetingID';
 			case 'meetingline':
@@ -739,8 +778,12 @@ class Generalws {
 				return 'AttachmentID';
 			case 'meetinglinepage':
 				return 'PageID';
+			case 'meetinglinepageattachment':
+				return 'EntryNo';
 			case 'meetinglinepageline':
 				return 'EntryNo';
+			case 'meetinglinetask':
+				return 'TaskID';
 			default:
 				$this->result = "ERROR: Unknown table name '$table'.";
 		}
@@ -832,14 +875,15 @@ class Generalws {
 	}
 
 	private function getRecord($urlBits){
-		$result = '';
+		$zob = new Zobcontroller( $this->registry, false );					       
 
+		$result = '';
 		$table = isset($urlBits[3]) ? $urlBits[3] : '';
 		$id = isset($urlBits[4]) ? $urlBits[4] : '';
 
 		switch ($table) {
 			case 'contact':
-				$result = $this->zob->getContactByID($id);
+				$result = $zob->getContactByID($id);
 				break;
 			case 'dmsentry':
 				

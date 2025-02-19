@@ -97,13 +97,17 @@ $activeControllers[] = 'admin';
 $activeControllers[] = 'todo';
 $currentController = $registry->getURLBit( 0 );  // controller
 
+require_once( FRAMEWORK_PATH . 'controllers/zob/electionperiod.php');
+require_once( FRAMEWORK_PATH . 'controllers/zob/member.php');
+require_once( FRAMEWORK_PATH . 'controllers/zob/meetingtype.php');
+require_once( FRAMEWORK_PATH . 'controllers/zob/meeting.php');
+require_once( FRAMEWORK_PATH . 'controllers/zob/meetingline.php');
+
 if( in_array( $currentController, $activeControllers ) )
 {
 	require_once( FRAMEWORK_PATH . 'controllers/' . $currentController . '/controller.php');
 	$controllerInc = $currentController.'controller';
-
-  $controller = new $controllerInc( $registry, true );
-  
+  	$controller = new $controllerInc( $registry, true );
 }
 else
 {

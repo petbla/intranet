@@ -818,3 +818,5 @@ function autosize(){
         $text.css('height', $text[0].scrollHeight+'px');
     }
 }
+
+updateCheckboxesOnPage();

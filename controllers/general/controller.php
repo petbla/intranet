@@ -7,8 +7,6 @@
 class Generalcontroller {
 
 	private $registry;
-	private $zob;
-	private $todo;
 	private $urlBits;
 	private $message;
 	private $errorMessage;
@@ -19,11 +17,12 @@ class Generalcontroller {
 
 		$this->registry = $registry;
 		require_once( FRAMEWORK_PATH . 'controllers/zob/controller.php');
-		$this->zob = new Zobcontroller( $this->registry, false );					
+		require_once( FRAMEWORK_PATH . 'controllers/zob/electionperiod.php');
+		require_once( FRAMEWORK_PATH . 'controllers/zob/meetingtype.php');
 		require_once( FRAMEWORK_PATH . 'controllers/todo/controller.php');
-		$this->todo = new Todocontroller( $this->registry, false );					
 		require_once( FRAMEWORK_PATH . 'models/entry/model.php');
 		require_once( FRAMEWORK_PATH . 'models/contact/model.php');
+		
 		
 		$perSet = $this->registry->getObject('authenticate')->getPermissionSet();
 
@@ -137,6 +136,11 @@ class Generalcontroller {
 	public function createFavouriteCategoryMenu()
     {
 		global $config;
+		$electionPeriodinstance = new Electionperiodcontroller( $this->registry );					
+		$meetingtypeinstance = new Meetingtypecontroller( $this->registry );					
+		$meetinginstance = new Meetingcontroller($this->registry);
+		$zob = new Zobcontroller( $this->registry, false );					
+
         $pref = $config['dbPrefix'];
         $perSet = $this->registry->getObject('authenticate')->getPermissionSet();
 		$table = null;
@@ -151,12 +155,12 @@ class Generalcontroller {
 		$table[] = $rec;
 
 		// ZOB
-		$electionperiod = $this->zob->getActualElectionperiod();
+		$electionperiod = $electionPeriodinstance->getActualElectionperiod();
 		if($electionperiod){
-			$meetingtypes = $this->zob->readMeetingtypesByElectionperiodID($electionperiod['ElectionPeriodID']);
+			$meetingtypes = $meetingtypeinstance->readMeetingtypesByElectionperiodID($electionperiod['ElectionPeriodID']);
 			if($meetingtypes){
 				foreach($meetingtypes as $meetingtype){
-					$meeting = $this->zob->getActualMeeting($meetingtype['MeetingName']);
+					$meeting = $meetinginstance->getActualMeeting($meetingtype['MeetingName']);
 					if($meeting){
 						$rec['titleCat'] = '<b>'.$meetingtype['MeetingName'].'</b> číslo ('.$meeting['EntryNo'].'/'.$meeting['Year'].')';
 						$rec['hrefCat'] = 'zob/meetingline/list/'.$meeting['MeetingID'];
@@ -175,7 +179,9 @@ class Generalcontroller {
 
 	private function favourite()
 	{
-		$this->todo->inboxRefresh();
+		$todo = new Todocontroller( $this->registry, false );					
+
+		$todo->inboxRefresh();
 		
 		// Category Menu
 		$this->createFavouriteCategoryMenu();
@@ -200,6 +206,9 @@ class Generalcontroller {
 	function searchGlobal( $searchText , $table = '')
 	{
 		global $config, $caption;
+		$zob = new Zobcontroller( $this->registry, false );					
+		$meetinglineinstance = new Meetinglinecontroller($this->registry);
+
         $pref = $config['dbPrefix'];
         $perSet = $this->registry->getObject('authenticate')->getPermissionSet();
 
@@ -354,7 +363,7 @@ class Generalcontroller {
 
 						break;
 					case 'Meeting':
-						$meetingline = $this->zob->getMeetingline($rec['ID']);
+						$meetingline = $meetinglineinstance->getMeetingline($rec['ID']);
 						$MeetingID = $meetingline['MeetingID']; 
 						$rec['Url'] = "index.php?page=zob/meetingline/list/$MeetingID/".$rec['ID'];
 						$rec['viewMeetinglineID'] = 'viewMeetingline'.$rec['ID'];					

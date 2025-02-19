@@ -1,5 +1,5 @@
 <fieldset>
-    <form action="index.php?page=zob/contact/add"  method="post">
+    <form action="index.php?page=zob/member/addcontact"  method="post">
         <label>Nový kontakt</label><br>
         <input type="text" class="value" name="newContactTitle" value="" placeholder="{lbl_Title}"/><br>
         <input type="text" class="value" name="newContactFirstName" value="" placeholder="{lbl_First_name}" required/><br>

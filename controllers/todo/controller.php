@@ -616,7 +616,8 @@ class Todocontroller{
 	 */
 	private function inboxModify(){
 		global $config;
-		
+		$meetinginstance = new Meetingcontroller($this->registry);
+
 		// Načtení položky inboxu
 		$InboxID = isset($_POST['InboxID']) ? (int) $_POST['InboxID'] : 0;
 		if($InboxID == 0){
@@ -651,7 +652,7 @@ class Todocontroller{
 						require_once( FRAMEWORK_PATH . 'controllers/zob/controller.php');
 						$zob = new Zobcontroller( $this->registry, false );
 					
-						$meeting = $zob->getActualMeeting($SettlementType);					
+						$meeting = $meetinginstance->getActualMeeting($SettlementType);					
 						if($meeting){
 							// Pokud dokument nebyl ještě zařazen do složky, tak se nyní přesune do 
 							// výchozí složky podkladů jednání
@@ -659,7 +660,7 @@ class Todocontroller{
 							// Příklad: Obecní úřad/_Rada/2018-2022/10/Přílohy					 
 							if($inbox['DmsEntryID'] == '00000000-0000-0000-0000-000000000000'){
 								
-								$DmsParentEntryNo = $zob->getMeetingParentEntryNo($meeting);
+								$DmsParentEntryNo = $meetinginstance->getMeetingParentEntryNo($meeting);
 								$parentFolder = 'xxx';
 								if($DmsParentEntryNo == 0 ){
 									$this->errorMessage = "Složka $parentFolder nebyla vytvořena, přesun dokumentu nelze dokončit.";
@@ -724,6 +725,9 @@ class Todocontroller{
 
 		require_once( FRAMEWORK_PATH . 'controllers/zob/controller.php');
 		$zob = new Zobcontroller( $this->registry, false );
+		$electionperiodinstance = new Electionperiodcontroller( $this->registry );
+		$meetingtypeinstance = new Meetingtypecontroller( $this->registry );
+		$meetinginstance = new Meetingcontroller($this->registry);
 		
 		$sql = "SELECT * FROM ".$this->prefDb."inbox ".
 				  	"WHERE Close = $close ".
@@ -757,13 +761,13 @@ class Todocontroller{
 
 			$MeetingID = $inbox['MeetingID'];
 			$inbox['ismeeting'] = $MeetingID == 0 ? 'no' : '';
-			$inbox['MeetingNo'] = $zob->getMeetingNo($MeetingID,true);
+			$inbox['MeetingNo'] = $meetinginstance->getMeetingNo($MeetingID,true);
 			$inbox['CreateDate'] = $this->registry->getObject('core')->formatDate($inbox['CreateDate'],'d.m.Y H:i');
 			$inbox['SelectMeetingTypeID'] = '';
 			if($inbox['MeetingID']){
-				$meeting = $zob->getMeeting($inbox['MeetingID']);
+				$meeting = $meetinginstance->getMeeting($inbox['MeetingID']);
 				if($meeting){
-					$meetingtype = $zob->getMeetingtype($meeting['MeetingTypeID']);
+					$meetingtype = $meetingtypeinstance->getMeetingtype($meeting['MeetingTypeID']);
 					$inbox['SelectMeetingTypeID'] = $meetingtype['MeetingTypeID'];
 				}
 			}
@@ -773,8 +777,8 @@ class Todocontroller{
 			$cache = $this->registry->getObject('db')->cacheData( $result );
 			$this->registry->getObject('template')->getPage()->addTag( 'listInbox', array( 'DATA', $cache ) );
 			
-			$electionperiod = $zob->getActualElectionperiod();
-			$meetingtype = $zob->readMeetingtypesByElectionperiodID($electionperiod['ElectionPeriodID']);
+			$electionperiod = $electionperiodinstance->getActualElectionperiod();
+			$meetingtype = $meetingtypeinstance->readMeetingtypesByElectionperiodID($electionperiod['ElectionPeriodID']);
 			$meetingtype[] = array('MeetingName' => 'Úkol');
 			$meetingtype[] = array('MeetingName' => 'Vyřízeno');
 			$meetingtype[] = array('MeetingName' => '');
@@ -973,4 +977,3 @@ class Todocontroller{
 	}	
 	
 }
-?>

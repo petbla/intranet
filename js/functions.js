@@ -148,6 +148,18 @@ function initForm(tag,id) {
     }
 }
 
+function updateCheckboxesOnPage() {
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+
+    checkboxes.forEach(checkbox => {
+        if (checkbox.getAttribute('value') == '1'){
+            checkbox.checked = true;
+        } else {
+            checkbox.checked = false;
+        }
+    });
+};
+
 // ----------------------------------------------------------------------------------------
 // Validation values Functions
 // ----------------------------------------------------------------------------------------

@@ -7,7 +7,7 @@
 class Zobmanage {
 	
     private $registry;
-    private $zob;
+    private $db;
 	private $message;
 	private $errorMessage;
     
@@ -17,8 +17,8 @@ class Zobmanage {
 	public function __construct( Registry $registry )
 	{
         $this->registry = $registry;
-        $this->zob = new Zobcontroller( $this->registry, false );					
-    }
+		$this->db = $this->registry->getObject('db');
+	}
 
 	/**
 	 * Správa dat a modulu
@@ -27,6 +27,8 @@ class Zobmanage {
 	public function manage( $action )
 	{
 		global $config, $caption;
+        $zob = new Zobcontroller( $this->registry, false );					
+
 		$urlBits = $this->registry->getURLBits();     
 		$MeetingLineID = 0;
 		$MeetingID = 0;
@@ -34,16 +36,16 @@ class Zobmanage {
 		switch ($action) {
 			case 'importMeeting':
 				$this->importMeeting();
-				$this->zob->errorMessage = $this->errorMessage;
+				$zob->errorMessage = $this->errorMessage;
 				return;
 			case 'deleteAllMeeting':
 				$this->deleteAllMeeting();
-				$this->zob->errorMessage = $this->errorMessage;
+				$zob->errorMessage = $this->errorMessage;
 				break;
 			case 'deleteMeeting':
 				$MeetingID = isset($urlBits[3]) ? $urlBits[3] : 0;
 				$this->deleteMeeting($MeetingID);
-				$this->zob->errorMessage = $this->errorMessage;
+				$zob->errorMessage = $this->errorMessage;
 				break;
 			case 'backupElectionPeriod':
 				$ElectionPeriodID = isset($urlBits[3]) ? $urlBits[3] : 0;
@@ -58,19 +60,19 @@ class Zobmanage {
 				break;
 			case 'scanAllMeeting':
 				$this->scanAllMeeting();
-				$this->zob->errorMessage = $this->errorMessage;
+				$zob->errorMessage = $this->errorMessage;
 				break;
 			case 'scanMeeting':
 				$MeetingID = isset($urlBits[3]) ? $urlBits[3] : 0;
 				$MeetingID = $this->scanMeeting($MeetingID);
-				$this->zob->errorMessage = $this->errorMessage;
+				$zob->errorMessage = $this->errorMessage;
 				if($MeetingID != null){
-					$this->zob->listMeetingLine($MeetingID);
+					$zob->listMeetingLine($MeetingID);
 					return;
 				}
 				break;
 		}
-		$this->zob->listElectionPeriod();
+		$zob->listElectionPeriod();
 	}
 
     /**
@@ -90,12 +92,16 @@ class Zobmanage {
 
 	private function backupElectionPeriod($ElectionPeriodID = 0){
 		global $config;
+        $zob = new Zobcontroller( $this->registry, false );					
+
 		$pref = $config['dbPrefix'];
+		$electionperiodinstance = new Electionperiodcontroller( $this->registry );
+		$meetingtypeinstance = new Meetingtypecontroller( $this->registry );
 
 		if($ElectionPeriodID == 0)
-			$electionperiod = $this->zob->getActualElectionperiod();
+			$electionperiod = $electionperiodinstance->getActualElectionperiod();
 		else
-			$electionperiod = $this->zob->getElectionperiod($ElectionPeriodID);
+			$electionperiod = $electionperiodinstance->getElectionperiod($ElectionPeriodID);
 		if(!$electionperiod){
 			$this->errorMessage = "Není nastaveno výchozí volební období..";
 			$this->print();
@@ -112,13 +118,13 @@ class Zobmanage {
 		// Export tables
 		$this->exportTable($output, $pref.'electionperiod',$condition);
 		$this->exportTable($output, $pref.'meetingtype',$condition);
-		$meetingtypes = $this->zob->readMeetingtypesByElectionperiodID($ElectionPeriodID);
+		$meetingtypes = $meetingtypeinstance->readMeetingtypesByElectionperiodID($ElectionPeriodID);
 		foreach($meetingtypes as $meetingtype){
 			$MeetingTypeID = $meetingtype['MeetingTypeID'];
 			$condition = "MeetingTypeID = $MeetingTypeID";
 			$this->exportTable($output, $pref.'member',$condition);
 		}
-		$meetings = $this->zob->readMeetingByElectionperiodID($ElectionPeriodID);
+		$meetings = $zob->readMeetingByElectionperiodID($ElectionPeriodID);
 		foreach($meetings as $meeting){
 			$this->exportTableMeeting ($output, $meeting['MeetingID'] );
 		}
@@ -161,11 +167,15 @@ class Zobmanage {
 	}
 
 	private function backupMeeting($MeetingID = 0){
+        $zob = new Zobcontroller( $this->registry, false );					
+		$meetingtypeinstance = new Meetingtypecontroller( $this->registry );
+		$meetinginstance = new Meetingcontroller($this->registry);
+
 		if ($MeetingID == 0){
 			$filename = 'meetings';
 		}else{
-			$meeting = $this->zob->getMeeting($MeetingID);
-			$meetingtype = $this->zob->getMeetingtype($meeting['MeetingTypeID']);
+			$meeting = $meetinginstance->getMeeting($MeetingID);
+			$meetingtype = $meetingtypeinstance->getMeetingtype($meeting['MeetingTypeID']);
 			$filename = $meetingtype['MeetingName'].'-'.$meeting['EntryNo'].'-'.$meeting['Year'];
 		};
 		header('Content-Type: text/csv; charset=utf-8');
@@ -201,8 +211,8 @@ class Zobmanage {
 
 		// Headers
 		$sql = "SELECT * FROM information_schema.COLUMNS where TABLE_NAME = '$table' order by ORDINAL_POSITION";
-		$this->registry->getObject('db')->executeQuery( $sql );
-		while( $row = $this->registry->getObject('db')->getRows() )
+		$this->db->executeQuery( $sql );
+		while( $row = $this->db->getRows() )
 		{
 			$header[] = $row['COLUMN_NAME'];
 		}
@@ -212,31 +222,36 @@ class Zobmanage {
 		$sql = "SELECT * FROM $table ";
 		if($condition != '')
 			$sql .= " WHERE $condition";
-		$this->registry->getObject('db')->executeQuery( $sql );
-		while( $row = $this->registry->getObject('db')->getRows() )
+		$this->db->executeQuery( $sql );
+		while( $row = $this->db->getRows() )
 		{
 			fputcsv($output,$row,';');
 		}
 	}
 		
 	private function deleteMeeting($MeetingID){
-		$meeting = $this->zob->getMeeting($MeetingID);
+		$zob = new Zobcontroller( $this->registry, false );					
+		$meetinginstance = new Meetingcontroller($this->registry);
+
+		$meeting = $meetinginstance->getMeeting($MeetingID);
 		if ($meeting == null)
 			exit;
 		if($meeting['Close'] == 1)
 			exit;
 		$condition = "MeetingID = $MeetingID";
-		$this->registry->getObject('db')->deleteRecords('meetingattachment',$condition);
-		$this->registry->getObject('db')->deleteRecords('meetinglinecontent',$condition);
-		$this->registry->getObject('db')->deleteRecords('meetinglinepage',$condition);
-		$this->registry->getObject('db')->deleteRecords('meetinglinetask',$condition);
-		$this->registry->getObject('db')->deleteRecords('meetingline',$condition);
-		$this->registry->getObject('db')->deleteRecords('meeting',$condition);
+		$this->db->deleteRecords('meetingattachment',$condition);
+		$this->db->deleteRecords('meetinglinecontent',$condition);
+		$this->db->deleteRecords('meetinglinepage',$condition);
+		$this->db->deleteRecords('meetinglinetask',$condition);
+		$this->db->deleteRecords('meetingline',$condition);
+		$this->db->deleteRecords('meeting',$condition);
 		return;
 	}
 
 	private function deleteAllMeeting(){
-		$electionperiod = $this->zob->getActualElectionperiod();
+		$electionperiodinstance = new Electionperiodcontroller( $this->registry );
+
+		$electionperiod = $electionperiodinstance->getActualElectionperiod();
 		if(!$electionperiod){
 			$this->errorMessage = "Není nastaveno výchozí volební období..";
 			$this->print();
@@ -244,49 +259,54 @@ class Zobmanage {
 		}
 		$ElectionPeriodID = $electionperiod['ElectionPeriodID'];
 
-		$this->registry->getObject('db')->initQuery('meetingtype');
-		$this->registry->getObject('db')->setCondition("ElectionPeriodID = $ElectionPeriodID");
-		if ($this->registry->getObject('db')->findSet()){
-			$meetingtypes = $this->registry->getObject('db')->getResult();	
+		$this->db->initQuery('meetingtype');
+		$this->db->setCondition("ElectionPeriodID = $ElectionPeriodID");
+		if ($this->db->findSet()){
+			$meetingtypes = $this->db->getResult();	
 			foreach ($meetingtypes as $meetingtype){
 				$MeetingTypeID = $meetingtype['MeetingTypeID'];
-				$this->registry->getObject('db')->initQuery('meeting');
-				$this->registry->getObject('db')->setCondition("MeetingTypeID = $MeetingTypeID");
-				if ($this->registry->getObject('db')->findSet()){
-					$meetings = $this->registry->getObject('db')->getResult();
+				$this->db->initQuery('meeting');
+				$this->db->setCondition("MeetingTypeID = $MeetingTypeID");
+				if ($this->db->findSet()){
+					$meetings = $this->db->getResult();
 					foreach ($meetings as $meeting){
 						$MeetingID = $meeting['MeetingID'];
-						$this->registry->getObject('db')->initQuery('meetingline');
-						$this->registry->getObject('db')->setCondition("MeetingID = $MeetingID");
-						if ($this->registry->getObject('db')->findSet()){
-							$meetinglines = $this->registry->getObject('db')->getResult();
+						$this->db->initQuery('meetingline');
+						$this->db->setCondition("MeetingID = $MeetingID");
+						if ($this->db->findSet()){
+							$meetinglines = $this->db->getResult();
 							foreach ($meetinglines as $meetingline){
 								$MeetingLineID = $meetingline['MeetingLineID'];
 								$condition = "MeetingLineID = $MeetingLineID";
-								$this->registry->getObject('db')->deleteRecords('meetinglinecontent',$condition);
-								$this->registry->getObject('db')->deleteRecords('meetinglinepage',$condition);
-								$this->registry->getObject('db')->deleteRecords('meetinglinetask',$condition);
+								$this->db->deleteRecords('meetinglinecontent',$condition);
+								$this->db->deleteRecords('meetinglinepage',$condition);
+								$this->db->deleteRecords('meetinglinetask',$condition);
 							}
 						}								
 						$condition = "MeetingID = $MeetingID";
-						$this->registry->getObject('db')->deleteRecords('meetingattachment',$condition);
-						$this->registry->getObject('db')->deleteRecords('meetingline',$condition);
+						$this->db->deleteRecords('meetingattachment',$condition);
+						$this->db->deleteRecords('meetingline',$condition);
 					}
 				}
 				$condition = "MeetingTypeID = $MeetingTypeID";
-				$this->registry->getObject('db')->deleteRecords('meeting',$condition);
+				$this->db->deleteRecords('meeting',$condition);
 			}
 		}
 	}
 
 	private function scanMeeting($param){
+		$electionperiodinstance = new Electionperiodcontroller( $this->registry );
+		$meetingtypeinstance = new Meetingtypecontroller( $this->registry );
+        $zob = new Zobcontroller( $this->registry, false );					
+		$meetinginstance = new Meetingcontroller($this->registry);
+
 		if(is_array($param))
 			$meeting = $param;
 		else
-			$meeting = $this->zob->getMeeting($param);
+			$meeting = $meetinginstance->getMeeting($param);
 		$MeetingID = $meeting['MeetingID'];
-		$meetingtype = $this->zob->getMeetingtype($meeting['MeetingTypeID']);
-		$electionperiod = $this->zob->getElectionperiod($meeting['ElectionPeriodID']);
+		$meetingtype = $meetingtypeinstance->getMeetingtype($meeting['MeetingTypeID']);
+		$electionperiod = $electionperiodinstance->getElectionperiod($meeting['ElectionPeriodID']);
 
 		global $config;
 		$fileroot = $config['fileroot'].$config['zobroot'];
@@ -294,22 +314,24 @@ class Zobmanage {
 
 		$parentPath = $fileroot."/_".$meetingtype['MeetingName']."/".$electionperiod['PeriodName']."/";
 		$this->scanDirPath($meetingtype,$EntryNo,$parentPath.$EntryNo.'/',false, '');
-		$meeting = $this->zob->getMeetingByEntryNo($meetingtype, $EntryNo);
+		$meeting = $meetinginstance->getMeetingByEntryNo($meetingtype, $EntryNo);
 		return $meeting['MeetingID'];
 	}
 
 	private function scanAllMeeting(){
 		global $config;
+		$electionperiodinstance = new Electionperiodcontroller( $this->registry );
+		$meetingtypeinstance = new Meetingtypecontroller( $this->registry );
 
 		$fileroot = $config['fileroot'].$config['zobroot'];
 		$content = '';
 
-		$electionperiod = $this->zob->getActualElectionperiod();
+		$electionperiod = $electionperiodinstance->getActualElectionperiod();
 		if(!$electionperiod){
 			$this->errorMessage = "Není nastaveno výchozí volební období..";
 			return;
 		}
-		$meetingtypes = $this->zob->readMeetingtypesByElectionperiodID($electionperiod['ElectionPeriodID']);
+		$meetingtypes = $meetingtypeinstance->readMeetingtypesByElectionperiodID($electionperiod['ElectionPeriodID']);
 		foreach($meetingtypes as $meetingtype)
 		{
 			$parentPath = $fileroot."/_".$meetingtype['MeetingName']."/".$electionperiod['PeriodName']."/";
@@ -328,6 +350,9 @@ class Zobmanage {
 	}
 
 	private function scanDirPath($meetingtype,$EntryNo,$dirPath,$topLevel, $dirName = ''){
+		$zob = new Zobcontroller( $this->registry, false );					
+		$meetinginstance = new Meetingcontroller($this->registry);
+
 		$content = '';
 		if ($handle = opendir($dirPath)) { 
 			while (false !== ($fileName = readdir($handle))) 
@@ -356,7 +381,7 @@ class Zobmanage {
 					$content .= $this->scanDirPath($meetingtype,$EntryNo,$fullFileName.'/',false,$Name);
 				}else{
 					// Soubor
-					$meeting = $this->zob->getMeetingByEntryNo($meetingtype, $EntryNo);
+					$meeting = $meetinginstance->getMeetingByEntryNo($meetingtype, $EntryNo);
 
 					// Pokud zápis ještě nebyl načten, pak se proveden impoert a zápisu do tabulek ZOB
 					if($fileName == ".meeting"){
@@ -378,17 +403,17 @@ class Zobmanage {
 
 						// Najít/vytvořit EntryNo
 						$dmsEntryNo = $this->registry->getObject('file')->findItem($fullFileName);
-						$dmsentry = $this->zob->getDmsentry($dmsEntryNo);
+						$dmsentry = $meetinginstance->getDmsentry($dmsEntryNo);
 						$DmsEntryID = $dmsentry['ID'];
 						if($dmsentry){
-							$meetingattachment = $this->zob->getMeetingattachmentByDmsEntryID ( $meeting['MeetingID'], $DmsEntryID );
+							$meetingattachment = $zob->getMeetingattachmentByDmsEntryID ( $meeting['MeetingID'], $DmsEntryID );
 							if(!$meetingattachment){
 								$data = array();
 								$data['MeetinglineID'] = 0;
 								$data['MeetingID'] = $meeting['MeetingID'];
 								$data['Description'] = $Name;
 								$data['DmsEntryID'] = $DmsEntryID;	
-								$this->registry->getObject('db')->insertRecords('meetingattachment',$data);
+								$this->db->insertRecords('meetingattachment',$data);
 							}
 						}
 					}
@@ -413,7 +438,12 @@ class Zobmanage {
 	}
 
 	private function importMeeting( $filename = '' ){
-		$electionperiod = $this->zob->getActualElectionperiod();
+		$electionperiodinstance = new Electionperiodcontroller( $this->registry );
+        $zob = new Zobcontroller( $this->registry, false );					
+		$meetinginstance = new Meetingcontroller($this->registry);
+		$meetinglineinstance = new Meetinglinecontroller($this->registry);
+
+		$electionperiod = $electionperiodinstance->getActualElectionperiod();
 		if(!$electionperiod){
 			$this->errorMessage = "Není nastaveno výchozí volební období..";
 			$this->print();
@@ -476,22 +506,22 @@ class Zobmanage {
 						$meeting = array();
 						$meeting['EntryNo'] = $EntryNo;
 						$meeting['Present'] = (int) $field[3];
-						$meeting['AtDate'] = $this->zob->text2Date($field[4]);
+						$meeting['AtDate'] = $zob->text2Date($field[4]);
 						$meeting['Year'] = $Year;
 						$meeting['AtTime'] = $this->registry->getObject('core')->formatDate($field[5],'H:i');
-						$meeting['PostedUpDate'] = $this->zob->text2Date($field[6]);
-						$meeting['PostedDownDate'] = $this->zob->text2Date($field[7]);
+						$meeting['PostedUpDate'] = $zob->text2Date($field[6]);
+						$meeting['PostedDownDate'] = $zob->text2Date($field[7]);
 
-						$this->registry->getObject('db')->initQuery('meetingtype');
-						$this->registry->getObject('db')->setFilter('ElectionPeriodID',$ElectionPeriodID);
-						$this->registry->getObject('db')->setFilter('MeetingName',$MeetingName);
-						if(!$this->registry->getObject('db')->findFirst()){
+						$this->db->initQuery('meetingtype');
+						$this->db->setFilter('ElectionPeriodID',$ElectionPeriodID);
+						$this->db->setFilter('MeetingName',$MeetingName);
+						if(!$this->db->findFirst()){
 							$this->errorMessage = "Typ jednání $MeetingName pro volební období ".$electionperiod['PeriodName']." není definováno.";
 							$this->print();
 							return;
 						}
-						$meetingtype = $this->registry->getObject('db')->getResult();
-						$meetingTemplate = $this->zob->getMeetingTemplate($MeetingName);
+						$meetingtype = $this->db->getResult();
+						$meetingTemplate = $meetinginstance->getMeetingTemplate($MeetingName);
 						if($meetingTemplate){
 							$meeting['MeetingPlace'] = $meetingTemplate['MeetingPlace'];
 						}
@@ -501,22 +531,22 @@ class Zobmanage {
 						$meeting['ElectionPeriodID'] = $ElectionPeriodID;
 						$meeting['Close'] = 0;
 						$meeting['ParentID'] = '00000000-0000-0000-0000-000000000000';
-						$meeting['ParentID'] = $this->zob->getMeetingParentID($meeting);
+						$meeting['ParentID'] = $meetinginstance->getMeetingParentID($meeting);
 				
-						$this->registry->getObject('db')->initQuery('meeting');
-						$this->registry->getObject('db')->setFilter('MeetingTypeID',$MeetingTypeID);
-						$this->registry->getObject('db')->setFilter('EntryNo',$EntryNo);
-						if($this->registry->getObject('db')->findFirst()){
+						$this->db->initQuery('meeting');
+						$this->db->setFilter('MeetingTypeID',$MeetingTypeID);
+						$this->db->setFilter('EntryNo',$EntryNo);
+						if($this->db->findFirst()){
 							$this->errorMessage = "Jednání typu $MeetingName číslo $EntryNo/$Year již existuje.<BR>";
 							//$this->print();
 							return;					
 						}
-						$this->registry->getObject('db')->insertRecords('meeting',$meeting);
-						$this->registry->getObject('db')->initQuery('meeting');
-						$this->registry->getObject('db')->setFilter('MeetingTypeID',$MeetingTypeID);
-						$this->registry->getObject('db')->setFilter('EntryNo',$EntryNo);
-						$this->registry->getObject('db')->findFirst();
-						$meeting = $this->registry->getObject('db')->getResult();
+						$this->db->insertRecords('meeting',$meeting);
+						$this->db->initQuery('meeting');
+						$this->db->setFilter('MeetingTypeID',$MeetingTypeID);
+						$this->db->setFilter('EntryNo',$EntryNo);
+						$this->db->findFirst();
+						$meeting = $this->db->getResult();
 						$MeetingID = $meeting['MeetingID'];
 
 						$line = $MeetingID;
@@ -533,15 +563,15 @@ class Zobmanage {
 						}
 						if($data){
 							$condition = "MeetingID = $MeetingID";
-							$this->registry->getObject('db')->updateRecords('meeting',$data,$condition);
+							$this->db->updateRecords('meeting',$data,$condition);
 						}
 						break;
 					case 'D':
 						$data = null;
-						$data['RecorderAtDate'] = $this->zob->text2Date($field[1]);
+						$data['RecorderAtDate'] = $zob->text2Date($field[1]);
 						if($data){
 							$condition = "MeetingID = $MeetingID";
-							$this->registry->getObject('db')->updateRecords('meeting',$data,$condition);
+							$this->db->updateRecords('meeting',$data,$condition);
 						}
 						break;
 					case 'Z':
@@ -549,7 +579,7 @@ class Zobmanage {
 						$data['RecorderBy'] = trim($field[1]);
 						if($data){
 							$condition = "MeetingID = $MeetingID";
-							$this->registry->getObject('db')->updateRecords('meeting',$data,$condition);
+							$this->db->updateRecords('meeting',$data,$condition);
 						}
 						break;
 					case 'B':
@@ -570,12 +600,12 @@ class Zobmanage {
 								$text = substr($text,1);
 						};
 						if (strlen($text) > 250){
-							$data['Title'] = $this->registry->getObject('db')->sanitizeData(trim(substr($text,0,249)));
-							$data['Title2'] = $this->registry->getObject('db')->sanitizeData(trim(substr($text,250,249)));
+							$data['Title'] = $this->db->sanitizeData(trim(substr($text,0,249)));
+							$data['Title2'] = $this->db->sanitizeData(trim(substr($text,250,249)));
 						}else
-							$data['Title'] = $this->registry->getObject('db')->sanitizeData(trim($text));
+							$data['Title'] = $this->db->sanitizeData(trim($text));
 						
-						$this->registry->getObject('db')->insertRecords('meetingline',$data);
+						$this->db->insertRecords('meetingline',$data);
 						break;
 					case 'T':
 						$data = null;
@@ -591,8 +621,8 @@ class Zobmanage {
 							if($text[0] == '-')
 								$text = substr($text,1);
 						};
-						$data['Title'] = $this->registry->getObject('db')->sanitizeData($text);
-						$this->registry->getObject('db')->insertRecords('meetingline',$data);
+						$data['Title'] = $this->db->sanitizeData($text);
+						$this->db->insertRecords('meetingline',$data);
 						break;
 					case 'P':
 						# P;9-1;Text
@@ -610,24 +640,24 @@ class Zobmanage {
 							if($text[0] == '-')
 								$text = substr($text,1);
 						};
-						$data['Title'] = $this->registry->getObject('db')->sanitizeData($text);
-						$this->registry->getObject('db')->insertRecords('meetingline',$data);
+						$data['Title'] = $this->db->sanitizeData($text);
+						$this->db->insertRecords('meetingline',$data);
 						break;
 					case 'O':
 						$arr = explode('-',trim($field[1]));
 						$LineNo = (int) $arr[0];
 						$LineNo2 = isset($arr[1]) ? (int) $arr[1] : null;
-						$this->registry->getObject('db')->initQuery('meetingline');
-						$this->registry->getObject('db')->setFilter('MeetingID',$MeetingID);
-						$this->registry->getObject('db')->setFilter('LineNo',$LineNo);
+						$this->db->initQuery('meetingline');
+						$this->db->setFilter('MeetingID',$MeetingID);
+						$this->db->setFilter('LineNo',$LineNo);
 						if($LineNo2)
-							$this->registry->getObject('db')->setFilter('LineNo2',$LineNo2);
-						if(!$this->registry->getObject('db')->findFirst()){
+							$this->db->setFilter('LineNo2',$LineNo2);
+						if(!$this->db->findFirst()){
 							$this->errorMessage = "Bod programu $LineNo.$LineNo2 nenalezen.";
 							$this->print();
 							return;
 						}
-						$meetingline = $this->registry->getObject('db')->getResult();
+						$meetingline = $this->db->getResult();
 						$MeetingLineID = $meetingline['MeetingLineID'];
 						
 						$text = isset($field[2]) ? trim($field[2]) : '';
@@ -641,9 +671,9 @@ class Zobmanage {
 						if($text[0] == '-')
 							$text = substr($text,1);
 						$data = null;
-						$data['Content'] = $this->registry->getObject('db')->sanitizeData($text);
+						$data['Content'] = $this->db->sanitizeData($text);
 						$condition = "MeetingLineID = $MeetingLineID";
-						$this->registry->getObject('db')->updateRecords('meetingline',$data,$condition);
+						$this->db->updateRecords('meetingline',$data,$condition);
 						$lastOC = $type;
 						break;
 					case 'C':
@@ -657,16 +687,16 @@ class Zobmanage {
 						$data['MeetingLineID'] = $MeetingLineID;
 						$data['MeetingID'] = $MeetingID;
 						$data['MeetingTypeID'] = $MeetingTypeID;
-						$ContentLineNo = $this->zob->getNextMeetinglineContentLineNo( $MeetingLineID );
+						$ContentLineNo = $zob->getNextMeetinglineContentLineNo( $MeetingLineID );
 						$data['LineNo'] = $ContentLineNo;
-						$data['Content'] = $this->registry->getObject('db')->sanitizeData($text);
-						$this->registry->getObject('db')->insertRecords('meetinglinecontent',$data);
+						$data['Content'] = $this->db->sanitizeData($text);
+						$this->db->insertRecords('meetinglinecontent',$data);
 
-						$this->registry->getObject('db')->initQuery('meetinglinecontent');
-						$this->registry->getObject('db')->setFilter('MeetingLineID',$MeetingLineID);
-						$this->registry->getObject('db')->setFilter('LineNo',$ContentLineNo);
-						$this->registry->getObject('db')->findFirst();
-						$meetinglinecontent = $this->registry->getObject('db')->getResult();
+						$this->db->initQuery('meetinglinecontent');
+						$this->db->setFilter('MeetingLineID',$MeetingLineID);
+						$this->db->setFilter('LineNo',$ContentLineNo);
+						$this->db->findFirst();
+						$meetinglinecontent = $this->db->getResult();
 						$ContentID = $meetinglinecontent['ContentID'];					
 						
 						$lastOC = $type;
@@ -677,7 +707,7 @@ class Zobmanage {
 						if($text[0] == '-')
 							$text = substr($text,1);
 						$data = null;
-						$data['DraftResolution'] = $this->registry->getObject('db')->sanitizeData($text);
+						$data['DraftResolution'] = $this->db->sanitizeData($text);
 						if($lastOC == 'O'){
 							$condition = "MeetingLineID = $MeetingLineID";
 							$table = 'meetingline';
@@ -685,7 +715,7 @@ class Zobmanage {
 							$condition = "ContentID = $ContentID";
 							$table = 'meetinglinecontent';
 						}
-						$this->registry->getObject('db')->updateRecords($table,$data,$condition);
+						$this->db->updateRecords($table,$data,$condition);
 						break;
 					case 'I':
 						$text = trim($field[1]);
@@ -693,7 +723,7 @@ class Zobmanage {
 						if($text[0] == '-')
 							$text = substr($text,1);
 						$data = null;
-						$data['Discussion'] = $this->registry->getObject('db')->sanitizeData($text);
+						$data['Discussion'] = $this->db->sanitizeData($text);
 						if($lastOC == 'O'){
 							$condition = "MeetingLineID = $MeetingLineID";
 							$table = 'meetingline';
@@ -701,7 +731,7 @@ class Zobmanage {
 							$condition = "ContentID = $ContentID";
 							$table = 'meetinglinecontent';
 						}
-						$this->registry->getObject('db')->updateRecords($table,$data,$condition);
+						$this->db->updateRecords($table,$data,$condition);
 						break;
 					case 'H':
 						$line = preg_replace('/\s/',"",$field[1]);
@@ -718,7 +748,7 @@ class Zobmanage {
 							$condition = "ContentID = $ContentID";
 							$table = 'meetinglinecontent';
 						}
-						$this->registry->getObject('db')->updateRecords($table,$data,$condition);
+						$this->db->updateRecords($table,$data,$condition);
 						break;
 					default:
 						$data = null;
@@ -742,17 +772,17 @@ class Zobmanage {
 						$line = str_replace("–","-",$line);
 						if($line != ""){
 							if($lastOC == 'O'){
-								$meetingline = $this->zob->getMeetingline($MeetingLineID);
-								$data[$field] = $meetingline[$field]."\n".$this->registry->getObject('db')->sanitizeData($line);
+								$meetingline = $meetinglineinstance->getMeetingline($MeetingLineID);
+								$data[$field] = $meetingline[$field]."\n".$this->db->sanitizeData($line);
 								$condition = "MeetingLineID = $MeetingLineID";
 								$table = 'meetingline';
 							}else{
-								$meetinglinecontent = $this->zob->getMeetinglinecontent($ContentID);
-								$data[$field] = $meetinglinecontent[$field]."\n".$this->registry->getObject('db')->sanitizeData($line);
+								$meetinglinecontent = $zob->getMeetinglinecontent($ContentID);
+								$data[$field] = $meetinglinecontent[$field]."\n".$this->db->sanitizeData($line);
 								$condition = "ContentID = $ContentID";
 								$table = 'meetinglinecontent';
 							}
-							$this->registry->getObject('db')->updateRecords($table,$data,$condition);
+							$this->db->updateRecords($table,$data,$condition);
 						};
 						$type = $lastType;
 						break;
