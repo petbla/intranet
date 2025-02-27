@@ -94,7 +94,7 @@
                                 <label class="title">{lbl_RecorderBy}</label><br>
                             </td>
                             <td style="border:0;">
-                                <input type="text" class="value" name="RecorderBy" value="{RecorderBy}" pkID="{MeetingID}" table="meeting" onchange="wsUpdate(this);" {disabled}/><br>
+                                <input type="text" class="value" name="RecorderBy" value="{RecorderBy}" pkID="{MeetingID}" table="meeting" sourcetable="contact" onchange="modifyElement(this);" onkeyup="fetchLookupList(this);" {disabled}/><br>
                             </td>
                         </tr>
                         <tr>

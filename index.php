@@ -48,6 +48,7 @@ if( isset($_COOKIE["HideHandledNote"]) ){
 // Connect to database
 $registry->getObject('db')->newConnection($config['db_host'], $config['db_user'], $config['db_pass'], $config['db_name']);
 
+
 // Check database Update
 $registry->getObject('upgrade')->CheckPortal();
 $registry->getObject('upgrade')->SetPortal(0);

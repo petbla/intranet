@@ -569,7 +569,7 @@ class Generalws {
 	private function updateContact($value)
 	{
 		$zob = new Zobcontroller( $this->registry, false );					       
-		$contact = new Contactcontroller( $this->registry, false );
+		$contactClass = new Contactcontroller( $this->registry, false );
 
 		$contact = $zob->getContactByID($this->ID);
 		$field = $this->field;
@@ -586,7 +586,7 @@ class Generalws {
 				$data['Title'] = $contact['Title'];
 				$data['Company'] = $contact['Company'];
 				$data[$field] = $value;
-				$data['FullName'] = $contact->makeFullName($data);
+				$data['FullName'] = $contactClass->makeFullName($data);
 				break;
 			default:
 				$data[$field] = $value;

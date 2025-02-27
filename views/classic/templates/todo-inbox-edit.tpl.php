@@ -29,6 +29,9 @@
                 <label>{lbl_SettlementType}</label>
             </td>
             <td>
+                
+                <input type="text" class="value col_fullname big" name="Title" value="{Title}" pkID="{InboxID}" table="inbox" sourcetable="dmsentry" onkeyup="fetchLookupList(this);" />
+
                 <select id="select{InboxID}" name="SettlementType" value="" onchange="this.setAttribute('value',this.options[this.selectedIndex].text);">
                     <!-- START listType{InboxID} -->
                     <option id="opt{MeetingTypeID}_{InboxID}" selected="">{MeetingName}</option>

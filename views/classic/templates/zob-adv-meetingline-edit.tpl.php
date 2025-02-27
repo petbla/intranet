@@ -5,7 +5,7 @@
                 <td>
                     <a href="#header" class="button" title="Nahorů"><img src="views/classic/images/icon/arrowup.png"></a>                   
                     <label class="col_title">{lbl_LineType}</label>
-                    <select class="value" name="LineType" value="{LineType}" pkID="{MeetingLineID}" table="meetingline" onchange="this.setAttribute('value',this.options[this.selectedIndex].text); wsUpdate(this);">
+                    <select class="value" name="LineType" value="{LineType}" pkID="{MeetingLineID}" table="meetingline" onchange="this.setAttribute('value',this.options[this.selectedIndex].text); modifyElement(this);">
                         <option id="Bod{MeetingLineID}">Bod</option>
                         <option id="Podbod{MeetingLineID}">Podbod</option>
                         <option id="Doplňující bod{MeetingLineID}">Doplňující bod</option>
@@ -18,17 +18,17 @@
                     </script>
                 </td>
                 <td>
-                    <input type="Text" class="col_fullname big" value="{Title}" name="Title" pkID="{MeetingLineID}" table="meetingline" onchange="wsUpdate(this);">
+                    <input type="Text" class="col_fullname big" value="{Title}" name="Title" pkID="{MeetingLineID}" table="meetingline" onchange="modifyElement(this);">
                 </td>
                 <td>
                     <label class="col_title">{lbl_Presenter}</label>
-                    <input type="Text" class="col_name" value="{Presenter}" name="Presenter" pkID="{MeetingLineID}" table="meetingline" onchange="wsUpdate(this);">                    
+                    <input type="Text" class="col_name" value="{Presenter}" name="Presenter" pkID="{MeetingLineID}" table="meetingline" sourcetable="contact" onchange="modifyElement(this);" onkeyup="fetchLookupList(this);">                    
                 </td>
             </tr>
             <tr>
                 <td></td>
                 <td colspan="2">
-                    <textarea data-autoresize id="meetinglineContent{MeetingLineID}" name="Content" rows="5" cols="160" value="" class="autosize par" pkID="{MeetingLineID}" table="meetingline" onchange="wsUpdate(this);">{Content}</textarea>
+                    <textarea data-autoresize id="meetinglineContent{MeetingLineID}" name="Content" rows="5" cols="160" value="" class="autosize par" pkID="{MeetingLineID}" table="meetingline" onchange="modifyElement(this);">{Content}</textarea>
                 </td>
             </tr>
             <tr>
@@ -38,7 +38,7 @@
                     <img src="views/classic/images/icon/arrowup.png" id="arrowupDiscussion{MeetingLineID}" title="Sbalit" onClick="document.getElementById('meetinglineDiscussion{MeetingLineID}').style.display = 'none'; this.style.display='none';document.getElementById('arrowdownDiscussion{MeetingLineID}').style.display='';"/>
                     <img src="views/classic/images/icon/arrowdown.png" id="arrowdownDiscussion{MeetingLineID}" title="Rozbalit" onClick="document.getElementById('meetinglineDiscussion{MeetingLineID}').style.display = 'block'; this.style.display='none';document.getElementById('arrowupDiscussion{MeetingLineID}').style.display='';" style="display:none;"/>
                     <br>                   
-                    <textarea  id="meetinglineDiscussion{MeetingLineID}" name="Discussion" rows="3" cols="160" value="" class="autosize par" pkID="{MeetingLineID}" table="meetingline" onchange="wsUpdate(this);">{Discussion}</textarea>
+                    <textarea  id="meetinglineDiscussion{MeetingLineID}" name="Discussion" rows="3" cols="160" value="" class="autosize par" pkID="{MeetingLineID}" table="meetingline" onchange="modifyElement(this);">{Discussion}</textarea>
                     <script>
                         if('{isDiscussion}' == '0'){
                             document.getElementById('meetinglineDiscussion{MeetingLineID}').style.display = 'none';
@@ -53,11 +53,11 @@
                 <td colspan="2">
                     <label class="col_title">{lbl_Vote}</label>
                     <input type="checkbox" id="meetinglineVote{MeetingLineID}" name="Vote" value="{Vote}" pkID="{MeetingLineID}" table="meetingline" onClick = "validateCheckboxVote( this, {MeetingLineID} );wsRefreshMeetingline(this);">
-                    <label class="col_title">{lbl_VoteFor}</label>&nbsp;<input type="text" id="meetinglineVoteFor{MeetingLineID}" name="VoteFor" value="{VoteFor}" class="col_code" pkID="{MeetingLineID}" table="meetingline" onchange="wsUpdate(this);wsRefreshMeetingline(this);">
+                    <label class="col_title">{lbl_VoteFor}</label>&nbsp;<input type="text" id="meetinglineVoteFor{MeetingLineID}" name="VoteFor" value="{VoteFor}" class="col_code" pkID="{MeetingLineID}" table="meetingline" onchange="modifyElement(this);wsRefreshMeetingline(this);">
                     &nbsp;&nbsp;&nbsp;
-                    <label class="col_title">{lbl_VoteAgainst}</label>&nbsp;<input type="text" id="meetinglineVoteAgainst{MeetingLineID}" name="VoteAgainst" value="{VoteAgainst}" class="col_code" pkID="{MeetingLineID}" table="meetingline" onchange="wsUpdate(this);wsRefreshMeetingline(this);">
+                    <label class="col_title">{lbl_VoteAgainst}</label>&nbsp;<input type="text" id="meetinglineVoteAgainst{MeetingLineID}" name="VoteAgainst" value="{VoteAgainst}" class="col_code" pkID="{MeetingLineID}" table="meetingline" onchange="modifyElement(this);wsRefreshMeetingline(this);">
                     &nbsp;&nbsp;&nbsp;
-                    <label class="col_title">{lbl_VoteDelayed}</label>&nbsp;<input type="text" id="meetinglineVoteDelayed{MeetingLineID}" name="VoteDelayed" value="{VoteDelayed}" class="col_code" pkID="{MeetingLineID}" table="meetingline" onchange="wsUpdate(this);wsRefreshMeetingline(this);">
+                    <label class="col_title">{lbl_VoteDelayed}</label>&nbsp;<input type="text" id="meetinglineVoteDelayed{MeetingLineID}" name="VoteDelayed" value="{VoteDelayed}" class="col_code" pkID="{MeetingLineID}" table="meetingline" onchange="modifyElement(this);wsRefreshMeetingline(this);">
                     <script>
                         var e;
                         e = document.getElementById('meetinglineVote{MeetingLineID}');
@@ -84,7 +84,7 @@
                     <img src="views/classic/images/icon/arrowup.png" id="arrowupDraftResolution{MeetingLineID}" title="Sbalit" onClick="document.getElementById('meetinglineDraftResolution{MeetingLineID}').style.display = 'none'; this.style.display='none';document.getElementById('arrowdownDraftResolution{MeetingLineID}').style.display='';"/>
                     &nbsp;&nbsp;<img src="views/classic/images/icon/copyFrom.png" style="cursor: pointer;" title="Kopie obsahu" name="DraftResolution" namefrom="Content" table="meetingline" pkID="{MeetingLineID}" onClick="wscopyFrom(this);"/>
                     <br>                   
-                    <textarea  id="meetinglineDraftResolution{MeetingLineID}" name="DraftResolution" rows="3" cols="160" value="" class="autosize par" pkID="{MeetingLineID}" table="meetingline" onchange="wsUpdate(this);">{DraftResolution}</textarea>
+                    <textarea  id="meetinglineDraftResolution{MeetingLineID}" name="DraftResolution" rows="3" cols="160" value="" class="autosize par" pkID="{MeetingLineID}" table="meetingline" onchange="modifyElement(this);">{DraftResolution}</textarea>
                     <script>
                         if('{isDraftResolution}' == '0'){
                             document.getElementById('meetinglineDraftResolution{MeetingLineID}').style.display = 'none';
@@ -102,13 +102,13 @@
                     <label class="col_title big">{LineNo}{LineNo2}&nbsp;.{con_LineNo}) {lbl_Content}</label>                    
                     <a href="index.php?page=zob/adv/meetinglinecontent/delete/{con_ContentID}" class="button">Odstranit</a>
                     <br>                   
-                    <textarea  name="Content" rows="3" cols="160" value="" class="autosize par" pkID="{con_ContentID}" table="meetinglinecontent" onchange="wsUpdate(this);">{con_Content}</textarea>
+                    <textarea  name="Content" rows="3" cols="160" value="" class="autosize par" pkID="{con_ContentID}" table="meetinglinecontent" onchange="modifyElement(this);">{con_Content}</textarea>
                     <br>
                     <label class="col_title big">{LineNo}{LineNo2}&nbsp;.{con_LineNo}) {lbl_Discussion}</label>
                     <img src="views/classic/images/icon/arrowdown.png" id="arrowdownDiscussionContent{con_ContentID}" title="Rozbalit" onClick="document.getElementById('meetinglinecontentDiscussion{con_ContentID}').style.display = 'block'; this.style.display='none';document.getElementById('arrowupDiscussionContent{con_ContentID}').style.display='';" style="display:none;"/>
                     <img src="views/classic/images/icon/arrowup.png" id="arrowupDiscussionContent{con_ContentID}" title="Sbalit" onClick="document.getElementById('meetinglinecontentDiscussion{con_ContentID}').style.display = 'none'; this.style.display='none';document.getElementById('arrowdownDiscussionContent{con_ContentID}').style.display='';"/>
                     <br>
-                    <textarea id="meetinglinecontentDiscussion{con_ContentID}" name="Discussion" rows="3" cols="160" value="" class="autosize par" pkID="{con_ContentID}" table="meetinglinecontent" onchange="wsUpdate(this);">{con_Discussion}</textarea>                    
+                    <textarea id="meetinglinecontentDiscussion{con_ContentID}" name="Discussion" rows="3" cols="160" value="" class="autosize par" pkID="{con_ContentID}" table="meetinglinecontent" onchange="modifyElement(this);">{con_Discussion}</textarea>                    
                     <script>
                         if('{con_isDiscussion}' == '0'){
                             document.getElementById('meetinglinecontentDiscussion{con_ContentID}').style.display = 'none';
@@ -123,7 +123,7 @@
                     <img src="views/classic/images/icon/arrowup.png" id="arrowupDraftResolutionContent{con_ContentID}" title="Sbalit" onClick="document.getElementById('meetinglinecontentDraftResolution{con_ContentID}').style.display = 'none'; this.style.display='none';document.getElementById('arrowdownDraftResolutionContent{con_ContentID}').style.display='';"/>
                     &nbsp;&nbsp;<img src="views/classic/images/icon/copyFrom.png" style="cursor: pointer;" title="Kopie obsahu" name="DraftResolution" namefrom="Content" table="meetinglinecontent" pkID="{con_ContentID}" onClick="wscopyFrom(this);"/>
                     <br>                   
-                    <textarea id="meetinglinecontentDraftResolution{con_ContentID}" name="DraftResolution" rows="3" cols="160" value="" class="autosize par" pkID="{con_ContentID}" table="meetinglinecontent" onchange="wsUpdate(this);">{con_DraftResolution}</textarea>
+                    <textarea id="meetinglinecontentDraftResolution{con_ContentID}" name="DraftResolution" rows="3" cols="160" value="" class="autosize par" pkID="{con_ContentID}" table="meetinglinecontent" onchange="modifyElement(this);">{con_DraftResolution}</textarea>
                     <script>
                         if('{con_isDraftResolution}' == '0'){
                             document.getElementById('meetinglinecontentDraftResolution{con_ContentID}').style.display = 'none';
@@ -136,11 +136,11 @@
 
                     <label class="col_title">{lbl_Vote}</label>
                     <input type="checkbox" id="meetinglinecontentVote{con_ContentID}" name="Vote" value="{con_Vote}" pkID="{con_ContentID}" table="meetinglinecontent" onClick = "validateCheckboxVote( this, {con_ContentID} );wsRefreshMeetinglinecontent(this);">
-                    <label class="col_title">{lbl_VoteFor}</label>&nbsp;<input type="text" id="meetinglinecontentVoteFor{con_ContentID}" name="VoteFor" value="{con_VoteFor}" class="col_code" pkID="{con_ContentID}" table="meetinglinecontent" onchange="wsUpdate(this);wsRefreshMeetinglinecontent(this);">
+                    <label class="col_title">{lbl_VoteFor}</label>&nbsp;<input type="text" id="meetinglinecontentVoteFor{con_ContentID}" name="VoteFor" value="{con_VoteFor}" class="col_code" pkID="{con_ContentID}" table="meetinglinecontent" onchange="modifyElement(this);wsRefreshMeetinglinecontent(this);">
                     &nbsp;&nbsp;&nbsp;
-                    <label class="col_title">{lbl_VoteAgainst}</label>&nbsp;<input type="text" id="meetinglinecontentVoteAgainst{con_ContentID}" name="VoteAgainst" value="{con_VoteAgainst}" class="col_code" pkID="{con_ContentID}" table="meetinglinecontent" onchange="wsUpdate(this);wsRefreshMeetinglinecontent(this);">
+                    <label class="col_title">{lbl_VoteAgainst}</label>&nbsp;<input type="text" id="meetinglinecontentVoteAgainst{con_ContentID}" name="VoteAgainst" value="{con_VoteAgainst}" class="col_code" pkID="{con_ContentID}" table="meetinglinecontent" onchange="modifyElement(this);wsRefreshMeetinglinecontent(this);">
                     &nbsp;&nbsp;&nbsp;
-                    <label class="col_title">{lbl_VoteDelayed}</label>&nbsp;<input type="text" id="meetinglinecontentVoteDelayed{con_ContentID}" name="VoteDelayed" value="{con_VoteDelayed}" class="col_code" pkID="{con_ContentID}" table="meetinglinecontent" onchange="wsUpdate(this);wsRefreshMeetinglinecontent(this);">
+                    <label class="col_title">{lbl_VoteDelayed}</label>&nbsp;<input type="text" id="meetinglinecontentVoteDelayed{con_ContentID}" name="VoteDelayed" value="{con_VoteDelayed}" class="col_code" pkID="{con_ContentID}" table="meetinglinecontent" onchange="modifyElement(this);wsRefreshMeetinglinecontent(this);">
                     <script>
                         var e;
                         e = document.getElementById('meetinglinecontentVote{con_ContentID}');

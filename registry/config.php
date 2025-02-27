@@ -29,6 +29,7 @@ require_once('lang/'.$registry->getSetting('lang').'.php');
  *  Save to Registry
  */
 $registry->storeObject('db', 'mysql.database');
+$registry->storeObject('pdo', 'pdodb.database');
 $registry->storeObject('template', 'template');
 $registry->storeObject('authenticate', 'authentication');
 $registry->storeObject('fce', 'usefulfunction');

@@ -27,11 +27,13 @@ function refreshRec(e){
 //    Http request           :  ?page=general/ws/upd/<table>/<pkID>/<name>
 // ************************************************************************************
 function wsUpdate(e) {
-    
     const Http = new XMLHttpRequest();
     var url;
     var table,pkID,field,newvalue;
     var err,response;
+
+    console.log("wsUpdate");
+
     url = window.location.origin + window.location.pathname;
     if(e){
         table = e.getAttribute('table'); 
@@ -47,12 +49,12 @@ function wsUpdate(e) {
         Http.onreadystatechange=(ee)=>{
             response = Http.responseText;
             if((response == 'OK' ) || (response == '' )){
-                console.log(response);
+                console.log("OK\n" + response);
                 if((field == 'Close') || (field == 'Actual') || (field == 'NewDocumentNo'))
                     window.location.reload();      
                     refreshRec(e);
             }else{
-                console.log(response);
+                console.log("Error: " + response);
                 err = document.getElementById('pageErrorMesage');
                 if(err){
                     err.innerText = response;
@@ -664,5 +666,201 @@ function wsDmsentry(e, action) {
     }
 }
 
+// ************************************************************************************
+//    REST API connection manager
+// ************************************************************************************
+
+// ************************************************************************************
+//
+//    Required HTML elenets  :  sourcetable
+//    JS script              :  fetchLookupList(this);
+//    Http request           :  ?page=general/ws/lookup/<table>/<query>
+// ************************************************************************************
+function fetchLookupList(e,createnew = false) {
+    var query = e.value;
+    var table = e.getAttribute('sourcetable');
+
+    var lookupList = document.getElementById("lookupList");
+    if (!lookupList){
+        lookupList = document.createElement("div");
+        lookupList.setAttribute("id", "lookupList");
+        e.parentElement.append(lookupList);
+    }
+
+    if (query.length < 1) return;
+    var url = '?page=general/api/' + table + '/lookup/' + query;
+
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            let success = false;
+            lookupList.innerHTML = "";
+            data.forEach(item => {
+                let option = document.createElement("div");
+                option.innerText = item.FullName;
+                option.addEventListener("mousedown", () => selectItem(item, e));
+                lookupList.appendChild(option);
+                if (item.FullName != "")
+                    success = true;
+            });            
+            if(!success){
+                if(createnew){
+                    if(!document.getElementById("lookupNewRecordContainer")){
+                        if (confirm(`Záznam "${query}" nenalezen, založit nový?`)){
+                            toggleLookupNewRecordForm(e);
+                        }                        
+                    }                        
+                }
+            } else{
+                e.addEventListener("blur",function () {onLookupBlur();});
+            }                
+        });
+}
 
 
+function onLookupBlur(){
+    if(document.getElementById("lookupList")){
+        document.getElementById("lookupList").remove();
+    };
+}
+
+
+function selectItem(item,e) {
+    e.value = item.FullName;
+    e.setAttribute("value",item.FullName);
+    modifyElement(e,item);
+    if (document.getElementById("lookupList") != null){
+        document.getElementById("lookupList").remove();
+    };
+}
+
+function toggleLookupNewRecordForm(parent) {
+    let sourcetable = parent.getAttribute("sourcetable");
+    let form = null;
+
+    if (!sourcetable)
+        return;
+    switch (sourcetable) {
+        case "contact":
+            form = createNewRecordContainerContact(parent);
+            break;
+    };
+    if(!form)
+        return;
+    parent.parentElement.append(form);
+}
+
+function createNewRecordContainerContact(parent){
+    var lookupNewRecordContainer = document.createElement("div");
+    lookupNewRecordContainer.setAttribute("id","lookupNewRecordContainer");
+    lookupNewRecordContainer.addEventListener("blur",function () {alert("aaaaaaa");});
+
+    let closeButton = document.createElement("button");
+    closeButton.innerHTML = "&times;"; 
+    closeButton.onclick = function() {
+        lookupNewRecordContainer.style.display = "none"; 
+    };
+    lookupNewRecordContainer.appendChild(closeButton);
+
+    var form = document.createElement("form");
+    form.setAttribute("id","lookupNewRecordForm");
+    form.onsubmit = function (event) {event.preventDefault();};
+    lookupNewRecordContainer.appendChild(form);
+
+    var header = document.createElement("h2");
+    header.innerHTML = "Nový kontakt";
+    form.appendChild(header);
+
+    // newContact
+    let url = '?page=general/api/contact/new';
+    fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+    })
+    .then(response => response.json())
+    .then(data => {
+        addInputElement(form, 'contact', 'Company', data.id, 'Společnost');
+        addInputElement(form, 'contact', 'LastName', data.id, 'Příjmení');
+        addInputElement(form, 'contact', 'FirstName', data.id, 'Jméno');
+        addInputElement(form, 'contact', 'Address', data.id, 'Adresa');
+        addInputElement(form, 'contact', 'PostCode', data.id, 'PSČ');
+        addInputElement(form, 'contact', 'City', data.id, 'Město');
+        addInputElement(form, 'contact', 'Phone', data.id, 'Telefon');
+        addInputElement(form, 'contact', 'Email', data.id, 'Email');
+        addInputElement(form, 'contact', 'DataBox', data.id, 'Datová schránka');
+        addInputElement(form, 'contact', 'RegistrationNo', data.id, 'IČ');
+
+        var button = document.createElement("button");
+        button.setAttribute("id","lookupNewRecordButton");
+        button.innerHTML = "OK";
+        button.onclick = function () {let e = document.getElementById("lookupNewRecordContainer");e.style.display = "none";parent.value = data.id; modifyElement(parent); }
+        form.appendChild(button);    
+    });
+
+    return lookupNewRecordContainer;
+}
+
+function addInputElement(form, table, name, pkID, placeholder = ""){
+    let label = document.createElement("label");
+    let input = document.createElement("input");
+    let id = "lookupFormField" + name
+
+    label.setAttribute("for",id)
+    if (placeholder == ""){
+        label.innerHTML = name;
+    }else{
+        label.innerHTML = placeholder;
+    }
+    form.appendChild(label);
+
+    input.type = "text";
+    input.setAttribute("id",id);
+    input.setAttribute("placeholder",placeholder);
+    input.setAttribute("pkID",pkID);
+    input.setAttribute("table",table);
+    input.setAttribute("name",name);
+    input.addEventListener("change",function () {modifyElement(this);});       
+    form.appendChild(input);
+}
+
+// ************************************************************************************
+//    DATABASE functions - Update fields 
+//
+//    Required HTML elenets  :  name, table, pkID
+//    JS script              :  modifyElement(this);
+//    element for whow ERROR :  id="pageErrorMesage"
+//    ID pro set position    :  id="header" 
+//    Http request           :  ?page=general/api/modify
+// ************************************************************************************
+function modifyElement(e, item = null) {
+    const Http = new XMLHttpRequest();
+    let table,pkID,field,newvalue;
+    var err,response;
+   
+    if(e){
+        table = e.getAttribute('table'); 
+        pkID = e.getAttribute('pkID');
+        field = e.getAttribute('name'); 
+        newvalue = e.value; 
+        if(newvalue == undefined)
+            newvalue = e.getAttribute('value'); 
+
+        let url = '?page=general/api/' + table + '/modify';
+        fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ table, field, pkID, newvalue, item })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data["status"] != "OK"){
+                console.log(data);
+                err = document.getElementById('pageErrorMesage');
+                if(err){
+                    err.innerText = data["message"];
+                    err.style.display = 'block';
+                }
+            }
+        })
+    }
+}

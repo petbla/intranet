@@ -80,6 +80,10 @@ class Generalcontroller {
 							$ws = new Generalws( $this->registry );					
 							$ws->main($action);
 							break;
+					case 'api':							
+							$pdo = $this->registry->getObject('pdo');										
+							$pdo->main();
+							break;
 				}
 			}
 			$this->pageNotFound();
